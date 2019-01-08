@@ -1,7 +1,7 @@
-import Hello from '../components/Hello';
+import MainView from '../components/MainView';
 import * as actions from '../actions/actions';
-import { StoreState } from '../types/index';
 import { connect, Dispatch } from 'react-redux';
+import { StoreState } from '../model/storeState';
 
 export function mapStateToProps({ enthusiasmLevel, languageName }: StoreState) {
   return {
@@ -10,11 +10,11 @@ export function mapStateToProps({ enthusiasmLevel, languageName }: StoreState) {
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<actions.EnthusiasmAction>) {
+export function mapDispatchToProps(dispatch: Dispatch<actions.Action>) {
   return {
     onIncrement: () => dispatch(actions.incrementEnthusiasm()),
     onDecrement: () => dispatch(actions.decrementEnthusiasm()),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Hello);
+export default connect(mapStateToProps, mapDispatchToProps)(MainView);

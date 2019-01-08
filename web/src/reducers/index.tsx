@@ -1,5 +1,5 @@
 
-import { EnthusiasmAction } from '../actions';
+import { EnthusiasmAction } from '../actions/actions';
 import { StoreState } from '../types/index';
 import { INCREMENT_ENTHUSIASM, DECREMENT_ENTHUSIASM } from '../constants/index';
 

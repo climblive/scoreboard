@@ -1,9 +1,9 @@
 
-import { Action } from '../actions';
-import { DECREMENT_ENTHUSIASM, INCREMENT_ENTHUSIASM } from '../constants';
-import { IStoreState } from '../storeState';
+import { Action } from '../actions/actions';
+import { DECREMENT_ENTHUSIASM, INCREMENT_ENTHUSIASM } from '../constants/constants';
+import { StoreState } from '../model/storeState';
 
-export function reducer(state: IStoreState, action: Action): IStoreState {
+export function reducer(state: StoreState, action: Action): StoreState {
    switch (action.type) {
       case INCREMENT_ENTHUSIASM:
          return { ...state, enthusiasmLevel: state.enthusiasmLevel + 1 };

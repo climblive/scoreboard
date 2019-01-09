@@ -1,20 +1,19 @@
-import MainView from '../components/MainView';
+import MainView, { Props } from '../components/MainView';
 import * as actions from '../actions/actions';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
+import { Problem } from '../model/problem';
 
-export function mapStateToProps({ enthusiasmLevel, languageName }: StoreState) {
-  return {
-    enthusiasmLevel,
-    name: languageName,
-  };
+export function mapStateToProps(state: StoreState): Props {
+   return {
+      problems: state.problems
+   };
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<actions.Action>) {
-  return {
-    onIncrement: () => dispatch(actions.incrementEnthusiasm()),
-    onDecrement: () => dispatch(actions.decrementEnthusiasm()),
-  };
+   return {
+      onToggle: (problem: Problem) => dispatch(actions.toggleProblem(problem)),
+   };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainView);

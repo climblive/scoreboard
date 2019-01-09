@@ -1,24 +1,18 @@
 
 import * as constants from '../constants/constants';
+import { Problem } from '../model/problem';
 
-export interface IncrementEnthusiasm {
-    type: constants.INCREMENT_ENTHUSIASM;
+export interface ToggleProblem {
+   type: constants.TOGGLE_PROBLEM;
+   problem: Problem;
 }
 
-export interface DecrementEnthusiasm {
-    type: constants.DECREMENT_ENTHUSIASM;
-}
+export type Action = ToggleProblem //| DecrementEnthusiasm;
 
-export type Action = IncrementEnthusiasm | DecrementEnthusiasm;
-
-export function incrementEnthusiasm(): IncrementEnthusiasm {
+export function toggleProblem(problem: Problem): ToggleProblem {
+   console.log("TOGGLE_PROBLEM");
     return {
-        type: constants.INCREMENT_ENTHUSIASM
-    };
-}
-
-export function decrementEnthusiasm(): DecrementEnthusiasm {
-    return {
-        type: constants.DECREMENT_ENTHUSIASM
+       type: constants.TOGGLE_PROBLEM,
+       problem: problem
     };
 }

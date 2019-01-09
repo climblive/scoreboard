@@ -1,35 +1,20 @@
 import * as React from 'react';
 import './ProblemList.css';
+import { Problem } from '../model/problem';
+import ProblemComp from './ProblemComp';
 
-export interface Props {
-  name: string;
-  enthusiasmLevel?: number;
-  onIncrement?: () => void;
-  onDecrement?: () => void;
+export interface ProblemListProps {
+  problems: Problem[];
+  onToggle?: () => void;
 }
 
-function ProblemList({ name, enthusiasmLevel = 1, onIncrement, onDecrement }: Props) {
-  if (enthusiasmLevel <= 0) {
-    throw new Error('You could be a little more enthusiastic. :D');
-  }
-
+function ProblemList({ problems, onToggle }: ProblemListProps) {
+   var problemsList = problems.map(p => (<ProblemComp key={p.id} onToggle={onToggle} problem={p}/>));
    return (
     <div className="hello">
-      <div className="greeting">
-        Hello {name + getExclamationMarks(enthusiasmLevel)}
-      </div>
-      <div>
-        <button onClick={onDecrement}>-</button>
-        <button onClick={onIncrement}>+</button>
-      </div>
+      {problemsList}
     </div>
   );
 }
 
 export default ProblemList;
-
-// helpers
-
-function getExclamationMarks(numChars: number) {
-  return Array(numChars + 1).join('!');
-}

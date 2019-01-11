@@ -1,0 +1,30 @@
+.problem {
+   display:flex;
+   border: 1px solid grey;
+   margin-bottom:3px;
+   padding:5px 10px;
+   border-radius:5px;
+}
+
+.problem.done {
+   opacity:0.1;
+}
+
+.xxproblem:active {
+   opacity:0.6;
+}
+
+.problem .color {
+   width:60px;   
+   text-align: left;
+   margin-left:15px;
+}
+
+.problem .points {
+   text-align: right;
+   width:60px;
+}
+
+.problem .sent {
+   margin-left:auto;
+}

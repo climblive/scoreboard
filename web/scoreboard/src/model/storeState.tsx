@@ -1,7 +1,7 @@
 import { Problem } from './problem';
 
 export interface StoreState {
-   languageName: string;
-   enthusiasmLevel: number;
+   name: string;
+   compClass: string;
    problems: Problem[];
 }

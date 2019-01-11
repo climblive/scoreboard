@@ -6,7 +6,9 @@ import { Problem } from '../model/problem';
 
 export function mapStateToProps(state: StoreState): Props {
    return {
-      problems: state.problems
+      problems: state.problems,
+      name: state.name,
+      compClass: state.compClass
    };
 }
 

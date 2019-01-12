@@ -1,0 +1,17 @@
+.startView {
+   display:flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.startView input {
+   border: 1px solid #333;
+   text-align: center;
+   width:100%;
+   font-size:16px;
+   margin-bottom:20px;
+}
+
+.startView button {
+   border: 1px solid grey;
+}

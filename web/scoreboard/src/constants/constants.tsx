@@ -1,3 +1,6 @@
 
 export const TOGGLE_PROBLEM = 'TOGGLE_PROBLEM';
 export type TOGGLE_PROBLEM = typeof TOGGLE_PROBLEM;
+
+export const RECEIVE_USER_DATA = 'RECEIVE_USER_DATA';
+export type RECEIVE_USER_DATA = typeof RECEIVE_USER_DATA;

@@ -1,7 +1,5 @@
-import { Problem } from './problem';
+import { UserData } from './userData';
 
 export interface StoreState {
-   name: string;
-   compClass: string;
-   problems: Problem[];
+   userData: UserData;
 }

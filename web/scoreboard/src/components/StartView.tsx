@@ -1,39 +1,58 @@
 import * as React from 'react';
 import './StartView.css';
+import { Redirect } from 'react-router';
 
 export interface Props {
 }
 
-function StartView({ }: Props) {
-
-   var name : string = "Jesper Sölver";
-   var activationCode :string = "GHRF";
-
-   var handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-      activationCode = event.currentTarget.value
-      console.log(event.currentTarget.value)
-   }
-
-   var handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-      name = event.currentTarget.value
-      console.log(event.currentTarget.value)
-   }
-
-   var onSubmit = () => { 
-      console.log(name + " " + activationCode);
-   }
-   
-   return (
-      <div className="startView">
-         Activation code:
-         <input value={activationCode} onChange={handleActivationCodeChange} />
-         Name:
-         <input value={name} onChange={handleNameCodeChange} />
-         <div>
-            <button onClick={onSubmit}>Start</button>
-         </div>
-      </div>
-   );
+type State = {
+   name: string,
+   activationCode: string,
+   redirect: boolean
 }
 
-export default StartView;
+export default class StartView extends React.Component<Props, State> {
+   public readonly state: State = {
+      name: "Jesper Sölver",
+      activationCode: "dalfsdk",
+      redirect: false
+   }
+   constructor(props: Props) {
+      super(props);
+   }
+
+   handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
+      this.state.activationCode = event.currentTarget.value;
+      this.setState(this.state);
+      console.log(this.state);
+   }
+
+   handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
+      this.state.name = event.currentTarget.value;
+      this.setState(this.state);
+      console.log(this.state);
+   }
+
+   onSubmit = () => { 
+      console.log(this.state.name + " " + this.state.activationCode);
+      this.state.redirect = true;
+      this.setState(this.state);
+   }
+   
+   render() {
+      if (this.state.redirect) { 
+         return <Redirect to={"/" + this.state.activationCode} />
+      }
+      return (
+         <div className="startView">
+            Activation code:
+            <input value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
+            Name:
+            <input value={this.state.name} onChange={this.handleNameCodeChange} />
+            <div>
+               <button onClick={this.onSubmit}>Start</button>
+            </div>
+         </div>
+      );
+   }
+}

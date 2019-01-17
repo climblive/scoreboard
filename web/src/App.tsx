@@ -1,23 +1,25 @@
 import * as React from 'react';
 import './App.css';
-import Hello from './components/Hello';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-const logo = require('./logo.svg');
+import MainContainer from './containers/MainContainer';
+import StartView from './components/StartView';
+import DashboardContainer from './containers/DashboardContainer';
 
-function App() {
-  return (
-    <div className="App">
-      <div className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h2>Welcome to React</h2>
-      </div>
-      <p className="App-intro">
-        To get started, edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <Hello name="TypeScript" />
-    </div>
-  );
+class App extends React.Component {
+   public render() {
+      return (
+         <Router>
+            <div className="App">
+               <Switch>
+                  <Route path="/" exact component={StartView} />
+                  <Route path="/dashboard" component={DashboardContainer} />
+                  <Route path="/:code" component={MainContainer} />
+               </Switch>
+            </div>
+         </Router>
+      );
+   }
 }
 
 export default App;
-

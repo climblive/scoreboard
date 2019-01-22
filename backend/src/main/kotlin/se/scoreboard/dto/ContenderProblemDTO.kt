@@ -1,10 +1,11 @@
-package se.scoreboard.model
+package se.scoreboard.dto
 
-data class Problem(
+data class ContenderProblemDTO(
         val id: Int,
         val color: String,
         val textColor : String,
         val colorName:String,
         val points : Int,
-        val text :String
+        val text :String,
+        val isSent : Boolean
 )

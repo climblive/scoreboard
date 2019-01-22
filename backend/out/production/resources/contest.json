@@ -1,0 +1,15 @@
+{
+  "compClasses": ["Herr", "Dam", "Junior"],
+  "problems": [
+    { "id": 1, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""
+    },
+    { "id": 2, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""
+    },
+    { "id": 3, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""
+    },
+    { "id": 4, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""
+    },
+    { "id": 5, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""
+    }
+  ]
+}

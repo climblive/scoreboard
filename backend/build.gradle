@@ -28,5 +28,6 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Required for Kotlin integration
     compile "org.springframework.boot:spring-boot-starter-web"
+    compile 'com.google.code.gson:gson:2.8.5'
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

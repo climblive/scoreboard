@@ -5,4 +5,6 @@ data class ContenderData(
         val name : String,
         val compClass : String,
         val sentProblems : List<Int>
-);
+) {
+    fun isProblemSent(id: Int): Boolean = sentProblems.contains(id)
+};

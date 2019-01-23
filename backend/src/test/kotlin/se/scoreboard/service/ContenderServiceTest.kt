@@ -1,4 +1,4 @@
-package se.scoreboard
+package se.scoreboard.service
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

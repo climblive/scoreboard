@@ -1,7 +1,8 @@
 import { Problem } from './problem';
 
 export class UserData { 
-   problems: Problem[];
+   code: string;
    name: string;
    compClass: string;
+   problems: Problem[];
 }

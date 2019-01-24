@@ -7,16 +7,20 @@ import se.scoreboard.mapper.ContenderDataMapper
 import se.scoreboard.service.ContenderService
 
 @RestController
+@CrossOrigin
 class ContenderController @Autowired constructor(
         val contenderService : ContenderService,
         val contenderDataMapper : ContenderDataMapper
 ) {
 
     @GetMapping("/contender/{code}")
-    fun getContenderData(@PathVariable("code") code: String) =
-            contenderDataMapper.toDTO(
-                    contenderService.getContest(),
-                    contenderService.getContenderData(code))
+    fun getContenderData(@PathVariable("code") code: String) : ContenderDataDTO {
+        val contenderDataDTO: ContenderDataDTO = contenderDataMapper.toDTO(
+                contenderService.getContest(),
+                contenderService.getContenderData(code))
+        println(contenderDataDTO)
+        return contenderDataDTO
+    }
 
     @PostMapping("/contender/{code}")
     fun setContenderData(@PathVariable("code") code: String, @RequestBody input : ContenderDataDTO) =

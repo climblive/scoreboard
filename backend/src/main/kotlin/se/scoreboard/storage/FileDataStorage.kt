@@ -11,8 +11,13 @@ class FileDataStorage : DataStorage {
     val fileName = "database.json"
 
     private fun loadFile() : Database {
-        val string : String = File(fileName).readText()
-        return Gson().fromJson(string, Database::class.java)
+        val file = File(fileName)
+        if(file.exists()) {
+            val string: String = file.readText();
+            return Gson().fromJson(string, Database::class.java)
+        } else {
+            return Database(HashMap())
+        }
     }
 
     private fun saveFile(database : Database) {

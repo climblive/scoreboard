@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 
 @SpringBootApplication
 class Application : SpringBootServletInitializer(), WebMvcConfigurer {
+
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(DisableCacheInterceptor())
     }

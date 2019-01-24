@@ -4,6 +4,7 @@ import { Problem } from '../model/problem';
 import ProblemList from './ProblemList';
 import { UserData } from '../model/userData';
 import * as ReactModal from 'react-modal';
+import { Api } from '../utils/Api';
 
 export interface Props {
    userData: UserData,
@@ -33,8 +34,9 @@ export default class MainView extends React.Component<Props, State> {
    }
 
    componentDidMount() { 
-      console.log("componentDidMount " + this.props.match.params.code);
-      fetch("/test.json").then((data) => data.json()).then(this.props.receiveUserData!);
+      var code : string = this.props.match.params.code;
+      console.log("componentDidMount " + code);
+      Api.getContenderData(code).then(this.props.receiveUserData!);
    }
 
    render() {

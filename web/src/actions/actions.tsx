@@ -2,6 +2,9 @@
 import * as constants from '../constants/constants';
 import { Problem } from '../model/problem';
 import { UserData } from '../model/userData';
+import { Api } from '../utils/Api';
+import { Dispatch } from 'react-redux';
+import { StoreState } from '../model/storeState';
 
 export interface ToggleProblem {
    type: constants.TOGGLE_PROBLEM;
@@ -30,3 +33,23 @@ export function receiveUserData(userData: UserData): ReceiveUserData {
       userData: userData
    };
 }
+
+export function loadUserData(code: string): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.getContenderData(code).then(contenderData => dispatch(receiveUserData(contenderData)))
+   };
+}
+
+export function saveUserData(contenderData: UserData): any {
+   return (dispatch: Dispatch<any>) => {
+      return Api.setContenderData(contenderData);
+   };
+}
+
+export function toggleProblemAndSave(problem: Problem): any { 
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      dispatch(toggleProblem(problem));
+      dispatch(saveUserData(getState().userData));
+   };
+}
+

@@ -8,8 +8,8 @@ export interface ProblemCompProps {
 }
 
 function ProblemComp({ problem, onToggle }: ProblemCompProps) {
-   var isSent = problem.isSent ? 'SENT!' : '';
-   var className = "problem " + (problem.isSent ? 'done' : '');
+   var isSent = problem.sent ? 'SENT!' : '';
+   var className = "problem " + (problem.sent ? 'done' : '');
    var colorStyle = { background: problem.color, color: problem.textColor };
    return (
       <div className={className} style={colorStyle} onClick={onToggle}>

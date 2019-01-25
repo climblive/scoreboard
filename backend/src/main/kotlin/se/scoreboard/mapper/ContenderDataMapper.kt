@@ -8,7 +8,7 @@ import se.scoreboard.model.Contest
 
 @Component
 class ContenderDataMapper {
-    fun toDTO(contest: Contest, contenderData: ContenderData?): ContenderDataDTO {
+    fun toDTO(contest: Contest, code: String, contenderData: ContenderData?): ContenderDataDTO {
         var problems = contest.problems.map { p -> ContenderProblemDTO(
                 p.id,
                 p.color,
@@ -17,10 +17,10 @@ class ContenderDataMapper {
                 p.points,
                 p.text,
                 contenderData != null && contenderData.isProblemSent(p.id)) }
-        return ContenderDataDTO(contenderData?.name, contenderData?.compClass, problems)
+        return ContenderDataDTO(code, contenderData?.name, contenderData?.compClass, problems)
     }
 
     fun toModel(code: String, input: ContenderDataDTO): ContenderData {
-        return ContenderData(code, input.name!!, input.compClass!!, input.problems.filter { it.isSent }.map { it.id })
+        return ContenderData(code, input.name!!, input.compClass!!, input.problems.filter { it.sent }.map { it.id })
     }
 }

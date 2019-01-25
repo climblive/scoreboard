@@ -7,5 +7,5 @@ data class ContenderProblemDTO(
         val colorName:String,
         val points : Int,
         val text :String,
-        val isSent : Boolean
+        val sent : Boolean
 )

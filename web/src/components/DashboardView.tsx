@@ -11,8 +11,8 @@ export interface Props {
 
 function DashboardView({ userData, onToggle }: Props) {
 
-   var totalPoints = userData.problems.filter(p => p.isSent).reduce((s, p) => s + p.points, 0);
-   var tenBest = userData.problems.filter(p => p.isSent).sort((a, b) => b.points - a.points).slice(0, 3).reduce((s, p) => s + p.points, 0);
+   var totalPoints = userData.problems.filter(p => p.sent).reduce((s, p) => s + p.points, 0);
+   var tenBest = userData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 3).reduce((s, p) => s + p.points, 0);
 
    var onChange = () => {
       console.log("onChange")

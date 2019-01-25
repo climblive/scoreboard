@@ -14,7 +14,10 @@ export class Api {
       return fetch(this.getBaseUrl() + url,
          {
             method: "POST",
-            body: JSON.stringify(postData)
+            body: JSON.stringify(postData),
+            headers: {
+               "Content-Type": "application/json"
+            },
          }
       ).then((data) => data.json())
    }

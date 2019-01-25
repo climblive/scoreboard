@@ -5,5 +5,5 @@ export interface Problem {
    colorName: string;
    points: number;
    text: string;
-   isSent: boolean;
+   sent: boolean;
 }

@@ -9,7 +9,7 @@ export function reducer(state: StoreState, action: Action): StoreState {
       case TOGGLE_PROBLEM:
          var newProblems: Problem[] = Object.assign([], state.userData.problems);
          var p: Problem = newProblems.find(p => p.id == action.problem.id)!;
-         p.isSent = !p.isSent;
+         p.sent = !p.sent;
          return { ...state, userData: { ...state.userData, problems: newProblems } };
 
       case RECEIVE_USER_DATA:

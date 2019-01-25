@@ -1,8 +1,10 @@
 import * as React from 'react';
 import './StartView.css';
 import { Redirect } from 'react-router';
+import { UserData } from '../model/userData';
 
 export interface Props {
+   saveUserData?: (userData: UserData) => Promise<UserData>
 }
 
 type State = {
@@ -35,8 +37,16 @@ export default class StartView extends React.Component<Props, State> {
 
    onSubmit = () => { 
       console.log(this.state.name + " " + this.state.activationCode);
-      this.state.redirect = true;
-      this.setState(this.state);
+      var userData: UserData = {
+         code: this.state.activationCode,
+         name: this.state.name, 
+         compClass: "Herr",
+         problems: []
+      };
+      this.props.saveUserData!(userData).then(() => { 
+         this.state.redirect = true;
+         this.setState(this.state);
+      })
    }
    
    render() {

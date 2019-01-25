@@ -4,7 +4,6 @@ import { Problem } from '../model/problem';
 import ProblemList from './ProblemList';
 import { UserData } from '../model/userData';
 import * as ReactModal from 'react-modal';
-import { Api } from '../utils/Api';
 
 export interface Props {
    userData: UserData,
@@ -13,8 +12,8 @@ export interface Props {
          code: string;
       }
    }
-   receiveUserData?: (userData: UserData) => void;
-   onToggle?: (problem: Problem) => void;
+   loadUserData?: (code: string) => void;
+   toggleProblemAndSave?: (problem: Problem) => void;
 }
 
 type State = {
@@ -36,7 +35,8 @@ export default class MainView extends React.Component<Props, State> {
    componentDidMount() { 
       var code : string = this.props.match.params.code;
       console.log("componentDidMount " + code);
-      Api.getContenderData(code).then(this.props.receiveUserData!);
+      this.props.loadUserData!(code);
+      //Api.getContenderData(code).then(this.props.receiveUserData!);
    }
 
    render() {
@@ -47,8 +47,8 @@ export default class MainView extends React.Component<Props, State> {
             <div>Getting data...</div>
          )
       } else {
-         var totalPoints = this.props.userData.problems.filter(p => p.isSent).reduce((s, p) => s + p.points, 0);
-         var tenBest = this.props.userData.problems.filter(p => p.isSent).sort((a, b) => b.points - a.points).slice(0, 3).reduce((s, p) => s + p.points, 0);
+         var totalPoints = this.props.userData.problems.filter(p => p.sent).reduce((s, p) => s + p.points, 0);
+         var tenBest = this.props.userData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 3).reduce((s, p) => s + p.points, 0);
 
          var openModal = () => {
             console.log("openModal")
@@ -75,7 +75,7 @@ export default class MainView extends React.Component<Props, State> {
                   <div className="pointsDesc">10 bästa</div>
                   <div className="points">{tenBest}</div>
                </div>
-               <ProblemList problems={this.props.userData.problems} onToggle={this.props.onToggle} />
+               <ProblemList problems={this.props.userData.problems} onToggle={this.props.toggleProblemAndSave} />
             
                <ReactModal
                   isOpen={this.state.modalIsOpen}

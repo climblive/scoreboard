@@ -15,14 +15,15 @@ class ContenderController @Autowired constructor(
 
     @GetMapping("/contender/{code}")
     fun getContenderData(@PathVariable("code") code: String) : ContenderDataDTO {
-        val contenderDataDTO: ContenderDataDTO = contenderDataMapper.toDTO(
+        return contenderDataMapper.toDTO(
                 contenderService.getContest(),
+                code,
                 contenderService.getContenderData(code))
-        println(contenderDataDTO)
-        return contenderDataDTO
     }
 
     @PostMapping("/contender/{code}")
-    fun setContenderData(@PathVariable("code") code: String, @RequestBody input : ContenderDataDTO) =
-            contenderService.setContenderData(contenderDataMapper.toModel(code, input))
+    fun setContenderData(@PathVariable("code") code: String, @RequestBody input : ContenderDataDTO) : ContenderDataDTO {
+        contenderService.setContenderData(contenderDataMapper.toModel(code, input))
+        return getContenderData(code)
+    }
 }

@@ -23,4 +23,6 @@ class ContenderService @Autowired constructor(private val dataStorage: DataStora
     fun getContenderData(code: String) : ContenderData? = dataStorage.getContenderData(code)
 
     fun setContenderData(data : ContenderData) = dataStorage.setContenderData(data)
+
+    fun getAllContenders() = dataStorage.getAllContenders()
 }

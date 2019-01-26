@@ -27,21 +27,14 @@ export default class MainView extends React.Component<Props, State> {
 
    constructor(props: Props) {
       super(props);
-
-      // Make 
-      console.log("This is the constructor!");
    }
 
    componentDidMount() { 
       var code : string = this.props.match.params.code;
-      console.log("componentDidMount " + code);
       this.props.loadUserData!(code);
-      //Api.getContenderData(code).then(this.props.receiveUserData!);
    }
 
    render() {
-      console.log(this.props.match);
-
       if (!this.props.userData) { 
          return ( 
             <div>Getting data...</div>

@@ -1,6 +1,6 @@
 
 import { StoreState } from '../model/storeState';
-import { TOGGLE_PROBLEM, RECEIVE_USER_DATA } from '../constants/constants';
+import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA } from '../constants/constants';
 import { Problem } from '../model/problem';
 import { Action } from '../actions/actions';
 
@@ -15,10 +15,9 @@ export function reducer(state: StoreState, action: Action): StoreState {
       case RECEIVE_USER_DATA:
          return { ...state, userData: action.userData };
 
-         /*case INCREMENT_ENTHUSIASM:
-         return { ...state, enthusiasmLevel: state.enthusiasmLevel + 1 };
-      case DECREMENT_ENTHUSIASM:
-         return { ...state, enthusiasmLevel: Math.max(1, state.enthusiasmLevel - 1) };*/
+      case RECEIVE_SCOREBOARD_DATA:
+         return { ...state, scoreboardData: action.scoreboardData };
+
       default:
          return state;
    }

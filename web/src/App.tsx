@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import MainContainer from './containers/MainContainer';
-import DashboardContainer from './containers/DashboardContainer';
+import ScoreboardContainer from './containers/ScoreboardContainer';
 import StartContainer from './containers/StartContainer';
 
 class App extends React.Component {
@@ -13,7 +13,7 @@ class App extends React.Component {
             <div className="App">
                <Switch>
                   <Route path="/" exact component={StartContainer} />
-                  <Route path="/dashboard" component={DashboardContainer} />
+                  <Route path="/scoreboard" component={ScoreboardContainer} />
                   <Route path="/:code" component={MainContainer} />
                </Switch>
             </div>

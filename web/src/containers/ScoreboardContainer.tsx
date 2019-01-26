@@ -1,19 +1,18 @@
 import * as actions from '../actions/actions';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
-import { Problem } from '../model/problem';
-import DashboardView, { Props } from '../components/DashboardView';
+import ScoreboardView, { Props } from '../components/ScoreboardView';
 
 export function mapStateToProps(state: StoreState, props: any): Props {
    return {
-      userData: state.userData
+      scoreboardData: state.scoreboardData
    };
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
-      onToggle: (problem: Problem) => dispatch(actions.toggleProblem(problem)),
+      loadScoreboardData: () => dispatch(actions.loadScoreboardData()),
    };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardView);
+export default connect(mapStateToProps, mapDispatchToProps)(ScoreboardView);

@@ -37,5 +37,7 @@ class FileDataStorage : DataStorage {
         saveFile(database)
     }
 
+    override fun getAllContenders(): List<ContenderData> = loadFile().contenderData.values.toList()
+
     data class Database(val contenderData : MutableMap<String, ContenderData>);
 }

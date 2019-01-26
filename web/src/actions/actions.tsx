@@ -5,6 +5,7 @@ import { UserData } from '../model/userData';
 import { Api } from '../utils/Api';
 import { Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
+import { ScoreboardList } from '../model/scoreboardList';
 
 export interface ToggleProblem {
    type: constants.TOGGLE_PROBLEM;
@@ -16,7 +17,12 @@ export interface ReceiveUserData {
    userData: UserData;
 }
 
-export type Action = ToggleProblem | ReceiveUserData
+export interface ReceiveScoreboardData {
+   type: constants.RECEIVE_SCOREBOARD_DATA;
+   scoreboardData: ScoreboardList[];
+}
+
+export type Action = ToggleProblem | ReceiveUserData | ReceiveScoreboardData
 
 export function toggleProblem(problem: Problem): ToggleProblem {
    console.log("TOGGLE_PROBLEM");
@@ -34,9 +40,23 @@ export function receiveUserData(userData: UserData): ReceiveUserData {
    };
 }
 
+export function receiveScoreboardData(scoreboardData: ScoreboardList[]): ReceiveScoreboardData {
+   console.log("receiveScoreboardData ", scoreboardData);
+   return {
+      type: constants.RECEIVE_SCOREBOARD_DATA,
+      scoreboardData: scoreboardData
+   };
+}
+
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
       Api.getContenderData(code).then(contenderData => dispatch(receiveUserData(contenderData)))
+   };
+}
+
+export function loadScoreboardData(): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.getScoreboardData().then(scoreboardData => dispatch(receiveScoreboardData(scoreboardData)))
    };
 }
 

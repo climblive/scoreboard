@@ -1,0 +1,16 @@
+.scoreboardList {
+   flex-basis: 0;
+   flex-grow:1;
+}
+
+.contenderRow {
+   display:flex;
+}
+
+.compClass {
+   margin-bottom:10px;
+}
+
+.score {
+   margin-left:10px;
+}

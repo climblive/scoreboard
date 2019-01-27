@@ -1,25 +1,3 @@
-.titleRow {
+.scoreboardListContainer {
    display:flex;
-}
-
-.titleRow .name {
-   margin-right:auto;
-}
-
-.pointsRow {
-   display:flex;
-   align-items: baseline;
-}
-
-.pointsDesc.total {
-   margin-right: auto;
-}
-
-.pointsDesc {
-   padding: 0 5px;
-   font-size: 10px;
-}
-
-.pointsRow .points {
-   font-size: 40px;
 }

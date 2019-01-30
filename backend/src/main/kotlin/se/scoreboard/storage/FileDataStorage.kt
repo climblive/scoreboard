@@ -16,7 +16,7 @@ class FileDataStorage : DataStorage {
             val string: String = file.readText();
             return Gson().fromJson(string, Database::class.java)
         } else {
-            return Database(HashMap())
+            return Database(HashMap(), 0)
         }
     }
 
@@ -33,11 +33,20 @@ class FileDataStorage : DataStorage {
     @Synchronized
     override fun setContenderData(data: ContenderData) {
         val database = loadFile()
+        var oldData = database.contenderData[data.code]
+        if(oldData != null) {
+            if(data.sentProblems == null) {
+                data.sentProblems = oldData.sentProblems;
+            }
+        } else {
+            database.lastId++
+            data.id = database.lastId
+        }
         database.contenderData[data.code] = data
         saveFile(database)
     }
 
     override fun getAllContenders(): List<ContenderData> = loadFile().contenderData.values.toList()
 
-    data class Database(val contenderData : MutableMap<String, ContenderData>);
+    data class Database(val contenderData : MutableMap<String, ContenderData>, var lastId: Int)
 }

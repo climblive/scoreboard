@@ -39,6 +39,6 @@ class ContenderController @Autowired constructor(
     }
 
     private fun getContenderList(contenders: List<ContenderData>, contest: Contest): List<ScoreboardListItemDTO> {
-        return contenders.map { ScoreboardListItemDTO(it.name, it.getScore(contest), it.getTenBestScore(contest))  }
+        return contenders.map { ScoreboardListItemDTO(it.id, it.name, it.getScore(contest), it.getTenBestScore(contest))  }
     }
 }

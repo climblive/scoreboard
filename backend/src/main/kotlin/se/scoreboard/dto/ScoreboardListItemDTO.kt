@@ -1,3 +1,3 @@
 package se.scoreboard.dto
 
-data class ScoreboardListItemDTO (val contenderName : String, val totalScore : Int, val tenBestScore : Int)
+data class ScoreboardListItemDTO (val contenderId: Int, val contenderName : String, val totalScore : Int, val tenBestScore : Int)

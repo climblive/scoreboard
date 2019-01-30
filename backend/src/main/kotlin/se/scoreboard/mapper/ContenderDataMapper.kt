@@ -21,6 +21,6 @@ class ContenderDataMapper {
     }
 
     fun toModel(code: String, input: ContenderDataDTO): ContenderData {
-        return ContenderData(code, input.name!!, input.compClass!!, input.problems.filter { it.sent }.map { it.id })
+        return ContenderData(0, code, input.name!!, input.compClass!!, input.problems.filter { it.sent }.map { it.id })
     }
 }

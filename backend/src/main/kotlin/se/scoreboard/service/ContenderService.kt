@@ -2,10 +2,10 @@ package se.scoreboard.service
 
 import com.google.gson.Gson
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import se.scoreboard.dto.ScoreboardListItemDTO
+import se.scoreboard.dto.ScoreboardPushItemDTO
 import se.scoreboard.model.ContenderData
 import se.scoreboard.model.Contest
 import se.scoreboard.model.Problem
@@ -31,7 +31,8 @@ class ContenderService @Autowired constructor(private val dataStorage: DataStora
         var contenderData = dataStorage.getContenderData(data.code)!!
         val contest = getContest()
         val scoreboardListItemDTO = ScoreboardListItemDTO(contenderData.id, contenderData.name, contenderData.getScore(contest), contenderData.getTenBestScore(contest))
-        simpMessagingTemplate.convertAndSend ("/topic/scoreboard", scoreboardListItemDTO)
+        val scoreboardPushItemDTO = ScoreboardPushItemDTO(contenderData.compClass, scoreboardListItemDTO);
+        simpMessagingTemplate.convertAndSend ("/topic/scoreboard", scoreboardPushItemDTO)
     }
 
     fun getAllContenders() = dataStorage.getAllContenders()

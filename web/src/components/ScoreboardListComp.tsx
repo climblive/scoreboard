@@ -8,7 +8,7 @@ export interface ScoreboardListCompProps {
 
 export function ScoreboardListComp({ scoreboardList }: ScoreboardListCompProps) {
    var list = scoreboardList.contenders.map(contender =>
-      <div className="contenderRow">
+      <div key={contender.contenderId} className="contenderRow">
          <div className="name">{contender.contenderName}</div>
          <div className="score">{contender.tenBestScore}</div>
          <div className="score">{contender.totalScore}</div>

@@ -6,6 +6,7 @@ import { Api } from '../utils/Api';
 import { Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
 import { ScoreboardList } from '../model/scoreboardList';
+import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 
 export interface ToggleProblem {
    type: constants.TOGGLE_PROBLEM;
@@ -22,7 +23,12 @@ export interface ReceiveScoreboardData {
    scoreboardData: ScoreboardList[];
 }
 
-export type Action = ToggleProblem | ReceiveUserData | ReceiveScoreboardData
+export interface ReceiveScoreboardItem {
+   type: constants.RECEIVE_SCOREBOARD_ITEM;
+   scoreboardPushItem: ScoreboardPushItem;
+}
+
+export type Action = ToggleProblem | ReceiveUserData | ReceiveScoreboardData | ReceiveScoreboardItem
 
 export function toggleProblem(problem: Problem): ToggleProblem {
    console.log("TOGGLE_PROBLEM");
@@ -47,6 +53,15 @@ export function receiveScoreboardData(scoreboardData: ScoreboardList[]): Receive
       scoreboardData: scoreboardData
    };
 }
+
+export function receiveScoreboardItem(scoreboardPushItem: ScoreboardPushItem): ReceiveScoreboardItem { 
+   console.log("receiveScoreboardItem ", scoreboardPushItem);
+   return {
+      type: constants.RECEIVE_SCOREBOARD_ITEM,
+      scoreboardPushItem: scoreboardPushItem
+   };
+}
+
 
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {

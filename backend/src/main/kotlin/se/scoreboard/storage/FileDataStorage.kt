@@ -38,9 +38,14 @@ class FileDataStorage : DataStorage {
             if(data.sentProblems == null) {
                 data.sentProblems = oldData.sentProblems;
             }
+            if(data.id == 0) {
+                data.id = oldData.id
+            }
         } else {
             database.lastId++
             data.id = database.lastId
+
+            println("Create new contender " + data)
         }
         database.contenderData[data.code] = data
         saveFile(database)

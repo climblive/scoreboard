@@ -3,10 +3,12 @@ import './ScoreboardView.css';
 import { ScoreboardListComp } from './ScoreboardListComp';
 import { ScoreboardList } from '../model/scoreboardList';
 import { Client } from '@stomp/stompjs';
+import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 
 export interface Props {
    scoreboardData: ScoreboardList[];
-   loadScoreboardData? : () => void;
+   loadScoreboardData?: () => void;
+   receiveScoreboardItem?: (scoreboardPushItem : ScoreboardPushItem) => void;
 }
 
 export default class ScoreboardView extends React.Component<Props> {
@@ -14,29 +16,21 @@ export default class ScoreboardView extends React.Component<Props> {
    client : Client;
 
    componentDidMount() {
-      this.props.loadScoreboardData!();
 
       this.client = new Client({
          brokerURL: "ws://localhost:8080/gs-guide-websocket/websocket",
-         /*connectHeaders: {
-            login: "user",
-            passcode: "password"
-         },*/
          debug: function (str) {
             console.log("DEBUG: " + str);
-         },
-         //reconnectDelay: 5000,
-         //heartbeatIncoming: 4000,
-         //heartbeatOutgoing: 4000
+         }
       });
-
-      //console.log("Client: ", this.client);
 
       this.client.activate();
       this.client.onConnect = () => {
+         this.props.loadScoreboardData!();
          console.log("onConnect");
-         this.client.subscribe("/topic/greetings", (message) => {
-            console.log(message);
+         this.client.subscribe("/topic/scoreboard", (message) => {
+            console.log(message, JSON.parse(message.body));
+            this.props.receiveScoreboardItem!(JSON.parse(message.body))
          });
       } 
    }

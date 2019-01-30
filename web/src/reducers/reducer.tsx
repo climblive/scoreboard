@@ -1,8 +1,9 @@
 
 import { StoreState } from '../model/storeState';
-import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA } from '../constants/constants';
+import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM } from '../constants/constants';
 import { Problem } from '../model/problem';
 import { Action } from '../actions/actions';
+import { ScoreboardList } from '../model/scoreboardList';
 
 export function reducer(state: StoreState, action: Action): StoreState {
    switch (action.type) {
@@ -17,6 +18,19 @@ export function reducer(state: StoreState, action: Action): StoreState {
 
       case RECEIVE_SCOREBOARD_DATA:
          return { ...state, scoreboardData: action.scoreboardData };
+
+      case RECEIVE_SCOREBOARD_ITEM:
+         var newScoreboardData: ScoreboardList[] = [...state.scoreboardData];
+         var compClassIndex = newScoreboardData.findIndex(list => list.compClass === action.scoreboardPushItem.compClass)
+         var oldScoreboardList = state.scoreboardData[compClassIndex];
+         var oldContenders = oldScoreboardList.contenders;
+         var contendersIndex = oldContenders.findIndex(contender => action.scoreboardPushItem.item.contenderId === contender.contenderId);
+
+         // Create the new contenders list and put everything together again:
+         var newContenders = [...oldContenders];
+         newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = action.scoreboardPushItem.item;
+         newScoreboardData[compClassIndex] = { ...oldScoreboardList, contenders: newContenders}
+         return { ...state, scoreboardData: newScoreboardData };
 
       default:
          return state;

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import './ScoreboardView.css';
 import { ScoreboardListComp } from './ScoreboardListComp';
-import { ScoreboardList } from '../model/scoreboardList';
+import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Client } from '@stomp/stompjs';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import { Api } from '../utils/Api';
 
 export interface Props {
-   scoreboardData: ScoreboardList[];
+   scoreboardData: ScoreboardContenderList[];
    loadScoreboardData?: () => void;
    receiveScoreboardItem?: (scoreboardPushItem : ScoreboardPushItem) => void;
 }

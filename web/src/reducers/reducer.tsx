@@ -3,7 +3,7 @@ import { StoreState } from '../model/storeState';
 import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM, RECEIVE_CONTEST } from '../constants/constants';
 import { Problem } from '../model/problem';
 import { Action } from '../actions/actions';
-import { ScoreboardList } from '../model/scoreboardList';
+import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 
 export function reducer(state: StoreState, action: Action): StoreState {
    switch (action.type) {
@@ -23,7 +23,7 @@ export function reducer(state: StoreState, action: Action): StoreState {
          return { ...state, contest: action.contest };
 
       case RECEIVE_SCOREBOARD_ITEM:
-         var newScoreboardData: ScoreboardList[] = [...state.scoreboardData];
+         var newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
          var compClassIndex = newScoreboardData.findIndex(list => list.compClass === action.scoreboardPushItem.compClass)
          var oldScoreboardList = state.scoreboardData[compClassIndex];
          var oldContenders = oldScoreboardList.contenders;

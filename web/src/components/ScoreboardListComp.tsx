@@ -1,9 +1,9 @@
 import * as React from 'react';
 import './ScoreboardListComp.css';
-import { ScoreboardList } from '../model/scoreboardList';
+import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 
 export interface ScoreboardListCompProps {
-   scoreboardList: ScoreboardList
+   scoreboardList: ScoreboardContenderList
 }
 
 export function ScoreboardListComp({ scoreboardList }: ScoreboardListCompProps) {

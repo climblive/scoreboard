@@ -5,7 +5,7 @@ import { UserData } from '../model/userData';
 import { Api } from '../utils/Api';
 import { Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
-import { ScoreboardList } from '../model/scoreboardList';
+import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import { Contest } from '../model/contest';
 
@@ -21,7 +21,7 @@ export interface ReceiveUserData {
 
 export interface ReceiveScoreboardData {
    type: constants.RECEIVE_SCOREBOARD_DATA;
-   scoreboardData: ScoreboardList[];
+   scoreboardData: ScoreboardContenderList[];
 }
 
 export interface ReceiveScoreboardItem {
@@ -52,7 +52,7 @@ export function receiveUserData(userData: UserData): ReceiveUserData {
    };
 }
 
-export function receiveScoreboardData(scoreboardData: ScoreboardList[]): ReceiveScoreboardData {
+export function receiveScoreboardData(scoreboardData: ScoreboardContenderList[]): ReceiveScoreboardData {
    console.log("receiveScoreboardData ", scoreboardData);
    return {
       type: constants.RECEIVE_SCOREBOARD_DATA,

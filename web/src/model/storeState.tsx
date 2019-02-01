@@ -1,9 +1,9 @@
 import { UserData } from './userData';
-import { ScoreboardList } from './scoreboardList';
+import { ScoreboardContenderList } from './scoreboardContenderList';
 import { Contest } from './contest';
 
 export interface StoreState {
    userData: UserData;
-   scoreboardData: ScoreboardList[];
+   scoreboardData: ScoreboardContenderList[];
    contest: Contest;
 }

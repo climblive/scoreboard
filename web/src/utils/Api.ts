@@ -1,5 +1,5 @@
 import { UserData } from '../model/userData';
-import { ScoreboardList } from '../model/scoreboardList';
+import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
 
 export class Api {
@@ -53,7 +53,7 @@ export class Api {
       return this.post("contender/" + contenderData.code, contenderData);
    }
 
-   static getScoreboard(): Promise<ScoreboardList[]> {
+   static getScoreboard(): Promise<ScoreboardContenderList[]> {
       return this.get("scoreboard");
    }
 } 

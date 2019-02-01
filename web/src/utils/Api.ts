@@ -1,10 +1,28 @@
 import { UserData } from '../model/userData';
 import { ScoreboardList } from '../model/scoreboardList';
+import { Contest } from '../model/contest';
 
-export class Api { 
+export class Api {
+
+   static getLiveUrl(): any {
+      var url: string = "";
+      console.log(window.location.protocol);
+      if (window.location.hostname === "localhost") {
+         url = "ws://localhost:8080";
+      } else {
+         if (window.location.protocol.indexOf("https") === 0) {
+            url = "wss"
+         } else { 
+            url = "ws"
+         }
+         url += "://" + window.location.hostname
+      }
+      url += "/api/live/websocket";
+      return url;
+   } 
 
    private static getBaseUrl(): string {
-      return "http://localhost:8080/";
+      return (window.location.hostname === "localhost" ?  "http://localhost:8080" : "") + "/api/";
    }
 
    private static get(url: string) { 
@@ -23,15 +41,19 @@ export class Api {
       ).then((data) => data.json())
    }
 
-   static getContenderData(code: string): Promise<UserData> {
+   static getContest(): Promise<Contest> {
+      return this.get("contest");
+   }
+
+   static getContender(code: string): Promise<UserData> {
       return this.get("contender/" + code);
    }
  
-   static setContenderData(contenderData : UserData): Promise<UserData> {
+   static setContender(contenderData : UserData): Promise<UserData> {
       return this.post("contender/" + contenderData.code, contenderData);
    }
 
-   static getScoreboardData(): Promise<ScoreboardList[]> {
+   static getScoreboard(): Promise<ScoreboardList[]> {
       return this.get("scoreboard");
    }
 } 

@@ -12,6 +12,7 @@ import se.scoreboard.service.ContenderService
 
 @RestController
 @CrossOrigin
+@RequestMapping("/api")
 class ContenderController @Autowired constructor(
         val contenderService : ContenderService,
         val contenderDataMapper : ContenderDataMapper

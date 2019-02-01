@@ -12,6 +12,27 @@
    margin-bottom:20px;
 }
 
+.compClassContainer {
+   display:flex;
+   width:100%;
+}
+
+.compClassContainer .compClass {
+   border: 1px solid grey;
+   cursor:pointer;
+   flex-basis: 0;
+   flex-grow:1;
+   text-align: center;
+}
+
+.compClassContainer .compClass:not(:last-child) {
+   margin-right:10px;
+}
+
+.compClassContainer .selected {
+   background: grey;
+}
+
 .startView button {
    border: 1px solid grey;
 }

@@ -1,6 +1,6 @@
 
 import { StoreState } from '../model/storeState';
-import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM } from '../constants/constants';
+import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM, RECEIVE_CONTEST } from '../constants/constants';
 import { Problem } from '../model/problem';
 import { Action } from '../actions/actions';
 import { ScoreboardList } from '../model/scoreboardList';
@@ -18,6 +18,9 @@ export function reducer(state: StoreState, action: Action): StoreState {
 
       case RECEIVE_SCOREBOARD_DATA:
          return { ...state, scoreboardData: action.scoreboardData };
+
+      case RECEIVE_CONTEST:
+         return { ...state, contest: action.contest };
 
       case RECEIVE_SCOREBOARD_ITEM:
          var newScoreboardData: ScoreboardList[] = [...state.scoreboardData];

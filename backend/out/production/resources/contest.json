@@ -1,4 +1,5 @@
 {
+  "name": "Giga Boulder",
   "compClasses": ["Herr", "Dam", "Junior"],
   "problems": [
     { "id": 1, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""

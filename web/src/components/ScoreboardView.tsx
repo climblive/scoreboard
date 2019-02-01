@@ -4,6 +4,7 @@ import { ScoreboardListComp } from './ScoreboardListComp';
 import { ScoreboardList } from '../model/scoreboardList';
 import { Client } from '@stomp/stompjs';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
+import { Api } from '../utils/Api';
 
 export interface Props {
    scoreboardData: ScoreboardList[];
@@ -18,7 +19,7 @@ export default class ScoreboardView extends React.Component<Props> {
    componentDidMount() {
 
       this.client = new Client({
-         brokerURL: "ws://localhost:8080/gs-guide-websocket/websocket",
+         brokerURL: Api.getLiveUrl(),
          debug: function (str) {
             console.log("DEBUG: " + str);
          }

@@ -16,7 +16,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry?) {
-        registry!!.addEndpoint("/gs-guide-websocket").setAllowedOrigins("*").withSockJS()
+        registry!!.addEndpoint("/api/live").setAllowedOrigins("*").withSockJS()
     }
 
 }

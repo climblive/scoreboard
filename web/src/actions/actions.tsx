@@ -7,6 +7,7 @@ import { Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
 import { ScoreboardList } from '../model/scoreboardList';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
+import { Contest } from '../model/contest';
 
 export interface ToggleProblem {
    type: constants.TOGGLE_PROBLEM;
@@ -28,7 +29,12 @@ export interface ReceiveScoreboardItem {
    scoreboardPushItem: ScoreboardPushItem;
 }
 
-export type Action = ToggleProblem | ReceiveUserData | ReceiveScoreboardData | ReceiveScoreboardItem
+export interface ReceiveContest {
+   type: constants.RECEIVE_CONTEST;
+   contest: Contest;
+}
+
+export type Action = ToggleProblem | ReceiveUserData | ReceiveScoreboardData | ReceiveScoreboardItem | ReceiveContest
 
 export function toggleProblem(problem: Problem): ToggleProblem {
    console.log("TOGGLE_PROBLEM");
@@ -54,7 +60,7 @@ export function receiveScoreboardData(scoreboardData: ScoreboardList[]): Receive
    };
 }
 
-export function receiveScoreboardItem(scoreboardPushItem: ScoreboardPushItem): ReceiveScoreboardItem { 
+export function receiveScoreboardItem(scoreboardPushItem: ScoreboardPushItem): ReceiveScoreboardItem {
    console.log("receiveScoreboardItem ", scoreboardPushItem);
    return {
       type: constants.RECEIVE_SCOREBOARD_ITEM,
@@ -62,22 +68,36 @@ export function receiveScoreboardItem(scoreboardPushItem: ScoreboardPushItem): R
    };
 }
 
+export function receiveContest(contest: Contest): ReceiveContest {
+   console.log("receiveContest ", contest);
+   return {
+      type: constants.RECEIVE_CONTEST,
+      contest: contest
+   };
+}
+
 
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getContenderData(code).then(contenderData => dispatch(receiveUserData(contenderData)))
+      Api.getContender(code).then(contenderData => dispatch(receiveUserData(contenderData)))
    };
 }
 
 export function loadScoreboardData(): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getScoreboardData().then(scoreboardData => dispatch(receiveScoreboardData(scoreboardData)))
+      Api.getScoreboard().then(scoreboardData => dispatch(receiveScoreboardData(scoreboardData)))
+   };
+}
+
+export function loadContest(): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.getContest().then(contest => dispatch(receiveContest(contest)))
    };
 }
 
 export function saveUserData(contenderData: UserData): any {
    return (dispatch: Dispatch<any>) => {
-      return Api.setContenderData(contenderData);
+      return Api.setContender(contenderData);
    };
 }
 

@@ -1,23 +1,25 @@
 import * as React from 'react';
 import './ScoreboardListComp.css';
-import { ScoreboardContenderList } from '../model/scoreboardContenderList';
+import { ScoreboardListItem } from '../model/scoreboardListItem';
 
 export interface ScoreboardListCompProps {
-   scoreboardList: ScoreboardContenderList
+   //scoreboardList: ScoreboardContenderList
+   totalList?: ScoreboardListItem[];
 }
 
-export function ScoreboardListComp({ scoreboardList }: ScoreboardListCompProps) {
-   var list = scoreboardList.contenders.map(contender =>
-      <div key={contender.contenderId} className="contenderRow">
+export function ScoreboardListComp({ totalList }: ScoreboardListCompProps) {
+   var list = totalList!.map(contender =>
+      //TODO: Real id
+      <div key={contender.contenderName} className="contenderRow"> 
          <div className="name">{contender.contenderName}</div>
-         <div className="score">{contender.tenBestScore}</div>
-         <div className="score">{contender.totalScore}</div>
+         <div className="score">{contender.score}</div>
+         <div className="score">{contender.position}</div>
       </div>
    )
    
    return (
       <div className="scoreboardList">
-         <div className="compClass">{scoreboardList.compClass}</div>
+         <div className="compClass">Test</div>
          {list}
       </div>
    );

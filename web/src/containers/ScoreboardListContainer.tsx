@@ -1,12 +1,13 @@
 import * as actions from '../actions/actions';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
-import ScoreboardView, { Props } from '../components/ScoreboardView';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
+import getTotalList from '../selectors/selector';
+import { ScoreboardListComp, ScoreboardListCompProps } from '../components/ScoreboardListComp';
 
-export function mapStateToProps(state: StoreState, props: any): Props {
+export function mapStateToProps(state: StoreState, props: any): ScoreboardListCompProps {
    return {
-      scoreboardData: state.scoreboardData,
+      totalList: getTotalList(state, props)
    };
 }
 
@@ -17,4 +18,4 @@ export function mapDispatchToProps(dispatch: Dispatch<any>) {
    };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScoreboardView);
+export default connect(mapStateToProps, mapDispatchToProps)(ScoreboardListComp);

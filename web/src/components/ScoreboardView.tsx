@@ -1,10 +1,10 @@
 import * as React from 'react';
 import './ScoreboardView.css';
-import { ScoreboardListComp } from './ScoreboardListComp';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Client } from '@stomp/stompjs';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import { Api } from '../utils/Api';
+import ScoreboardListContainer from '../containers/ScoreboardListContainer';
 
 export interface Props {
    scoreboardData: ScoreboardContenderList[];
@@ -40,7 +40,7 @@ export default class ScoreboardView extends React.Component<Props> {
       var scoreboardData = this.props.scoreboardData;
       
       if (scoreboardData) {
-         var list = scoreboardData.map(scoreboardList => <ScoreboardListComp key={scoreboardList.compClass} scoreboardList={scoreboardList}/>);
+         var list = scoreboardData.map(scoreboardList => <ScoreboardListContainer key={scoreboardList.compClass} compClass={scoreboardList.compClass}/>);
          return (
             <div className="scoreboardListContainer">{list}</div>
          );

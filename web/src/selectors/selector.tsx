@@ -11,23 +11,25 @@ const getScoreboardContenderList = (state: StoreState, props: any) => {
    }
 }
 
-export const getTotalList = createSelector(
-   [getScoreboardContenderList],
-   (scoreboardContenderList) => {
-      console.log("Selector on ", scoreboardContenderList);
-      if(scoreboardContenderList) {
-         return scoreboardContenderList.contenders.map((sc, index) => {
-            let x: ScoreboardListItem = {
-               position: index,
-               contenderName: sc.contenderName,
-               score: sc.totalScore
-            }
-            return x;
-         })
-      } else { 
-         return undefined;
+export const makeGetTotalList = () => {
+   return createSelector(
+      [getScoreboardContenderList],
+      (scoreboardContenderList) => {
+         console.log("Selector on ", scoreboardContenderList);
+         if(scoreboardContenderList) {
+            return scoreboardContenderList.contenders.map((sc, index) => {
+               let x: ScoreboardListItem = {
+                  position: index,
+                  contenderName: sc.contenderName,
+                  score: sc.totalScore
+               }
+               return x;
+            })
+         } else { 
+            return undefined;
+         }
       }
-   }
-)
+   )
+}
 
-export default getTotalList
+export default makeGetTotalList

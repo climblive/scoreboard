@@ -56,7 +56,7 @@ export default class MainView extends React.Component<Props, State> {
          };         
 
          return (
-            <div>
+            <div className="view">
                <div className="titleRow">
                   <div className="name">{this.props.userData.name}</div>
                   <div>{this.props.userData.compClass}</div>

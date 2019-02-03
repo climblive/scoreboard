@@ -3,14 +3,30 @@
    flex-grow:1;
 }
 
+.scoreboardList:NOT(:last-child) {
+   border-right: 1px solid #DDD;
+}
+
+
 .contenderRow {
    display:flex;
 }
 
 .compClass {
    margin-bottom:10px;
+   text-align: center;
+}
+
+.name {
+   flex-grow: 1;
+}
+
+.position {
+   margin-left: 20px;
+   width:30px;
 }
 
 .score {
    margin-left:10px;
+   width: 50px;
 }

@@ -4,7 +4,8 @@ import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Client } from '@stomp/stompjs';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import { Api } from '../utils/Api';
-import ScoreboardListContainer from '../containers/ScoreboardListContainer';
+import ScoreboardTotalListContainer from '../containers/ScoreboardTotalListContainer';
+import ScoreboardFinalistListContainer from '../containers/ScoreboardFinalistListContainer';
 
 export interface Props {
    scoreboardData: ScoreboardContenderList[];
@@ -40,9 +41,15 @@ export default class ScoreboardView extends React.Component<Props> {
       var scoreboardData = this.props.scoreboardData;
       
       if (scoreboardData) {
-         var list = scoreboardData.map(scoreboardList => <ScoreboardListContainer key={scoreboardList.compClass} compClass={scoreboardList.compClass}/>);
+         var totalList = scoreboardData.map(scoreboardList => <ScoreboardTotalListContainer key={scoreboardList.compClass} compClass={scoreboardList.compClass} />);
+         var finalistList = scoreboardData.map(scoreboardList => <ScoreboardFinalistListContainer key={scoreboardList.compClass} compClass={scoreboardList.compClass} />);
          return (
-            <div className="scoreboardListContainer">{list}</div>
+            <div>
+               <div className="header">Finalists</div>   
+               <div className="scoreboardListContainer">{finalistList}</div>
+               <div className="header">Total</div>   
+               <div className="scoreboardListContainer">{totalList}</div>
+            </div>
          );
       } else { 
          return <div>Getting data...</div>

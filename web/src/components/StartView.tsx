@@ -77,7 +77,7 @@ export default class StartView extends React.Component<Props, State> {
       ));
 
       return (
-         <div className="startView">
+         <div className="startView view">
             Activation code:
             <input value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
             Name:

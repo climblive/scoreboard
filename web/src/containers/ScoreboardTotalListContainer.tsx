@@ -3,12 +3,13 @@ import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import { ScoreboardListComp, ScoreboardListCompProps } from '../components/ScoreboardListComp';
-import makeGetTotalList from '../selectors/selector';
+import { makeGetTotalList } from '../selectors/selector';
 
 const makeMapStateToProps = () => {
    const getTotalList = makeGetTotalList()
    const mapStateToProps = (state: StoreState, props: any): ScoreboardListCompProps => {
       return {
+         compClass: props.compClass,
          totalList: getTotalList(state, props)
       };
    }

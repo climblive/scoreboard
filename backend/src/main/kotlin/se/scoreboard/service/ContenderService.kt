@@ -11,7 +11,6 @@ import se.scoreboard.model.Contest
 import se.scoreboard.model.Problem
 import se.scoreboard.storage.DataStorage
 import se.scoreboard.storage.FileDataStorage
-import java.lang.reflect.Type
 import java.time.ZonedDateTime
 
 
@@ -20,12 +19,7 @@ class ContenderService @Autowired constructor(private val dataStorage: DataStora
 
     fun getContest(): Contest {
 
-        val gson = GsonBuilder().registerTypeAdapter(ZonedDateTime::class.java, object : JsonDeserializer<ZonedDateTime> {
-            @Throws(JsonParseException::class)
-            override fun deserialize(json: JsonElement, type: Type, jsonDeserializationContext: JsonDeserializationContext): ZonedDateTime {
-                return ZonedDateTime.parse(json.asJsonPrimitive.asString)
-            }
-        }).create()
+        val gson = GsonBuilder().registerTypeAdapter(ZonedDateTime::class.java, JsonDeserializer<ZonedDateTime> { json, type, jsonDeserializationContext -> ZonedDateTime.parse(json.asJsonPrimitive.asString) }).create()
         val fileContent = FileDataStorage::class.java.getResource("/contest.json").readText()
         return gson.fromJson(fileContent, Contest::class.java)
     }

@@ -5,7 +5,7 @@ import { ScoreboardListItem } from '../model/scoreboardListItem';
 const getScoreboardContenderList = (state: StoreState, props: any) => {
    console.log("getScoreboardContenderList", props);
    if (state.scoreboardData) {
-      return state.scoreboardData.find(list => list.compClass == props.compClass);
+      return state.scoreboardData.find(list => list.compClass.name == props.compClass.name);
    } else {
       return undefined;
    }

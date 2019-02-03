@@ -24,7 +24,7 @@ export function reducer(state: StoreState, action: Action): StoreState {
 
       case RECEIVE_SCOREBOARD_ITEM:
          var newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
-         var compClassIndex = newScoreboardData.findIndex(list => list.compClass === action.scoreboardPushItem.compClass)
+         var compClassIndex = newScoreboardData.findIndex(list => list.compClass.name === action.scoreboardPushItem.compClass)
          var oldScoreboardList = state.scoreboardData[compClassIndex];
          var oldContenders = oldScoreboardList.contenders;
          var contendersIndex = oldContenders.findIndex(contender => action.scoreboardPushItem.item.contenderId === contender.contenderId);

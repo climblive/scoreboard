@@ -1,6 +1,7 @@
 import { ScoreboardContender } from './scoreboardContender';
+import { CompClass } from './compClass';
 
 export class ScoreboardContenderList { 
-   compClass: string;
+   compClass: CompClass;
    contenders: ScoreboardContender[];
 }

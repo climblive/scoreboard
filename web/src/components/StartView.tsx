@@ -73,7 +73,7 @@ export default class StartView extends React.Component<Props, State> {
          )
       } 
       var compClasses = this.props.contest.compClasses.map(compClass => (
-         <div key={compClass} className={compClass == this.state.compClass ? "compClass selected" : "compClass"} onClick={() => this.setCompClass(compClass)}>{compClass}</div>
+         <div key={compClass.name} className={compClass.name == this.state.compClass ? "compClass selected" : "compClass"} onClick={() => this.setCompClass(compClass.name)}>{compClass.name}</div>
       ));
 
       return (

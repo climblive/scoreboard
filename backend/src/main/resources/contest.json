@@ -1,16 +1,50 @@
 {
   "name": "Giga Boulder",
-  "compClasses": ["Herr", "Dam", "Junior"],
+  "compClasses": [
+    {"name":"Herr", "startTime":"2007-12-03T10:15:30+01:00[Europe/Paris]", "endTime":"2007-12-03T10:15:30+01:00[Europe/Paris]"},
+    {"name":"Dam", "startTime":"2007-12-03T10:15:30+01:00[Europe/Paris]", "endTime":"2007-12-03T10:15:30+01:00[Europe/Paris]"},
+    {"name":"Junior", "startTime":"2007-12-03T10:15:30+01:00[Europe/Paris]", "endTime":"2007-12-03T10:15:30+01:00[Europe/Paris]"}
+  ],
   "problems": [
-    { "id": 1, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""
-    },
-    { "id": 2, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""
-    },
-    { "id": 3, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""
-    },
-    { "id": 4, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""
-    },
-    { "id": 5, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""
-    }
+    { "id": 1, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 2, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 3, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 4, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 5, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
+    { "id": 6, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 7, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 8, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 9, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 10, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
+    { "id": 11, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 12, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 13, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 14, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 15, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
+    { "id": 16, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 17, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 18, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 19, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 20, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
+    { "id": 21, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 22, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 23, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 24, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 25, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
+    { "id": 26, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 27, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 28, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 29, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 30, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
+    { "id": 31, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 32, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 33, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 34, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 35, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
+    { "id": 36, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
+    { "id": 37, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
+    { "id": 38, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 39, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
+    { "id": 40, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""}
   ]
 }

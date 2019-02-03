@@ -1,6 +1,6 @@
 package se.scoreboard.service
 
-import com.google.gson.Gson
+import com.google.gson.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
@@ -11,12 +11,21 @@ import se.scoreboard.model.Contest
 import se.scoreboard.model.Problem
 import se.scoreboard.storage.DataStorage
 import se.scoreboard.storage.FileDataStorage
+import java.lang.reflect.Type
+import java.time.ZonedDateTime
+
 
 @Service
-class ContenderService @Autowired constructor(private val dataStorage: DataStorage, private val simpMessagingTemplate : SimpMessagingTemplate) {
+class ContenderService @Autowired constructor(private val dataStorage: DataStorage, private val simpMessagingTemplate : SimpMessagingTemplate?) {
 
     fun getContest(): Contest {
-        var gson = Gson()
+
+        val gson = GsonBuilder().registerTypeAdapter(ZonedDateTime::class.java, object : JsonDeserializer<ZonedDateTime> {
+            @Throws(JsonParseException::class)
+            override fun deserialize(json: JsonElement, type: Type, jsonDeserializationContext: JsonDeserializationContext): ZonedDateTime {
+                return ZonedDateTime.parse(json.asJsonPrimitive.asString)
+            }
+        }).create()
         val fileContent = FileDataStorage::class.java.getResource("/contest.json").readText()
         return gson.fromJson(fileContent, Contest::class.java)
     }
@@ -28,11 +37,13 @@ class ContenderService @Autowired constructor(private val dataStorage: DataStora
     fun setContenderData(data : ContenderData) {
         dataStorage.setContenderData(data)
         
-        var contenderData = dataStorage.getContenderData(data.code)!!
-        val contest = getContest()
-        val scoreboardListItemDTO = ScoreboardListItemDTO(contenderData.id, contenderData.name, contenderData.getScore(contest), contenderData.getTenBestScore(contest))
-        val scoreboardPushItemDTO = ScoreboardPushItemDTO(contenderData.compClass, scoreboardListItemDTO);
-        simpMessagingTemplate.convertAndSend ("/topic/scoreboard", scoreboardPushItemDTO)
+        if(simpMessagingTemplate != null) {
+            var contenderData = dataStorage.getContenderData(data.code)!!
+            val contest = getContest()
+            val scoreboardListItemDTO = ScoreboardListItemDTO(contenderData.id, contenderData.name, contenderData.getScore(contest), contenderData.getTenBestScore(contest))
+            val scoreboardPushItemDTO = ScoreboardPushItemDTO(contenderData.compClass, scoreboardListItemDTO);
+            simpMessagingTemplate.convertAndSend("/topic/scoreboard", scoreboardPushItemDTO)
+        }
     }
 
     fun getAllContenders() = dataStorage.getAllContenders()

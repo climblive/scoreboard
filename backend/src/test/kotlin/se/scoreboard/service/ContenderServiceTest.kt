@@ -8,7 +8,7 @@ import se.scoreboard.storage.FileDataStorage
 
 internal class ContenderServiceTest {
 
-    private val contenderService : ContenderService = ContenderService(FileDataStorage());
+    private val contenderService : ContenderService = ContenderService(FileDataStorage(), null)
 
     @Test
     fun testStuff() {

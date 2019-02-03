@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContenderDataDTO
 import se.scoreboard.dto.ScoreboardListDTO
 import se.scoreboard.dto.ScoreboardListItemDTO
+import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderDataMapper
 import se.scoreboard.model.ContenderData
 import se.scoreboard.model.Contest
@@ -15,7 +16,8 @@ import se.scoreboard.service.ContenderService
 @RequestMapping("/api")
 class ContenderController @Autowired constructor(
         val contenderService : ContenderService,
-        val contenderDataMapper : ContenderDataMapper
+        val contenderDataMapper : ContenderDataMapper,
+        val compClassMapper: CompClassMapper
 ) {
 
     @GetMapping("/contender/{code}")
@@ -36,7 +38,7 @@ class ContenderController @Autowired constructor(
     fun getScoreboard() : List<ScoreboardListDTO> {
         val allContenders = contenderService.getAllContenders()
         val contest = contenderService.getContest()
-        return contest.compClasses.map{compClass -> ScoreboardListDTO(compClass, getContenderList(allContenders.filter{contender -> contender.compClass == compClass}, contest))}
+        return contest.compClasses.map{compClass -> ScoreboardListDTO(compClassMapper.toDTO(compClass), getContenderList(allContenders.filter{contender -> contender.compClass == compClass.name}, contest))}
     }
 
     private fun getContenderList(contenders: List<ContenderData>, contest: Contest): List<ScoreboardListItemDTO> {

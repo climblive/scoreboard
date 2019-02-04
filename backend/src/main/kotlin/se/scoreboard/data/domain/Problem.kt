@@ -17,18 +17,24 @@ class Problem : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(name = "color_id", nullable = false)
     var color: Color? = null
+
     @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(name = "contest_id", nullable = false)
     var contest: Contest? = null
+
     @get:Column(name = "number", nullable = false)
     var number: Int = 0
+
     @get:Column(name = "points", nullable = false)
     var points: Int = 0
+
     @get:Column(name = "flash_bonus")
     var flashBonus: Int? = null
+
     @get:OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
     var ticks: Set<Tick> = HashSet(0)
 

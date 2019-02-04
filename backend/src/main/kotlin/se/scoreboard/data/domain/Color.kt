@@ -17,14 +17,19 @@ class Color : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:Column(name = "name", nullable = false, length = 32)
     var name: String? = null
+
     @get:Column(name = "red", nullable = false)
     var red: Byte = 0
+
     @get:Column(name = "green", nullable = false)
     var green: Byte = 0
+
     @get:Column(name = "blue", nullable = false)
     var blue: Byte = 0
+
     @get:OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
     var problems: Set<Problem> = HashSet(0)
 

@@ -17,12 +17,16 @@ class Location : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:Column(name = "name", nullable = false, length = 32)
     var name: String? = null
+
     @get:Column(name = "longitude", nullable = false, length = 8)
     var longitude: String? = null
+
     @get:Column(name = "latitude", nullable = false, length = 8)
     var latitude: String? = null
+
     @get:OneToMany(fetch = FetchType.LAZY, mappedBy = "location")
     var contests: Set<Contest> = HashSet(0)
 

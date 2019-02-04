@@ -17,18 +17,24 @@ class Contender : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(name = "contest_id", nullable = false)
     var contest: Contest? = null
+
     @get:Column(name = "registration_code", unique = true, nullable = false, length = 16)
     var registrationCode: String? = null
+
     @get:Column(name = "name", nullable = false, length = 64)
     var name: String? = null
+
     @get:Column(name = "class_id", nullable = false)
     var classId: Int = 0
+
     @get:Temporal(TemporalType.TIMESTAMP)
     @get:Column(name = "entered", length = 26)
     var entered: Date? = null
+
     @get:OneToMany(fetch = FetchType.LAZY, mappedBy = "contender")
     var ticks: Set<Tick> = HashSet(0)
 

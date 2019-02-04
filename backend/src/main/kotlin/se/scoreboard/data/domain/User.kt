@@ -17,12 +17,16 @@ class User : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:Column(name = "name", nullable = false, length = 32)
     var name: String? = null
+
     @get:Column(name = "email", unique = true, nullable = false, length = 64)
     var email: String? = null
+
     @get:Column(name = "password", nullable = false, length = 60)
     var password: String? = null
+
     @get:ManyToMany(fetch = FetchType.LAZY)
     @get:JoinTable(name = "user_organizer", catalog = "scoreboard", joinColumns = arrayOf(JoinColumn(name = "user_id", nullable = false, updatable = false)), inverseJoinColumns = arrayOf(JoinColumn(name = "organizer_id", nullable = false, updatable = false)))
     var organizers: Set<Organizer> = HashSet(0)

@@ -17,16 +17,20 @@ class Tick : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:Version
     @get:Temporal(TemporalType.TIMESTAMP)
     @get:Column(name = "timestamp", nullable = false, length = 26)
     var timestamp: Date? = null
+
     @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(name = "contender_id", nullable = false)
     var contender: Contender? = null
+
     @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(name = "problem_id", nullable = false)
     var problem: Problem? = null
+
     @get:Column(name = "flash", nullable = false)
     var isFlash: Boolean = false
 

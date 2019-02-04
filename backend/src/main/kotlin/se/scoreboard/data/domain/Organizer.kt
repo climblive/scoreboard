@@ -17,12 +17,16 @@ class Organizer : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:Column(name = "name", nullable = false, length = 32)
     var name: String? = null
+
     @get:Column(name = "homepage", length = 256)
     var homepage: String? = null
+
     @get:OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
     var contests: Set<Contest> = HashSet(0)
+
     @get:ManyToMany(fetch = FetchType.LAZY)
     @get:JoinTable(name = "user_organizer", catalog = "scoreboard", joinColumns = arrayOf(JoinColumn(name = "organizer_id", nullable = false, updatable = false)), inverseJoinColumns = arrayOf(JoinColumn(name = "user_id", nullable = false, updatable = false)))
     var users: Set<User> = HashSet(0)

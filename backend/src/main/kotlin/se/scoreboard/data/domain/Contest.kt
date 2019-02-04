@@ -17,20 +17,27 @@ class Contest : java.io.Serializable {
     @get:GeneratedValue(strategy = IDENTITY)
     @get:Column(name = "id", unique = true, nullable = false)
     var id: Int? = null
+
     @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(name = "location_id", nullable = false)
     var location: Location? = null
+
     @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(name = "organizer_id", nullable = false)
     var organizer: Organizer? = null
+
     @get:Column(name = "name", nullable = false, length = 64)
     var name: String? = null
+
     @get:Column(name = "description", length = 65535)
     var description: String? = null
+
     @get:Column(name = "qualifying_problems", nullable = false)
     var qualifyingProblems: Int = 0
+
     @get:OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
     var problems: Set<Problem> = HashSet(0)
+    
     @get:OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
     var contenders: Set<Contender> = HashSet(0)
 

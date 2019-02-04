@@ -10,8 +10,7 @@ const makeMapStateToProps = () => {
    const mapStateToProps = (state: StoreState, props: any): ScoreboardListCompProps => {
       return {
          compClass: props.compClass,
-         totalList: getFinalistList(state, props),
-         showHeader: props.showHeader
+         totalList: getFinalistList(state, props)
       };
    }
    return mapStateToProps;

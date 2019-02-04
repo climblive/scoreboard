@@ -34,7 +34,16 @@ export interface ReceiveContest {
    contest: Contest;
 }
 
-export type Action = ToggleProblem | ReceiveUserData | ReceiveScoreboardData | ReceiveScoreboardItem | ReceiveContest
+export interface UpdateScoreboardTimer {
+   type: constants.UPDATE_SCOREBOARD_TIMER;
+}
+
+export type Action = ToggleProblem |
+   ReceiveUserData |
+   ReceiveScoreboardData |
+   ReceiveScoreboardItem |
+   ReceiveContest |
+   UpdateScoreboardTimer
 
 export function toggleProblem(problem: Problem): ToggleProblem {
    console.log("TOGGLE_PROBLEM");
@@ -92,6 +101,12 @@ export function loadScoreboardData(): any {
 export function loadContest(): any {
    return (dispatch: Dispatch<any>) => {
       Api.getContest().then(contest => dispatch(receiveContest(contest)))
+   };
+}
+
+export function updateScoreboardTimer(): UpdateScoreboardTimer {
+   return {
+      type: constants.UPDATE_SCOREBOARD_TIMER
    };
 }
 

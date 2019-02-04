@@ -13,7 +13,8 @@ export function mapStateToProps(state: StoreState, props: any): Props {
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
       loadScoreboardData: () => dispatch(actions.loadScoreboardData()),
-      receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem))
+      receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem)),
+      updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
    };
 }
 

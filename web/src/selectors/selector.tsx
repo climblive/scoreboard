@@ -2,10 +2,9 @@ import { createSelector } from 'reselect'
 import { StoreState } from '../model/storeState';
 import { ScoreboardListItem } from '../model/scoreboardListItem';
 
-const getScoreboardContenderList = (state: StoreState, props: any) => {
-   console.log("getScoreboardContenderList", props);
+const getScoreboardContenders = (state: StoreState, props: any) => {
    if (state.scoreboardData) {
-      return state.scoreboardData.find(list => list.compClass.name == props.compClass.name);
+      return state.scoreboardData.find(list => list.compClass.name == props.compClass.name)!.contenders;
    } else {
       return undefined;
    }
@@ -13,10 +12,11 @@ const getScoreboardContenderList = (state: StoreState, props: any) => {
 
 export const makeGetTotalList = () => {
    return createSelector(
-      [getScoreboardContenderList],
-      (scoreboardContenderList) => {
-         if (scoreboardContenderList) {
-            return scoreboardContenderList.contenders.sort((a, b) => b.totalScore - a.totalScore).map((sc, index) => {
+      [getScoreboardContenders],
+      (scoreboardContenders) => {
+         console.log("makeGetTotalList");
+         if (scoreboardContenders) {
+            return scoreboardContenders.sort((a, b) => b.totalScore - a.totalScore).map((sc, index) => {
                let x: ScoreboardListItem = {
                   contenderId: sc.contenderId,
                   position: index + 1,
@@ -34,10 +34,11 @@ export const makeGetTotalList = () => {
 
 export const makeGetFinalistList = () => {
    return createSelector(
-      [getScoreboardContenderList],
-      (scoreboardContenderList) => {
-         if (scoreboardContenderList) {
-            return scoreboardContenderList.contenders.sort((a, b) => b.tenBestScore - a.tenBestScore).map((sc, index) => {
+      [getScoreboardContenders],
+      (getScoreboardContenders) => {
+         console.log("makeGetFinalistList");
+         if (getScoreboardContenders) {
+            return getScoreboardContenders.sort((a, b) => b.tenBestScore - a.tenBestScore).map((sc, index) => {
                let x: ScoreboardListItem = {
                   contenderId: sc.contenderId,
                   position: index + 1,

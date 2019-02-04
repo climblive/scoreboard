@@ -7,14 +7,31 @@
    border-right: 1px solid #DDD;
 }
 
+.compClassHeader {
+   flex-basis: 0;
+   flex-grow:1;
+   text-align: center;
+}
 
 .contenderRow {
    display:flex;
 }
 
-.compClass {
+.compClassHeader .compClass {
    margin-bottom:10px;
-   text-align: center;
+   padding-top: 20px;
+   font-size: 24px;
+}
+
+.compClassHeader .status {
+   color: #888;
+   font-size: 12px;
+}
+
+.compClassHeader .time {
+   margin-top: 1px;
+   font-size: 24px;
+   color: #800;
 }
 
 .name {

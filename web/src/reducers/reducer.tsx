@@ -1,9 +1,19 @@
 
 import { StoreState } from '../model/storeState';
-import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM, RECEIVE_CONTEST } from '../constants/constants';
+import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM, RECEIVE_CONTEST, UPDATE_SCOREBOARD_TIMER } from '../constants/constants';
 import { Problem } from '../model/problem';
 import { Action } from '../actions/actions';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
+
+function getDurationString(sec: number): string { 
+   sec = Math.round(sec);
+   var min = Math.floor(sec / 60);
+   sec -= min * 60;
+   if (min >= 10) {
+      return "" + min + " min";
+   }
+   return "" + min + ":" + (sec > 9 ? "" : "0") + sec;
+}
 
 export function reducer(state: StoreState, action: Action): StoreState {
    switch (action.type) {
@@ -35,6 +45,28 @@ export function reducer(state: StoreState, action: Action): StoreState {
          newScoreboardData[compClassIndex] = { ...oldScoreboardList, contenders: newContenders}
          return { ...state, scoreboardData: newScoreboardData };
 
+      case UPDATE_SCOREBOARD_TIMER:
+         var now: number = new Date().getTime() / 1000; 
+         console.log("UPDATE_SCOREBOARD_TIMER " + now);
+         var newScoreboardData: ScoreboardContenderList[] = state.scoreboardData.map(scl => { 
+            var newCompClass = { ...scl.compClass };
+            newCompClass.inProgress = false;
+            if (newCompClass.start > now) {
+               newCompClass.statusString = "Startar om " + getDurationString(newCompClass.start - now);
+               newCompClass.time = undefined;
+            } else if (now > newCompClass.end) {
+               newCompClass.statusString = "Tävlingen är avslutad"
+               newCompClass.time = undefined;
+            } else { 
+               newCompClass.statusString = "Slutar om"
+               newCompClass.time = getDurationString(newCompClass.end - now);
+               newCompClass.inProgress = true;
+            }
+            return { ...scl, compClass: newCompClass }
+         });
+         
+         return { ...state, scoreboardData: newScoreboardData };
+         
       default:
          return state;
    }

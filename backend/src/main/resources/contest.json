@@ -1,8 +1,8 @@
 {
   "name": "Giga Boulder",
   "compClasses": [
-    {"name":"Herr", "startTime":"2007-12-03T10:15:30+01:00[Europe/Paris]", "endTime":"2007-12-03T10:15:30+01:00[Europe/Paris]"},
-    {"name":"Dam", "startTime":"2007-12-03T10:15:30+01:00[Europe/Paris]", "endTime":"2007-12-03T10:15:30+01:00[Europe/Paris]"},
+    {"name":"Herr", "startTime":"2019-02-04T20:00:00+01:00[Europe/Paris]", "endTime":"2019-02-04T20:40:00+01:00[Europe/Paris]"},
+    {"name":"Dam", "startTime":"2019-02-04T21:00:00+01:00[Europe/Paris]", "endTime":"2019-02-04T21:05:00+01:00[Europe/Paris]"},
     {"name":"Junior", "startTime":"2007-12-03T10:15:30+01:00[Europe/Paris]", "endTime":"2007-12-03T10:15:30+01:00[Europe/Paris]"}
   ],
   "problems": [

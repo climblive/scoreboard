@@ -4,6 +4,8 @@ import { Problem } from '../model/problem';
 import ProblemList from './ProblemList';
 import { UserData } from '../model/userData';
 import * as ReactModal from 'react-modal';
+import { Contest } from '../model/contest';
+import { BY_NUMBER, BY_POINTS } from '../constants/constants';
 
 export interface Props {
    userData: UserData,
@@ -12,12 +14,18 @@ export interface Props {
          code: string;
       }
    }
+   contest: Contest,
+   problemsSortedBy: string
    loadUserData?: (code: string) => void;
    toggleProblemAndSave?: (problem: Problem) => void;
+   sortProblems?: (sortBy: string) => void;
+   loadContest?: () => void;
 }
 
 type State = {
-   modalIsOpen: boolean
+   modalIsOpen: boolean,
+   name?: string,
+   compClass?: string
 }
 
 export default class MainView extends React.Component<Props, State> {
@@ -34,6 +42,16 @@ export default class MainView extends React.Component<Props, State> {
       this.props.loadUserData!(code);
    }
 
+   handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
+      this.state.name = event.currentTarget.value;
+      this.setState(this.state);
+   }
+
+   setCompClass = (compClass: string) => {
+      this.state.compClass = compClass;
+      this.setState(this.state);
+   }
+
    render() {
       if (!this.props.userData) { 
          return ( 
@@ -41,12 +59,15 @@ export default class MainView extends React.Component<Props, State> {
          )
       } else {
          var totalPoints = this.props.userData.problems.filter(p => p.sent).reduce((s, p) => s + p.points, 0);
-         var tenBest = this.props.userData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 3).reduce((s, p) => s + p.points, 0);
+         var tenBest = this.props.userData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
 
          var openModal = () => {
             console.log("openModal")
             this.state.modalIsOpen = true;
+            this.state.name = this.props.userData.name;
+            this.state.compClass = this.props.userData.compClass;
             this.setState(this.state);
+            this.props.loadContest!();
          };         
 
          var closeModal = () => {
@@ -55,12 +76,19 @@ export default class MainView extends React.Component<Props, State> {
             this.setState(this.state);
          };         
 
+         var compClasses: any[] = [];
+         if (this.props.contest) {
+            compClasses = this.props.contest.compClasses.map(compClass => (
+               <div key={compClass.name} className={compClass.name == this.state.compClass ? "compClass selected" : "compClass"} onClick={() => this.setCompClass(compClass.name)}>{compClass.name}</div>
+            ));
+         }
+
          return (
-            <div className="view">
+            <div className="view mainView">
                <div className="titleRow">
                   <div className="name">{this.props.userData.name}</div>
                   <div>{this.props.userData.compClass}</div>
-                  <button onClick={openModal}>Change</button>
+                  <button onClick={openModal}>Ändra</button>
                </div>
                <div className="pointsRow">
                   <div className="points">{totalPoints}</div>
@@ -68,23 +96,27 @@ export default class MainView extends React.Component<Props, State> {
                   <div className="pointsDesc">10 bästa</div>
                   <div className="points">{tenBest}</div>
                </div>
+               <div className="headerRow">
+                  <div className="title">Problem:</div>
+                  <div className="sortBy">Sortera efter:</div>
+                  <div className={this.props.problemsSortedBy == BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_NUMBER)}>Nummer</div>
+                  <div className={this.props.problemsSortedBy == BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_POINTS)}>Poäng</div>
+               </div>
                <ProblemList problems={this.props.userData.problems} onToggle={this.props.toggleProblemAndSave} />
             
                <ReactModal
+                  
                   isOpen={this.state.modalIsOpen}
                   contentLabel="Example Modal"
                >
 
-                  <h2>Hello</h2>
-                  <button onClick={closeModal}>close</button>
-                  <div>I am a modal</div>
-                  <form>
-                     <input />
-                     <button>tab navigation</button>
-                     <button>stays</button>
-                     <button>inside</button>
-                     <button>the modal</button>
-                  </form>
+                  <div>Name:</div>
+                  <input value={this.state.name} onChange={this.handleNameCodeChange} />
+                  <div className="compClassContainer">{compClasses}</div>
+                  <div className="buttonRow">
+                     <button onClick={closeModal}>Ok</button>
+                     <button onClick={closeModal}>Cancel</button>
+                  </div>
                </ReactModal>
             </div>            
          );

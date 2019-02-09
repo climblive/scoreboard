@@ -38,12 +38,18 @@ export interface UpdateScoreboardTimer {
    type: constants.UPDATE_SCOREBOARD_TIMER;
 }
 
+export interface SortProblems {
+   type: constants.SORT_PROBLEMS;
+   sortBy: string;
+}
+
 export type Action = ToggleProblem |
    ReceiveUserData |
    ReceiveScoreboardData |
    ReceiveScoreboardItem |
    ReceiveContest |
-   UpdateScoreboardTimer
+   UpdateScoreboardTimer |
+   SortProblems
 
 export function toggleProblem(problem: Problem): ToggleProblem {
    console.log("TOGGLE_PROBLEM");
@@ -107,6 +113,14 @@ export function loadContest(): any {
 export function updateScoreboardTimer(): UpdateScoreboardTimer {
    return {
       type: constants.UPDATE_SCOREBOARD_TIMER
+   };
+}
+
+export function sortProblems(sortBy: string): SortProblems {
+   console.log("sortProblems");
+   return {
+      type: constants.SORT_PROBLEMS,
+      sortBy: sortBy
    };
 }
 

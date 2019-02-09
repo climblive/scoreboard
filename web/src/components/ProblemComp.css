@@ -14,6 +14,10 @@
    opacity:0.6;
 }
 
+.problem .id {
+   width: 20px;
+}
+
 .problem .color {
    width:60px;   
    text-align: left;

@@ -5,10 +5,6 @@
 }
 
 .startView input {
-   border: 1px solid #333;
-   text-align: center;
-   width:100%;
-   font-size:16px;
    margin-bottom:20px;
 }
 
@@ -17,22 +13,6 @@
    width:100%;
 }
 
-.compClassContainer .compClass {
-   border: 1px solid grey;
-   cursor:pointer;
-   flex-basis: 0;
-   flex-grow:1;
-   text-align: center;
-}
-
-.compClassContainer .compClass:not(:last-child) {
-   margin-right:10px;
-}
-
-.compClassContainer .selected {
-   background: grey;
-}
-
 .startView button {
-   border: 1px solid grey;
+   margin-top: 20px;
 }

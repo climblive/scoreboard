@@ -34,19 +34,16 @@ export default class StartView extends React.Component<Props, State> {
    handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
       this.state.activationCode = event.currentTarget.value;
       this.setState(this.state);
-      console.log(this.state);
    }
 
    handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
       this.state.name = event.currentTarget.value;
       this.setState(this.state);
-      console.log(this.state);
    }
 
    setCompClass = (compClass:string) => {
       this.state.compClass = compClass;
       this.setState(this.state);
-      console.log(this.state);
    }
 
    onSubmit = () => { 
@@ -73,7 +70,7 @@ export default class StartView extends React.Component<Props, State> {
          )
       } 
       var compClasses = this.props.contest.compClasses.map(compClass => (
-         <div key={compClass.name} className={compClass.name == this.state.compClass ? "compClass selected" : "compClass"} onClick={() => this.setCompClass(compClass.name)}>{compClass.name}</div>
+         <div key={compClass.name} className={compClass.name == this.state.compClass ? "selector compClass selected" : "selector compClass"} onClick={() => this.setCompClass(compClass.name)}>{compClass.name}</div>
       ));
 
       return (

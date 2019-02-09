@@ -4,6 +4,7 @@ import { Contest } from './contest';
 
 export interface StoreState {
    userData: UserData;
+   problemsSortedBy: string;
    scoreboardData: ScoreboardContenderList[];
    contest: Contest;
 }

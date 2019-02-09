@@ -1,7 +1,43 @@
 .App {
    height:100%;
+   display:flex;
+   flex-direction:column;
 }
 
 .view {
    padding:10px;
 }
+
+.selector {
+   border: 1px solid grey;
+   cursor:pointer;
+   flex-basis: 0;
+   flex-grow:1;
+   text-align: center;
+   padding: 2px 5px;
+   border-radius: 5px;
+}
+
+.selector:not(:last-child) {
+   margin-right:10px;
+}
+
+.selector.selected {
+   background: grey;
+}
+
+button {
+   font-size:14px;
+   border: 1px solid grey;
+   border-radius: 5px;
+   padding: 2px 5px;
+   background: white;
+}
+
+input {
+   border: 1px solid #333;
+   text-align: center;
+   width:100%;
+   font-size:16px;   
+}
+

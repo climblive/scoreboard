@@ -12,7 +12,6 @@ function ProblemList({ problems, onToggle }: ProblemListProps) {
    var problemsList = problems.map(p => (<ProblemComp key={p.id} onToggle={() => onToggle!(p)} problem={p}/>));
    return (
       <div className="problemList">
-         <div>Problem</div>
          {problemsList}
     </div>
   );

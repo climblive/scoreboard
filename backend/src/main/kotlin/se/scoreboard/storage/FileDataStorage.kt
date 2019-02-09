@@ -1,16 +1,19 @@
 package se.scoreboard.storage
 
 import com.google.gson.Gson
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import se.scoreboard.model.ContenderData
 import java.io.File
 
 @Service
-class FileDataStorage : DataStorage {
+class FileDataStorage @Autowired constructor(@Value("\${dataStorage.fileName}") val fileName: String) : DataStorage {
 
-    val fileName = "database.json"
+    //)
 
     private fun loadFile() : Database {
+        println("load file from $fileName")
         val file = File(fileName)
         if(file.exists()) {
             val string: String = file.readText();
@@ -21,6 +24,7 @@ class FileDataStorage : DataStorage {
     }
 
     private fun saveFile(database : Database) {
+        println("save file to $fileName")
         File(fileName).writeText(Gson().toJson(database))
     }
 

@@ -1,6 +1,6 @@
 
 import { StoreState } from '../model/storeState';
-import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM, RECEIVE_CONTEST, UPDATE_SCOREBOARD_TIMER } from '../constants/constants';
+import { TOGGLE_PROBLEM, RECEIVE_USER_DATA, RECEIVE_SCOREBOARD_DATA, RECEIVE_SCOREBOARD_ITEM, RECEIVE_CONTEST, UPDATE_SCOREBOARD_TIMER, SORT_PROBLEMS, BY_POINTS, BY_NUMBER } from '../constants/constants';
 import { Problem } from '../model/problem';
 import { Action } from '../actions/actions';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
@@ -23,8 +23,17 @@ export function reducer(state: StoreState, action: Action): StoreState {
          p.sent = !p.sent;
          return { ...state, userData: { ...state.userData, problems: newProblems } };
 
+      case SORT_PROBLEMS:
+         var newProblems: Problem[] = [...state.userData.problems];
+         if (action.sortBy === BY_POINTS) {
+            newProblems = newProblems.sort((a, b) => a.points - b.points);
+         } else {
+            newProblems = newProblems.sort((a, b) => a.id - b.id);
+         }
+         return { ...state, userData: { ...state.userData, problems: newProblems }, problemsSortedBy: action.sortBy };
+
       case RECEIVE_USER_DATA:
-         return { ...state, userData: action.userData };
+         return { ...state, userData: action.userData, problemsSortedBy: BY_NUMBER};
 
       case RECEIVE_SCOREBOARD_DATA:
          return { ...state, scoreboardData: action.scoreboardData };

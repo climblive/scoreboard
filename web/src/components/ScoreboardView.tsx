@@ -58,12 +58,18 @@ export default class ScoreboardView extends React.Component<Props> {
          var finalistList = scoreboardData.map(scoreboardList => <ScoreboardFinalistListContainer key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
          var totalList = scoreboardData.map(scoreboardList => <ScoreboardTotalListContainer key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
          return (
-            <div>
+            <div className="scoreboardView">
                <div className="scoreboardListContainer">{headers}</div>
                <div className="header">Finalists</div>   
                <div className="scoreboardListContainer">{finalistList}</div>
                <div className="header">Total</div>   
-               <div className="scoreboardListContainer">{totalList}</div>
+               <div className="scoreboardListContainer total">{totalList}</div>
+               <div className="logoContainer">
+                  <img height="70" src="logos/klatterdomen.jpg" />
+                  <img height="70" src="logos/highSport.gif" />
+                  <img height="50" src="logos/edelrid.png" />
+                  <img height="70" src="logos/chalkCartel.png" />
+               </div>
             </div>
          );
       } else { 

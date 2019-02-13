@@ -1,4 +1,5 @@
 import MainView, { Props } from '../components/MainView';
+import * as asyncActions from '../actions/asyncActions';
 import * as actions from '../actions/actions';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
@@ -16,9 +17,9 @@ export function mapStateToProps(state: StoreState, props: any): Props {
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
-      toggleProblemAndSave: (problem: Problem) => dispatch(actions.toggleProblemAndSave(problem)),
-      loadUserData: (code: string) => dispatch(actions.loadUserData(code)),
-      loadContest: () => dispatch(actions.loadContest()),
+      toggleProblemAndSave: (problem: Problem) => dispatch(asyncActions.toggleProblemAndSave(problem)),
+      loadUserData: (code: string) => dispatch(asyncActions.loadUserData(code)),
+      loadContest: () => dispatch(asyncActions.loadContest()),
       sortProblems: (sortBy: string) => dispatch(actions.sortProblems(sortBy))
    };
 }

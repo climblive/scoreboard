@@ -1,7 +1,5 @@
-import * as actions from '../actions/actions';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
-import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import { ScoreboardListComp, ScoreboardListCompProps } from '../components/ScoreboardListComp';
 import { makeGetTotalList } from '../selectors/selector';
 
@@ -18,8 +16,6 @@ const makeMapStateToProps = () => {
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
-      loadScoreboardData: () => dispatch(actions.loadScoreboardData()),
-      receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem))
    };
 }
 

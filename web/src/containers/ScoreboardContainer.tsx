@@ -1,4 +1,5 @@
 import * as actions from '../actions/actions';
+import * as asyncActions from '../actions/asyncActions';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
 import ScoreboardView, { Props } from '../components/ScoreboardView';
@@ -12,7 +13,7 @@ export function mapStateToProps(state: StoreState, props: any): Props {
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
-      loadScoreboardData: () => dispatch(actions.loadScoreboardData()),
+      loadScoreboardData: () => dispatch(asyncActions.loadScoreboardData()),
       receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem)),
       updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
    };

@@ -1,139 +1,16 @@
 
-import * as constants from '../constants/constants';
+import { createStandardAction } from 'typesafe-actions'
 import { Problem } from '../model/problem';
 import { UserData } from '../model/userData';
-import { Api } from '../utils/Api';
-import { Dispatch } from 'react-redux';
-import { StoreState } from '../model/storeState';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
-import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import { Contest } from '../model/contest';
-
-export interface ToggleProblem {
-   type: constants.TOGGLE_PROBLEM;
-   problem: Problem;
-}
-
-export interface ReceiveUserData {
-   type: constants.RECEIVE_USER_DATA;
-   userData: UserData;
-}
-
-export interface ReceiveScoreboardData {
-   type: constants.RECEIVE_SCOREBOARD_DATA;
-   scoreboardData: ScoreboardContenderList[];
-}
-
-export interface ReceiveScoreboardItem {
-   type: constants.RECEIVE_SCOREBOARD_ITEM;
-   scoreboardPushItem: ScoreboardPushItem;
-}
-
-export interface ReceiveContest {
-   type: constants.RECEIVE_CONTEST;
-   contest: Contest;
-}
-
-export interface UpdateScoreboardTimer {
-   type: constants.UPDATE_SCOREBOARD_TIMER;
-}
-
-export interface SortProblems {
-   type: constants.SORT_PROBLEMS;
-   sortBy: string;
-}
-
-export type Action = ToggleProblem |
-   ReceiveUserData |
-   ReceiveScoreboardData |
-   ReceiveScoreboardItem |
-   ReceiveContest |
-   UpdateScoreboardTimer |
-   SortProblems
-
-export function toggleProblem(problem: Problem): ToggleProblem {
-   console.log("TOGGLE_PROBLEM");
-   return {
-      type: constants.TOGGLE_PROBLEM,
-      problem: problem
-   };
-}
-
-export function receiveUserData(userData: UserData): ReceiveUserData {
-   console.log("receiveUserData ", userData);
-   return {
-      type: constants.RECEIVE_USER_DATA,
-      userData: userData
-   };
-}
-
-export function receiveScoreboardData(scoreboardData: ScoreboardContenderList[]): ReceiveScoreboardData {
-   console.log("receiveScoreboardData ", scoreboardData);
-   return {
-      type: constants.RECEIVE_SCOREBOARD_DATA,
-      scoreboardData: scoreboardData
-   };
-}
-
-export function receiveScoreboardItem(scoreboardPushItem: ScoreboardPushItem): ReceiveScoreboardItem {
-   console.log("receiveScoreboardItem ", scoreboardPushItem);
-   return {
-      type: constants.RECEIVE_SCOREBOARD_ITEM,
-      scoreboardPushItem: scoreboardPushItem
-   };
-}
-
-export function receiveContest(contest: Contest): ReceiveContest {
-   console.log("receiveContest ", contest);
-   return {
-      type: constants.RECEIVE_CONTEST,
-      contest: contest
-   };
-}
+import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 
 
-export function loadUserData(code: string): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.getContender(code).then(contenderData => dispatch(receiveUserData(contenderData)))
-   };
-}
-
-export function loadScoreboardData(): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.getScoreboard().then(scoreboardData => dispatch(receiveScoreboardData(scoreboardData)))
-   };
-}
-
-export function loadContest(): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.getContest().then(contest => dispatch(receiveContest(contest)))
-   };
-}
-
-export function updateScoreboardTimer(): UpdateScoreboardTimer {
-   return {
-      type: constants.UPDATE_SCOREBOARD_TIMER
-   };
-}
-
-export function sortProblems(sortBy: string): SortProblems {
-   console.log("sortProblems");
-   return {
-      type: constants.SORT_PROBLEMS,
-      sortBy: sortBy
-   };
-}
-
-export function saveUserData(contenderData: UserData): any {
-   return (dispatch: Dispatch<any>) => {
-      return Api.setContender(contenderData);
-   };
-}
-
-export function toggleProblemAndSave(problem: Problem): any { 
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      dispatch(toggleProblem(problem));
-      dispatch(saveUserData(getState().userData));
-   };
-}
-
+export const toggleProblem = createStandardAction('TOGGLE_PROBLEM')<Problem>();
+export const receiveUserData = createStandardAction('RECEIVE_USER_DATA')<UserData>();
+export const receiveScoreboardData = createStandardAction('RECEIVE_SCOREBOARD_DATA')<ScoreboardContenderList[]>();
+export const receiveScoreboardItem = createStandardAction('RECEIVE_SCOREBOARD_ITEM')<ScoreboardPushItem>();
+export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();
+export const updateScoreboardTimer = createStandardAction('UPDATE_SCOREBOARD_TIMER')();
+export const sortProblems = createStandardAction('SORT_PROBLEMS')<string>();

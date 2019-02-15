@@ -21,12 +21,15 @@ export default class ScoreboardView extends React.Component<Props> {
    intervalId: number;
 
    componentDidMount() {
-
+      document.title = "Scoreboard";
+      
       this.client = new Client({
          brokerURL: Api.getLiveUrl(),
          debug: function (str) {
             console.log("DEBUG: " + str);
-         }
+         },
+         heartbeatIncoming: 4000,
+         heartbeatOutgoing: 4000
       });
 
       this.client.activate();

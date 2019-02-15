@@ -28,6 +28,7 @@ export default class StartView extends React.Component<Props, State> {
    }
 
    componentDidMount() { 
+      document.title = "Välkommen till clbm.live"
       this.props.loadContest!();
    }
 

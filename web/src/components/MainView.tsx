@@ -58,6 +58,7 @@ export default class MainView extends React.Component<Props, State> {
             <div>Getting data...</div>
          )
       } else {
+         document.title = this.props.userData.name;
          var totalPoints = this.props.userData.problems.filter(p => p.sent).reduce((s, p) => s + p.points, 0);
          var tenBest = this.props.userData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
 

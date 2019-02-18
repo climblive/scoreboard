@@ -2,6 +2,7 @@ package se.scoreboard.model
 
 data class Contest(
         val name: String,
+        val rules: String,
         val compClasses : List<CompClass>,
         val problems : List<Problem>
 ) {

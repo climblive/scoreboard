@@ -41,3 +41,17 @@ input {
    font-size:16px;   
 }
 
+.modal {
+   position: absolute;
+   top: 40px;
+   left: 40px;
+   right: 40px;
+   background: white;
+   border: 1px solid #333;
+   border-radius: 5px;
+   padding: 10px;
+}
+
+.modal:focus {
+   outline: none;
+}

@@ -1,14 +1,15 @@
 {
   "name": "Giga Boulder",
+  "rules": "This is the rules<br><ul><li>One</li><li>Two</li></ul>",
   "compClasses": [
-    {"name":"Herr", "startTime":"2019-02-04T20:00:00+01:00[Europe/Paris]", "endTime":"2019-02-04T20:40:00+01:00[Europe/Paris]"},
-    {"name":"Dam", "startTime":"2019-02-04T21:00:00+01:00[Europe/Paris]", "endTime":"2019-02-04T21:05:00+01:00[Europe/Paris]"},
-    {"name":"Junior", "startTime":"2007-12-03T10:15:30+01:00[Europe/Paris]", "endTime":"2007-12-03T10:15:30+01:00[Europe/Paris]"}
+    {"name":"Herr",   "description":"",                       "startTime":"2019-02-11T09:00:00+01:00[Europe/Paris]", "endTime":"2019-02-11T10:40:00+01:00[Europe/Paris]"},
+    {"name":"Dam",    "description":"",                       "startTime":"2019-02-11T09:00:00+01:00[Europe/Paris]", "endTime":"2019-02-11T10:40:00+01:00[Europe/Paris]"},
+    {"name":"Junior", "description":"Upp till och med 16 år" ,"startTime":"2019-12-11T10:15:30+01:00[Europe/Paris]", "endTime":"2019-12-11T10:15:30+01:00[Europe/Paris]"}
   ],
   "problems": [
     { "id": 1, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},
     { "id": 2, "color": "#ce1da4", "textColor": "#FFFFFF", "colorName": "Lila", "points": 50, "text": ""},
-    { "id": 3, "color": "#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
+    { "id": 3, "color": "c#ffcd00", "textColor": "#333", "colorName": "Gul", "points": 50, "text": ""},
     { "id": 4, "color": "#000000", "textColor": "#FFFFFF", "colorName": "Svart", "points": 100, "text": ""},
     { "id": 5, "color": "#FFFFFF", "textColor": "#333", "colorName": "Vit", "points": 250, "text": ""},
     { "id": 6, "color": "#C50000", "textColor": "#FFFFFF", "colorName": "Röd", "points": 150, "text": ""},

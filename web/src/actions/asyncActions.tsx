@@ -26,7 +26,9 @@ export function loadContest(): any {
 
 export function saveUserData(contenderData: UserData): any {
    return (dispatch: Dispatch<any>) => {
-      return Api.setContender(contenderData);
+      let promise: Promise<UserData> = Api.setContender(contenderData);
+      promise.then(userData => dispatch(receiveUserData(userData)))
+      return promise;
    };
 }
 

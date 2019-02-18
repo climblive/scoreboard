@@ -6,6 +6,7 @@ import { UserData } from '../model/userData';
 import * as ReactModal from 'react-modal';
 import { Contest } from '../model/contest';
 import { BY_NUMBER, BY_POINTS } from '../constants/constants';
+import ContenderInfoComp from "./ContenderInfoComp";
 
 export interface Props {
    userData: UserData,
@@ -17,39 +18,34 @@ export interface Props {
    contest: Contest,
    problemsSortedBy: string
    loadUserData?: (code: string) => void;
+   saveUserData?: (userData: UserData) => Promise<UserData>,
    toggleProblemAndSave?: (problem: Problem) => void;
    sortProblems?: (sortBy: string) => void;
    loadContest?: () => void;
 }
 
 type State = {
-   modalIsOpen: boolean,
-   name?: string,
-   compClass?: string
+   userInfoModalIsOpen: boolean,
+   rulesModalIsOpen: boolean,
 }
 
 export default class MainView extends React.Component<Props, State> {
    public readonly state: State = {
-      modalIsOpen: false
+      userInfoModalIsOpen: false,
+      rulesModalIsOpen: false
    }
 
    constructor(props: Props) {
       super(props);
+
    }
 
-   componentDidMount() { 
-      var code : string = this.props.match.params.code;
+   componentDidMount() {
+      ReactModal.setAppElement("body");
+
+      let code : string = this.props.match.params.code;
       this.props.loadUserData!(code);
-   }
-
-   handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-      this.state.name = event.currentTarget.value;
-      this.setState(this.state);
-   }
-
-   setCompClass = (compClass: string) => {
-      this.state.compClass = compClass;
-      this.setState(this.state);
+      this.props.loadContest!();
    }
 
    render() {
@@ -57,39 +53,54 @@ export default class MainView extends React.Component<Props, State> {
          return ( 
             <div>Getting data...</div>
          )
+      } else if(!this.props.userData.name) {
+         let openRulesModal = () => {
+            console.log("openModal")
+            this.state.rulesModalIsOpen = true;
+            this.setState(this.state);
+         };
+         return (
+             <div>
+                <ContenderInfoComp
+                    activationCode={this.props.match.params.code}
+                    contest={this.props.contest}
+                    saveUserData={this.props.saveUserData}
+                    loadContest={this.props.loadContest}
+                    onFinished={openRulesModal} >
+                </ContenderInfoComp>
+             </div>
+         )
       } else {
          document.title = this.props.userData.name;
-         var totalPoints = this.props.userData.problems.filter(p => p.sent).reduce((s, p) => s + p.points, 0);
-         var tenBest = this.props.userData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
+         let totalPoints = this.props.userData.problems.filter(p => p.sent).reduce((s, p) => s + p.points, 0);
+         let tenBest = this.props.userData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
 
-         var openModal = () => {
-            console.log("openModal")
-            this.state.modalIsOpen = true;
-            this.state.name = this.props.userData.name;
-            this.state.compClass = this.props.userData.compClass;
+         let openUserInfoModal = () => {
+            console.log("openUserInfoModal")
+            this.state.userInfoModalIsOpen = true;
             this.setState(this.state);
-            this.props.loadContest!();
-         };         
+         };
 
-         var closeModal = () => {
-            console.log("openModal")
-            this.state.modalIsOpen = false;
+         let closeUserInfoModal = () => {
+            console.log("closeUserInfoModal")
+            this.state.userInfoModalIsOpen = false;
             this.setState(this.state);
-         };         
+         };
 
-         var compClasses: any[] = [];
-         if (this.props.contest) {
-            compClasses = this.props.contest.compClasses.map(compClass => (
-               <div key={compClass.name} className={compClass.name == this.state.compClass ? "compClass selected" : "compClass"} onClick={() => this.setCompClass(compClass.name)}>{compClass.name}</div>
-            ));
-         }
+         let closeRulesModal = () => {
+            console.log("closeRulesModal")
+            this.state.rulesModalIsOpen = false;
+            this.setState(this.state);
+         };
+
+         let rules = this.props.contest ? this.props.contest.rules : "";
 
          return (
             <div className="view mainView">
                <div className="titleRow">
                   <div className="name">{this.props.userData.name}</div>
                   <div>{this.props.userData.compClass}</div>
-                  <button onClick={openModal}>Ändra</button>
+                  <button onClick={openUserInfoModal}>Ändra</button>
                </div>
                <div className="pointsRow">
                   <div className="points">{totalPoints}</div>
@@ -104,22 +115,34 @@ export default class MainView extends React.Component<Props, State> {
                   <div className={this.props.problemsSortedBy == BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_POINTS)}>Poäng</div>
                </div>
                <ProblemList problems={this.props.userData.problems} onToggle={this.props.toggleProblemAndSave} />
-            
-               <ReactModal
-                  
-                  isOpen={this.state.modalIsOpen}
-                  contentLabel="Example Modal"
-               >
 
-                  <div>Name:</div>
-                  <input value={this.state.name} onChange={this.handleNameCodeChange} />
-                  <div className="compClassContainer">{compClasses}</div>
-                  <div className="buttonRow">
-                     <button onClick={closeModal}>Ok</button>
-                     <button onClick={closeModal}>Cancel</button>
-                  </div>
+               <ReactModal
+                   isOpen={this.state.userInfoModalIsOpen}
+                   contentLabel="Example Modal"
+                   className="modal"
+                  >
+
+                  <ContenderInfoComp
+                      existingUserData={this.props.userData}
+                      activationCode={this.props.match.params.code}
+                      contest={this.props.contest}
+                      saveUserData={this.props.saveUserData}
+                      loadContest={this.props.loadContest}
+                      showCancelButton={true}
+                      onFinished={closeUserInfoModal}>
+                  </ContenderInfoComp>
                </ReactModal>
-            </div>            
+
+               <ReactModal
+                   isOpen={this.state.rulesModalIsOpen}
+                   contentLabel="Example Modal"
+                   className="modal">
+                  <div dangerouslySetInnerHTML={{__html: rules}}></div>
+                  <div className="buttonRow">
+                     <button onClick={closeRulesModal}>Fortsätt</button>
+                  </div>
+            </ReactModal>
+            </div>
          );
       }
    }

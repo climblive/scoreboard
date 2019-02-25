@@ -8,7 +8,9 @@ const makeMapStateToProps = () => {
    const mapStateToProps = (state: StoreState, props: any): ScoreboardListCompProps => {
       return {
          compClass: props.compClass,
-         totalList: getTotalList(state, props)
+         totalList: getTotalList(state, props),
+         isPaging: true,
+         pagingCounter: state.pagingCounter
       };
    }
    return mapStateToProps;

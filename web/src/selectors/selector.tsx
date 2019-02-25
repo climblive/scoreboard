@@ -38,7 +38,11 @@ export const makeGetFinalistList = () => {
       (getScoreboardContenders) => {
          console.log("makeGetFinalistList");
          if (getScoreboardContenders) {
-            return getScoreboardContenders.sort((a, b) => b.tenBestScore - a.tenBestScore).map((sc, index) => {
+            let finalists = getScoreboardContenders.sort((a, b) => b.tenBestScore - a.tenBestScore);
+
+            // TODO: Better calculation of finalists:
+            finalists = finalists.slice(0, 5);
+            return finalists.map((sc, index) => {
                let x: ScoreboardListItem = {
                   contenderId: sc.contenderId,
                   position: index + 1,

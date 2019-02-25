@@ -58,8 +58,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, scoreboardData: newScoreboardData };
 
       case getType(scoreboardActions.updateScoreboardTimer):
-         var now: number = new Date().getTime() / 1000; 
-         console.log("UPDATE_SCOREBOARD_TIMER " + now);
+         var now: number = new Date().getTime() / 1000;
+         //console.log("UPDATE_SCOREBOARD_TIMER " + now);
          var newScoreboardData: ScoreboardContenderList[] = state.scoreboardData.map(scl => { 
             var newCompClass = { ...scl.compClass };
             newCompClass.inProgress = false;
@@ -77,7 +77,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             return { ...scl, compClass: newCompClass }
          });
          
-         return { ...state, scoreboardData: newScoreboardData };
+         return { ...state, scoreboardData: newScoreboardData, pagingCounter: state.pagingCounter ? (state.pagingCounter + 1)  : 1};
 
       default:
          return state;

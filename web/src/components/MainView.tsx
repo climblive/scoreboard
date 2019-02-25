@@ -60,7 +60,7 @@ export default class MainView extends React.Component<Props, State> {
             this.setState(this.state);
          };
          return (
-             <div>
+             <div className="view mainView maxWidth">
                 <ContenderInfoComp
                     activationCode={this.props.match.params.code}
                     contest={this.props.contest}
@@ -96,7 +96,7 @@ export default class MainView extends React.Component<Props, State> {
          let rules = this.props.contest ? this.props.contest.rules : "";
 
          return (
-            <div className="view mainView">
+            <div className="view mainView maxWidth">
                <div className="titleRow">
                   <div className="name">{this.props.userData.name}</div>
                   <div>{this.props.userData.compClass}</div>

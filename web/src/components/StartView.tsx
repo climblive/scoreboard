@@ -38,7 +38,7 @@ export default class StartView extends React.Component<Props, State> {
       }
 
       return (
-         <div className="startView view">
+         <div className="startView view maxWidth">
             Activation code:
             <input value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
             <div>

@@ -7,4 +7,5 @@ export interface StoreState {
    problemsSortedBy: string;
    scoreboardData: ScoreboardContenderList[];
    contest: Contest;
+   pagingCounter: number;
 }

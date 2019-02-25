@@ -1,10 +1,48 @@
+
 .scoreboardList {
-   flex-basis: 0;
    flex-grow:1;
+   flex-basis: 0;
+   flex-direction:column;
+   display: flex;
+   min-width:0;
 }
 
 .scoreboardList:NOT(:last-child) {
    border-right: 1px solid #DDD;
+}
+
+.scoreboardList .scoreboardListContenders {
+   flex-basis: 0;
+   flex-grow:1;
+}
+
+.scoreboardList .scoreboardListContendersPaging {
+   overflow: hidden;
+}
+
+.scoreboardList .scoreboardListPaging {
+   display:flex;
+}
+
+.scoreboardList .scoreboardListPaging .paging:first-child {
+   margin-left: auto;
+}
+
+.scoreboardList .scoreboardListPaging .paging {
+   margin-left: 2px;
+   margin-right: 2px;
+   border-radius: 5px;
+   width:10px;
+   height:10px;
+   background: lightgray;
+}
+
+.scoreboardList .scoreboardListPaging .paging.current {
+   background: grey;
+}
+
+.scoreboardList .scoreboardListPaging .paging:last-child {
+   margin-right: auto;
 }
 
 .compClassHeader {
@@ -35,7 +73,11 @@
 }
 
 .name {
-   flex-grow: 1;
+   flex: 1;
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   min-width:0;
 }
 
 .position {

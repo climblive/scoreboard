@@ -93,6 +93,10 @@ dependencies {
     implementation "org.hibernate:hibernate-core:5.3.7.Final"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
+
+    implementation "net.logstash.logback:logstash-logback-encoder:5.3"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+
     runtimeOnly "mysql:mysql-connector-java"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.hibernate:hibernate-testing:5.3.7.Final"

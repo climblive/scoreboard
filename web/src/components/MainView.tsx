@@ -37,7 +37,6 @@ export default class MainView extends React.Component<Props, State> {
 
    constructor(props: Props) {
       super(props);
-
    }
 
    componentDidMount() {
@@ -60,15 +59,17 @@ export default class MainView extends React.Component<Props, State> {
             this.setState(this.state);
          };
          return (
-             <div className="view mainView maxWidth">
-                <ContenderInfoComp
-                    activationCode={this.props.match.params.code}
-                    contest={this.props.contest}
-                    saveUserData={this.props.saveUserData}
-                    loadContest={this.props.loadContest}
-                    onFinished={openRulesModal} >
-                </ContenderInfoComp>
-             </div>
+            <div className="maxWidth">
+               <div className="view mainView">
+                   <ContenderInfoComp
+                       activationCode={this.props.match.params.code}
+                       contest={this.props.contest}
+                       saveUserData={this.props.saveUserData}
+                       loadContest={this.props.loadContest}
+                       onFinished={openRulesModal} >
+                   </ContenderInfoComp>
+               </div>
+            </div>
          )
       } else {
          document.title = this.props.userData.name;
@@ -96,52 +97,54 @@ export default class MainView extends React.Component<Props, State> {
          let rules = this.props.contest ? this.props.contest.rules : "";
 
          return (
-            <div className="view mainView maxWidth">
-               <div className="titleRow">
-                  <div className="name">{this.props.userData.name}</div>
-                  <div>{this.props.userData.compClass}</div>
-                  <button onClick={openUserInfoModal}>Ändra</button>
-               </div>
-               <div className="pointsRow">
-                  <div className="points">{totalPoints}</div>
-                  <div className="pointsDesc total">Totalt</div>
-                  <div className="pointsDesc">10 bästa</div>
-                  <div className="points">{tenBest}</div>
-               </div>
-               <div className="headerRow">
-                  <div className="title">Problem:</div>
-                  <div className="sortBy">Sortera efter:</div>
-                  <div className={this.props.problemsSortedBy == BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_NUMBER)}>Nummer</div>
-                  <div className={this.props.problemsSortedBy == BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_POINTS)}>Poäng</div>
-               </div>
-               <ProblemList problems={this.props.userData.problems} onToggle={this.props.toggleProblemAndSave} />
-
-               <ReactModal
-                   isOpen={this.state.userInfoModalIsOpen}
-                   contentLabel="Example Modal"
-                   className="modal"
-                  >
-
-                  <ContenderInfoComp
-                      existingUserData={this.props.userData}
-                      activationCode={this.props.match.params.code}
-                      contest={this.props.contest}
-                      saveUserData={this.props.saveUserData}
-                      loadContest={this.props.loadContest}
-                      showCancelButton={true}
-                      onFinished={closeUserInfoModal}>
-                  </ContenderInfoComp>
-               </ReactModal>
-
-               <ReactModal
-                   isOpen={this.state.rulesModalIsOpen}
-                   contentLabel="Example Modal"
-                   className="modal">
-                  <div dangerouslySetInnerHTML={{__html: rules}}></div>
-                  <div className="buttonRow">
-                     <button onClick={closeRulesModal}>Fortsätt</button>
+            <div className="maxWidth">
+               <div className="view mainView">
+                  <div className="titleRow">
+                     <div className="name">{this.props.userData.name}</div>
+                     <div>{this.props.userData.compClass}</div>
+                     <button onClick={openUserInfoModal}>Ändra</button>
                   </div>
-            </ReactModal>
+                  <div className="pointsRow">
+                     <div className="points">{totalPoints}</div>
+                     <div className="pointsDesc total">Totalt</div>
+                     <div className="pointsDesc">10 bästa</div>
+                     <div className="points">{tenBest}</div>
+                  </div>
+                  <div className="headerRow">
+                     <div className="title">Problem:</div>
+                     <div className="sortBy">Sortera efter:</div>
+                     <div className={this.props.problemsSortedBy == BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_NUMBER)}>Nummer</div>
+                     <div className={this.props.problemsSortedBy == BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_POINTS)}>Poäng</div>
+                  </div>
+                  <ProblemList problems={this.props.userData.problems} onToggle={this.props.toggleProblemAndSave} />
+
+                  <ReactModal
+                      isOpen={this.state.userInfoModalIsOpen}
+                      contentLabel="Example Modal"
+                      className="modal"
+                     >
+
+                     <ContenderInfoComp
+                         existingUserData={this.props.userData}
+                         activationCode={this.props.match.params.code}
+                         contest={this.props.contest}
+                         saveUserData={this.props.saveUserData}
+                         loadContest={this.props.loadContest}
+                         showCancelButton={true}
+                         onFinished={closeUserInfoModal}>
+                     </ContenderInfoComp>
+                  </ReactModal>
+
+                  <ReactModal
+                      isOpen={this.state.rulesModalIsOpen}
+                      contentLabel="Example Modal"
+                      className="modal">
+                     <div dangerouslySetInnerHTML={{__html: rules}}></div>
+                     <div className="buttonRow">
+                        <button onClick={closeRulesModal}>Fortsätt</button>
+                     </div>
+                  </ReactModal>
+               </div>
             </div>
          );
       }

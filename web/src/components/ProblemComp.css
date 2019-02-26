@@ -1,12 +1,37 @@
 .problem {
-   display:flex;
    border: 1px solid grey;
    margin-bottom:3px;
-   padding:5px 10px;
    border-radius:5px;
+   position:relative;
 }
 
-.problem.done {
+.problem .firstRow {
+   padding:7px 10px;
+   display:flex;
+}
+
+.problem .secondRow {
+   position:absolute;
+   height:100%;
+   right:0;
+   top:0;
+   display:flex;
+   transition: width 0.2s;
+   overflow:hidden;
+   width:0;
+}
+
+.problem .secondRow button {
+   margin:2px;
+   flex-grow:1;
+}
+
+.problem .secondRow.expanded {
+   display:flex;
+   width:200px;
+}
+
+.problem.done .firstRow {
    opacity:0.1;
 }
 

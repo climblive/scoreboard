@@ -41,14 +41,20 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
       this.setState(this.state);
    }
 
-   onSubmit = () => { 
-      var userData: UserData = {
-         code: this.props.activationCode!,
-         name: this.state.name!,
-         compClass: this.state.compClass!,
-         problems: []
-      };
-      this.props.saveUserData!(userData).then(this.props.onFinished!)
+   onSubmit = () => {
+      if(this.inputOk()) {
+         let userData: UserData = {
+            code: this.props.activationCode!,
+            name: this.state.name!,
+            compClass: this.state.compClass!,
+            problems: []
+         };
+         this.props.saveUserData!(userData).then(this.props.onFinished!)
+      }
+   }
+
+   inputOk(): boolean {
+      return this.state.compClass !== undefined && this.state.name !== undefined && this.state.name.trim().length > 1;
    }
    
    render() {
@@ -56,7 +62,8 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
          return (
             <div>Getting data...</div>
          )
-      } 
+      }
+      let submitButtonClass = this.inputOk() ? "" : "disabled";
       let compClasses = this.props.contest.compClasses.map(compClass => (
          <div key={compClass.name} className={compClass.name == this.state.compClass ? "selector compClass selected" : "selector compClass"} onClick={() => this.setCompClass(compClass.name)}>
             <div>{compClass.name}</div>
@@ -68,14 +75,14 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
       if(this.props.showCancelButton) {
          buttons = (
              <div className="buttonRow">
-                <button onClick={this.onSubmit}>Ok</button>
+                <button className={submitButtonClass} onClick={this.onSubmit}>Ok</button>
                 <button onClick={this.props.onFinished}>Cancel</button>
              </div>
          )
       } else {
          buttons = (
              <div>
-                <button onClick={this.onSubmit}>Start</button>
+                <button className={submitButtonClass} onClick={this.onSubmit}>Start</button>
              </div>
          )
       }

@@ -27,22 +27,31 @@ export default class StartView extends React.Component<Props, State> {
       this.setState(this.state);
    }
 
+   inputOk(): boolean {
+      return this.state.activationCode != undefined && this.state.activationCode.length > 6;
+   }
+
    onSubmit = () => {
-      this.state.redirect = true;
-      this.setState(this.state);
+      if(this.inputOk()) {
+         this.state.redirect = true;
+         this.setState(this.state);
+      }
    }
    
    render() {
       if (this.state.redirect) { 
          return <Redirect to={"/" + this.state.activationCode} />
       }
+      let buttonClass = this.inputOk() ? "" : "disabled";
 
       return (
-         <div className="startView view maxWidth">
-            Activation code:
-            <input value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
-            <div>
-               <button onClick={this.onSubmit}>Start</button>
+         <div className="maxWidth">
+            <div className="startView view">
+               Activation code:
+               <input value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
+               <div>
+                  <button className={buttonClass} onClick={this.onSubmit}>Start</button>
+               </div>
             </div>
          </div>
       );

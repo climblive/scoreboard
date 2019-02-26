@@ -32,6 +32,12 @@ button {
    border-radius: 5px;
    padding: 2px 5px;
    background: white;
+   cursor: pointer;
+}
+
+button.disabled {
+   color: grey;
+   cursor: not-allowed;
 }
 
 input {
@@ -57,7 +63,10 @@ input {
 }
 
 .maxWidth {
+   flex-direction: column;
    width:100%;
+   display:flex;
+   flex-grow:1;
    max-width: 500px;
    margin-left:auto;
    margin-right:auto;

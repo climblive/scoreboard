@@ -8,12 +8,12 @@ import se.scoreboard.storage.FileDataStorage
 
 internal class ContenderServiceTest {
 
-    private val contenderService : ContenderService = ContenderService(FileDataStorage(), null)
+    private val contenderService : ContenderService = ContenderService(FileDataStorage("database.json"), null)
 
     @Test
     fun testStuff() {
-        val problems: List<Problem> = contenderService.getProblems();
-        assertEquals(5, problems.size);
+        val problems: List<Problem> = contenderService.getProblems()
+        assertEquals(40, problems.size)
     }
 
 }

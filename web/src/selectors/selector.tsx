@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { StoreState } from '../model/storeState';
 import { ScoreboardListItem } from '../model/scoreboardListItem';
+import {ScoreboardContender} from "../model/scoreboardContender";
 
 const getScoreboardContenders = (state: StoreState, props: any) => {
    if (state.scoreboardData) {
@@ -10,50 +11,54 @@ const getScoreboardContenders = (state: StoreState, props: any) => {
    }
 }
 
+const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: number, scoreboardContenders?: ScoreboardContender[]) => {
+   console.log("makeGetTotalList");
+   if (scoreboardContenders) {
+      scoreboardContenders = scoreboardContenders.sort((a, b) => getScore(b) - getScore(a));
+      let position = 0;
+      let lastScore = -1;
+      let maxFulfilled = false;
+      let listItems = scoreboardContenders.map((sc, index) => {
+         let score = getScore(sc);
+         if(score != lastScore) {
+            lastScore = score;
+            position = index + 1;
+            maxFulfilled = maxCount != 0 && index >= maxCount;
+         }
+         if(maxFulfilled) {
+            return undefined;
+         } else {
+            let x: ScoreboardListItem = {
+               contenderId: sc.contenderId,
+               position: position,
+               contenderName: sc.contenderName,
+               score: score
+            }
+            return x;
+         }
+      }).filter(sc => sc) as ScoreboardListItem[]
+
+      if(maxCount && listItems.length > 0 && !listItems[listItems.length - 1].score) {
+         // Finalist list with score 0. Don't allow that...
+         return [];
+      } else {
+         return listItems;
+      }
+   } else {
+      return undefined;
+   }
+}
+
 export const makeGetTotalList = () => {
    return createSelector(
       [getScoreboardContenders],
-      (scoreboardContenders) => {
-         console.log("makeGetTotalList");
-         if (scoreboardContenders) {
-            return scoreboardContenders.sort((a, b) => b.totalScore - a.totalScore).map((sc, index) => {
-               let x: ScoreboardListItem = {
-                  contenderId: sc.contenderId,
-                  position: index + 1,
-                  contenderName: sc.contenderName,
-                  score: sc.totalScore
-               }
-               return x;
-            })
-         } else {
-            return undefined;
-         }
-      }
+      (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.totalScore, 0, scoreboardContenders)
    )
 }
 
 export const makeGetFinalistList = () => {
    return createSelector(
       [getScoreboardContenders],
-      (getScoreboardContenders) => {
-         console.log("makeGetFinalistList");
-         if (getScoreboardContenders) {
-            let finalists = getScoreboardContenders.sort((a, b) => b.tenBestScore - a.tenBestScore);
-
-            // TODO: Better calculation of finalists:
-            finalists = finalists.slice(0, 5);
-            return finalists.map((sc, index) => {
-               let x: ScoreboardListItem = {
-                  contenderId: sc.contenderId,
-                  position: index + 1,
-                  contenderName: sc.contenderName,
-                  score: sc.tenBestScore
-               }
-               return x;
-            })
-         } else {
-            return undefined;
-         }
-      }
+      (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.tenBestScore, 5, scoreboardContenders)
    )
 }

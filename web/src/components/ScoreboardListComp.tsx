@@ -57,7 +57,7 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
       if(this.props.isPaging) {
          this.updateDimensions();
          let nItems = this.props.totalList!.length;
-         nPages = Math.ceil(nItems / this.state.nToShow);
+         nPages = Math.min(20, Math.ceil(nItems / this.state.nToShow));
          currentPage = (Math.floor(this.props.pagingCounter / 7)) % nPages;
          firstItemToShow = currentPage * this.state.nToShow
       }

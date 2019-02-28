@@ -61,6 +61,20 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          let oldContenders = oldScoreboardList.contenders;
          let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
 
+         if(contendersIndex === -1) {
+            // The contender wasn't found in this class.
+            // To be sure, remove it from the other classes:
+            newScoreboardData = newScoreboardData.map(contenderList => {
+               let index = contenderList.contenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
+               if(index !== -1) {
+                  let filteredList = contenderList.contenders.filter(contender => action.payload.item.contenderId !== contender.contenderId);
+                  return {...contenderList, contenders: filteredList}
+               } else {
+                  return contenderList;
+               }
+            })
+         }
+
          // Create the new contenders list and put everything together again:
          let newContenders = [...oldContenders];
          newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = action.payload.item;

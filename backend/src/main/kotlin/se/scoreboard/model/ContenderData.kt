@@ -25,6 +25,6 @@ data class ContenderData(
         if(points.isEmpty()) {
             return 0
         }
-        return points.subList(Math.max(0, points.size - 3), points.size).reduce{a, b -> a + b}
+        return points.subList(Math.max(0, points.size - 10), points.size).reduce{a, b -> a + b}
     }
 };

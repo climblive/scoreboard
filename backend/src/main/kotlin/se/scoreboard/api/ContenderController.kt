@@ -22,6 +22,9 @@ class ContenderController @Autowired constructor(
 
     @GetMapping("/contender/{code}")
     fun getContenderData(@PathVariable("code") code: String) : ContenderDataDTO {
+        if(code.startsWith("A")) {
+            throw ResourceNotFoundException()
+        }
         return contenderDataMapper.toDTO(
                 contenderService.getContest(),
                 code,

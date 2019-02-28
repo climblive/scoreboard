@@ -4,11 +4,11 @@ import { Problem } from '../model/problem';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { BY_POINTS } from '../constants/constants';
 import * as scoreboardActions from '../actions/actions';
-import { ActionType, getType } from 'typesafe-actions';
+import { ActionType, getType} from 'typesafe-actions';
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
-function getDurationString(sec: number): string { 
+function getDurationString(sec: number): string {
    sec = Math.round(sec);
    let min = Math.floor(sec / 60);
    sec -= min * 60;
@@ -31,19 +31,22 @@ function getSortedProblems(problems: Problem[], sortBy:string): Problem[] {
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
    switch (action.type) {
       case getType(scoreboardActions.toggleProblem):
-         let newProblems: Problem[] = Object.assign([], state.userData!.problems);
+         let newProblems: Problem[] = Object.assign([], state.contenderData!.problems);
          let p: Problem = newProblems.find(p => p.id == action.payload.id)!;
          p.sent = !p.sent;
-         return { ...state, userData: { ...state.userData, problems: newProblems } };
+         return { ...state, contenderData: { ...state.contenderData!, problems: newProblems } };
 
       case getType(scoreboardActions.sortProblems):
-         let newProblems2: Problem[] = getSortedProblems(state.userData.problems, action.payload);
-         return { ...state, userData: { ...state.userData, problems: newProblems2 }, problemsSortedBy: action.payload };
+         let newProblems2: Problem[] = getSortedProblems(state.contenderData!.problems, action.payload);
+         return { ...state, contenderData: { ...state.contenderData!, problems: newProblems2 }, problemsSortedBy: action.payload };
 
-      case getType(scoreboardActions.receiveUserData):
-         let userData = action.payload;
-         userData.problems = getSortedProblems(userData.problems, state.problemsSortedBy);
-         return { ...state, userData: userData};
+      case getType(scoreboardActions.receiveContenderData):
+         let contenderData = action.payload;
+         contenderData.problems = getSortedProblems(contenderData.problems, state.problemsSortedBy);
+         return { ...state, contenderData: contenderData, contenderNotFound: false};
+
+      case getType(scoreboardActions.receiveContenderNotFound):
+         return { ...state, contenderData: undefined, contenderNotFound: true};
 
       case getType(scoreboardActions.receiveScoreboardData):
          return { ...state, scoreboardData: action.payload };

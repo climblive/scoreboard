@@ -1,21 +1,31 @@
 
 import { Problem } from '../model/problem';
-import { UserData } from '../model/userData';
+import { ContenderData } from '../model/contenderData';
 import { Dispatch } from 'react-redux';
 import { Api } from '../utils/Api';
-import {receiveUserData, receiveScoreboardData, toggleProblem, receiveContest, updateScoreboardTimer} from './actions';
+import {
+   receiveContenderData,
+   receiveScoreboardData,
+   toggleProblem,
+   receiveContest,
+   updateScoreboardTimer,
+   receiveContenderNotFound
+} from './actions';
 import { StoreState } from '../model/storeState';
 
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getContender(code).then(contenderData => dispatch(receiveUserData(contenderData)))
+      Api.getContender(code)
+         .then(contenderData => dispatch(receiveContenderData(contenderData)))
+         .catch(() => dispatch(receiveContenderNotFound())
+      )
    };
 }
 
 export function loadScoreboardData(): any {
    return (dispatch: Dispatch<any>) => {
       Api.getScoreboard().then(scoreboardData => {
-         dispatch(receiveScoreboardData(scoreboardData))
+         dispatch(receiveScoreboardData(scoreboardData));
          dispatch(updateScoreboardTimer());
       })
    };
@@ -29,10 +39,10 @@ export function loadContest(): any {
    };
 }
 
-export function saveUserData(contenderData: UserData): any {
+export function saveUserData(contenderData: ContenderData): any {
    return (dispatch: Dispatch<any>) => {
-      let promise: Promise<UserData> = Api.setContender(contenderData);
-      promise.then(userData => dispatch(receiveUserData(userData)))
+      let promise: Promise<ContenderData> = Api.setContender(contenderData);
+      promise.then(contenderData => dispatch(receiveContenderData(contenderData)));
       return promise;
    };
 }
@@ -40,6 +50,6 @@ export function saveUserData(contenderData: UserData): any {
 export function toggleProblemAndSave(problem: Problem): any { 
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       dispatch(toggleProblem(problem));
-      dispatch(saveUserData(getState().userData));
+      dispatch(saveUserData(getState().contenderData!));
    };
 }

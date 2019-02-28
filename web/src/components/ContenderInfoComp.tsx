@@ -1,14 +1,14 @@
 import * as React from 'react';
 import './ContenderInfoComp.css';
-import { UserData } from '../model/userData';
+import { ContenderData } from '../model/contenderData';
 import { Contest } from '../model/contest';
 
 export interface Props {
    activationCode : string,
    contest: Contest,
-   existingUserData?: UserData,
+   existingUserData?: ContenderData,
    showCancelButton?: boolean,
-   saveUserData?: (userData: UserData) => Promise<UserData>,
+   saveUserData?: (userData: ContenderData) => Promise<ContenderData>,
    loadContest?: () => void,
    onFinished?: () => void
 }
@@ -22,7 +22,8 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
    public readonly state: State = {
       name: this.props.existingUserData ? this.props.existingUserData.name : "",
       compClass: this.props.existingUserData ? this.props.existingUserData.compClass : undefined,
-   }
+   };
+
    constructor(props: Props) {
       super(props);
    }
@@ -34,24 +35,24 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
    handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
       this.state.name = event.currentTarget.value;
       this.setState(this.state);
-   }
+   };
 
    setCompClass = (compClass:string) => {
       this.state.compClass = compClass;
       this.setState(this.state);
-   }
+   };
 
    onSubmit = () => {
       if(this.inputOk()) {
-         let userData: UserData = {
+         let contenderData: ContenderData = {
             code: this.props.activationCode!,
             name: this.state.name!,
             compClass: this.state.compClass!,
             problems: []
          };
-         this.props.saveUserData!(userData).then(this.props.onFinished!)
+         this.props.saveUserData!(contenderData).then(this.props.onFinished!)
       }
-   }
+   };
 
    inputOk(): boolean {
       return this.state.compClass !== undefined && this.state.name !== undefined && this.state.name.trim().length > 1;
@@ -71,7 +72,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
          </div>
       ));
 
-      var buttons;
+      let buttons;
       if(this.props.showCancelButton) {
          buttons = (
              <div className="buttonRow">

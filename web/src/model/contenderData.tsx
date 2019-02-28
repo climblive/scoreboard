@@ -1,6 +1,6 @@
 import { Problem } from './problem';
 
-export class UserData { 
+export class ContenderData {
    code: string;
    name: string;
    compClass: string;

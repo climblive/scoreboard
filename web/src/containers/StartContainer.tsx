@@ -2,7 +2,7 @@ import * as asyncActions from '../actions/asyncActions';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../model/storeState';
 import StartView, { Props } from '../components/StartView';
-import { UserData } from '../model/userData';
+import { ContenderData } from '../model/contenderData';
 
 export function mapStateToProps(state: StoreState, props: any): Props {
    console.log("Props: ", props);
@@ -14,7 +14,7 @@ export function mapStateToProps(state: StoreState, props: any): Props {
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
       loadContest: () => dispatch(asyncActions.loadContest()),
-      saveUserData: (userData: UserData) => dispatch(asyncActions.saveUserData(userData))
+      saveUserData: (contenderData: ContenderData) => dispatch(asyncActions.saveUserData(contenderData))
    };
 }
 

@@ -1,11 +1,11 @@
-import { UserData } from '../model/userData';
+import { ContenderData } from '../model/contenderData';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
 
 export class Api {
 
    static getLiveUrl(): any {
-      var url: string = "";
+      let url: string = "";
       console.log(window.location.protocol);
       if (window.location.hostname === "localhost") {
          url = "ws://localhost:8080";
@@ -25,8 +25,15 @@ export class Api {
       return (window.location.hostname === "localhost" ?  "http://localhost:8080" : "") + "/api/";
    }
 
+   private static handleErrors(data: Response): Response {
+      if(!data.ok) {
+         throw Error("Failed: " + data.statusText);
+      }
+      return data;
+   }
+
    private static get(url: string) { 
-      return fetch(this.getBaseUrl() + url).then((data) => data.json());
+      return fetch(this.getBaseUrl() + url).then(this.handleErrors).then((data) => data.json());
    }
 
    private static post(url: string, postData: any) { 
@@ -38,18 +45,18 @@ export class Api {
                "Content-Type": "application/json"
             },
          }
-      ).then((data) => data.json())
+      ).then(this.handleErrors).then((data) => data.json())
    }
 
    static getContest(): Promise<Contest> {
       return this.get("contest");
    }
 
-   static getContender(code: string): Promise<UserData> {
+   static getContender(code: string): Promise<ContenderData> {
       return this.get("contender/" + code);
    }
  
-   static setContender(contenderData : UserData): Promise<UserData> {
+   static setContender(contenderData : ContenderData): Promise<ContenderData> {
       return this.post("contender/" + contenderData.code, contenderData);
    }
 

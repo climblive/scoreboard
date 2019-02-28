@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: dbContainer
+    image: mysql:5.7
+    volumes:
+      - /Users/jespersolver/projects/mysql:/var/lib/mysql
+      - ./model/scoreboard.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "scoreboard"
+      MYSQL_USER: "scoreboard"
+      MYSQL_PASSWORD: "scoreboard"
+      MYSQL_DATABASE: "scoreboard"
+  java:
+    container_name: scoreboard
+    image: jespersolver/scoreboard
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - 8080:8080

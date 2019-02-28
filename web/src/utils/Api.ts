@@ -32,12 +32,13 @@ export class Api {
       return data;
    }
 
-   private static get(url: string) { 
-      return fetch(this.getBaseUrl() + url).then(this.handleErrors).then((data) => data.json());
+   private static async get(url: string) {
+      let response = await fetch(this.getBaseUrl() + url);
+      return this.handleErrors(response).json();
    }
 
-   private static post(url: string, postData: any) { 
-      return fetch(this.getBaseUrl() + url,
+   private static async post(url: string, postData: any) {
+      let response = await fetch(this.getBaseUrl() + url,
          {
             method: "POST",
             body: JSON.stringify(postData),
@@ -45,7 +46,8 @@ export class Api {
                "Content-Type": "application/json"
             },
          }
-      ).then(this.handleErrors).then((data) => data.json())
+      );
+      return this.handleErrors(response).json();
    }
 
    static getContest(): Promise<Contest> {

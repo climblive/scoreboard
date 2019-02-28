@@ -1,19 +1,22 @@
-import * as React from 'react';
 import './StartView.css';
 import { Redirect } from 'react-router';
+import * as React from "react";
 
 export interface Props {
 }
 
 type State = {
-   activationCode?: string,
+   activationCode: string,
    redirect: boolean
 }
 
 export default class StartView extends React.Component<Props, State> {
+
    public readonly state: State = {
+      activationCode:"",
       redirect: false
-   }
+   };
+
    constructor(props: Props) {
       super(props);
    }
@@ -25,7 +28,7 @@ export default class StartView extends React.Component<Props, State> {
    handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
       this.state.activationCode = event.currentTarget.value;
       this.setState(this.state);
-   }
+   };
 
    inputOk(): boolean {
       return this.state.activationCode != undefined && this.state.activationCode.length > 6;
@@ -36,7 +39,7 @@ export default class StartView extends React.Component<Props, State> {
          this.state.redirect = true;
          this.setState(this.state);
       }
-   }
+   };
    
    render() {
       if (this.state.redirect) { 

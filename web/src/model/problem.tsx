@@ -1,3 +1,5 @@
+import {ProblemState} from "./problemState";
+
 export interface Problem {
    id: number;
    color: string;
@@ -5,5 +7,5 @@ export interface Problem {
    colorName: string;
    points: number;
    text: string;
-   sent: boolean;
+   state: ProblemState;
 }

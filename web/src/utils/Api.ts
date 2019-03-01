@@ -1,6 +1,8 @@
 import { ContenderData } from '../model/contenderData';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
+import {ProblemState} from "../model/problemState";
+import {Problem} from "../model/problem";
 
 export class Api {
 
@@ -65,4 +67,8 @@ export class Api {
    static getScoreboard(): Promise<ScoreboardContenderList[]> {
       return this.get("scoreboard");
    }
-} 
+
+   static setProblemState(contenderData: ContenderData, problem: Problem, problemState: ProblemState) {
+      return this.post("contender/" + contenderData.code + "/problems/" + problem.id, {state: problemState});
+   }
+}

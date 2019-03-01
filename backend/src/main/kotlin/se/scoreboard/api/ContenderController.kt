@@ -3,6 +3,7 @@ package se.scoreboard.api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContenderDataDTO
+import se.scoreboard.dto.ProblemStateDTO
 import se.scoreboard.dto.ScoreboardListDTO
 import se.scoreboard.dto.ScoreboardListItemDTO
 import se.scoreboard.mapper.CompClassMapper
@@ -35,6 +36,21 @@ class ContenderController @Autowired constructor(
     fun setContenderData(@PathVariable("code") code: String, @RequestBody input : ContenderDataDTO) : ContenderDataDTO {
         contenderService.setContenderData(contenderDataMapper.toModel(code, input))
         return getContenderData(code)
+    }
+
+    @PostMapping("/contender/{code}/problems/{problemId}")
+    fun setProblemState(@PathVariable("code") code: String,
+                        @PathVariable("problemId") problemId: Int,
+                        @RequestBody input : ProblemStateDTO): ContenderDataDTO {
+        println("setProblemState $code $problemId $input")
+        val contenderData = contenderService.getContenderData(code)
+        contenderData!!.setProblemState(problemId, input.state)
+        contenderService.setContenderData(contenderData)
+
+        return contenderDataMapper.toDTO(
+                contenderService.getContest(),
+                code,
+                contenderData)
     }
 
     @GetMapping("/scoreboard")

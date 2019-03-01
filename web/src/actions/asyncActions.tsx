@@ -6,12 +6,14 @@ import { Api } from '../utils/Api';
 import {
    receiveContenderData,
    receiveScoreboardData,
-   toggleProblem,
+   startProblemUpdate,
+   setProblemState,
    receiveContest,
    updateScoreboardTimer,
-   receiveContenderNotFound
+   receiveContenderNotFound, setProblemStateFailed
 } from './actions';
 import { StoreState } from '../model/storeState';
+import {ProblemState} from "../model/problemState";
 
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
@@ -47,9 +49,18 @@ export function saveUserData(contenderData: ContenderData): any {
    };
 }
 
-export function toggleProblemAndSave(problem: Problem): any { 
+export function setProblemStateAndSave(problem: Problem, problemState: ProblemState): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      dispatch(toggleProblem(problem));
-      dispatch(saveUserData(getState().contenderData!));
+      dispatch(startProblemUpdate(problem));
+      let state = getState();
+      Api.setProblemState(state.contenderData!, problem, problemState)
+         .then(() => {
+            console.log("HEJ!");
+            dispatch(setProblemState(problem, problemState))
+         })
+         .catch((error) => {
+            console.log("NEEEJ", error);
+            dispatch(setProblemStateFailed())
+         });
    };
 }

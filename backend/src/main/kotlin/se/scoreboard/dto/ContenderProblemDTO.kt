@@ -1,5 +1,7 @@
 package se.scoreboard.dto
 
+import se.scoreboard.model.ProblemState
+
 data class ContenderProblemDTO(
         val id: Int,
         val color: String,
@@ -7,5 +9,5 @@ data class ContenderProblemDTO(
         val colorName:String,
         val points : Int,
         val text :String,
-        val sent : Boolean
+        val state : ProblemState
 )

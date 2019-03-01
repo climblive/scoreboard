@@ -5,25 +5,29 @@ import ProblemList from './ProblemList';
 import { ContenderData } from '../model/contenderData';
 import * as ReactModal from 'react-modal';
 import { Contest } from '../model/contest';
-import { BY_NUMBER, BY_POINTS } from '../constants/constants';
 import ContenderInfoComp from "./ContenderInfoComp";
 import {Redirect} from "react-router";
+import {SortBy} from "../constants/constants";
+import {ProblemState} from "../model/problemState";
 
 export interface Props {
    contenderData?: ContenderData,
    contenderNotFound: boolean,
    match: {
       params: {
-         code: string;
+         code: string
       }
    }
    contest: Contest,
-   problemsSortedBy: string
-   loadUserData?: (code: string) => void;
+   problemsSortedBy: string,
+   problemIdBeingUpdated?: number,
+   errorMessage?: string,
+   loadUserData?: (code: string) => void,
    saveUserData?: (contenderData: ContenderData) => Promise<ContenderData>,
-   toggleProblemAndSave?: (problem: Problem) => void;
-   sortProblems?: (sortBy: string) => void;
-   loadContest?: () => void;
+   setProblemStateAndSave?: (problem: Problem, problemState: ProblemState) => void,
+   sortProblems?: (sortBy: SortBy) => void,
+   loadContest?: () => void,
+   clearErrorMessage?: () => void
 }
 
 type State = {
@@ -91,8 +95,8 @@ export default class MainView extends React.Component<Props, State> {
          )
       } else {
          document.title = this.props.contenderData.name;
-         let totalPoints = this.props.contenderData.problems.filter(p => p.sent).reduce((s, p) => s + p.points, 0);
-         let tenBest = this.props.contenderData.problems.filter(p => p.sent).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
+         let totalPoints = this.props.contenderData.problems.filter(p => p.state !== ProblemState.NOT_SENT).reduce((s, p) => s + p.points, 0);
+         let tenBest = this.props.contenderData.problems.filter(p => p.state !== ProblemState.NOT_SENT).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
 
          let openUserInfoModal = () => {
             console.log("openUserInfoModal");
@@ -131,10 +135,10 @@ export default class MainView extends React.Component<Props, State> {
                   <div className="headerRow">
                      <div className="title">Problem:</div>
                      <div className="sortBy">Sortera efter:</div>
-                     <div className={this.props.problemsSortedBy == BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_NUMBER)}>Nummer</div>
-                     <div className={this.props.problemsSortedBy == BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(BY_POINTS)}>Poäng</div>
+                     <div className={this.props.problemsSortedBy == SortBy.BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_NUMBER)}>Nummer</div>
+                     <div className={this.props.problemsSortedBy == SortBy.BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_POINTS)}>Poäng</div>
                   </div>
-                  <ProblemList problems={this.props.contenderData.problems} onToggle={this.props.toggleProblemAndSave} />
+                  <ProblemList problems={this.props.contenderData.problems} problemIdBeingUpdated={this.props.problemIdBeingUpdated} setProblemStateAndSave={this.props.setProblemStateAndSave} />
 
                   <ReactModal
                       isOpen={this.state.userInfoModalIsOpen}
@@ -160,6 +164,16 @@ export default class MainView extends React.Component<Props, State> {
                      <div dangerouslySetInnerHTML={{__html: rules}}></div>
                      <div className="buttonRow">
                         <button onClick={closeRulesModal}>Fortsätt</button>
+                     </div>
+                  </ReactModal>
+
+                  <ReactModal
+                     isOpen={this.props.errorMessage !== undefined}
+                     contentLabel="Example Modal"
+                     className="modal">
+                     <div>{this.props.errorMessage}</div>
+                     <div className="buttonRow">
+                        <button onClick={this.props.clearErrorMessage!}>Ok</button>
                      </div>
                   </ReactModal>
                </div>

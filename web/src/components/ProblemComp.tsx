@@ -1,19 +1,24 @@
 import * as React from 'react';
 import './ProblemComp.css';
-import { Problem } from '../model/problem';
+import {Problem} from '../model/problem';
+import {ProblemState} from "../model/problemState";
 
 export interface ProblemCompProps {
    problem: Problem;
    isExpanded: boolean;
+   isUpdating: boolean;
+   setProblemState?: (problemState: ProblemState) => void;
    onToggle?: () => void;
-   toggleSent?: () => void;
 }
 
-function ProblemComp({ problem, isExpanded, onToggle, toggleSent }: ProblemCompProps) {
-   var isSent = problem.sent ? 'SENT!' : '';
-   var className = "problem " + (problem.sent ? 'done' : '');
-   var colorStyle = { background: problem.color, color: problem.textColor };
-   var secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
+function ProblemComp({ problem, isExpanded, isUpdating, setProblemState, onToggle }: ProblemCompProps) {
+   let isSent = problem.state === ProblemState.NOT_SENT ? "" : (problem.state as string);
+   if(isUpdating) {
+      isSent = "Updating...";
+   }
+   let className = "problem " + (problem.state !== ProblemState.NOT_SENT ? 'done' : '');
+   let colorStyle = { background: problem.color, color: problem.textColor };
+   let secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
    return (
       <div className={className} onClick={onToggle}>
          <div style={colorStyle} className="firstRow">
@@ -23,9 +28,9 @@ function ProblemComp({ problem, isExpanded, onToggle, toggleSent }: ProblemCompP
             <div className="sent"> {isSent}</div>
          </div>
          <div className={secondRowClassName} style={colorStyle}>
-            <button onClick={toggleSent}>Flashed</button>
-            <button onClick={toggleSent}>Sent</button>
-            <button onClick={toggleSent}>Not sent</button>
+            <button onClick={() => setProblemState!(ProblemState.FLASHED)}>Flashed</button>
+            <button onClick={() => setProblemState!(ProblemState.SENT)}>Sent</button>
+            <button onClick={() => setProblemState!(ProblemState.NOT_SENT)}>Not sent</button>
          </div>
       </div>
    );

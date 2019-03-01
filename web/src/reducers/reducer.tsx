@@ -2,9 +2,9 @@
 import { StoreState } from '../model/storeState';
 import { Problem } from '../model/problem';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
-import { BY_POINTS } from '../constants/constants';
 import * as scoreboardActions from '../actions/actions';
 import { ActionType, getType} from 'typesafe-actions';
+import {SortBy} from "../constants/constants";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -18,9 +18,9 @@ function getDurationString(sec: number): string {
    return "" + min + ":" + (sec > 9 ? "" : "0") + sec;
 }
 
-function getSortedProblems(problems: Problem[], sortBy:string): Problem[] {
+function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
    let newProblems: Problem[] = [...problems];
-   if (sortBy === BY_POINTS) {
+   if (sortBy === SortBy.BY_POINTS) {
       newProblems = newProblems.sort((a, b) => a.points - b.points);
    } else {
       newProblems = newProblems.sort((a, b) => a.id - b.id);
@@ -30,11 +30,20 @@ function getSortedProblems(problems: Problem[], sortBy:string): Problem[] {
 
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
    switch (action.type) {
-      case getType(scoreboardActions.toggleProblem):
+      case getType(scoreboardActions.startProblemUpdate):
+         return { ...state, problemIdBeingUpdated: action.payload.id };
+
+      case getType(scoreboardActions.setProblemState):
          let newProblems: Problem[] = Object.assign([], state.contenderData!.problems);
          let p: Problem = newProblems.find(p => p.id == action.payload.id)!;
-         p.sent = !p.sent;
-         return { ...state, contenderData: { ...state.contenderData!, problems: newProblems } };
+         p.state = action.meta;
+         return { ...state, contenderData: { ...state.contenderData!, problems: newProblems }, problemIdBeingUpdated: undefined};
+
+      case getType(scoreboardActions.setProblemStateFailed):
+         return { ...state, problemIdBeingUpdated: undefined, errorMessage: "Failed to set state"};
+
+      case getType(scoreboardActions.clearErrorMessage):
+         return { ...state, errorMessage: undefined};
 
       case getType(scoreboardActions.sortProblems):
          let newProblems2: Problem[] = getSortedProblems(state.contenderData!.problems, action.payload);

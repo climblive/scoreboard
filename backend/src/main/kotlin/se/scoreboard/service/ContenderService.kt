@@ -18,9 +18,6 @@ import java.io.ByteArrayOutputStream
 import java.time.ZonedDateTime
 import java.io.FileOutputStream
 
-
-
-
 @Service
 class ContenderService @Autowired constructor(private val dataStorage: DataStorage, private val simpMessagingTemplate : SimpMessagingTemplate?) {
 

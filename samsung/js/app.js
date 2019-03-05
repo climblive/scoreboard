@@ -17,7 +17,7 @@
 /*jshint unused: vars*/
 
 (function() {
-    var XML_ADDRESS = "https://www.tizen.org/blogs/feed",
+    var XML_ADDRESS = "https://clmb.live/api/contender/sadsadsd",
         XML_METHOD = "GET",
         MSG_ERR_NODATA = "There is no news from tizen.org",
         MSG_ERR_NOTCONNECTED = "Connection aborted. Check your internet connection.",
@@ -100,7 +100,7 @@
         emptyElement(objNews);
         addTextElement(objNews, "subject", arrayNews[index].title);
         emptyElement(objPagenum);
-        addTextElement(objPagenum, "pagenum", "Hej " + (index + 1) + "/" + lengthNews);
+        addTextElement(objPagenum, "pagenum", "Hej3 " + (index + 1) + "/" + lengthNews);
     }
 
     /**
@@ -119,6 +119,7 @@
      * @private
      */
     function getDataFromXML() {
+    	    	
         var objNews = document.querySelector("#area-news"),
             xmlhttp = new XMLHttpRequest(),
             xmlDoc,
@@ -133,6 +134,7 @@
         xmlhttp.open(XML_METHOD, XML_ADDRESS, false);
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            		console.log("RESPONSE" + xmlhttp.responseText);
                 xmlDoc = xmlhttp.responseXML;
                 dataItem = xmlDoc.getElementsByTagName("item");
 
@@ -169,16 +171,34 @@
         document.querySelector("#area-news").addEventListener("click", showNextNews);
     }
 
+    function openWithCode(code) {
+		console.log("open with code " + code);
+    		api.getContender(code, function(result) {
+			console.log(result);
+			ui.showProblems(result.problems);
+		});
+    }
+    
     /**
      * Initiates the application.
      * @private
      */
     function init() {
 		console.log("SCOREBOARD init");
-
         setDefaultEvents();
-
-        getDataFromXML();
+        
+        var code = storage.getCode();
+        if(code) {
+        		openWithCode(code);
+        } else {
+        		// No code. Show the input field!
+        		ui.showCode(function(code) {
+        			console.log("code: " + code);
+        			storage.setCode(code);
+        			ui.hideCode();
+        			openWithCode(code);
+        		});
+        }
     }
 
     window.onload = init;

@@ -6,35 +6,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="description" content="Tizen XML News Feed Application"/>
     <title>NewsFeed</title>
+    <link rel="stylesheet" href="lib/tau/wearable/theme/default/tau.min.css"/>
+    <link rel="stylesheet" media="all and (-tizen-geometric-shape: circle)" href="lib/tau/wearable/theme/default/tau.circle.min.css"> 
     <link rel="stylesheet" type="text/css" href="css/style.css"/>
 </head>
 
 <body>
-    <div id="container">
-        <div id="header">
-            <div id="area-title">
-                <p class="header-title">clmb.live</p>
-            </div>
-        </div>
-        <div id="contents">
-        		<form autocorrect="off" autocomplete="off" >
-				<input id="codeInput" placeholder="code" autocorrect="off" autocapitalize="off" spellcheck="false" autocomplete="off" type="text" style="display:none;margin: 5px auto; width: 200px; font-size: 2em; text-align: center;"></input>
-			</form>
-			<ul id="problemsList" style="display:none">
-				<li id="template">Hej</li>				
-			</ul>
-            <div id="area-news">
-            </div>
-        </div>
-        <div id="footer">
-            <div id="area-pagenum">
-            </div>
+	<!--Page layout with more button in header-->
+	<div class="ui-page ui-page-active" id="start">
+	   <header class="ui-header ui-has-more">
+	      <h2 class="ui-title">Call menu</h2>
+	      <button type="button" class="ui-more ui-icon-overflow">More Options</button>
+	   </header>
+	   <div class="ui-content">Content message</div>
+	   <footer class="ui-footer">
+	      <button type="button" class="ui-btn" id="footerButton">Footer Button</button>
+	   </footer>
+	</div>
+
+    <div class="ui-page" id="main">
+        <header class="ui-header ui-has-more">
+			<h2 class="ui-title">clmb.live</h2>
+			<button type="button" class="ui-more ui-icon-overflow">More Options</button>
+		</header>
+        <div class="ui-content ui-content-padding" style="text-align:center;">
+			<div>Jesper Sölver</div>
+			<div style="font-size:25px; font-style:italic;">Herr</div>
+			<div style="display:flex;margin-top:10px;margin-bottom:20px;">
+				<div style="flex-grow:1; flex-basis:0;">
+					<div style="font-size:50px; font-face:monospace;">2250</div>
+					<div style="font-size:15px;">Totalt</div>
+				</div>
+				<div style="flex-grow:1; flex-basis:0;">
+					<div style="font-size:50px; font-face:monospace;">1800</div>
+					<div style="font-size:15px;">10 bästa</div>
+				</div>
+			</div>
+			<button id="showProblemsButton">Problems</button>
         </div>
     </div>
+
+    <div class="ui-page" id="problems">
+        <header class="ui-header">
+			<h2 class="ui-title">clmb.live</h2>
+		</header>
+        <div class="ui-content ui-content-padding">
+        		<form autocorrect="off" autocomplete="off" >
+				<input id="codeInput" placeholder="code" autocorrect="off" autocapitalize="off" spellcheck="false" autocomplete="off" type="text" style="display:none;margin: 5px auto; width: 200px; text-align: center;"></input>
+			</form>
+			<ul id="problemsList" class="ui-listview">
+				<li id="template" style="border-radius:50px; display:flex; flex-direction:row; align-items:center;">
+					<div class="name" style="width:50px; margin-right:10px; color:inherit;">10</div>
+					<div class="color" style="margin-right:auto; color:inherit;">Apa</div>
+					<div class="points" style="margin-right:10px; color:inherit;">50</div>
+					<div class="dot" style="width:20px; height:20px; background:white; border-radius:10px;"></div>
+				</li>				
+			</ul>
+        </div>
+    </div>
+    
+	<div id="problemPopup" class="ui-popup">
+	   	<div class="ui-popup-header"><span style="background-color:yellow; border-radius:20px; color:black; padding:2px 10px;">1 Yellow 150</span></div>
+	   	<div class="ui-popup-content" style="display:flex; flex-direction:row;">
+	       	<button id="1btnPopup-not_sent" class="ui-btn problemStatusButton">
+	       		<img src="img/not_sent.png">
+	       		<div>Not sent</div>
+	       	</button>
+	       	<button id="1btnPopup-sent" class="ui-btn problemStatusButton">
+	       		<img src="img/sent.png">
+	       		<div>Sent</div>
+	       	</button>
+	       	<button id="1btnPopup-flashed" class="ui-btn problemStatusButton">
+	       		<img src="img/flashed.png">
+	       		<div>Flashed</div>
+	       	</button>
+	   	</div>
+	   	<div class="ui-popup-footer">
+	      <button id="1btnPopup-cancel" class="ui-btn">Back</button>
+	   </div>
+	</div>
+
+    <script src="lib/tau/wearable/js/tau.min.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/data.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/circle-helper.js"></script>
 </body>
 
 </html>

@@ -50,7 +50,8 @@
     		console.log("SCOREBOARD keyEventHandler", event);
         if (event.keyName === "back") {
             try {
-                tizen.application.getCurrentApplication().exit();
+            	 	tau.back();
+                //tizen.application.getCurrentApplication().exit();
             } catch (ignore) {}
         }
     }
@@ -168,14 +169,15 @@
      */
     function setDefaultEvents() {
         document.addEventListener("tizenhwkey", keyEventHandler);
-        document.querySelector("#area-news").addEventListener("click", showNextNews);
     }
 
     function openWithCode(code) {
 		console.log("open with code " + code);
     		api.getContender(code, function(result) {
 			console.log(result);
-			ui.showProblems(result.problems);
+			ui.showMain();
+			data.setProblems(result.problems);
+			//ui.showProblems(result.problems);
 		});
     }
     
@@ -186,8 +188,16 @@
     function init() {
 		console.log("SCOREBOARD init");
         setDefaultEvents();
+        ui.initEvents();
+        
+        /*document.getElementById("footerButton").addEventListener("click", function() {
+        	console.log("Hej");
+        		ui.showProblems();
+        });*/
         
         var code = storage.getCode();
+        // FAKE:
+        code = "ldkaccld";
         if(code) {
         		openWithCode(code);
         } else {

@@ -1,5 +1,6 @@
 package se.scoreboard.mapper
 
+import org.mapstruct.InheritInverseConfiguration
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
@@ -13,4 +14,10 @@ interface ProblemMapper : AbstractMapper<Problem, ProblemDto> {
         Mapping(source = "contest.id", target = "contestId")
     )
     override fun convertToDto(source: Problem): ProblemDto
+
+    @InheritInverseConfiguration(name = "convertToDto")
+    @Mappings(
+            Mapping(target = "ticks", ignore = true)
+    )
+    override fun convertToEntity(source: ProblemDto): Problem
 }

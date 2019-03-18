@@ -1,7 +1,5 @@
 package se.scoreboard.service
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import org.apache.poi.ss.usermodel.Workbook
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -47,8 +45,8 @@ class ContenderService @Autowired constructor(
         return points.takeLast(qualifyingProblems).sum()
     }
 
-    override fun handleNested(entity: Contender, contender: ContenderDto) {
-        entity.contest = entityManager.getReference(Contest::class.java, contender.contestId)
-        entity.compClass = if (contender.compClassId != null) compClassService.fetchEntity(contender.compClassId!!) else null
+    override fun handleNested(entity: Contender, dto: ContenderDto) {
+        entity.contest = entityManager.getReference(Contest::class.java, dto.contestId)
+        entity.compClass = if (dto.compClassId != null) compClassService.fetchEntity(dto.compClassId!!) else null
     }
 }

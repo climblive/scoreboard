@@ -21,7 +21,7 @@ class CompClassService @Autowired constructor(
         entityMapper = Mappers.getMapper(CompClassMapper::class.java)
     }
 
-    override fun handleNested(entity: CompClass, compClass: CompClassDto) {
-        entity.contest = entityManager.getReference(Contest::class.java, compClass.contestId)
+    override fun handleNested(entity: CompClass, dto: CompClassDto) {
+        entity.contest = entityManager.getReference(Contest::class.java, dto.contestId)
     }
 }

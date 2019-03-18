@@ -22,8 +22,8 @@ class ProblemService @Autowired constructor(
         entityMapper = Mappers.getMapper(ProblemMapper::class.java)
     }
 
-    override fun handleNested(entity: Problem, problem: ProblemDto) {
-        entity.color = entityManager.getReference(Color::class.java, problem.colorId)
-        entity.contest = entityManager.getReference(Contest::class.java, problem.contestId)
+    override fun handleNested(entity: Problem, dto: ProblemDto) {
+        entity.color = entityManager.getReference(Color::class.java, dto.colorId)
+        entity.contest = entityManager.getReference(Contest::class.java, dto.contestId)
     }
 }

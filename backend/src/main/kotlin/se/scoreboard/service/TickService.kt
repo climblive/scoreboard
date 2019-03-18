@@ -21,8 +21,8 @@ class TickService @Autowired constructor(
         entityMapper = Mappers.getMapper(TickMapper::class.java)
     }
 
-    override fun handleNested(entity: Tick, tick: TickDto) {
-        entity.contender = entityManager.getReference(Contender::class.java, tick.contenderId)
-        entity.problem = entityManager.getReference(Problem::class.java, tick.problemId)
+    override fun handleNested(entity: Tick, dto: TickDto) {
+        entity.contender = entityManager.getReference(Contender::class.java, dto.contenderId)
+        entity.problem = entityManager.getReference(Problem::class.java, dto.problemId)
     }
 }

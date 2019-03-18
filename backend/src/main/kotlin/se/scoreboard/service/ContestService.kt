@@ -27,9 +27,9 @@ class ContestService @Autowired constructor(
         entityMapper = Mappers.getMapper(ContestMapper::class.java)
     }
 
-    override fun handleNested(entity: Contest, contest: ContestDto) {
-        entity.location = entityManager.getReference(Location::class.java, contest.locationId)
-        entity.organizer = entityManager.getReference(Organizer::class.java, contest.organizerId)
+    override fun handleNested(entity: Contest, dto: ContestDto) {
+        entity.location = entityManager.getReference(Location::class.java, dto.locationId)
+        entity.organizer = entityManager.getReference(Organizer::class.java, dto.organizerId)
     }
 
     fun export(id: Int): ByteArray {

@@ -1,6 +1,8 @@
 package se.scoreboard.mapper
 
-import org.mapstruct.*
+import org.mapstruct.InheritConfiguration
+import org.mapstruct.InheritInverseConfiguration
+import org.mapstruct.MappingTarget
 
 interface AbstractMapper<EntityType, DtoType> {
     fun convertToDto(source: EntityType): DtoType

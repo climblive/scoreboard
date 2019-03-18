@@ -3,9 +3,7 @@ package se.scoreboard.dto
 data class ColorDto (
     var id: Int?,
     var name: String?,
-    var red: Int,
-    var green: Int,
-    var blue: Int) {
+    var rgb: String) {
 
-    constructor() : this(null, null, 0, 0, 0)
+    constructor() : this(null, null, "FFFFFF")
 }

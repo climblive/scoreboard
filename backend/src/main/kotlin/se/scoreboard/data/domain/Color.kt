@@ -13,17 +13,11 @@ open class Color (
     @Column(name = "id", unique = true, nullable = false)
     override var id: Int? = null,
 
-    @Column(name = "name", nullable = false, length = 32)
+    @Column(name = "name", nullable = false, length = 32, unique = true)
     open var name: String? = null,
 
-    @Column(name = "red", nullable = false)
-    open var red: Int = 0,
-
-    @Column(name = "green", nullable = false)
-    open var green: Int = 0,
-
-    @Column(name = "blue", nullable = false)
-    open var blue: Int = 0,
+    @Column(name = "rgb", length = 6, nullable = false)
+    open var rgb: String? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
     open var problems: MutableSet<Problem> = HashSet(0)) : Serializable, AbstractEntity<Int>

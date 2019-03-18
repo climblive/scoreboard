@@ -6,7 +6,7 @@ import javax.persistence.GenerationType.IDENTITY
 import java.io.Serializable
 
 @Entity
-@Table(name = "class")
+@Table(name = "comp_class")
 open class CompClass (
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -20,12 +20,15 @@ open class CompClass (
     @Column(name = "name", nullable = false, length = 45)
     open var name: String? = null,
 
+    @Column(name = "description", length = 255)
+    open var description: String? = null,
+
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "time_begin", length = 26)
+    @Column(name = "time_begin", length = 26, nullable = false)
     open var timeBegin: Date? = null,
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "time_end", length = 26)
+    @Column(name = "time_end", length = 26, nullable = false)
     open var timeEnd: Date? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "compClass")

@@ -6,7 +6,8 @@ data class ContestDto (
     var organizerId: Int?,
     var name: String?,
     var description: String?,
-    var qualifyingProblems: Int) {
+    var qualifyingProblems: Int,
+    var rules: String?) {
 
-    constructor() : this(null, null, null, null, null, Int.MAX_VALUE)
+    constructor() : this(null, null, null, null, null, Int.MAX_VALUE, null)
 }

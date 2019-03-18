@@ -16,7 +16,7 @@ open class Organizer (
     @Column(name = "name", nullable = false, length = 32)
     open var name: String? = null,
 
-    @Column(name = "homepage", length = 256)
+    @Column(name = "homepage", length = 255)
     open var homepage: String? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")

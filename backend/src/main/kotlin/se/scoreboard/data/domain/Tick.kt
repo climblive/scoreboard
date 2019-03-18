@@ -6,7 +6,7 @@ import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
 @Entity
-@Table(name = "tick")
+@Table(name = "tick", uniqueConstraints = arrayOf(UniqueConstraint(columnNames = arrayOf("contender_id", "problem_id"))))
 open class Tick (
     @Id
     @GeneratedValue(strategy = IDENTITY)

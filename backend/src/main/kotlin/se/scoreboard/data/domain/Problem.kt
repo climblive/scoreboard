@@ -6,7 +6,7 @@ import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
 @Entity
-@Table(name = "problem")
+@Table(name = "problem", uniqueConstraints = arrayOf(UniqueConstraint(columnNames = arrayOf("number", "contest_id"))))
 open class Problem (
     @Id
     @GeneratedValue(strategy = IDENTITY)

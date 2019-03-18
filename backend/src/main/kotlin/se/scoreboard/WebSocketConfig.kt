@@ -17,7 +17,6 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     override fun configureMessageBroker(config: MessageBrokerRegistry?) {
         config!!.enableSimpleBroker("/topic").setTaskScheduler(heartBeatScheduler())
-        //config.setApplicationDestinationPrefixes("/app")
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry?) {

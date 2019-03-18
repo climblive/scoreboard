@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.Location
 import se.scoreboard.data.domain.Organizer
+import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.ContestRepository
 import se.scoreboard.dto.ContestDto
 import se.scoreboard.mapper.AbstractMapper
@@ -17,8 +18,7 @@ import java.io.ByteArrayOutputStream
 
 @Service
 class ContestService @Autowired constructor(
-        contestRepository: ContestRepository,
-        private val contenderService: ContenderService) : AbstractDataService<Contest, ContestDto, Int>(
+        contestRepository: ContestRepository) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
 
     override lateinit var entityMapper: AbstractMapper<Contest, ContestDto>
@@ -48,10 +48,10 @@ class ContestService @Autowired constructor(
             var lastPosition:Number = -1
             allContenders
                     .filter { it.compClass?.name == compClass.name }
-                    .sortedBy { contenderService.getPoints(it).sum() }
+                    .sortedBy { it.getTotalScore() }
                     .reversed().
                             forEach{ contender ->
-                                val score = contenderService.getPoints(contender).sum()
+                                val score = contender.getTotalScore()
                                 if(score != lastScore) {
                                     lastPosition = rowNum
                                     lastScore = score

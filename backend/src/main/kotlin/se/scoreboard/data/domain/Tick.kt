@@ -22,7 +22,7 @@ open class Tick (
     @Access(AccessType.PROPERTY)
     open var contender: Contender? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "problem_id", nullable = false)
     @Access(AccessType.PROPERTY)
     open var problem: Problem? = null,

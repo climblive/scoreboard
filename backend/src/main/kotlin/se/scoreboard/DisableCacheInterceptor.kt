@@ -9,12 +9,10 @@ class DisableCacheInterceptor : HandlerInterceptor {
 
     @Throws(Exception::class)
     override fun afterCompletion(arg0: HttpServletRequest, arg1: HttpServletResponse, arg2: Any?, arg3: Exception?) {
-        // No implementation
     }
 
     @Throws(Exception::class)
     override fun postHandle(arg0: HttpServletRequest, response: HttpServletResponse, arg2: Any?, arg3: ModelAndView?) {
-        // No implementation
     }
 
     @Throws(Exception::class)

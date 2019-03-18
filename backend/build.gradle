@@ -51,8 +51,7 @@ group = 'jespersolver'
 
 task web(type:Exec) {
     workingDir '../web'
-
-    //on windows:
+    
     if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
         commandLine 'cmd', '/c', 'npm'
     } else {
@@ -89,11 +88,8 @@ war {
     dependsOn web
 
     enabled = true
-    //baseName = 'bombardier'
-    //version =  '0.1'
     webAppDirName = '../web/build'
-
-    // adds a file-set to the WEB-INF dir.
+    
     webInf { from 'src/webInf' }
 }
 

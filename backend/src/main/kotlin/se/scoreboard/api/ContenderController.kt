@@ -1,47 +1,46 @@
 package se.scoreboard.api
 
+import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.dto.ContenderDataDTO
-import se.scoreboard.dto.ScoreboardListDTO
-import se.scoreboard.dto.ScoreboardListItemDTO
-import se.scoreboard.mapper.CompClassMapper
-import se.scoreboard.mapper.ContenderDataMapper
-import se.scoreboard.model.ContenderData
-import se.scoreboard.model.Contest
+import se.scoreboard.dto.ContenderDto
+import se.scoreboard.dto.TickDto
+import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
 class ContenderController @Autowired constructor(
-        val contenderService : ContenderService,
-        val contenderDataMapper : ContenderDataMapper,
-        val compClassMapper: CompClassMapper
-) {
+        val contenderService: ContenderService) {
 
-    @GetMapping("/contender/{code}")
-    fun getContenderData(@PathVariable("code") code: String) : ContenderDataDTO {
-        return contenderDataMapper.toDTO(
-                contenderService.getContest(),
-                code,
-                contenderService.getContenderData(code))
+    private lateinit var tickMapper: TickMapper
+
+    init {
+        tickMapper = Mappers.getMapper(TickMapper::class.java)
     }
 
-    @PostMapping("/contender/{code}")
-    fun setContenderData(@PathVariable("code") code: String, @RequestBody input : ContenderDataDTO) : ContenderDataDTO {
-        contenderService.setContenderData(contenderDataMapper.toModel(code, input))
-        return getContenderData(code)
+    @GetMapping("/contender")
+    fun getContenders() = contenderService.findAll()
+
+    @GetMapping("/contender/{id}")
+    fun getContender(@PathVariable("id") id: Int) = contenderService.findById(id)
+
+    @GetMapping("/contender/findByCode")
+    fun getContenderByCode(@RequestParam("code") code: String) = contenderService.findByCode(code)
+
+    @GetMapping("/contender/{id}/tick")
+    fun getContenderTicks(@PathVariable("id") id: Int) : List<TickDto> {
+        return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
     }
 
-    @GetMapping("/scoreboard")
-    fun getScoreboard() : List<ScoreboardListDTO> {
-        val allContenders = contenderService.getAllContenders()
-        val contest = contenderService.getContest()
-        return contest.compClasses.map{compClass -> ScoreboardListDTO(compClassMapper.toDTO(compClass), getContenderList(allContenders.filter{contender -> contender.compClass == compClass.name}, contest))}
-    }
+    @PostMapping("/contender")
+    fun createContender(@RequestBody contender : ContenderDto) = contenderService.create(contender)
 
-    private fun getContenderList(contenders: List<ContenderData>, contest: Contest): List<ScoreboardListItemDTO> {
-        return contenders.map { ScoreboardListItemDTO(it.id, it.name, it.getScore(contest), it.getTenBestScore(contest))  }
-    }
+    @PutMapping("/contender/{id}")
+    fun updateContender(@PathVariable("id") id: Int,
+                        @RequestBody contender : ContenderDto) = contenderService.update(id, contender)
+
+    @DeleteMapping("/contender/{id}")
+    fun deleteContender(@PathVariable("id") id: Int) = contenderService.delete(id)
 }

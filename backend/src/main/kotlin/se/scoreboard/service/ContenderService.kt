@@ -1,44 +1,52 @@
 package se.scoreboard.service
 
-import com.google.gson.*
+import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
-import se.scoreboard.dto.ScoreboardListItemDTO
-import se.scoreboard.dto.ScoreboardPushItemDTO
-import se.scoreboard.model.ContenderData
-import se.scoreboard.model.Contest
-import se.scoreboard.model.Problem
-import se.scoreboard.storage.DataStorage
-import se.scoreboard.storage.FileDataStorage
-import java.time.ZonedDateTime
-
+import se.scoreboard.data.domain.Contender
+import se.scoreboard.data.domain.Contest
+import se.scoreboard.data.repo.ContenderRepository
+import se.scoreboard.dto.ContenderDto
+import se.scoreboard.exception.NotFoundException
+import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.mapper.ContenderMapper
+import javax.transaction.Transactional
 
 @Service
-class ContenderService @Autowired constructor(private val dataStorage: DataStorage, private val simpMessagingTemplate : SimpMessagingTemplate?) {
+class ContenderService @Autowired constructor(
+    private var contenderRepository: ContenderRepository,
+    private var compClassService: CompClassService) : AbstractDataService<Contender, ContenderDto, Int>(
+        contenderRepository) {
 
-    fun getContest(): Contest {
+    override lateinit var entityMapper: AbstractMapper<Contender, ContenderDto>
 
-        val gson = GsonBuilder().registerTypeAdapter(ZonedDateTime::class.java, JsonDeserializer<ZonedDateTime> { json, type, jsonDeserializationContext -> ZonedDateTime.parse(json.asJsonPrimitive.asString) }).create()
-        val fileContent = FileDataStorage::class.java.getResource("/contest.json").readText()
-        return gson.fromJson(fileContent, Contest::class.java)
+    init {
+        entityMapper = Mappers.getMapper(ContenderMapper::class.java)
     }
 
-    fun getProblems() :List<Problem> = getContest().problems
-
-    fun getContenderData(code: String) : ContenderData? = dataStorage.getContenderData(code)
-
-    fun setContenderData(data : ContenderData) {
-        dataStorage.setContenderData(data)
-        
-        if(simpMessagingTemplate != null) {
-            var contenderData = dataStorage.getContenderData(data.code)!!
-            val contest = getContest()
-            val scoreboardListItemDTO = ScoreboardListItemDTO(contenderData.id, contenderData.name, contenderData.getScore(contest), contenderData.getTenBestScore(contest))
-            val scoreboardPushItemDTO = ScoreboardPushItemDTO(contenderData.compClass, scoreboardListItemDTO);
-            simpMessagingTemplate.convertAndSend("/topic/scoreboard", scoreboardPushItemDTO)
-        }
+    @Transactional
+    open fun findByCode(code: String): ContenderDto {
+        val contender = contenderRepository.findByRegistrationCode(code) ?: throw NotFoundException(super.MSG_NOT_FOUND)
+        return entityMapper.convertToDto(contender)
     }
 
-    fun getAllContenders() = dataStorage.getAllContenders()
+    private fun getPoints(contender: Contender) : List<Int> {
+        return contender.ticks.map { tick -> tick.problem?.points }.filterNotNull()
+    }
+
+    fun getTotalScore(id: Int): Int {
+        return getPoints(fetchEntity(id)).sum()
+    }
+
+    fun getQualificationScore(id: Int): Int {
+        val contender = fetchEntity(id)
+        val qualifyingProblems = contender.contest?.qualifyingProblems ?: return 0
+        val points : List<Int> = getPoints(fetchEntity(id)).sorted()
+        return points.takeLast(qualifyingProblems).sum()
+    }
+
+    override fun handleNested(entity: Contender, contender: ContenderDto) {
+        entity.contest = entityManager.getReference(Contest::class.java, contender.contestId)
+        entity.compClass = if (contender.compClassId != null) compClassService.fetchEntity(contender.compClassId!!) else null
+    }
 }

@@ -1,9 +1,6 @@
-import org.apache.tools.ant.taskdefs.condition.Os
-
-
 buildscript {
     ext.kotlin_version = '1.3.10' // Required for Kotlin integration
-    ext.spring_boot_version = '2.1.0.RELEASE'
+    ext.spring_boot_version = '2.1.2.RELEASE'
 
     ext.password= project.hasProperty('password') ? project.getProperty('password') : 'default'
     ext.username = project.hasProperty('username') ? project.getProperty('username') : 'default'
@@ -11,6 +8,7 @@ buildscript {
     repositories {
         jcenter()
     }
+
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Required for Kotlin integration
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version" // See https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
@@ -21,6 +19,17 @@ buildscript {
     }
 }
 
+plugins {
+    id 'java'
+    id "org.jetbrains.kotlin.kapt" version "1.3.21"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+sourceSets {
+    main.java.srcDirs += "build/generated/source/apt/main"
+}
+
 apply plugin: 'kotlin' // Required for Kotlin integration
 apply plugin: "kotlin-spring" // https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
 apply plugin: 'kotlin-jpa'
@@ -28,13 +37,14 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'war'
 apply plugin: 'com.bmuschko.cargo'
+apply plugin: "kotlin-noarg"
 
 jar {
     baseName = 'scoreboard'
     version = '0.1.0'
 }
 
-task web(type:Exec) {
+/*task web(type:Exec) {
     workingDir '../web'
 
     //on windows:
@@ -45,9 +55,23 @@ task web(type:Exec) {
     }
 
     args 'run', 'build'
+}*/
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.4'
 }
 
-war {
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true'
+    ]
+}
+
+ext {
+    mapstructVersion = "1.3.0.Final"
+}
+
+/*war {
     dependsOn web
 
     enabled = true
@@ -57,7 +81,7 @@ war {
 
     // adds a file-set to the WEB-INF dir.
     webInf { from 'src/webInf' }
-}
+}*/
 
 cargo {
 
@@ -97,4 +121,7 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.hibernate:hibernate-testing:5.3.7.Final"
     testImplementation "com.h2database:h2:1.4.196"
+
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    kapt "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }

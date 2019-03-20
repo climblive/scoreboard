@@ -3,7 +3,6 @@ package se.scoreboard.service
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import se.scoreboard.storage.DataStorage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.PDPage

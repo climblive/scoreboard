@@ -1,7 +1,5 @@
-import { CompClass } from './compClass';
-
 export interface Contest {
+   id: number;
    name: string;
    rules: string;
-   compClasses: CompClass[];
 }

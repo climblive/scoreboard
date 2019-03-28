@@ -3,6 +3,9 @@ import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
 import {ProblemState} from "../model/problemState";
 import {Problem} from "../model/problem";
+import {CompClass} from "../model/compClass";
+import {Tick} from "../model/tick";
+import {Color} from "../model/color";
 
 export class Api {
 
@@ -52,16 +55,32 @@ export class Api {
       return this.handleErrors(response).json();
    }
 
-   static getContest(): Promise<Contest> {
-      return this.get("contest");
+   static getContest(contestId: number): Promise<Contest> {
+      return this.get("contest/" + contestId);
+   }
+
+   static getProblems(contestId: number): Promise<Problem[]> {
+      return this.get("contest/" + contestId + "/problem");
+   }
+
+   static getCompClasses(contestId: number): Promise<CompClass[]> {
+      return this.get("contest/" + contestId + "/compClass");
+   }
+
+   static getTicks(contenderId: number): Promise<Tick[]> {
+      return this.get("contender/" + contenderId + "/tick");
+   }
+
+   static getColors(): Promise<Color[]> {
+      return this.get("color");
    }
 
    static getContender(code: string): Promise<ContenderData> {
-      return this.get("contender/" + code);
+      return this.get("contender/findByCode?code=" + code);
    }
  
    static setContender(contenderData : ContenderData): Promise<ContenderData> {
-      return this.post("contender/" + contenderData.code, contenderData);
+      return this.post("contender/" + contenderData.id, contenderData);
    }
 
    static getScoreboard(): Promise<ScoreboardContenderList[]> {
@@ -69,6 +88,6 @@ export class Api {
    }
 
    static setProblemState(contenderData: ContenderData, problem: Problem, problemState: ProblemState) {
-      return this.post("contender/" + contenderData.code + "/problems/" + problem.id, {state: problemState});
+      return this.post("contender/" + contenderData.registrationCode + "/problems/" + problem.id, {state: problemState});
    }
 }

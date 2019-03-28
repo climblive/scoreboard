@@ -1,4 +1,5 @@
 export interface CompClass {
+   id: number;
    name: string;
    description: string;
    start: number;

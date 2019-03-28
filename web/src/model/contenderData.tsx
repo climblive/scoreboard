@@ -1,8 +1,8 @@
-import { Problem } from './problem';
-
 export class ContenderData {
-   code: string;
+   registrationCode: string;
+   contestId: number;
    name: string;
-   compClass: string;
-   problems: Problem[];
+   id: number;
+   entered?: string;
+   compClassId: number;
 }

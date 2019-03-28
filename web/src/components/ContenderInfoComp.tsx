@@ -2,34 +2,35 @@ import * as React from 'react';
 import './ContenderInfoComp.css';
 import { ContenderData } from '../model/contenderData';
 import { Contest } from '../model/contest';
+import {CompClass} from "../model/compClass";
 
 export interface Props {
    activationCode : string,
    contest: Contest,
-   existingUserData?: ContenderData,
+   compClasses: CompClass[],
+   existingUserData: ContenderData,
    showCancelButton?: boolean,
    saveUserData?: (userData: ContenderData) => Promise<ContenderData>,
-   loadContest?: () => void,
    onFinished?: () => void
 }
 
 type State = {
+   id: number
    name?: string,
-   compClass?: string,
+   compClassId?: number,
+   entered?: string
 }
 
 export default class ContenderInfoComp extends React.Component<Props, State> {
    public readonly state: State = {
-      name: this.props.existingUserData ? this.props.existingUserData.name : "",
-      compClass: this.props.existingUserData ? this.props.existingUserData.compClass : undefined,
+      id: this.props.existingUserData.id,
+      entered: this.props.existingUserData.entered,
+      name: this.props.existingUserData.name,
+      compClassId: this.props.existingUserData.compClassId
    };
 
    constructor(props: Props) {
       super(props);
-   }
-
-   componentDidMount() { 
-      this.props.loadContest!();
    }
 
    handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -37,36 +38,41 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
       this.setState(this.state);
    };
 
-   setCompClass = (compClass:string) => {
-      this.state.compClass = compClass;
+   setCompClass = (compClassId:number) => {
+      this.state.compClassId = compClassId;
       this.setState(this.state);
    };
 
    onSubmit = () => {
       if(this.inputOk()) {
          let contenderData: ContenderData = {
-            code: this.props.activationCode!,
+            id: this.state.id,
+            entered: this.state.entered,
+            registrationCode: this.props.activationCode!,
             name: this.state.name!,
-            compClass: this.state.compClass!,
-            problems: []
+            compClassId: this.state.compClassId!,
+            contestId: this.props.contest.id
          };
          this.props.saveUserData!(contenderData).then(this.props.onFinished!)
       }
    };
 
    inputOk(): boolean {
-      return this.state.compClass !== undefined && this.state.name !== undefined && this.state.name.trim().length > 1;
+      return this.state.compClassId !== undefined && this.state.name !== undefined && this.state.name.trim().length > 1;
    }
    
    render() {
+      console.log(this.props);
       if (!this.props.contest) {
          return (
             <div>Getting data...</div>
          )
       }
       let submitButtonClass = this.inputOk() ? "" : "disabled";
-      let compClasses = this.props.contest.compClasses.map(compClass => (
-         <div key={compClass.name} className={compClass.name == this.state.compClass ? "selector compClass selected" : "selector compClass"} onClick={() => this.setCompClass(compClass.name)}>
+      let compClasses = this.props.compClasses.map(compClass => (
+         <div key={compClass.name}
+              className={compClass.id == this.state.compClassId ? "selector compClass selected" : "selector compClass"}
+              onClick={() => this.setCompClass(compClass.id)}>
             <div>{compClass.name}</div>
             <div className="compClassDescription">{compClass.description}</div>
          </div>

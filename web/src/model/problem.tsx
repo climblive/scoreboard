@@ -1,11 +1,6 @@
-import {ProblemState} from "./problemState";
-
 export interface Problem {
    id: number;
-   color: string;
-   textColor: string;
-   colorName: string;
+   colorId: number;
    points: number;
    text: string;
-   state: ProblemState;
 }

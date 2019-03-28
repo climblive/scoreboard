@@ -3,9 +3,11 @@ import './ProblemList.css';
 import { Problem } from '../model/problem';
 import ProblemComp from './ProblemComp';
 import {ProblemState} from "../model/problemState";
+import {Color} from "../model/color";
 
 export interface ProblemListProps {
    problems: Problem[],
+   colors: Map<number, Color>,
    problemIdBeingUpdated?: number,
    setProblemStateAndSave?: (problem: Problem, problemState: ProblemState) => void
 }
@@ -41,7 +43,9 @@ export default class ProblemList extends React.Component<ProblemListProps, State
             isUpdating={p.id === this.props.problemIdBeingUpdated}
             isExpanded={p.id === this.state.expandedProblem}
             setProblemState={(problemState: ProblemState) => this.setProblemState(p, problemState)}
-            onToggle={() => this.toggle(p)} problem={p}
+            onToggle={() => this.toggle(p)}
+            problem={p}
+            colors={this.props.colors}
          />));
       return (
          <div className="problemList">

@@ -10,7 +10,7 @@ import {
    setProblemState,
    receiveContest,
    updateScoreboardTimer,
-   receiveContenderNotFound, setProblemStateFailed
+   receiveContenderNotFound, setProblemStateFailed, receiveProblems, receiveCompClasses, receiveTicks, receiveColors
 } from './actions';
 import { StoreState } from '../model/storeState';
 import {ProblemState} from "../model/problemState";
@@ -18,7 +18,24 @@ import {ProblemState} from "../model/problemState";
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
       Api.getContender(code)
-         .then(contenderData => dispatch(receiveContenderData(contenderData)))
+         .then(contenderData => {
+            dispatch(receiveContenderData(contenderData));
+            Api.getProblems(contenderData.contestId).then(problems => {
+               dispatch(receiveProblems(problems));
+            });
+            Api.getContest(contenderData.contestId).then(contest => {
+               dispatch(receiveContest(contest));
+            });
+            Api.getCompClasses(contenderData.contestId).then(compClasses => {
+               dispatch(receiveCompClasses(compClasses));
+            });
+            Api.getTicks(contenderData.id).then(ticks => {
+               dispatch(receiveTicks(ticks));
+            });
+            Api.getColors().then(colors => {
+               dispatch(receiveColors(colors));
+            });
+         })
          .catch(() => dispatch(receiveContenderNotFound())
       )
    };
@@ -35,7 +52,7 @@ export function loadScoreboardData(): any {
 
 export function loadContest(): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getContest().then(contest => {
+      Api.getContest(0).then(contest => {
          dispatch(receiveContest(contest));
       })
    };

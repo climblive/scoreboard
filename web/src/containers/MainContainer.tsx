@@ -14,6 +14,10 @@ export function mapStateToProps(state: StoreState, props: any): Props {
       contenderData: state.contenderData,
       contenderNotFound: state.contenderNotFound,
       contest: state.contest,
+      problems: state.problems,
+      compClasses: state.compClasses,
+      ticks: state.ticks,
+      colors: state.colors,
       problemsSortedBy: state.problemsSortedBy,
       problemIdBeingUpdated: state.problemIdBeingUpdated,
       errorMessage: state.errorMessage,
@@ -26,7 +30,6 @@ export function mapDispatchToProps(dispatch: Dispatch<any>) {
       setProblemStateAndSave: (problem: Problem, problemState: ProblemState) => dispatch(asyncActions.setProblemStateAndSave(problem, problemState)),
       loadUserData: (code: string) => dispatch(asyncActions.loadUserData(code)),
       saveUserData: (contenderData: ContenderData) => dispatch(asyncActions.saveUserData(contenderData)),
-      loadContest: () => dispatch(asyncActions.loadContest()),
       sortProblems: (sortBy: SortBy) => dispatch(actions.sortProblems(sortBy)),
       clearErrorMessage: () => dispatch(actions.clearErrorMessage())
    };

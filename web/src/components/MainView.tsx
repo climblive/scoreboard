@@ -1,7 +1,6 @@
 import * as React from 'react';
 import './MainView.css';
 import { Problem } from '../model/problem';
-import ProblemList from './ProblemList';
 import { ContenderData } from '../model/contenderData';
 import * as ReactModal from 'react-modal';
 import { Contest } from '../model/contest';
@@ -9,6 +8,10 @@ import ContenderInfoComp from "./ContenderInfoComp";
 import {Redirect} from "react-router";
 import {SortBy} from "../constants/constants";
 import {ProblemState} from "../model/problemState";
+import {Tick} from "../model/tick";
+import {CompClass} from "../model/compClass";
+import ProblemList from "./ProblemList";
+import {Color} from "../model/color";
 
 export interface Props {
    contenderData?: ContenderData,
@@ -19,6 +22,10 @@ export interface Props {
       }
    }
    contest: Contest,
+   problems: Problem[],
+   compClasses: CompClass[],
+   ticks: Tick[],
+   colors: Map<number, Color>,
    problemsSortedBy: string,
    problemIdBeingUpdated?: number,
    errorMessage?: string,
@@ -26,7 +33,6 @@ export interface Props {
    saveUserData?: (contenderData: ContenderData) => Promise<ContenderData>,
    setProblemStateAndSave?: (problem: Problem, problemState: ProblemState) => void,
    sortProblems?: (sortBy: SortBy) => void,
-   loadContest?: () => void,
    clearErrorMessage?: () => void
 }
 
@@ -52,7 +58,6 @@ export default class MainView extends React.Component<Props, State> {
 
       let code : string = this.props.match.params.code;
       this.props.loadUserData!(code);
-      this.props.loadContest!();
    }
 
    render() {
@@ -70,7 +75,7 @@ export default class MainView extends React.Component<Props, State> {
                <button onClick={goBack}>Go back</button>
             </div>
          )
-      } else if (!this.props.contenderData) {
+      } else if (!(this.props.contenderData && this.props.problems && this.props.contest && this.props.compClasses && this.props.ticks && this.props.colors)) {
          return ( 
             <div>Getting data...</div>
          )
@@ -84,10 +89,11 @@ export default class MainView extends React.Component<Props, State> {
             <div className="maxWidth">
                <div className="view mainView">
                    <ContenderInfoComp
+                       existingUserData={this.props.contenderData}
                        activationCode={this.props.match.params.code}
                        contest={this.props.contest}
+                       compClasses={this.props.compClasses}
                        saveUserData={this.props.saveUserData}
-                       loadContest={this.props.loadContest}
                        onFinished={openRulesModal} >
                    </ContenderInfoComp>
                </div>
@@ -95,8 +101,8 @@ export default class MainView extends React.Component<Props, State> {
          )
       } else {
          document.title = this.props.contenderData.name;
-         let totalPoints = this.props.contenderData.problems.filter(p => p.state !== ProblemState.NOT_SENT).reduce((s, p) => s + p.points, 0);
-         let tenBest = this.props.contenderData.problems.filter(p => p.state !== ProblemState.NOT_SENT).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
+         let totalPoints = 0;  // FIXME //this.props.problems.filter(p => p.state !== ProblemState.NOT_SENT).reduce((s, p) => s + p.points, 0);
+         let tenBest = 0; // FIXME this.props.problems.filter(p => p.state !== ProblemState.NOT_SENT).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
 
          let openUserInfoModal = () => {
             console.log("openUserInfoModal");
@@ -117,13 +123,14 @@ export default class MainView extends React.Component<Props, State> {
          };
 
          let rules = this.props.contest ? this.props.contest.rules : "";
+         const compClass = this.props.compClasses.find(compClass => compClass.id === this.props.contenderData!.compClassId)!;
 
          return (
             <div className="maxWidth">
                <div className="view mainView">
                   <div className="titleRow">
                      <div className="name">{this.props.contenderData.name}</div>
-                     <div>{this.props.contenderData.compClass}</div>
+                     <div>{compClass.name}</div>
                      <button onClick={openUserInfoModal}>Ändra</button>
                   </div>
                   <div className="pointsRow">
@@ -138,8 +145,11 @@ export default class MainView extends React.Component<Props, State> {
                      <div className={this.props.problemsSortedBy == SortBy.BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_NUMBER)}>Nummer</div>
                      <div className={this.props.problemsSortedBy == SortBy.BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_POINTS)}>Poäng</div>
                   </div>
-                  <ProblemList problems={this.props.contenderData.problems} problemIdBeingUpdated={this.props.problemIdBeingUpdated} setProblemStateAndSave={this.props.setProblemStateAndSave} />
-
+                  <ProblemList
+                     problems={this.props.problems}
+                     colors={this.props.colors}
+                     problemIdBeingUpdated={this.props.problemIdBeingUpdated}
+                     setProblemStateAndSave={this.props.setProblemStateAndSave} />
                   <ReactModal
                       isOpen={this.state.userInfoModalIsOpen}
                       contentLabel="Example Modal"
@@ -150,8 +160,8 @@ export default class MainView extends React.Component<Props, State> {
                          existingUserData={this.props.contenderData}
                          activationCode={this.props.match.params.code}
                          contest={this.props.contest}
+                         compClasses={this.props.compClasses}
                          saveUserData={this.props.saveUserData}
-                         loadContest={this.props.loadContest}
                          showCancelButton={true}
                          onFinished={closeUserInfoModal}>
                      </ContenderInfoComp>

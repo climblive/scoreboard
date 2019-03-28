@@ -71,8 +71,8 @@ CREATE TABLE IF NOT EXISTS `comp_class` (
   `contest_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `description` VARCHAR(255) NULL,
-  `time_begin` TIMESTAMP NOT NULL,
-  `time_end` TIMESTAMP NOT NULL,
+  `time_begin` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `time_end` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_comp_class_1`
     FOREIGN KEY (`contest_id`)
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `contender` (
   `registration_code` VARCHAR(16) NOT NULL,
   `name` VARCHAR(64) NOT NULL,
   `class_id` INT NOT NULL,
-  `entered` TIMESTAMP NULL,
+  `entered` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_contender_1`
     FOREIGN KEY (`class_id` , `contest_id`)
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `tick` (
   `contender_id` INT NOT NULL,
   `problem_id` INT NOT NULL,
   `flash` TINYINT(1) NOT NULL DEFAULT 0,
-  `timestamp` TIMESTAMP NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_tick_1`
     FOREIGN KEY (`problem_id`)

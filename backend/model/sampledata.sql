@@ -16,23 +16,23 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `class`
---
-
-LOCK TABLES `class` WRITE;
-/*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES (1,1,'Herr','2019-02-08 16:30:00','2019-02-08 19:00:00'),(2,1,'Dam','2019-02-08 16:30:00','2019-02-08 19:00:00'),(3,1,'Junior','2019-02-08 15:30:00','2019-02-08 18:00:00');
-/*!40000 ALTER TABLE `class` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `color`
 --
 
 LOCK TABLES `color` WRITE;
 /*!40000 ALTER TABLE `color` DISABLE KEYS */;
-INSERT INTO `color` VALUES (1,'Röd',254,37,37),(2,'Grön',19,211,65),(3,'Blå',16,152,235),(4,'Lila',228,16,235),(5,'Gul',250,243,26),(6,'Svart',5,5,5),(7,'Orange',240,130,14),(8,'Rosa',246,40,165),(9,'Vit',250,250,250);
+INSERT INTO `color` VALUES (1,'Röd','FE2525'),(2,'Grön','13D341'),(3,'Blå','1098EB'),(4,'Lila','E410EB'),(5,'Gul','FAF31A'),(6,'Svart','050505'),(7,'Orange','F0820E'),(8,'Rosa','F628A5'),(9,'Vit','FAFAFA');
 /*!40000 ALTER TABLE `color` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `comp_class`
+--
+
+LOCK TABLES `comp_class` WRITE;
+/*!40000 ALTER TABLE `comp_class` DISABLE KEYS */;
+INSERT INTO `comp_class` VALUES (1,1,'Herr',NULL,'2019-02-08 16:30:00','2019-02-08 19:00:00'),(2,1,'Dam',NULL,'2019-02-08 16:30:00','2019-02-08 19:00:00'),(3,1,'Junior',NULL,'2019-02-08 15:30:00','2019-02-08 18:00:00');
+/*!40000 ALTER TABLE `comp_class` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -51,7 +51,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `contest` WRITE;
 /*!40000 ALTER TABLE `contest` DISABLE KEYS */;
-INSERT INTO `contest` VALUES (1,1,'Pyramiden Giga Boulder','En cup som arrangeras av Klätterpyramiden.',1,10);
+INSERT INTO `contest` VALUES (1,1,'Pyramiden Giga Boulder','En cup som arrangeras av Klätterpyramiden.',1,10,NULL);
 /*!40000 ALTER TABLE `contest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,4 +124,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-18 18:25:34
+-- Dump completed on 2019-03-28 17:56:42

@@ -1,7 +1,6 @@
 import { ContenderData } from '../model/contenderData';
 import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
-import {ProblemState} from "../model/problemState";
 import {Problem} from "../model/problem";
 import {CompClass} from "../model/compClass";
 import {Tick} from "../model/tick";
@@ -55,6 +54,31 @@ export class Api {
       return this.handleErrors(response).json();
    }
 
+   private static async delete(url: string) {
+      let response = await fetch(this.getBaseUrl() + url,
+         {
+            method: "DELETE",
+            headers: {
+               "Content-Type": "application/json"
+            },
+         }
+      );
+      return this.handleErrors(response);
+   }
+
+   private static async put(url: string, postData: any) {
+      let response = await fetch(this.getBaseUrl() + url,
+         {
+            method: "PUT",
+            body: JSON.stringify(postData),
+            headers: {
+               "Content-Type": "application/json"
+            },
+         }
+      );
+      return this.handleErrors(response).json();
+   }
+
    static getContest(contestId: number): Promise<Contest> {
       return this.get("contest/" + contestId);
    }
@@ -71,6 +95,23 @@ export class Api {
       return this.get("contender/" + contenderId + "/tick");
    }
 
+   static createTick(problemId: number, contenderId: number, flash: boolean): Promise<Tick> {
+      const newTick:Tick = {
+         flash,
+         contenderId,
+         problemId
+      }
+      return this.post("tick", newTick);
+   }
+
+   static updateTick(tick: Tick): Promise<any> {
+      return this.put("tick/" + tick.id, tick);
+   }
+
+   static deleteTick(tick: Tick): Promise<any> {
+      return this.delete("tick/" + tick.id);
+   }
+
    static getColors(): Promise<Color[]> {
       return this.get("color");
    }
@@ -80,14 +121,10 @@ export class Api {
    }
  
    static setContender(contenderData : ContenderData): Promise<ContenderData> {
-      return this.post("contender/" + contenderData.id, contenderData);
+      return this.put("contender/" + contenderData.id, contenderData);
    }
 
    static getScoreboard(): Promise<ScoreboardContenderList[]> {
       return this.get("scoreboard");
-   }
-
-   static setProblemState(contenderData: ContenderData, problem: Problem, problemState: ProblemState) {
-      return this.post("contender/" + contenderData.registrationCode + "/problems/" + problem.id, {state: problemState});
    }
 }

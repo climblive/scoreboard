@@ -1,6 +1,7 @@
-import {ProblemState} from "./problemState";
-
 export interface Tick {
-   id: number;
-   state: ProblemState;
+   id?: number;
+   flash: boolean;
+   contenderId: number;
+   problemId: number;
+   timestamp?: string;
 }

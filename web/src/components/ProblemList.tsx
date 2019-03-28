@@ -4,12 +4,14 @@ import { Problem } from '../model/problem';
 import ProblemComp from './ProblemComp';
 import {ProblemState} from "../model/problemState";
 import {Color} from "../model/color";
+import {Tick} from "../model/tick";
 
 export interface ProblemListProps {
    problems: Problem[],
+   ticks: Tick[],
    colors: Map<number, Color>,
    problemIdBeingUpdated?: number,
-   setProblemStateAndSave?: (problem: Problem, problemState: ProblemState) => void
+   setProblemStateAndSave?: (problem: Problem, problemState: ProblemState, tick?: Tick) => void
 }
 
 type State = {
@@ -29,11 +31,10 @@ export default class ProblemList extends React.Component<ProblemListProps, State
    toggle(p: Problem) {
       this.state.expandedProblem = p.id === this.state.expandedProblem ? undefined: p.id;
       this.setState(this.state);
-      //this.props.onToggle!(p);
    }
 
-   setProblemState(p: Problem, problemState: ProblemState) {
-      this.props.setProblemStateAndSave!(p, problemState);
+   getTick(p: Problem) {
+      return this.props.ticks.find(tick => tick.problemId == p.id);
    }
 
    render() {
@@ -42,9 +43,10 @@ export default class ProblemList extends React.Component<ProblemListProps, State
             key={p.id}
             isUpdating={p.id === this.props.problemIdBeingUpdated}
             isExpanded={p.id === this.state.expandedProblem}
-            setProblemState={(problemState: ProblemState) => this.setProblemState(p, problemState)}
+            setProblemState={this.props.setProblemStateAndSave}
             onToggle={() => this.toggle(p)}
             problem={p}
+            tick={this.getTick(p)}
             colors={this.props.colors}
          />));
       return (

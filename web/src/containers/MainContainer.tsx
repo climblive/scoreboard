@@ -7,6 +7,7 @@ import { Problem } from '../model/problem';
 import {ContenderData} from "../model/contenderData";
 import {ProblemState} from "../model/problemState";
 import {SortBy} from "../constants/constants";
+import {Tick} from "../model/tick";
 
 export function mapStateToProps(state: StoreState, props: any): Props {
    console.log("Props: ", props);
@@ -27,7 +28,7 @@ export function mapStateToProps(state: StoreState, props: any): Props {
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
-      setProblemStateAndSave: (problem: Problem, problemState: ProblemState) => dispatch(asyncActions.setProblemStateAndSave(problem, problemState)),
+      setProblemStateAndSave: (problem: Problem, problemState: ProblemState, tick?:Tick) => dispatch(asyncActions.setProblemStateAndSave(problem, problemState, tick)),
       loadUserData: (code: string) => dispatch(asyncActions.loadUserData(code)),
       saveUserData: (contenderData: ContenderData) => dispatch(asyncActions.saveUserData(contenderData)),
       sortProblems: (sortBy: SortBy) => dispatch(actions.sortProblems(sortBy)),

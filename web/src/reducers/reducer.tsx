@@ -36,12 +36,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.startProblemUpdate):
          return { ...state, problemIdBeingUpdated: action.payload.id };
 
-      /*case getType(scoreboardActions.setProblemState):
-         let newProblems: Problem[] = Object.assign([], state.contenderData!.problems);
-         let p: Problem = newProblems.find(p => p.id == action.payload.id)!;
-         p.state = action.meta;
-         return { ...state, contenderData: { ...state.contenderData!, problems: newProblems }, problemIdBeingUpdated: undefined};
-*/
       case getType(scoreboardActions.setProblemStateFailed):
          return { ...state, problemIdBeingUpdated: undefined, errorMessage: "Failed to set state"};
 
@@ -79,6 +73,19 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          const colors = new Map<number, Color>();
          action.payload.forEach(color => colors.set(color.id, color));
          return { ...state, colors: colors };
+
+      case getType(scoreboardActions.createTick):
+         let newTicks1 = [...state.ticks, action.payload];
+         return { ...state, ticks: newTicks1, problemIdBeingUpdated: undefined};
+
+      case getType(scoreboardActions.updateTick):
+         let newTicks2 = state.ticks.filter(tick => tick.id !== action.payload.id);
+         newTicks2.push(action.payload);
+         return { ...state, ticks: newTicks2, problemIdBeingUpdated: undefined};
+
+      case getType(scoreboardActions.deleteTick):
+         let newTicks3 = state.ticks.filter(tick => tick.id !== action.payload.id);
+         return { ...state, ticks: newTicks3, problemIdBeingUpdated: undefined};
 
       case getType(scoreboardActions.receiveScoreboardItem):
          let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];

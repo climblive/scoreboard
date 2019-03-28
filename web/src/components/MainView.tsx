@@ -31,7 +31,7 @@ export interface Props {
    errorMessage?: string,
    loadUserData?: (code: string) => void,
    saveUserData?: (contenderData: ContenderData) => Promise<ContenderData>,
-   setProblemStateAndSave?: (problem: Problem, problemState: ProblemState) => void,
+   setProblemStateAndSave?: (problem: Problem, problemState: ProblemState, tick?: Tick) => void,
    sortProblems?: (sortBy: SortBy) => void,
    clearErrorMessage?: () => void
 }
@@ -101,8 +101,12 @@ export default class MainView extends React.Component<Props, State> {
          )
       } else {
          document.title = this.props.contenderData.name;
-         let totalPoints = 0;  // FIXME //this.props.problems.filter(p => p.state !== ProblemState.NOT_SENT).reduce((s, p) => s + p.points, 0);
-         let tenBest = 0; // FIXME this.props.problems.filter(p => p.state !== ProblemState.NOT_SENT).sort((a, b) => b.points - a.points).slice(0, 10).reduce((s, p) => s + p.points, 0);
+         const points = this.props.ticks.map(tick => {
+            const problem = this.props.problems.find(problem => problem.id == tick.id)!;
+            return tick.flash ? problem.points : problem.points;
+         }).sort().reverse();
+         let totalPoints = points.reduce((s, p) => s + p, 0);
+         let tenBest = points.slice(0, 10).reduce((s, p) => s + p, 0);
 
          let openUserInfoModal = () => {
             console.log("openUserInfoModal");
@@ -147,6 +151,7 @@ export default class MainView extends React.Component<Props, State> {
                   </div>
                   <ProblemList
                      problems={this.props.problems}
+                     ticks={this.props.ticks}
                      colors={this.props.colors}
                      problemIdBeingUpdated={this.props.problemIdBeingUpdated}
                      setProblemStateAndSave={this.props.setProblemStateAndSave} />

@@ -3,24 +3,24 @@ import './ProblemComp.css';
 import {Problem} from '../model/problem';
 import {ProblemState} from "../model/problemState";
 import {Color} from "../model/color";
+import {Tick} from "../model/tick";
 
 export interface ProblemCompProps {
    problem: Problem;
+   tick?: Tick;
    colors: Map<number, Color>;
    isExpanded: boolean;
    isUpdating: boolean;
-   setProblemState?: (problemState: ProblemState) => void;
+   setProblemState?: (problem:Problem, problemState: ProblemState, tick?:Tick) => void;
    onToggle?: () => void;
 }
 
-function ProblemComp({ problem, colors, isExpanded, isUpdating, setProblemState, onToggle }: ProblemCompProps) {
-   let isSent = "";
-
-   //FIXME problem.state === ProblemState.NOT_SENT ? "" : (problem.state as string);
+function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblemState, onToggle }: ProblemCompProps) {
+   let isSent = !tick ? "" : tick.flash ? "Flashed" : "Sent";
    if(isUpdating) {
       isSent = "Updating...";
    }
-   let className = "problem "; //FIXME + (problem.state !== ProblemState.NOT_SENT ? 'done' : '');
+   let className = "problem " + (tick ? 'done' : '');
    const color = colors.get(problem.colorId)!;
    let colorStyle = { background: '#' + color.rgb, color: "#000" };
    let secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
@@ -33,9 +33,9 @@ function ProblemComp({ problem, colors, isExpanded, isUpdating, setProblemState,
             <div className="sent"> {isSent}</div>
          </div>
          <div className={secondRowClassName} style={colorStyle}>
-            <button onClick={() => setProblemState!(ProblemState.FLASHED)}>Flashed</button>
-            <button onClick={() => setProblemState!(ProblemState.SENT)}>Sent</button>
-            <button onClick={() => setProblemState!(ProblemState.NOT_SENT)}>Not sent</button>
+            <button onClick={() => setProblemState!(problem, ProblemState.FLASHED, tick)}>Flashed</button>
+            <button onClick={() => setProblemState!(problem, ProblemState.SENT, tick)}>Sent</button>
+            <button onClick={() => setProblemState!(problem, ProblemState.NOT_SENT, tick)}>Not sent</button>
          </div>
       </div>
    );

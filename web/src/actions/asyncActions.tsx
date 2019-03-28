@@ -1,19 +1,25 @@
-
-import { Problem } from '../model/problem';
-import { ContenderData } from '../model/contenderData';
-import { Dispatch } from 'react-redux';
-import { Api } from '../utils/Api';
+import {Problem} from '../model/problem';
+import {ContenderData} from '../model/contenderData';
+import {Dispatch} from 'react-redux';
+import {Api} from '../utils/Api';
 import {
+   createTick,
+   deleteTick,
+   receiveColors,
+   receiveCompClasses,
    receiveContenderData,
-   receiveScoreboardData,
-   startProblemUpdate,
-   setProblemState,
+   receiveContenderNotFound,
    receiveContest,
-   updateScoreboardTimer,
-   receiveContenderNotFound, setProblemStateFailed, receiveProblems, receiveCompClasses, receiveTicks, receiveColors
+   receiveProblems,
+   receiveScoreboardData,
+   receiveTicks,
+   setProblemStateFailed,
+   startProblemUpdate,
+   updateScoreboardTimer, updateTick
 } from './actions';
-import { StoreState } from '../model/storeState';
+import {StoreState} from '../model/storeState';
 import {ProblemState} from "../model/problemState";
+import {Tick} from "../model/tick";
 
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
@@ -66,18 +72,44 @@ export function saveUserData(contenderData: ContenderData): any {
    };
 }
 
-export function setProblemStateAndSave(problem: Problem, problemState: ProblemState): any {
+export function setProblemStateAndSave(problem: Problem, problemState: ProblemState, tick?:Tick): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      dispatch(startProblemUpdate(problem));
-      let state = getState();
-      Api.setProblemState(state.contenderData!, problem, problemState)
-         .then(() => {
-            console.log("HEJ!");
-            dispatch(setProblemState(problem, problemState))
-         })
-         .catch((error) => {
-            console.log("NEEEJ", error);
-            dispatch(setProblemStateFailed())
-         });
+      const oldState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
+      if(oldState != problemState) {
+         dispatch(startProblemUpdate(problem));
+         if(!tick) {
+            // Create a new tick:
+            Api.createTick(problem.id, getState().contenderData!.id, problemState == ProblemState.FLASHED)
+               .then((tick) => {
+                  dispatch(createTick(tick))
+               })
+               .catch(() => {
+                  dispatch(setProblemStateFailed())
+               });
+
+         } else if (problemState == ProblemState.NOT_SENT) {
+            // Delete the tick:
+            Api.deleteTick(tick)
+               .then(() => {
+                  console.log("Hej");
+                  dispatch(deleteTick(tick))
+               })
+               .catch((error) => {
+                  console.log("Nooo", error);
+                  dispatch(setProblemStateFailed())
+               });
+         } else {
+            // Update the tick:
+            const newTick:Tick = JSON.parse(JSON.stringify(tick));
+            newTick.flash = problemState == ProblemState.FLASHED;
+            Api.updateTick(newTick)
+               .then(() => {
+                  dispatch(updateTick(newTick))
+               })
+               .catch(() => {
+                  dispatch(setProblemStateFailed())
+               });
+         }
+      }
    };
 }

@@ -2,6 +2,7 @@ package se.scoreboard.api
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.CompClassDto
 import se.scoreboard.dto.ContenderDto
@@ -21,7 +22,7 @@ class CompClassController @Autowired constructor(
     }
 
     @GetMapping("/compClass")
-    fun getCompClasses() = compClassService.findAll()
+    fun getCompClasses(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = compClassService.search(filter, pageable)
 
     @GetMapping("/compClass/{id}")
     fun getCompClass(@PathVariable("id") id: Int) = compClassService.findById(id)

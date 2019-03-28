@@ -2,6 +2,7 @@ package se.scoreboard.api
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContestDto
 import se.scoreboard.dto.LocationDto
@@ -21,7 +22,7 @@ class LocationController @Autowired constructor(
     }
 
     @GetMapping("/location")
-    fun getLocations() = locationService.findAll()
+    fun getLocations(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = locationService.search(filter, pageable)
 
     @GetMapping("/location/{id}")
     fun getLocation(@PathVariable("id") id: Int) = locationService.findById(id)

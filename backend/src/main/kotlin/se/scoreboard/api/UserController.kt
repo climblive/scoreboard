@@ -2,6 +2,7 @@ package se.scoreboard.api
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.OrganizerDto
 import se.scoreboard.dto.UserDto
@@ -21,7 +22,7 @@ class UserController @Autowired constructor(
     }
 
     @GetMapping("/user")
-    fun getUsers() = userService.findAll()
+    fun getUsers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(filter, pageable)
 
     @GetMapping("/user/{id}")
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)

@@ -2,6 +2,7 @@ package se.scoreboard.api
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContestDto
 import se.scoreboard.dto.OrganizerDto
@@ -25,7 +26,7 @@ class OrganizerController @Autowired constructor(
     }
 
     @GetMapping("/organizer")
-    fun getOrganizers() = organizerService.findAll()
+    fun getOrganizers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = organizerService.search(filter, pageable)
 
     @GetMapping("/organizer/{id}")
     fun getOrganizer(@PathVariable("id") id: Int) = organizerService.findById(id)

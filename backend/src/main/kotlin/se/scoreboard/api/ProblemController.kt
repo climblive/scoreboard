@@ -2,6 +2,7 @@ package se.scoreboard.api
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ProblemDto
 import se.scoreboard.dto.TickDto
@@ -21,7 +22,7 @@ class ProblemController @Autowired constructor(
     }
 
     @GetMapping("/problem")
-    fun getProblems() = problemService.findAll()
+    fun getProblems(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = problemService.search(filter, pageable)
 
     @GetMapping("/problem/{id}")
     fun getProblem(@PathVariable("id") id: Int) = problemService.findById(id)

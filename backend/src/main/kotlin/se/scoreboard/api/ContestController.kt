@@ -3,6 +3,7 @@ package se.scoreboard.api
 import com.google.common.net.MediaType
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,6 +16,7 @@ import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.service.ContestService
+import java.util.*
 
 @RestController
 @CrossOrigin
@@ -33,7 +35,7 @@ class ContestController @Autowired constructor(
     }
 
     @GetMapping("/contest")
-    fun getContests() : List<ContestDto> = contestService.findAll()
+    fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(filter, pageable)
 
     @GetMapping("/contest/{id}")
     fun getContest(@PathVariable("id") id: Int) = contestService.findById(id)

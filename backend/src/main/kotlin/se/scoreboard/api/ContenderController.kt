@@ -2,6 +2,7 @@ package se.scoreboard.api
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.ScoreboardListItemDto
@@ -22,7 +23,7 @@ class ContenderController @Autowired constructor(
     }
 
     @GetMapping("/contender")
-    fun getContenders() = contenderService.findAll()
+    fun getContenders(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contenderService.search(filter, pageable)
 
     @GetMapping("/contender/{id}")
     fun getContender(@PathVariable("id") id: Int) = contenderService.findById(id)

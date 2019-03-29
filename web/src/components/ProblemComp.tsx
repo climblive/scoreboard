@@ -17,37 +17,37 @@ export interface ProblemCompProps {
 }
 
 function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblemState, onToggle }: ProblemCompProps) {
-   let isSent = ""
-   let problemState = undefined;
-   if(isUpdating) {
-      isSent = "Updating...";
-   } else if(tick) {
-      problemState = tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
-   }
-   let className = "problem " + (tick ? 'done' : '');
+   const problemState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
+   const className = "problem " + (tick ? 'done' : '');
    const color = colors.get(problem.colorId)!;
-   let colorStyle = { background: '#' + color.rgb, color: "#000" };
-   let secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
+   const colorStyle = { background: '#' + color.rgb, color: "#000" };
+   const secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
    return (
       <div className={className} onClick={onToggle}>
          <div style={colorStyle} className="firstRow">
             <div className="id">{problem.id}</div>
             <div className="color">{color.name}</div>
             <div className="points">{problem.points}</div>
-            <div className="sent"> {isSent}</div>
-            {problemState && <StatusComp state={problemState!} color={'#00FF00'}/>}
+            {isUpdating && <div className="sent">Updating...</div>}
+            {(problemState != ProblemState.NOT_SENT && !isUpdating) && <StatusComp state={problemState!} color={'#FFFFFF'} size={30}/>}
          </div>
          <div className={secondRowClassName} style={colorStyle}>
-            <button onClick={() => setProblemState!(problem, ProblemState.FLASHED, tick)}>
-               <StatusComp state={ProblemState.FLASHED} color={'#333'}/>
+            <button
+                  className={problemState == ProblemState.FLASHED ? "current" : ""}
+                  onClick={() => setProblemState!(problem, ProblemState.FLASHED, tick)}>
+               <StatusComp state={ProblemState.FLASHED} color={'#333'} size={20}/>
                <div className="buttonText">Flashed</div>
             </button>
-            <button onClick={() => setProblemState!(problem, ProblemState.SENT, tick)}>
-               <StatusComp state={ProblemState.SENT} color={'#333'}/>
+            <button
+                  className={problemState == ProblemState.SENT ? "current" : ""}
+                  onClick={() => setProblemState!(problem, ProblemState.SENT, tick)}>
+               <StatusComp state={ProblemState.SENT} color={'#333'} size={20}/>
                <div className="buttonText">Sent</div>
             </button>
-            <button onClick={() => setProblemState!(problem, ProblemState.NOT_SENT, tick)}>
-               <StatusComp state={ProblemState.NOT_SENT} color={'#333'}/>
+            <button
+                  className={problemState == ProblemState.NOT_SENT ? "current" : ""}
+                  onClick={() => setProblemState!(problem, ProblemState.NOT_SENT, tick)}>
+               <StatusComp state={ProblemState.NOT_SENT} color={'#333'} size={20}/>
                <div className="buttonText">Not sent</div>
             </button>
          </div>

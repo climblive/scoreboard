@@ -29,11 +29,11 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
 
    console.log(luminance);
 
-   const borderColor = luminance > 0.8 ? "grey": rgbColor;
+   const borderColor = chromaInst.darken(1).hex();
    const textColor = luminance < 0.5 ? "#FFF" : "#333";
    const colorStyle = { background: '#' + color.rgb, color: textColor };
    return (
-      <div style={{borderColor: borderColor}} className={className} onClick={onToggle}>
+      <div style={{borderColor: borderColor, backgroundColor: rgbColor}} className={className} onClick={onToggle}>
          <div style={colorStyle} className="firstRow">
             <div className="id">{problem.id}</div>
             <div className="color">{color.name}</div>
@@ -41,7 +41,7 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
             {isUpdating && <div style={{height:0}}>
                <Spinner color={textColor}/>
             </div>}
-            {(problemState != ProblemState.NOT_SENT && !isUpdating) && <StatusComp state={problemState!} color={textColor} size={30}/>}
+            {(problemState != ProblemState.NOT_SENT && !isUpdating) && <StatusComp state={problemState!} color={textColor} size={25}/>}
          </div>
          <div className={secondRowClassName} style={colorStyle}>
             <button

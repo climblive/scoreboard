@@ -3,6 +3,7 @@
    margin-bottom:3px;
    border-radius:5px;
    position:relative;
+   overflow:hidden;
 }
 
 .problem .firstRow {
@@ -14,6 +15,7 @@
 }
 
 .problem .secondRow {
+   border-radius: 5px;
    position:absolute;
    height:100%;
    right:0;

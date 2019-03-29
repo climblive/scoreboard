@@ -73,10 +73,10 @@ export default class ScoreboardView extends React.Component<Props> {
                <div className="header">Total</div>   
                <div className="scoreboardListContainer total">{totalList}</div>
                <div className="logoContainer">
-                  <img height="70" src="logos/klatterdomen.jpg" />
-                  <img height="70" src="logos/highSport.gif" />
-                  <img height="50" src="logos/edelrid.png" />
-                  <img height="70" src="logos/chalkCartel.png" />
+                  <img height="70" src="/logos/klatterdomen.jpg" />
+                  <img height="70" src="/logos/highSport.gif" />
+                  <img height="50" src="/logos/edelrid.png" />
+                  <img height="70" src="/logos/chalkCartel.png" />
                </div>
             </div>
          );

@@ -5,6 +5,8 @@ import {ProblemState} from "../model/problemState";
 import {Color} from "../model/color";
 import {Tick} from "../model/tick";
 import StatusComp from "./StatusComp";
+import Spinner from "./Spinner";
+import * as Chroma from 'chroma-js';
 
 export interface ProblemCompProps {
    problem: Problem;
@@ -20,16 +22,26 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
    const problemState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
    const className = "problem " + (tick ? 'done' : '');
    const color = colors.get(problem.colorId)!;
-   const colorStyle = { background: '#' + color.rgb, color: "#000" };
+   const rgbColor = '#' + color.rgb;
    const secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
+   const chromaInst = Chroma(rgbColor);
+   const luminance = chromaInst.luminance();
+
+   console.log(luminance);
+
+   const borderColor = luminance > 0.8 ? "grey": rgbColor;
+   const textColor = luminance < 0.5 ? "#FFF" : "#333";
+   const colorStyle = { background: '#' + color.rgb, color: textColor };
    return (
-      <div className={className} onClick={onToggle}>
+      <div style={{borderColor: borderColor}} className={className} onClick={onToggle}>
          <div style={colorStyle} className="firstRow">
             <div className="id">{problem.id}</div>
             <div className="color">{color.name}</div>
             <div className="points">{problem.points}</div>
-            {isUpdating && <div className="sent">Updating...</div>}
-            {(problemState != ProblemState.NOT_SENT && !isUpdating) && <StatusComp state={problemState!} color={'#FFFFFF'} size={30}/>}
+            {isUpdating && <div style={{height:0}}>
+               <Spinner color={textColor}/>
+            </div>}
+            {(problemState != ProblemState.NOT_SENT && !isUpdating) && <StatusComp state={problemState!} color={textColor} size={30}/>}
          </div>
          <div className={secondRowClassName} style={colorStyle}>
             <button

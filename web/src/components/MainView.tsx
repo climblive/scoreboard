@@ -12,6 +12,7 @@ import {Tick} from "../model/tick";
 import {CompClass} from "../model/compClass";
 import ProblemList from "./ProblemList";
 import {Color} from "../model/color";
+import Spinner from "./Spinner";
 
 export interface Props {
    contenderData?: ContenderData,
@@ -69,15 +70,18 @@ export default class MainView extends React.Component<Props, State> {
             this.setState(this.state);
          };
 
-         return(
+         return (
             <div>
                <div>Not a valid registration code</div>
                <button onClick={goBack}>Go back</button>
             </div>
          )
       } else if (!(this.props.contenderData && this.props.problems && this.props.contest && this.props.compClasses && this.props.ticks && this.props.colors)) {
-         return ( 
-            <div>Getting data...</div>
+         return (
+            <div >
+               <div>Getting data...</div>
+               <Spinner color={"#333"} />
+            </div>
          )
       } else if(!this.props.contenderData.name) {
          let openRulesModal = () => {

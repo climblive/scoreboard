@@ -4,7 +4,9 @@
    "private": true,
    "dependencies": {
       "@stomp/stompjs": "^5.2.0",
+      "@types/chroma-js": "^1.4.1",
       "@types/react-modal": "^3.8.0",
+      "chroma-js": "^2.0.3",
       "react": "^16.7.0",
       "react-dom": "^16.7.0",
       "react-modal": "^3.8.1",

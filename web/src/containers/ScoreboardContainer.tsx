@@ -8,12 +8,13 @@ import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 export function mapStateToProps(state: StoreState, props: any): Props {
    return {
       scoreboardData: state.scoreboardData,
+      match: props.match
    };
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
-      loadScoreboardData: () => dispatch(asyncActions.loadScoreboardData()),
+      loadScoreboardData: (id:number) => dispatch(asyncActions.loadScoreboardData(id)),
       receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem)),
       updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
    };

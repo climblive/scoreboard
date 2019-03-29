@@ -1,13 +1,10 @@
-
-import { StoreState } from '../model/storeState';
-//import { Problem } from '../model/problem';
-import { ScoreboardContenderList } from '../model/scoreboardContenderList';
+import {StoreState} from '../model/storeState';
+import {ScoreboardContenderList} from '../model/scoreboardContenderList';
 import * as scoreboardActions from '../actions/actions';
-import { ActionType, getType} from 'typesafe-actions';
+import {ActionType, getType} from 'typesafe-actions';
 import {Color} from "../model/color";
 import {Problem} from "../model/problem";
 import {SortBy} from "../constants/constants";
-//import {SortBy} from "../constants/constants";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -60,11 +57,12 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, contest: action.payload };
 
       case getType(scoreboardActions.receiveCompClasses):
-         return { ...state, compClasses: action.payload };
+         return { ...state, compClasses: action.payload.sort((a, b) => a.id - b.id) };
 
       case getType(scoreboardActions.receiveProblems):
-         const problems = getSortedProblems(action.payload, state.problemsSortedBy);
-         return { ...state, problems: problems };
+         const sortedBy = state.problemsSortedBy || SortBy.BY_NUMBER;
+         const problems = getSortedProblems(action.payload, sortedBy);
+         return { ...state, problems: problems, problemsSortedBy: sortedBy};
 
       case getType(scoreboardActions.receiveTicks):
          return { ...state, ticks: action.payload };
@@ -89,7 +87,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
       case getType(scoreboardActions.receiveScoreboardItem):
          let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
-         let compClassIndex = newScoreboardData.findIndex(list => list.compClass.name === action.payload.compClass);
+         let compClassIndex = newScoreboardData.findIndex(list => list.compClass.id === action.payload.compClassId);
          let oldScoreboardList = state.scoreboardData[compClassIndex];
          let oldContenders = oldScoreboardList.contenders;
          let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
@@ -120,15 +118,19 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          let newScoreboardData2: ScoreboardContenderList[] = state.scoreboardData.map(scl => {
             let newCompClass = { ...scl.compClass };
             newCompClass.inProgress = false;
-            if (newCompClass.start > now) {
-               newCompClass.statusString = "Startar om " + getDurationString(newCompClass.start - now);
+            const startTime = Date.parse(newCompClass.timeBegin) / 1000;
+            const endTime = Date.parse(newCompClass.timeEnd) / 1000;
+
+            console.log("startTime: " + startTime, newCompClass.timeBegin);
+            if (startTime > now) {
+               newCompClass.statusString = "Startar om " + getDurationString(startTime - now);
                newCompClass.time = undefined;
-            } else if (now > newCompClass.end) {
+            } else if (now > endTime) {
                newCompClass.statusString = "Tävlingen är avslutad";
                newCompClass.time = undefined;
             } else { 
                newCompClass.statusString = "Slutar om";
-               newCompClass.time = getDurationString(newCompClass.end - now);
+               newCompClass.time = getDurationString(endTime - now);
                newCompClass.inProgress = true;
             }
             return { ...scl, compClass: newCompClass }

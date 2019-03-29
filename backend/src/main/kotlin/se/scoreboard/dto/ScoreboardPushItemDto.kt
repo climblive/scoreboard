@@ -1,3 +1,3 @@
 package se.scoreboard.dto
 
-data class ScoreboardPushItemDto (val compClass: String, val item: ScoreboardListItemDto)
+data class ScoreboardPushItemDto (val compClassId: Int, val item: ScoreboardListItemDto)

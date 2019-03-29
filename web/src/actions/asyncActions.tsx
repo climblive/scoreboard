@@ -47,9 +47,9 @@ export function loadUserData(code: string): any {
    };
 }
 
-export function loadScoreboardData(): any {
+export function loadScoreboardData(id: number): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getScoreboard().then(scoreboardData => {
+      Api.getScoreboard(id).then(scoreboardData => {
          dispatch(receiveScoreboardData(scoreboardData));
          dispatch(updateScoreboardTimer());
       })

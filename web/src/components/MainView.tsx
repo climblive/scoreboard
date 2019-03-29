@@ -102,9 +102,10 @@ export default class MainView extends React.Component<Props, State> {
       } else {
          document.title = this.props.contenderData.name;
          const points = this.props.ticks.map(tick => {
-            const problem = this.props.problems.find(problem => problem.id == tick.id)!;
+            const problem = this.props.problems.find(problem => problem.id == tick.problemId)!;
             return tick.flash ? problem.points : problem.points;
          }).sort().reverse();
+         console.log("POINTS:", points);
          let totalPoints = points.reduce((s, p) => s + p, 0);
          let tenBest = points.slice(0, 10).reduce((s, p) => s + p, 0);
 

@@ -10,7 +10,12 @@ import { ScoreboardClassHeaderComp } from './ScoreboardClassHeaderComp';
 
 export interface Props {
    scoreboardData: ScoreboardContenderList[];
-   loadScoreboardData?: () => void;
+   match: {
+      params: {
+         id: number
+      }
+   }
+   loadScoreboardData?: (id:number) => void;
    receiveScoreboardItem?: (scoreboardPushItem: ScoreboardPushItem) => void;
    updateScoreboardTimer?: () => void;
 }
@@ -22,7 +27,7 @@ export default class ScoreboardView extends React.Component<Props> {
 
    componentDidMount() {
       document.title = "Scoreboard";
-      
+      const contestId = this.props.match.params.id;
       this.client = new Client({
          brokerURL: Api.getLiveUrl(),
          debug: function (str) {
@@ -34,9 +39,9 @@ export default class ScoreboardView extends React.Component<Props> {
 
       this.client.activate();
       this.client.onConnect = () => {
-         this.props.loadScoreboardData!();
+         this.props.loadScoreboardData!(contestId);
          console.log("onConnect");
-         this.client.subscribe("/topic/scoreboard", (message) => {
+         this.client.subscribe("/topic/scoreboard/" + contestId, (message) => {
             console.log(message, JSON.parse(message.body));
             this.props.receiveScoreboardItem!(JSON.parse(message.body))
          });

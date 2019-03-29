@@ -2,8 +2,8 @@ export interface CompClass {
    id: number;
    name: string;
    description: string;
-   start: number;
-   end: number;
+   timeBegin: string;
+   timeEnd: string;
 
    inProgress: boolean;
    statusString?: string;

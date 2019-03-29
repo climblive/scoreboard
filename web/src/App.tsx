@@ -13,7 +13,7 @@ class App extends React.Component {
             <div className="App">
                <Switch>
                   <Route path="/" exact component={StartContainer} />
-                  <Route path="/scoreboard" component={ScoreboardContainer} />
+                  <Route path="/scoreboard/:id" component={ScoreboardContainer} />
                   <Route path="/:code" component={MainContainer} />
                </Switch>
             </div>

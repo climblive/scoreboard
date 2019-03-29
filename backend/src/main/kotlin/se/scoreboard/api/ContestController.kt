@@ -8,15 +8,14 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.dto.CompClassDto
-import se.scoreboard.dto.ContenderDto
-import se.scoreboard.dto.ContestDto
-import se.scoreboard.dto.ProblemDto
+import se.scoreboard.data.domain.Contender
+import se.scoreboard.data.domain.extension.getQualificationScore
+import se.scoreboard.data.domain.extension.getTotalScore
+import se.scoreboard.dto.*
 import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.service.ContestService
-import java.util.*
 
 @RestController
 @CrossOrigin
@@ -70,5 +69,16 @@ class ContestController @Autowired constructor(
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.MICROSOFT_EXCEL.toString())
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contest.xls")
         return ResponseEntity(data, headers, HttpStatus.OK)
+    }
+
+    private fun getContenderList(contenders: List<Contender>): List<ScoreboardListItemDto> {
+        return contenders.map { ScoreboardListItemDto(it.id!!, it.name!!, it.getTotalScore(), it.getQualificationScore()) }
+    }
+
+    @GetMapping("/contest/{id}/scoreboard")
+    fun getScoreboard(@PathVariable("id") id: Int) : List<ScoreboardListDto> {
+        val contest = contestService.fetchEntity(id)
+        val contenders = contest.contenders
+        return contest.compClasses.sortedBy { it.id }.map{compClass -> ScoreboardListDto(compClassMapper.convertToDto(compClass), getContenderList(contenders.filter{it.compClass == compClass}))}
     }
 }

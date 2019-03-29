@@ -124,7 +124,7 @@ export class Api {
       return this.put("contender/" + contenderData.id, contenderData);
    }
 
-   static getScoreboard(): Promise<ScoreboardContenderList[]> {
-      return this.get("scoreboard");
+   static getScoreboard(id:number): Promise<ScoreboardContenderList[]> {
+      return this.get("contest/" + id + "/scoreboard");
    }
 }

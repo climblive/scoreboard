@@ -149,10 +149,8 @@ export default class MainView extends React.Component<Props, State> {
                      <div className="points">{tenBest}</div>
                   </div>
                   <div className="headerRow">
-                     <div className="title">Problem:</div>
-                     <div className="sortBy">Sortera efter:</div>
-                     <div className={this.props.problemsSortedBy == SortBy.BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_NUMBER)}>Nummer</div>
-                     <div className={this.props.problemsSortedBy == SortBy.BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_POINTS)}>Poäng</div>
+                     <div className={this.props.problemsSortedBy == SortBy.BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_NUMBER)}>Sortera efter nummer</div>
+                     <div className={this.props.problemsSortedBy == SortBy.BY_POINTS ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_POINTS)}>Sortera efter poäng</div>
                   </div>
                   <ProblemList
                      problems={this.props.problems}

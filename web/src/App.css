@@ -6,24 +6,43 @@
 
 .view {
    padding:10px;
+   padding-bottom:0;
 }
 
 .selector {
-   border: 1px solid grey;
+   border: 1px solid #949494;
+   color: #333;
+   background: white;
    cursor:pointer;
    flex-basis: 0;
    flex-grow:1;
    text-align: center;
    padding: 2px 5px;
-   border-radius: 5px;
+   border-left: none;
 }
 
-.selector:not(:last-child) {
-   margin-right:10px;
+.selector:active {
+   background: #f0f0f0;
+}
+
+.selector:last-child {
+   border-top-right-radius: 3px;
+   border-bottom-right-radius: 3px;
+}
+
+.selector:first-child {
+   border-left: 1px solid #949494;
+   border-top-left-radius: 3px;
+   border-bottom-left-radius: 3px;
 }
 
 .selector.selected {
-   background: grey;
+   background: #949494;
+   color: white;
+}
+
+.selector.selected:active {
+   background: #848484;
 }
 
 button {

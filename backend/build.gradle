@@ -48,10 +48,13 @@ apply plugin: "kotlin-noarg"
 
 group = 'jespersolver'
 
+task deleteTmpWeb(type: Delete) {
+    delete 'tmpWeb'
+}
 
 task web(type:Exec) {
     workingDir '../web'
-    
+
     if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
         commandLine 'cmd', '/c', 'npm'
     } else {
@@ -59,6 +62,30 @@ task web(type:Exec) {
     }
 
     args 'run', 'build'
+}
+
+task copyWeb(type: Copy) {
+    dependsOn web
+    from '../web/build'
+    into 'tmpWeb'
+}
+
+task admin(type:Exec) {
+    workingDir '../admin'
+
+    if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
+        commandLine 'cmd', '/c', 'npm'
+    } else {
+        commandLine 'npm'
+    }
+
+    args 'run', 'build'
+}
+
+task copyAdmin(type: Copy) {
+    dependsOn admin
+    from '../admin/build'
+    into 'tmpWeb/admin'
 }
 
 bootJar {
@@ -85,10 +112,14 @@ docker {
 }
 
 war {
-    dependsOn web
+    dependsOn deleteTmpWeb
+    dependsOn copyWeb
+    dependsOn copyAdmin
+    copyWeb.mustRunAfter deleteTmpWeb
+    copyAdmin.mustRunAfter deleteTmpWeb
 
     enabled = true
-    webAppDirName = '../web/build'
+    webAppDirName = 'tmpWeb'
     
     webInf { from 'src/webInf' }
 }

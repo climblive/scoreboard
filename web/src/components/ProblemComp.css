@@ -18,7 +18,7 @@
    border-radius: 5px;
    position:absolute;
    height:100%;
-   right:0;
+   right:2px;
    top:0;
    display:flex;
    transition: width 0.2s;
@@ -26,48 +26,41 @@
    width:0;
 }
 
-.problem .secondRow button {
-   margin:2px;
-   flex-grow:1;
-}
-
 .problem .secondRow.expanded {
    display:flex;
    width:200px;
 }
 
-.problem.done .firstRow {
+.problem .secondRow .selector {
+   margin-top:2px;
+   margin-bottom:2px;
+   flex-grow:1;
 }
 
-.problem button .buttonText {
+.problem .selector {
+   flex-basis:0;
+}
+
+.problem .selector .buttonText {
    font-size: 8px;
    margin-top: -4px;
 }
 
-.problem button.current {
-   background: grey;
-}
-
-.problem button {
-   min-width:60px;
-}
-
-.xxproblem:active {
-   opacity:0.6;
-}
-
 .problem .id {
    width: 20px;
+   font-size:16px;
 }
 
 .problem .color {
    width:60px;   
    text-align: left;
    margin-left:15px;
+   margin-right:auto;
+   font-size:16px;
 }
 
 .problem .points {
    text-align: right;
-   margin-right:auto;
    width:60px;
+   font-size:28px;
 }

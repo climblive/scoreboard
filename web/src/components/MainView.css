@@ -44,16 +44,7 @@
    margin-bottom:3px;
 }
 
-.headerRow .selector {
-   margin-left:5px;
-   margin-right:0;
-   flex-grow:0;
-}
-
-.headerRow .title {
-   margin-right:auto;
-}
-
-.headerRow .sortBy {
-   font-size: 10px;
+.headerRow .selectorWrapper {
+   flex-grow:1;
+   flex-basis: 0;
 }

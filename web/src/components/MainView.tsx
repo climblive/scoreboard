@@ -71,15 +71,15 @@ export default class MainView extends React.Component<Props, State> {
          };
 
          return (
-            <div>
-               <div>Not a valid registration code</div>
-               <button onClick={goBack}>Go back</button>
+            <div style={{marginTop:50, textAlign:"center"}}>
+               <div style={{marginBottom:10}}>Registreringskoden är inte giltig.<br/>Vänligen kontrollera att att den är rätt.</div>
+               <button onClick={goBack}>Försök igen</button>
             </div>
          )
       } else if (!(this.props.contenderData && this.props.problems && this.props.contest && this.props.compClasses && this.props.ticks && this.props.colors)) {
          return (
-            <div >
-               <div>Getting data...</div>
+            <div style={{marginTop:50, textAlign:"center"}}>
+               <div style={{marginBottom:5}}>Vänta...</div>
                <Spinner color={"#333"} />
             </div>
          )

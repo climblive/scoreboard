@@ -33,6 +33,10 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
       borderColor = "#CDCDCD";
       textColor = "#ADADAD";
    }
+   const selectorStyle:any = {};
+   if(luminance < 0.5 || tick) {
+      selectorStyle.borderWidth = 0;
+   }
    const colorStyle = { color: textColor };
    return (
       <div style={{borderColor: borderColor, backgroundColor: rgbColor}} className={className} onClick={onToggle}>
@@ -46,21 +50,25 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
             <div className="points">{problem.points}</div>
          </div>
          <div className={secondRowClassName} style={colorStyle}>
-            <div
+            {problem.flashBonus &&
+               <div
+                  style={selectorStyle}
                   className={problemState == ProblemState.FLASHED ? "selector selected" : "selector"}
                   onClick={() => setProblemState!(problem, ProblemState.FLASHED, tick)}>
-               <StatusComp state={ProblemState.FLASHED} color={problemState == ProblemState.FLASHED ? '#FFF' : 'F333'} size={20}/>
-               <div className="buttonText">Flashed</div>
-            </div>
+                  <StatusComp state={ProblemState.FLASHED} color={problemState == ProblemState.FLASHED ? '#FFF' : 'F333'} size={20}/>
+                  <div className="buttonText">Flashed</div>
+               </div>}
             <div
-                  className={problemState == ProblemState.SENT ? "selector selected" : "selector"}
-                  onClick={() => setProblemState!(problem, ProblemState.SENT, tick)}>
+               style={selectorStyle}
+               className={problemState == ProblemState.SENT ? "selector selected" : "selector"}
+               onClick={() => setProblemState!(problem, ProblemState.SENT, tick)}>
                <StatusComp state={ProblemState.SENT} color={problemState == ProblemState.SENT ? '#FFF' : 'F333'} size={20}/>
                <div className="buttonText">Sent</div>
             </div>
             <div
-                  className={problemState == ProblemState.NOT_SENT ? "selector selected" : "selector"}
-                  onClick={() => setProblemState!(problem, ProblemState.NOT_SENT, tick)}>
+               style={selectorStyle}
+               className={problemState == ProblemState.NOT_SENT ? "selector selected" : "selector"}
+               onClick={() => setProblemState!(problem, ProblemState.NOT_SENT, tick)}>
                <StatusComp state={ProblemState.NOT_SENT} color={problemState == ProblemState.NOT_SENT ? '#FFF' : 'F333'} size={20}/>
                <div className="buttonText">Not sent</div>
             </div>

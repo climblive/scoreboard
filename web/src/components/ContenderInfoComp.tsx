@@ -65,7 +65,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
       console.log(this.props);
       if (!this.props.contest) {
          return (
-            <div>Getting data...</div>
+            <div>Vänta...</div>
          )
       }
       let submitButtonClass = this.inputOk() ? "" : "disabled";
@@ -83,21 +83,21 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
          buttons = (
              <div className="buttonRow">
                 <button className={submitButtonClass} onClick={this.onSubmit}>Ok</button>
-                <button onClick={this.props.onFinished}>Cancel</button>
+                <button onClick={this.props.onFinished}>Avbryt</button>
              </div>
          )
       } else {
          buttons = (
              <div>
-                <button className={submitButtonClass} onClick={this.onSubmit}>Start</button>
+                <button className={submitButtonClass} onClick={this.onSubmit}>Fortsätt</button>
              </div>
          )
       }
 
       return (
          <div className="startView view">
-            Name:
-            <input value={this.state.name} onChange={this.handleNameCodeChange} />
+            Namn:
+            <input autoFocus value={this.state.name} onChange={this.handleNameCodeChange} />
             <div className="compClassContainer">{compClasses}</div>
             {buttons}
          </div>

@@ -50,10 +50,11 @@ export default class StartView extends React.Component<Props, State> {
       return (
          <div className="maxWidth">
             <div className="startView view">
-               Activation code:
-               <input value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
+               <div>Välkommen!</div>
+               <div style={{marginBottom:10}}>Skriv in din aktiveringskod:</div>
+               <input autoFocus value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
                <div>
-                  <button className={buttonClass} onClick={this.onSubmit}>Start</button>
+                  <button className={buttonClass} onClick={this.onSubmit}>Fortsätt</button>
                </div>
             </div>
          </div>

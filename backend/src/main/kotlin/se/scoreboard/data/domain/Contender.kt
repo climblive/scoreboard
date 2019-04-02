@@ -21,7 +21,7 @@ open class Contender (
     open var compClass: CompClass? = null,
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = arrayOf(CascadeType.MERGE))
-    @JoinColumn(name = "contest_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "contest_id", nullable = false, updatable = false)
     @Access(AccessType.PROPERTY)
     open var contest: Contest? = null,
 

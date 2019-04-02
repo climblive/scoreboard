@@ -58,6 +58,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
    };
 
    inputOk(): boolean {
+      console.log("this.state.compClassId", this.state.compClassId);
       return this.state.compClassId !== undefined && this.state.name !== undefined && this.state.name.trim().length > 1;
    }
    
@@ -96,7 +97,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
 
       return (
          <div className="startView view">
-            Namn:
+            <div>Namn:</div>
             <input autoFocus value={this.state.name} onChange={this.handleNameCodeChange} />
             <div className="compClassContainer">{compClasses}</div>
             {buttons}

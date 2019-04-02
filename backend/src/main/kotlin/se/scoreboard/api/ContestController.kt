@@ -15,13 +15,15 @@ import se.scoreboard.dto.*
 import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.ProblemMapper
+import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
 class ContestController @Autowired constructor(
-        private val contestService: ContestService) {
+        private val contestService: ContestService,
+        private val contenderService: ContenderService) {
 
     private lateinit var problemMapper: ProblemMapper
     private lateinit var contenderMapper: ContenderMapper
@@ -81,4 +83,14 @@ class ContestController @Autowired constructor(
         val contenders = contest.contenders
         return contest.compClasses.sortedBy { it.id }.map{compClass -> ScoreboardListDto(compClassMapper.convertToDto(compClass), getContenderList(contenders.filter{it.compClass == compClass}))}
     }
+
+    @PutMapping("/contest/{id}/createContenders")
+    fun createContenders(
+            @PathVariable("id") id: Int,
+            @RequestBody createContendersParamsDto: CreateContendersParamsDto): Array<ContenderDto> {
+
+        val contest= contestService.fetchEntity(id)
+        return contenderService.createContenders(contest, createContendersParamsDto.count)
+    }
+
 }

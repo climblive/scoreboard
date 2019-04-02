@@ -5,6 +5,7 @@ import {ActionType, getType} from 'typesafe-actions';
 import {Color} from "../model/color";
 import {Problem} from "../model/problem";
 import {SortBy} from "../constants/constants";
+import {ContenderData} from "../model/contenderData";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -44,7 +45,13 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, problems: newProblems2, problemsSortedBy: action.payload };
 
       case getType(scoreboardActions.receiveContenderData):
-         let contenderData = action.payload;
+         let contenderData:ContenderData = action.payload;
+         if(contenderData.compClassId == null) {
+            contenderData.compClassId = undefined;
+         }
+         if(contenderData.name == null) {
+            contenderData.name = undefined;
+         }
          return { ...state, contenderData: contenderData, contenderNotFound: false};
 
       case getType(scoreboardActions.receiveContenderNotFound):

@@ -1,8 +1,8 @@
 export class ContenderData {
    registrationCode: string;
    contestId: number;
-   name: string;
+   name?: string;
    id: number;
    entered?: string;
-   compClassId: number;
+   compClassId?: number;
 }

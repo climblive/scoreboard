@@ -27,17 +27,6 @@
    font-size:36px;
 }
 
-.startView button {
-   width:100%;
-   margin-top: 20px;
-   border-radius: 8px;
-   background-color: #58b864;
-   height:50px;
-   border:none;
-   color:white;
-   font-size:17px;
-}
-
 .startView button.disabled {
       display:none;
  }

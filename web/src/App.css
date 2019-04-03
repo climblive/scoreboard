@@ -59,13 +59,32 @@ button {
    cursor: pointer;
 }
 
+button.large {
+   width:100%;
+   margin-top: 20px;
+   border-radius: 8px;
+   background-color: #58b864;
+   height:50px;
+   border:none;
+   color:white;
+   font-size:17px;
+}
+
+button.large.disabled {
+   color:white;
+   background-color: #58b864;
+   opacity:0.2;
+   cursor: not-allowed;
+}
+
+
 button.disabled {
    color: grey;
    cursor: not-allowed;
 }
 
 input {
-   border: 1px solid #333;
+   border: 1px solid #c6cbd4;
    text-align: center;
    width:100%;
    font-size:16px;   

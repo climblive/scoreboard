@@ -89,21 +89,43 @@ export default class MainView extends React.Component<Props, State> {
          )
       } else if(!this.props.contenderData.name) {
          let openRulesModal = () => {
-            console.log("openModal");
+            /*console.log("openModal");
             this.state.rulesModalIsOpen = true;
-            this.setState(this.state);
+            this.setState(this.state);*/
          };
          return (
             <div className="maxWidth">
                <div className="view mainView">
-                   <ContenderInfoComp
-                       existingUserData={this.props.contenderData}
-                       activationCode={this.props.match.params.code}
-                       contest={this.props.contest}
-                       compClasses={this.props.compClasses}
-                       saveUserData={this.props.saveUserData}
-                       onFinished={openRulesModal} >
-                   </ContenderInfoComp>
+                  <ContenderInfoComp
+                     existingUserData={this.props.contenderData}
+                     activationCode={this.props.match.params.code}
+                     contest={this.props.contest}
+                     compClasses={this.props.compClasses}
+                     saveUserData={this.props.saveUserData}
+                     onFinished={openRulesModal}>
+                  </ContenderInfoComp>
+               </div>
+            </div>
+         )
+      } else if (this.state.userInfoModalIsOpen) {
+         let closeUserInfoModal = () => {
+            console.log("closeUserInfoModal");
+            this.state.userInfoModalIsOpen = false;
+            this.setState(this.state);
+         };
+
+         return (
+            <div className="maxWidth">
+               <div className="view mainView">
+                  <ContenderInfoComp
+                     existingUserData={this.props.contenderData}
+                     activationCode={this.props.match.params.code}
+                     contest={this.props.contest}
+                     compClasses={this.props.compClasses}
+                     saveUserData={this.props.saveUserData}
+                     isProfile={true}
+                     onFinished={closeUserInfoModal}>
+                  </ContenderInfoComp>
                </div>
             </div>
          )
@@ -120,12 +142,6 @@ export default class MainView extends React.Component<Props, State> {
          let openUserInfoModal = () => {
             console.log("openUserInfoModal");
             this.state.userInfoModalIsOpen = true;
-            this.setState(this.state);
-         };
-
-         let closeUserInfoModal = () => {
-            console.log("closeUserInfoModal");
-            this.state.userInfoModalIsOpen = false;
             this.setState(this.state);
          };
 
@@ -162,23 +178,6 @@ export default class MainView extends React.Component<Props, State> {
                      colors={this.props.colors}
                      problemIdBeingUpdated={this.props.problemIdBeingUpdated}
                      setProblemStateAndSave={this.props.setProblemStateAndSave} />
-                  <ReactModal
-                      isOpen={this.state.userInfoModalIsOpen}
-                      contentLabel="Example Modal"
-                      className="modal"
-                     >
-
-                     <ContenderInfoComp
-                         existingUserData={this.props.contenderData}
-                         activationCode={this.props.match.params.code}
-                         contest={this.props.contest}
-                         compClasses={this.props.compClasses}
-                         saveUserData={this.props.saveUserData}
-                         showCancelButton={true}
-                         onFinished={closeUserInfoModal}>
-                     </ContenderInfoComp>
-                  </ReactModal>
-
                   <ReactModal
                       isOpen={this.state.rulesModalIsOpen}
                       contentLabel="Example Modal"

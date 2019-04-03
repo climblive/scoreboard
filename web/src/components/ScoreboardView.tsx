@@ -81,7 +81,7 @@ export default class ScoreboardView extends React.Component<Props> {
             </div>
          );
       } else { 
-         return <div>Getting data...</div>
+         return <div className="scoreboardView"><div>Getting data...</div></div>
       }
 
    }

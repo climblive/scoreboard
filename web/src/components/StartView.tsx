@@ -45,7 +45,7 @@ export default class StartView extends React.Component<Props, State> {
       if (this.state.redirect) { 
          return <Redirect push to={"/" + this.state.activationCode} />
       }
-      let buttonClass = this.inputOk() ? "" : "disabled";
+      let buttonClass = this.inputOk() ? "large " : "large disabled";
 
       return (
          <div className="maxWidth">

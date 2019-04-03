@@ -42,7 +42,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         headers.set("Access-Control-Expose-Headers", "Content-Range")
 
         if (filter == null || filter == "{}") {
-            var page: Page<EntityType> = entityRepository.findAll(pageable)
+            var page: Page<EntityType> = entityRepository.findAll(pageable!!)
             headers.set("Content-Range", "bytes %d-%d/%d".format(page.number * page.size, page.numberOfElements, page.totalElements))
             result = page.content.map { entity -> entityMapper.convertToDto(entity) }
         } else {
@@ -71,9 +71,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     @Transactional
     open fun update(id: ID, dto : DtoType) : DtoType {
-        var entity = fetchEntity(id)
-
-        entityMapper.convertIntoEntity(dto, entity)
+        var entity = entityMapper.convertToEntity(dto)
         entity.id = id
         handleNested(entity, dto)
 

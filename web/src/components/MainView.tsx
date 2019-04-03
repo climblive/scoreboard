@@ -71,9 +71,13 @@ export default class MainView extends React.Component<Props, State> {
          };
 
          return (
-            <div style={{marginTop:50, textAlign:"center"}}>
-               <div style={{marginBottom:10}}>Registreringskoden är inte giltig.<br/>Vänligen kontrollera att att den är rätt.</div>
-               <button onClick={goBack}>Försök igen</button>
+            <div className="maxWidth">
+               <div className="startView view">
+                  <div style={{marginTop:50, textAlign:"center"}}>
+                     <div style={{marginBottom:10}}>Registreringskoden är inte giltig.<br/>Vänligen kontrollera att att den är rätt.</div>
+                     <button onClick={goBack}>Försök igen</button>
+                  </div>
+               </div>
             </div>
          )
       } else if (!(this.props.contenderData && this.props.problems && this.props.contest && this.props.compClasses && this.props.ticks && this.props.colors)) {

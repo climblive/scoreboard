@@ -43,17 +43,16 @@ export default class StartView extends React.Component<Props, State> {
    
    render() {
       if (this.state.redirect) { 
-         return <Redirect to={"/" + this.state.activationCode} />
+         return <Redirect push to={"/" + this.state.activationCode} />
       }
       let buttonClass = this.inputOk() ? "" : "disabled";
 
       return (
          <div className="maxWidth">
             <div className="startView view">
-               <div>Välkommen!</div>
-               <div style={{marginBottom:10}}>Skriv in din aktiveringskod:</div>
-               <input autoFocus value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
-               <div>
+               <div className="activationWrapper">
+                  <div className="message" style={{marginBottom:10}}>Ange din aktiveringskod</div>
+                  <input autoFocus value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
                   <button className={buttonClass} onClick={this.onSubmit}>Fortsätt</button>
                </div>
             </div>

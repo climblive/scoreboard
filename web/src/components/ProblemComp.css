@@ -28,7 +28,7 @@
 
 .problem .secondRow.expanded {
    display:flex;
-   width:200px;
+   width:120px;
 }
 
 .problem .secondRow .selector {
@@ -43,7 +43,7 @@
 
 .problem .selector .buttonText {
    font-size: 8px;
-   margin-top: -4px;
+   margin-top: -3px;
 }
 
 .problem .id {

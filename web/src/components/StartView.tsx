@@ -30,6 +30,12 @@ export default class StartView extends React.Component<Props, State> {
       this.setState(this.state);
    };
 
+   handleActivationCodeKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if(event.keyCode == 13) {
+         this.onSubmit();
+      }
+   };
+
    inputOk(): boolean {
       return this.state.activationCode != undefined && this.state.activationCode.length > 6;
    }
@@ -50,9 +56,10 @@ export default class StartView extends React.Component<Props, State> {
       return (
          <div className="maxWidth">
             <div className="startView view">
+               <img style={{width:200, position:'absolute', top:70, right: 0, marginRight: 'auto',left: 0, marginLeft: 'auto'}} src="clmb_MainLogo_NoShadow.png"/>
                <div className="activationWrapper">
                   <div className="message" style={{marginBottom:10}}>Ange din aktiveringskod</div>
-                  <input autoFocus value={this.state.activationCode} onChange={this.handleActivationCodeChange} />
+                  <input autoFocus value={this.state.activationCode} onChange={this.handleActivationCodeChange} onKeyUp={this.handleActivationCodeKeyUp}/>
                   <button className={buttonClass} onClick={this.onSubmit}>Fortsätt</button>
                </div>
             </div>

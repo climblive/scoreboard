@@ -73,18 +73,25 @@ export default class MainView extends React.Component<Props, State> {
          return (
             <div className="maxWidth">
                <div className="startView view">
-                  <div style={{marginTop:50, textAlign:"center"}}>
-                     <div style={{marginBottom:10}}>Registreringskoden är inte giltig.<br/>Vänligen kontrollera att att den är rätt.</div>
-                     <button onClick={goBack}>Försök igen</button>
+                  <div className="activationWrapper">
+                     <img style={{width:200, position:'absolute', top:70, right: 0, marginRight: 'auto',left: 0, marginLeft: 'auto'}} src="clmb_MainLogo_NoShadow.png"/>
+                     <div style={{marginTop:50, textAlign:"center"}}>
+                        <div style={{marginBottom:10}}>Registreringskoden är inte giltig.<br/>Vänligen kontrollera att att den är rätt.</div>
+                        <button className="large" onClick={goBack}>Försök igen</button>
+                     </div>
                   </div>
                </div>
             </div>
          )
       } else if (!(this.props.contenderData && this.props.problems && this.props.contest && this.props.compClasses && this.props.ticks && this.props.colors)) {
          return (
-            <div style={{marginTop:50, textAlign:"center"}}>
-               <div style={{marginBottom:5}}>Vänta...</div>
-               <Spinner color={"#333"} />
+            <div className="maxWidth">
+               <div className="view mainView">
+                  <div style={{marginTop:50, textAlign:"center"}}>
+                     <div style={{marginBottom:5}}>Vänta...</div>
+                     <Spinner color={"#333"} />
+                  </div>
+               </div>
             </div>
          )
       } else if(!this.props.contenderData.name) {

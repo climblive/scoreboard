@@ -83,20 +83,19 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
                .then((tick) => {
                   dispatch(createTick(tick))
                })
-               .catch(() => {
-                  dispatch(setProblemStateFailed())
+               .catch((error) => {
+                  console.log(error);
+                  dispatch(setProblemStateFailed(error))
                });
 
          } else if (problemState == ProblemState.NOT_SENT) {
             // Delete the tick:
             Api.deleteTick(tick)
                .then(() => {
-                  console.log("Hej");
                   dispatch(deleteTick(tick))
                })
                .catch((error) => {
-                  console.log("Nooo", error);
-                  dispatch(setProblemStateFailed())
+                  dispatch(setProblemStateFailed(error))
                });
          } else {
             // Update the tick:
@@ -106,8 +105,8 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
                .then(() => {
                   dispatch(updateTick(newTick))
                })
-               .catch(() => {
-                  dispatch(setProblemStateFailed())
+               .catch((error) => {
+                  dispatch(setProblemStateFailed(error))
                });
          }
       }

@@ -1,23 +1,20 @@
 package se.scoreboard.service
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.findByIdOrNull
 import se.scoreboard.data.domain.AbstractEntity
-import se.scoreboard.exception.NotFoundException
 import se.scoreboard.mapper.AbstractMapper
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.transaction.Transactional
 import com.fasterxml.jackson.module.kotlin.*
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import se.scoreboard.exception.WebException
 
 abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID> constructor(
     protected val entityRepository: PagingAndSortingRepository<EntityType, ID>) {
@@ -88,7 +85,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     @Transactional
     open fun fetchEntity(id: ID) : EntityType {
-        return entityRepository.findByIdOrNull(id) ?: throw NotFoundException(MSG_NOT_FOUND)
+        return entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
     }
 
     @Transactional

@@ -35,7 +35,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, problemIdBeingUpdated: action.payload.id };
 
       case getType(scoreboardActions.setProblemStateFailed):
-         return { ...state, problemIdBeingUpdated: undefined, errorMessage: "Failed to set state"};
+         return { ...state, problemIdBeingUpdated: undefined, errorMessage: action.payload};
 
       case getType(scoreboardActions.clearErrorMessage):
          return { ...state, errorMessage: undefined};

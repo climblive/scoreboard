@@ -2,14 +2,13 @@ package se.scoreboard.service
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
-import se.scoreboard.data.domain.extension.getQualificationScore
-import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.dto.ContenderDto
-import se.scoreboard.exception.NotFoundException
+import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.mapper.ContenderMapper
 import javax.transaction.Transactional
@@ -29,7 +28,7 @@ class ContenderService @Autowired constructor(
 
     @Transactional
     open fun findByCode(code: String): ContenderDto {
-        val contender = contenderRepository.findByRegistrationCode(code) ?: throw NotFoundException(super.MSG_NOT_FOUND)
+        val contender = contenderRepository.findByRegistrationCode(code) ?: throw WebException(HttpStatus.NOT_FOUND, super.MSG_NOT_FOUND)
         return entityMapper.convertToDto(contender)
     }
 

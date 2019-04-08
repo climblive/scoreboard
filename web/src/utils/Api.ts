@@ -29,16 +29,19 @@ export class Api {
       return (window.location.hostname === "localhost" ?  "http://localhost:8080" : "") + "/api/";
    }
 
-   private static handleErrors(data: Response): Response {
+   private static async handleErrors(data: Response): Promise<Response> {
       if(!data.ok) {
-         throw Error("Failed: " + data.statusText);
+         let errorBody = await data.json();
+         console.error(errorBody);
+         throw errorBody.message;
+         //throw Error("Failed: " + data.statusText);
       }
       return data;
    }
 
    private static async get(url: string) {
       let response = await fetch(this.getBaseUrl() + url);
-      return this.handleErrors(response).json();
+      return (await this.handleErrors(response)).json();
    }
 
    private static async post(url: string, postData: any) {
@@ -51,7 +54,7 @@ export class Api {
             },
          }
       );
-      return this.handleErrors(response).json();
+      return (await this.handleErrors(response)).json();
    }
 
    private static async delete(url: string) {
@@ -76,7 +79,7 @@ export class Api {
             },
          }
       );
-      return this.handleErrors(response).json();
+      return (await this.handleErrors(response)).json();
    }
 
    static getContest(contestId: number): Promise<Contest> {

@@ -23,8 +23,8 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
 
     val qrCodeWriter = QRCodeWriter()
 
-    fun createPdf(codes: List<String>): ByteArray? {
-        val document = PDDocument.load(javaClass.getResourceAsStream("/template.pdf"))
+    fun createPdf(pdfTemplate: ByteArray, codes: List<String>): ByteArray {
+        val document = PDDocument.load(pdfTemplate)
         val page = document.getPage(0)
         val pageDict = page.cosObject
         document.removePage(0)

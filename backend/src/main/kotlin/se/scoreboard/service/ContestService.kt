@@ -18,7 +18,8 @@ import java.io.ByteArrayOutputStream
 
 @Service
 class ContestService @Autowired constructor(
-        contestRepository: ContestRepository) : AbstractDataService<Contest, ContestDto, Int>(
+        contestRepository: ContestRepository,
+        val pdfService: PdfService) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
 
     override lateinit var entityMapper: AbstractMapper<Contest, ContestDto>
@@ -30,6 +31,11 @@ class ContestService @Autowired constructor(
     override fun handleNested(entity: Contest, dto: ContestDto) {
         entity.location = entityManager.getReference(Location::class.java, dto.locationId)
         entity.organizer = entityManager.getReference(Organizer::class.java, dto.organizerId)
+    }
+
+    fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {
+        val codes  = this.fetchEntity(id).contenders.map { it.registrationCode!! }
+        return pdfService.createPdf(pdfTemplate, codes)
     }
 
     fun export(id: Int): ByteArray {

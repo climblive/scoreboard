@@ -43,6 +43,9 @@ export class ContestEdit extends React.Component {
         fetch(API_URL + "/contest/" + this.props.id + "/createContenders",
             {
                 method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({count: parseInt(this.state.numberOfContenders)})
             }
         )

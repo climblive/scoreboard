@@ -10,7 +10,8 @@ import {
 } from 'react-admin';
 import { stringify } from 'query-string';
 
-const API_URL = 'http://localhost:8080/api';
+export const API_URL = 'https://clmb.live/api';
+//export const API_URL = 'http://localhost:8080/api';
 
 /**
  * @param {String} type One of the constants appearing at the top of this file, e.g. 'UPDATE'

@@ -1,5 +1,8 @@
 import React from 'react';
 import { List, Edit, Create, SimpleForm, ReferenceInput, SelectInput, TextInput, NumberInput, Datagrid, TextField, ReferenceField, NumberField, RichTextField } from 'react-admin';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import MuiTextField from '@material-ui/core/TextField';
 import {API_URL} from './dataProvider.js'
 import { saveAs } from 'file-saver';
 
@@ -22,14 +25,34 @@ export const ContestList = props => (
 );
 
 export class ContestEdit extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log(props);
-        console.log("DATA_API " + API_URL);
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({numberOfContenders: '0'});
+    }
+
+    onNumberOfContendersChange = (evt) => {
+        console.log(evt);
+        this.setState({
+            numberOfContenders: evt.target.value
+        });
     }
 
     batchCreateContenders = () => {
         console.log("batchCreateContenders");
+        // Send stuff:
+        fetch(API_URL + "/contest/" + this.props.id + "/createContenders",
+            {
+                method: "PUT",
+                body: JSON.stringify({count: parseInt(this.state.numberOfContenders)})
+            }
+        )
+            .then(response => {
+                console.log("Created stuff");
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
     }
 
     onChange = (evt) => {
@@ -43,12 +66,10 @@ export class ContestEdit extends React.Component {
             // Send stuff:
             fetch(API_URL + "/contest/" + this.props.id + "/pdf",
                 {
-                        method: "POST", // *GET, POST, PUT, DELETE, etc.
+                        method: "POST",
                         headers: {
                             "Content-Type": "application/pdf",
                         },
-                        redirect: "follow", // manual, *follow, error
-                        referrer: "no-referrer", // no-referrer, *client
                         body: arrayBuffer, // body data type must match "Content-Type" header
                     }
             )
@@ -99,23 +120,26 @@ export class ContestEdit extends React.Component {
                         <TextInput source="rules"/>
                     </SimpleForm>
                 </Edit>
-                <div>
-                    <div>Batch create contenders:</div>
-                    <div>
-                        <button onClick={this.batchCreateContenders}>Create</button>
-                    </div>
-                </div>
-                <div>
-                    <div>Create PDF:</div>
-                    <div>
-                        <input type='file' id='multi' onChange={this.onChange} />
-                    </div>
-                </div>
-                <div>
-                    <div>Export results:</div>
-                    <div>
-                        <button onClick={this.exportResults}>Export</button>
-                    </div>
+                <div style={{display:'flex', marginTop:16}}>
+                    <Paper style={{padding:'16px 24px', flexBasis:0, marginRight:16, flexGrow:1}}>
+                        <div style={{marginBottom:16}}>1. Batch create contenders</div>
+                        <div>
+                            <MuiTextField label="Number of contenders" value={this.state ? this.state.numberOfContenders : '0'} onChange={this.onNumberOfContendersChange}/>
+                            <Button variant="outlined" style={{marginTop:10, display:'block'}} onClick={this.batchCreateContenders}>Create</Button>
+                        </div>
+                    </Paper>
+                    <Paper style={{padding:'16px 24px', flexBasis:0, marginRight:16, flexGrow:1}}>
+                        <div style={{marginBottom:16}}>2. Create PDF</div>
+                        <div>
+                            <input type='file' id='multi' onChange={this.onChange} />
+                        </div>
+                    </Paper>
+                    <Paper style={{padding:'16px 24px', flexBasis:0, flexGrow:1}}>
+                        <div style={{marginBottom:16}}>3. Export results</div>
+                        <div>
+                            <Button variant="outlined" onClick={this.exportResults}>Export</Button>
+                        </div>
+                    </Paper>
                 </div>
             </div>
         )

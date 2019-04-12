@@ -3,18 +3,22 @@ package se.scoreboard.api
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import se.scoreboard.data.domain.extension.allowedToAlterContender
 import se.scoreboard.dto.ContenderDto
-import se.scoreboard.dto.ScoreboardListItemDto
 import se.scoreboard.dto.TickDto
+import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.TickMapper
+import se.scoreboard.service.CompClassService
 import se.scoreboard.service.ContenderService
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
 class ContenderController @Autowired constructor(
-        val contenderService: ContenderService) {
+        val contenderService: ContenderService,
+        val compClassService: CompClassService) {
 
     private lateinit var tickMapper: TickMapper
 
@@ -41,7 +45,14 @@ class ContenderController @Autowired constructor(
 
     @PutMapping("/contender/{id}")
     fun updateContender(@PathVariable("id") id: Int,
-                        @RequestBody contender : ContenderDto) = contenderService.update(id, contender)
+                        @RequestBody contender : ContenderDto): ContenderDto {
+        val compClass = compClassService.fetchEntity(contender.compClassId!!)
+        if(!compClass.allowedToAlterContender()) {
+            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
+
+        }
+        return contenderService.update(id, contender)
+    }
 
     @DeleteMapping("/contender/{id}")
     fun deleteContender(@PathVariable("id") id: Int) = contenderService.delete(id)

@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.extension.getQualificationScore
-import se.scoreboard.data.domain.extension.getTotalScore
-import se.scoreboard.data.domain.extension.isInProgress
+import se.scoreboard.data.domain.extension.*
 import se.scoreboard.dto.ScoreboardListItemDto
 import se.scoreboard.dto.ScoreboardPushItemDto
 import se.scoreboard.dto.TickDto
@@ -47,7 +45,7 @@ class TickController @Autowired constructor(
     @PostMapping("/tick")
     fun createTick(@RequestBody tick : TickDto): TickDto {
         val contender = contenderService.fetchEntity(tick.contenderId!!)
-        if(!contender.compClass!!.isInProgress()) {
+        if(!contender.compClass!!.allowedToAlterTick()) {
             throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
         }
 
@@ -61,7 +59,7 @@ class TickController @Autowired constructor(
             @PathVariable("id") id: Int,
             @RequestBody tick : TickDto): TickDto {
         val contender = contenderService.fetchEntity(tick.contenderId!!)
-        if(!contender.compClass!!.isInProgress()) {
+        if(!contender.compClass!!.allowedToAlterTick()) {
             throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
         }
         val newTick =tickService.update(id, tick)
@@ -73,7 +71,7 @@ class TickController @Autowired constructor(
     fun deleteTick(@PathVariable("id") id: Int) {
         var tick = tickService.fetchEntity(id)
         val contender = tick.contender
-        if(!contender!!.compClass!!.isInProgress()) {
+        if(!contender!!.compClass!!.allowedToAlterTick()) {
             throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
         }
         tickService.delete(id)

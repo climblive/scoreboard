@@ -93,8 +93,8 @@ CREATE TABLE IF NOT EXISTS `contender` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `contest_id` INT NOT NULL,
   `registration_code` VARCHAR(16) NOT NULL,
-  `name` VARCHAR(64) NOT NULL,
-  `class_id` INT NOT NULL,
+  `name` VARCHAR(64) NULL,
+  `class_id` INT NULL,
   `entered` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_contender_1`

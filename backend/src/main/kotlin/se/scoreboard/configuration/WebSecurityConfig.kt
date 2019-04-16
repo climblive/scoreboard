@@ -1,19 +1,25 @@
 package se.scoreboard.configuration
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 
 
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+
+    @Autowired
+    private var userDetailsService: UserDetailsService? = null
+
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
@@ -21,22 +27,25 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .antMatchers("/api/user/login").permitAll()
             .antMatchers("/api-docs").permitAll()
             .antMatchers("/resource/**").permitAll()
+            .antMatchers("/api/user/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/**").hasRole("CONTENDER")
+            .antMatchers(HttpMethod.PUT, "/api/contender/**").hasRole("CONTENDER")
+            .antMatchers(HttpMethod.POST, "/api/tick").hasRole("CONTENDER")
+            .antMatchers(HttpMethod.PUT, "/api/tick/**").hasRole("CONTENDER")
+            .antMatchers(HttpMethod.DELETE, "/api/tick/**").hasRole("CONTENDER")
+            .antMatchers("/api/**").hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()
             .httpBasic()
-            .and();
+            .and().csrf().disable()
     }
 
     @Bean
-    public override fun userDetailsService(): UserDetailsService {
-        val user = User.withDefaultPasswordEncoder()
-            .username("admin")
-            .password("admin")
-            .roles("ADMIN")
-            .build()
-
-        return InMemoryUserDetailsManager(user)
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
     }
 }

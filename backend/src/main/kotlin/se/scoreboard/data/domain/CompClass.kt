@@ -17,6 +17,9 @@ open class CompClass (
     @JoinColumn(name = "contest_id", nullable = false)
     open var contest: Contest? = null,
 
+    @Column(name = "contest_id", insertable = false, updatable = false)
+    open var contestId: Int? = null,
+
     @Column(name = "name", nullable = false, length = 45)
     open var name: String? = null,
 

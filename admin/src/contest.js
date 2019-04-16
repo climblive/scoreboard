@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Edit, Create, SimpleForm, DisabledInput, ReferenceInput, SelectInput, TextInput, NumberInput, Datagrid, TextField, ReferenceField, NumberField, RichTextField } from 'react-admin';
+import { List, Edit, Create, SimpleForm, ReferenceInput, SelectInput, TextInput, NumberInput, Datagrid, TextField, ReferenceField, NumberField, RichTextField } from 'react-admin';
 
 export const ContestList = props => (
     <List {...props}>

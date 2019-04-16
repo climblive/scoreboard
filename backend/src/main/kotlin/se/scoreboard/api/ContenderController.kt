@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContenderDto
-import se.scoreboard.dto.ScoreboardListItemDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService

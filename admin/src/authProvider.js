@@ -18,7 +18,7 @@ export default (type, params) => {
                 return response.json();
             })
             .then(({ token }) => {
-                localStorage.setItem('token', token);
+                localStorage.setItem('token', btoa(username + ':' + password));
             });
     }
     if (type === AUTH_LOGOUT) {

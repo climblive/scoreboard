@@ -15,8 +15,8 @@ open class Contender (
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.MERGE))
     @JoinColumns(
-            JoinColumn(name = "class_id", referencedColumnName = "id", nullable = false),
-            JoinColumn(name = "contest_id", referencedColumnName = "contest_id", nullable = false))
+            JoinColumn(name = "class_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false),
+            JoinColumn(name = "contest_id", referencedColumnName = "contest_id", nullable = false, insertable = false, updatable = false))
     @Access(AccessType.PROPERTY)
     open var compClass: CompClass? = null,
 

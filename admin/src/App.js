@@ -1,5 +1,5 @@
 import React from 'react';
-import { Admin, Resource } from 'react-admin';
+import { Admin, Resource, fetchUtils } from 'react-admin';
 import { UserList, UserEdit, UserCreate } from './user';
 import { ContenderList, ContenderEdit, ContenderCreate } from "./contender";
 import { ContestList, ContestEdit, ContestCreate } from "./contest";
@@ -11,6 +11,7 @@ import { LocationList, LocationEdit, LocationCreate } from "./location";
 import { OrganizerList, OrganizerEdit, OrganizerCreate } from "./organizer";
 import Dashboard from './Dashboard';
 import dataProvider from './dataProvider';
+import authProvider from './authProvider';
 import FaceIcon from '@material-ui/icons/Face';
 import UserIcon from '@material-ui/icons/Group';
 import ClassIcon from '@material-ui/icons/Class';
@@ -21,8 +22,19 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import CheckIcon from '@material-ui/icons/Check';
 import HomeIcon from '@material-ui/icons/Home';
 
+export const API_URL = 'http://localhost:8080/api';
+
+const httpClient = (url, options = {}) => {
+    if (!options.headers) {
+        options.headers = new Headers({ Accept: 'application/json' });
+    }
+    const token = localStorage.getItem('token');
+    options.headers.set('Authorization', `Basic ${token}`);
+    return fetchUtils.fetchJson(url, options);
+}
+
 const App = () => (
-    <Admin title="Scoreboard" dashboard={Dashboard} dataProvider={dataProvider}>
+    <Admin title="Scoreboard" authProvider={authProvider} dashboard={Dashboard} dataProvider={dataProvider(API_URL, httpClient)}>
         <Resource name="user" icon={UserIcon} list={UserList} edit={UserEdit} create={UserCreate} />
         <Resource name="contender" icon={FaceIcon} list={ContenderList} edit={ContenderEdit} create={ContenderCreate} />
         <Resource name="compClass" icon={ClassIcon} list={CompClassList} edit={CompClassEdit} create={CompClassCreate} options={{ label: 'Comp Classes' }} />

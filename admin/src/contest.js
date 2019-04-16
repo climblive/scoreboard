@@ -3,7 +3,7 @@ import { List, Edit, Create, SimpleForm, ReferenceInput, SelectInput, TextInput,
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import MuiTextField from '@material-ui/core/TextField';
-import {API_URL} from './dataProvider.js'
+import {API_URL} from './App.js'
 import { saveAs } from 'file-saver';
 
 export const ContestList = props => (

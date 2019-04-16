@@ -9,7 +9,7 @@ internal class PdfServiceTest {
 
     @Test
     fun testStuff() {
-        val data = pdfService.createPdf(listOf("DASDFGRWFMS", "ERFMDSF"))
+        val data = pdfService.createPdf(ByteArray(0), listOf("DASDFGRWFMS", "ERFMDSF"))
         File("hej.pdf").writeBytes(data!!)
     }
 

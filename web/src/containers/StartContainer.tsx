@@ -13,7 +13,6 @@ export function mapStateToProps(state: StoreState, props: any): Props {
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
-      loadContest: () => dispatch(asyncActions.loadContest()),
       saveUserData: (contenderData: ContenderData) => dispatch(asyncActions.saveUserData(contenderData))
    };
 }

@@ -26,19 +26,19 @@ export function loadUserData(code: string): any {
       Api.getContender(code)
          .then(contenderData => {
             dispatch(receiveContenderData(contenderData));
-            Api.getProblems(contenderData.contestId).then(problems => {
+            Api.getProblems(contenderData.contestId, contenderData.registrationCode).then(problems => {
                dispatch(receiveProblems(problems));
             });
-            Api.getContest(contenderData.contestId).then(contest => {
+            Api.getContest(contenderData.contestId, contenderData.registrationCode).then(contest => {
                dispatch(receiveContest(contest));
             });
-            Api.getCompClasses(contenderData.contestId).then(compClasses => {
+            Api.getCompClasses(contenderData.contestId, contenderData.registrationCode).then(compClasses => {
                dispatch(receiveCompClasses(compClasses));
             });
-            Api.getTicks(contenderData.id).then(ticks => {
+            Api.getTicks(contenderData.id, contenderData.registrationCode).then(ticks => {
                dispatch(receiveTicks(ticks));
             });
-            Api.getColors().then(colors => {
+            Api.getColors(contenderData.registrationCode).then(colors => {
                dispatch(receiveColors(colors));
             });
          })
@@ -56,17 +56,17 @@ export function loadScoreboardData(id: number): any {
    };
 }
 
-export function loadContest(): any {
-   return (dispatch: Dispatch<any>) => {
+/*export function loadContest(): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       Api.getContest(0).then(contest => {
          dispatch(receiveContest(contest));
       })
    };
-}
+}*/
 
 export function saveUserData(contenderData: ContenderData): any {
    return (dispatch: Dispatch<any>) => {
-      let promise: Promise<ContenderData> = Api.setContender(contenderData);
+      let promise: Promise<ContenderData> = Api.setContender(contenderData, contenderData.registrationCode);
       promise.then(contenderData => dispatch(receiveContenderData(contenderData)));
       return promise;
    };
@@ -77,9 +77,10 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
       const oldState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
       if(oldState != problemState) {
          dispatch(startProblemUpdate(problem));
+         const activationCode: string = getState().contenderData!.registrationCode;
          if(!tick) {
             // Create a new tick:
-            Api.createTick(problem.id, getState().contenderData!.id, problemState == ProblemState.FLASHED)
+            Api.createTick(problem.id, getState().contenderData!.id, problemState == ProblemState.FLASHED, activationCode)
                .then((tick) => {
                   dispatch(createTick(tick))
                })
@@ -90,7 +91,7 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
 
          } else if (problemState == ProblemState.NOT_SENT) {
             // Delete the tick:
-            Api.deleteTick(tick)
+            Api.deleteTick(tick, activationCode)
                .then(() => {
                   dispatch(deleteTick(tick))
                })
@@ -101,7 +102,7 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
             // Update the tick:
             const newTick:Tick = JSON.parse(JSON.stringify(tick));
             newTick.flash = problemState == ProblemState.FLASHED;
-            Api.updateTick(newTick)
+            Api.updateTick(newTick, activationCode)
                .then(() => {
                   dispatch(updateTick(newTick))
                })

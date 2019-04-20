@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.crypto.password.StandardPasswordEncoder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+
+
 
 
 @Configuration
@@ -19,6 +22,9 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     private var userDetailsService: UserDetailsService? = null
+
+    @Autowired
+    private var authenticationEntryPoint: MyBasicAuthenticationEntryPoint? = null
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
@@ -30,8 +36,16 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/api/user/login").permitAll()
             .antMatchers("/api-docs").permitAll()
+            .antMatchers("/api/live/websocket").permitAll()
+            .antMatchers("/*").permitAll()
+            .antMatchers("/**/*.jpg").permitAll()
+            .antMatchers("/**/*.jpeg").permitAll()
+            .antMatchers("/**/*.png").permitAll()
+            .antMatchers("/**/*.gif").permitAll()
             .antMatchers("/resource/**").permitAll()
+            .antMatchers("/static/**").permitAll()
             .antMatchers("/api/user/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/contest/*/scoreboard").permitAll()
             .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("CONTENDER", "ADMIN")
             .antMatchers(HttpMethod.PUT, "/api/contender/**").hasAnyRole("CONTENDER", "ADMIN")
             .antMatchers(HttpMethod.POST, "/api/tick").hasAnyRole("CONTENDER", "ADMIN")
@@ -41,11 +55,14 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .anyRequest().authenticated()
             .and()
             .httpBasic()
+            .authenticationEntryPoint(this.authenticationEntryPoint)
             .and().csrf().disable()
     }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
+        //return StandardPasswordEncoder(
+        // return )
         return BCryptPasswordEncoder()
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails
 import se.scoreboard.data.repo.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import se.scoreboard.data.repo.ContenderRepository
 
@@ -17,8 +16,6 @@ class MyUserDetailsService : UserDetailsService {
     @Autowired
     private val contenderRepository: ContenderRepository? = null
 
-    private val passwordEncoder = BCryptPasswordEncoder(12)
-
     override fun loadUserByUsername(username: String): UserDetails {
         val user = userRepository!!.findByEmail(username)
 
@@ -29,7 +26,7 @@ class MyUserDetailsService : UserDetailsService {
         val contender = contenderRepository!!.findByRegistrationCode(username)
 
         if (contender != null) {
-            return MyUserPrincipal(contender.registrationCode!!, passwordEncoder.encode(contender.registrationCode), "ROLE_CONTENDER")
+            return MyUserPrincipal(contender)
         }
 
         throw UsernameNotFoundException(username)

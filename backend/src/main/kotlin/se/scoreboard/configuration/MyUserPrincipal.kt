@@ -9,7 +9,9 @@ import se.scoreboard.data.domain.User
 
 class MyUserPrincipal(private val username: String, private val password: String, private val role: String) : UserDetails {
 
-    constructor(user: User) : this(user.name!!, user.password!!, "ROLE_ADMIN")
+    constructor(user: User) : this(user.name!!, MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user.password!!), "ROLE_ADMIN")
+
+    constructor(contender: Contender) : this(contender.registrationCode!!, MyPasswordEncoder.createPassword(MyPasswordEncoder.REGCODE, contender.registrationCode!!), "ROLE_CONTENDER")
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableSetOf(SimpleGrantedAuthority(role))

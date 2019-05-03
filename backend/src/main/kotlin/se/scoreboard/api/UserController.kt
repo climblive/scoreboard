@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.data.repo.UserRepository
 import se.scoreboard.dto.OrganizerDto
@@ -14,7 +13,7 @@ import se.scoreboard.mapper.OrganizerMapper
 import se.scoreboard.service.UserService
 import java.util.*
 import com.fasterxml.jackson.databind.ObjectMapper
-
+import se.scoreboard.configuration.MyPasswordEncoder
 
 
 @RestController
@@ -25,11 +24,11 @@ class UserController @Autowired constructor(
         val userRepository: UserRepository) {
 
     private lateinit var organizerMapper: OrganizerMapper
-    private lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
+    private lateinit var passwordEncoder: MyPasswordEncoder
 
     init {
         organizerMapper = Mappers.getMapper(OrganizerMapper::class.java)
-        bCryptPasswordEncoder = BCryptPasswordEncoder()
+        passwordEncoder = MyPasswordEncoder()
     }
 
     @GetMapping("/user")
@@ -58,7 +57,7 @@ class UserController @Autowired constructor(
     @PostMapping("/user/login", produces = arrayOf("application/json"))
     fun login(@RequestBody auth: AuthData) : ResponseEntity<String> {
         val user = userRepository.findByEmail(auth.username)
-        if (bCryptPasswordEncoder.matches(auth.password, user?.password)) {
+        if (passwordEncoder.matches(auth.password, MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user?.password!!))) {
             val token = Base64.getEncoder().encodeToString((auth.username + ":" + auth.password).toByteArray())
             return ResponseEntity(ObjectMapper().writeValueAsString(token), HttpStatus.OK)
         } else {

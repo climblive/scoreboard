@@ -10,6 +10,12 @@ import javax.servlet.http.HttpServletResponse
 class MyBasicAuthenticationEntryPoint: BasicAuthenticationEntryPoint() {
 
     override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authException: AuthenticationException?) {
+        println("commence " + request)
+        println("commence2 " + request!!.serverName)
+        println("commence2 " + request!!.requestURL)
+        if(request!!.serverName.indexOf("admin") != -1) {
+            response!!.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"")
+        }
         response!!.status = HttpServletResponse.SC_UNAUTHORIZED
         val writer = response.writer
         writer.println("HTTP Status 401 - " + authException!!.message)
@@ -17,7 +23,7 @@ class MyBasicAuthenticationEntryPoint: BasicAuthenticationEntryPoint() {
 
     @Override
     override fun afterPropertiesSet() {
-        setRealmName("Baeldung");
-        super.afterPropertiesSet();
+        setRealmName("Realm");
+        super.afterPropertiesSet()
     }
 }

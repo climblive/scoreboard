@@ -37,6 +37,11 @@ export class ContestEdit extends React.Component {
         });
     }
 
+    getAuthorization = () => {
+        const token = localStorage.getItem('token');
+        return `Basic ${token}`;
+    }
+
     batchCreateContenders = () => {
         console.log("batchCreateContenders");
         // Send stuff:
@@ -45,14 +50,13 @@ export class ContestEdit extends React.Component {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": this.getAuthorization()
+
                 },
                 body: JSON.stringify({count: parseInt(this.state.numberOfContenders)})
-            }
-        )
-            .then(response => {
+            }).then(response => {
                 console.log("Created stuff");
-            })
-            .catch(error => {
+            }).catch(error => {
                 console.log(error);
             })
 
@@ -69,20 +73,18 @@ export class ContestEdit extends React.Component {
             // Send stuff:
             fetch(API_URL + "/contest/" + this.props.id + "/pdf",
                 {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/pdf",
-                        },
-                        body: arrayBuffer, // body data type must match "Content-Type" header
-                    }
-            )
-                .then(response => {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/pdf",
+                        "Authorization": this.getAuthorization()
+                    },
+                    body: arrayBuffer, // body data type must match "Content-Type" header
+                }).then(response => {
                     response.blob().then(blob => {
                         console.log(blob)
                         saveAs(blob, "contest.pdf");
                     })
-                })
-                .catch(error => {
+                }).catch(error => {
                     console.log(error);
                 })
         }
@@ -93,14 +95,18 @@ export class ContestEdit extends React.Component {
 
     exportResults = () => {
         console.log("exportResults");
-        fetch(API_URL + "/contest/export/" + this.props.id)
-            .then(response => {
+        fetch(API_URL + "/contest/export/" + this.props.id,
+            {
+                headers: {
+                    "Content-Type": "application/pdf",
+                    "Authorization": this.getAuthorization()
+                }
+            }).then(response => {
                 response.blob().then(blob => {
                     console.log(blob)
                     saveAs(blob, "contest.xls");
                 })
-            })
-            .catch(error => {
+            }).catch(error => {
                 console.log(error);
             })
     }

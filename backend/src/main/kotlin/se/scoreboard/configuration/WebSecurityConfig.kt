@@ -10,11 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.crypto.password.StandardPasswordEncoder
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-
-
-
 
 @Configuration
 @EnableWebSecurity
@@ -38,12 +33,16 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers("/api-docs").permitAll()
             .antMatchers("/api/live/websocket").permitAll()
             .antMatchers("/*").permitAll()
+            .antMatchers("/**/*.ico").permitAll()
             .antMatchers("/**/*.jpg").permitAll()
             .antMatchers("/**/*.jpeg").permitAll()
             .antMatchers("/**/*.png").permitAll()
             .antMatchers("/**/*.gif").permitAll()
             .antMatchers("/resource/**").permitAll()
             .antMatchers("/static/**").permitAll()
+
+            .antMatchers("/admin/**").permitAll()
+
             .antMatchers("/api/user/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/contest/*/scoreboard").permitAll()
             .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("CONTENDER", "ADMIN")
@@ -61,8 +60,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        //return StandardPasswordEncoder(
-        // return )
-        return BCryptPasswordEncoder()
+        return MyPasswordEncoder()
     }
 }

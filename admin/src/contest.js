@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import MuiTextField from '@material-ui/core/TextField';
 import {API_URL} from './App.js'
 import { saveAs } from 'file-saver';
+import RichTextInput from 'ra-input-rich-text';
 
 export const ContestList = props => (
     <List {...props}>
@@ -126,7 +127,7 @@ export class ContestEdit extends React.Component {
                         <TextInput source="name"/>
                         <TextInput source="description"/>
                         <NumberInput source="qualifyingProblems"/>
-                        <TextInput source="rules"/>
+                        <RichTextInput source="rules"/>
                     </SimpleForm>
                 </Edit>
                 <div style={{display:'flex', marginTop:16}}>
@@ -167,7 +168,7 @@ export const ContestCreate = props => (
             <TextInput source="name" />
             <TextInput source="description" />
             <NumberInput source="qualifyingProblems" />
-            <TextInput source="rules" />
+            <RichTextInput source="rules" />
         </SimpleForm>
     </Create>
 );

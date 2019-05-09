@@ -41,7 +41,7 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
    return (
       <div style={{borderColor: borderColor, backgroundColor: rgbColor}} className={className} onClick={onToggle}>
          <div style={colorStyle} className="firstRow">
-            <div className="id">{problem.id}</div>
+            <div className="id">{problem.number}</div>
             <div className="color">{color.name}</div>
             {isUpdating && <div style={{height:0}}>
                <Spinner color={textColor}/>

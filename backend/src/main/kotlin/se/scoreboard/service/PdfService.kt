@@ -12,10 +12,12 @@ import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
 import org.springframework.beans.factory.annotation.Value
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
+import javax.imageio.ImageIO
 
 
 @Service
@@ -29,11 +31,18 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
         val pageDict = page.cosObject
         document.removePage(0)
 
+        // Get the logo:
+        var logo:BufferedImage? = null
+        PdfService::class.java.getResourceAsStream("/logo.png").use {
+            logo = ImageIO.read(it)
+        }
+        val logoObject = LosslessFactory.createFromImage(document, logo)
+
         codes.forEach { code ->
             var newPageDict = COSDictionary(pageDict)
             newPageDict.removeItem(COSName.ANNOTS)
             var newPage = PDPage(newPageDict)
-            addHeader(document, newPage, code)
+            addHeader(document, logoObject, newPage, code)
             document.addPage(newPage)
         }
         ByteArrayOutputStream().use {
@@ -42,8 +51,8 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
         }
     }
 
-    private fun addHeader(document: PDDocument, page: PDPage, code: String) {
-        val cs = PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true)
+    private fun addHeader(document: PDDocument, logo: PDImageXObject, page: PDPage, code: String) {
+        val cs = PDPageContentStream(document, page, PDPageContentStream.AppendMode.PREPEND, true)
         val outerM = 20f
         val qrM = 2f
         val m = 5f
@@ -54,8 +63,12 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
 
         val qrSize = boxH - qrM * 2
 
+        val logoH = boxH - m * 2
+        val logoW = logoH * logo.width / logo.height
+
         cs.setLineWidth(1f)
         cs.setStrokingColor(Color.black)
+        cs.setNonStrokingColor(Color.black)
         cs.moveTo(boxX ,boxY)
         cs.lineTo(boxX + boxW, boxY)
         cs.lineTo(boxX + boxW, boxY + boxH)
@@ -64,10 +77,18 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
         cs.closeAndStroke()
 
         cs.beginText()
-        cs.newLineAtOffset(boxX + m, boxY + m)
+        cs.newLineAtOffset(boxX + logoW + m * 3, boxY + m * 3)
         cs.setFont( PDType1Font.COURIER, 20f )
         cs.showText(code)
         cs.endText()
+
+        cs.beginText()
+        cs.newLineAtOffset(boxX + logoW + m * 3, boxY + m * 3 + 20)
+        cs.setFont( PDType1Font.HELVETICA, 10f )
+        cs.showText("Din aktiveringskod på " + siteUrl + ":")
+        cs.endText()
+
+        cs.drawImage(logo, boxX + m, boxY + m, logoW, logoH)
 
         val qrCode = LosslessFactory.createFromImage(document, getQRCode("$siteUrl/$code", 400))
         cs.drawImage(qrCode, boxX + boxW - qrSize - qrM, boxY + qrM, qrSize, qrSize)

@@ -36,14 +36,13 @@ const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: num
             }
             return x;
          }
-      }).filter(sc => sc) as ScoreboardListItem[]
+      }).filter(sc => sc) as ScoreboardListItem[];
 
-      if(maxCount && listItems.length > 0 && !listItems[listItems.length - 1].score) {
-         // Finalist list with score 0. Don't allow that...
-         return [];
-      } else {
-         return listItems;
+      if(maxCount) {
+         // Remove contenders without score:
+         listItems = listItems.filter(l => l.score);
       }
+      return listItems;
    } else {
       return undefined;
    }

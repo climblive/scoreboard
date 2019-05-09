@@ -11,6 +11,7 @@ import se.scoreboard.dto.ScoreboardListItemDto
 import se.scoreboard.dto.ScoreboardPushItemDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
+import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
 import javax.transaction.Transactional
@@ -22,19 +23,7 @@ import javax.transaction.Transactional
 class TickController @Autowired constructor(
         val tickService: TickService,
         val contenderService: ContenderService,
-        private val simpMessagingTemplate : SimpMessagingTemplate?) {
-
-    private fun broadcast(contender: Contender) {
-        if (simpMessagingTemplate != null) {
-            val scoreboardListItemDTO = ScoreboardListItemDto(
-                    contender.id!!,
-                    contender.name!!,
-                    contender.getTotalScore(),
-                    contender.getQualificationScore())
-            val scoreboardPushItemDTO = ScoreboardPushItemDto(contender.compClass!!.id!!, scoreboardListItemDTO)
-            simpMessagingTemplate.convertAndSend("/topic/scoreboard/" + contender.contest!!.id, scoreboardPushItemDTO)
-        }
-    }
+        val broadcastService : BroadcastService) {
 
     @GetMapping("/tick")
     fun getTicks(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(filter, pageable)
@@ -50,7 +39,7 @@ class TickController @Autowired constructor(
         }
 
         val newTick = tickService.create(tick)
-        broadcast(contender)
+        broadcastService.broadcast(contender)
         return newTick
     }
 
@@ -63,18 +52,19 @@ class TickController @Autowired constructor(
             throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
         }
         val newTick =tickService.update(id, tick)
-        broadcast(contender)
+        broadcastService.broadcast(contender)
         return newTick
     }
 
     @DeleteMapping("/tick/{id}")
     fun deleteTick(@PathVariable("id") id: Int) {
         var tick = tickService.fetchEntity(id)
-        val contender = tick.contender
-        if(!contender!!.compClass!!.allowedToAlterTick()) {
+        val contender = tick.contender!!
+        if(!contender.compClass!!.allowedToAlterTick()) {
             throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
         }
         tickService.delete(id)
-        broadcast(contender!!)
+        contender.ticks.remove(tick)
+        broadcastService.broadcast(contender)
     }
 }

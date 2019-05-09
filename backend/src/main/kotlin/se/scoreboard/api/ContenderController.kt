@@ -10,6 +10,7 @@ import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.TickMapper
+import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.CompClassService
 import se.scoreboard.service.ContenderService
 
@@ -18,7 +19,8 @@ import se.scoreboard.service.ContenderService
 @RequestMapping("/api")
 class ContenderController @Autowired constructor(
         val contenderService: ContenderService,
-        val compClassService: CompClassService) {
+        val compClassService: CompClassService,
+        val broadcastService: BroadcastService) {
 
     private lateinit var tickMapper: TickMapper
 
@@ -51,7 +53,10 @@ class ContenderController @Autowired constructor(
             throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
 
         }
-        return contenderService.update(id, contender)
+        val newContender = contenderService.update(id, contender)
+        val entity = contenderService.fetchEntity(id)
+        broadcastService.broadcast(entity)
+        return newContender
     }
 
     @DeleteMapping("/contender/{id}")

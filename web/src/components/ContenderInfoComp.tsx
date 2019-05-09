@@ -105,7 +105,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
                <div style={{color:'#8c8c8c', marginBottom:17}}>Välj klass</div>
                <div className="compClassContainer">{compClasses}</div>
             </div>
-            <div style={{marginTop:25, fontSize:12, color:'#6c727c'}}>Fullständigt namn:</div>
+            <div style={{marginTop:25, marginBottom:3, fontSize:12, color:'#6c727c'}}>Fullständigt namn:</div>
             <input autoFocus style={{textAlign:'left'}} value={this.state.name} onChange={this.handleNameCodeChange} />
             {buttons}
             <div style={{position:'relative', marginTop:20}}>

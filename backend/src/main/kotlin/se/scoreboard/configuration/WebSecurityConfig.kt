@@ -33,6 +33,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers("/api-docs").permitAll()
             .antMatchers("/api/live/websocket").permitAll()
             .antMatchers("/*").permitAll()
+            .antMatchers("/scoreboard/*").permitAll()
             .antMatchers("/**/*.ico").permitAll()
             .antMatchers("/**/*.jpg").permitAll()
             .antMatchers("/**/*.jpeg").permitAll()

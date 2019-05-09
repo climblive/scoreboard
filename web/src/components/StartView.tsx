@@ -26,7 +26,7 @@ export default class StartView extends React.Component<Props, State> {
    }
 
    handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-      this.state.activationCode = event.currentTarget.value;
+      this.state.activationCode = event.currentTarget.value.toLocaleUpperCase();
       this.setState(this.state);
    };
 

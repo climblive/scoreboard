@@ -7,6 +7,7 @@ import { Api } from '../utils/Api';
 import ScoreboardTotalListContainer from '../containers/ScoreboardTotalListContainer';
 import ScoreboardFinalistListContainer from '../containers/ScoreboardFinalistListContainer';
 import { ScoreboardClassHeaderComp } from './ScoreboardClassHeaderComp';
+import Spinner from "./Spinner";
 
 export interface Props {
    scoreboardData: ScoreboardContenderList[];
@@ -68,21 +69,28 @@ export default class ScoreboardView extends React.Component<Props> {
          return (
             <div className="scoreboardView">
                <div className="scoreboardListContainer">{headers}</div>
-               <div className="header">Finalists</div>   
+               <div className="header">Finalister</div>
                <div className="scoreboardListContainer">{finalistList}</div>
-               <div className="header">Total</div>   
+               <div className="header">Totalpoäng</div>
                <div className="scoreboardListContainer total">{totalList}</div>
                <div className="logoContainer">
-                  <img height="70" src="/logos/klatterdomen.jpg" />
                   <img height="70" src="/logos/highSport.gif" />
+                  <img height="70" src="/logos/klatterdomen.jpg" />
                   <img height="50" src="/logos/edelrid.png" />
-                  <img height="70" src="/logos/chalkCartel.png" />
                </div>
             </div>
          );
       } else { 
-         return <div className="scoreboardView"><div>Getting data...</div></div>
+         return (
+            <div className="maxWidth">
+              <div className="view mainView">
+                  <div style={{marginTop:50, textAlign:"center"}}>
+                     <div style={{marginBottom:5}}>Vänta...</div>
+                     <Spinner color={"#333"} />
+                  </div>
+               </div>
+            </div>
+         )
       }
-
    }
 }

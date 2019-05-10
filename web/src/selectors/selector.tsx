@@ -58,6 +58,6 @@ export const makeGetTotalList = () => {
 export const makeGetFinalistList = () => {
    return createSelector(
       [getScoreboardContenders],
-      (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.qualifyingScore, 5, scoreboardContenders)
+      (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.qualifyingScore, 7, scoreboardContenders)
    )
 }

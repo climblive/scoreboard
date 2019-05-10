@@ -5,10 +5,10 @@ import java.util.*
 
 fun CompClass.allowedToAlterContender() : Boolean {
     val now = Date()
-    return now.before(timeEnd)
+    return now.toInstant().isBefore(timeEnd!!.toInstant().plusSeconds(15 * 60))
 }
 
 fun CompClass.allowedToAlterTick() : Boolean {
     val now = Date()
-    return now.after(timeBegin) && now.toInstant().isBefore(timeEnd!!.toInstant().plusSeconds(3 * 60))
+    return now.after(timeBegin) && now.toInstant().isBefore(timeEnd!!.toInstant().plusSeconds(15 * 60))
 }

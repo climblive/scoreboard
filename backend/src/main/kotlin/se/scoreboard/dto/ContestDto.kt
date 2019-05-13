@@ -7,7 +7,8 @@ data class ContestDto (
     var name: String?,
     var description: String?,
     var qualifyingProblems: Int,
-    var rules: String?) {
+    var rules: String?,
+    var gracePeriod: Int?) {
 
-    constructor() : this(null, null, null, null, null, Int.MAX_VALUE, null)
+    constructor() : this(null, null, null, null, null, Int.MAX_VALUE, null, null)
 }

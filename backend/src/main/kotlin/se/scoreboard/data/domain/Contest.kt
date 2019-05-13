@@ -33,6 +33,9 @@ open class Contest (
     @Column(name = "rules", length = 65535)
     open var rules: String? = null,
 
+    @Column(name = "grace_period", nullable = false)
+    open var gracePeriod: Int = 0,
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
     open var problems: MutableSet<Problem> = HashSet(0),
 

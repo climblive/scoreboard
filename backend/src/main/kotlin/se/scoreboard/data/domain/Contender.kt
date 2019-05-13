@@ -15,7 +15,7 @@ open class Contender (
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.MERGE))
     @JoinColumns(
-            JoinColumn(name = "class_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false),
+            JoinColumn(name = "class_id", referencedColumnName = "id", nullable = true, insertable = false, updatable = false),
             JoinColumn(name = "contest_id", referencedColumnName = "contest_id", nullable = false, insertable = false, updatable = false))
     @Access(AccessType.PROPERTY)
     open var compClass: CompClass? = null,
@@ -28,7 +28,7 @@ open class Contender (
     @Column(name = "registration_code", unique = true, nullable = false, length = 16)
     open var registrationCode: String? = null,
 
-    @Column(name = "name", nullable = false, length = 64)
+    @Column(name = "name", nullable = true, length = 64)
     open var name: String? = null,
 
     @Temporal(TemporalType.TIMESTAMP)

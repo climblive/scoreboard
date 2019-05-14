@@ -30,6 +30,9 @@ open class Contest (
     @Column(name = "qualifying_problems", nullable = false)
     open var qualifyingProblems: Int = 0,
 
+    @Column(name = "finalists", nullable = false)
+    open var finalists: Int = 0,
+
     @Column(name = "rules", length = 65535)
     open var rules: String? = null,
 

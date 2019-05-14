@@ -20,6 +20,7 @@ export const ContestList = props => (
             <TextField source="name" />
             <RichTextField source="description" />
             <NumberField source="qualifyingProblems" />
+            <NumberField source="finalists" />
             <NumberField source="gracePeriod"/>
         </Datagrid>
     </List>
@@ -127,6 +128,7 @@ export class ContestEdit extends React.Component {
                         <TextInput source="name"/>
                         <TextInput source="description"/>
                         <NumberInput source="qualifyingProblems"/>
+                        <NumberInput source="finalists" />
                         <RichTextInput source="rules"/>
                         <NumberInput source="gracePeriod"/>
                     </SimpleForm>
@@ -169,6 +171,7 @@ export const ContestCreate = props => (
             <TextInput source="name" />
             <TextInput source="description" />
             <NumberInput source="qualifyingProblems" />
+            <NumberInput source="finalists" />
             <RichTextInput source="rules" />
             <NumberInput source="gracePeriod"/>
         </SimpleForm>

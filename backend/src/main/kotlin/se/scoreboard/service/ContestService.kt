@@ -4,8 +4,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.mapstruct.factory.Mappers
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.Location
 import se.scoreboard.data.domain.Organizer
@@ -22,6 +24,8 @@ class ContestService @Autowired constructor(
         val pdfService: PdfService) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
 
+    var logger = LoggerFactory.getLogger(PdfService::class.java)
+
     override lateinit var entityMapper: AbstractMapper<Contest, ContestDto>
 
     init {
@@ -34,7 +38,7 @@ class ContestService @Autowired constructor(
     }
 
     fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {
-        val codes  = this.fetchEntity(id).contenders.map { it.registrationCode!! }
+        val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }
         return pdfService.createPdf(pdfTemplate, codes)
     }
 

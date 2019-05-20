@@ -1,6 +1,6 @@
 package se.scoreboard.dto
 
-import java.util.*
+import java.time.OffsetDateTime
 
 data class ContenderDto (
     var id: Int?,
@@ -8,7 +8,7 @@ data class ContenderDto (
     var contestId: Int? = null,
     var registrationCode: String? = null,
     var name: String? = null,
-    var entered: Date? = null) {
+    var entered: OffsetDateTime? = null) {
 
     constructor() : this(null, null, null, null, null, null)
 }

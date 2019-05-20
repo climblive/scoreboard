@@ -1,7 +1,7 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
-import java.util.*
+import java.time.OffsetDateTime
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -13,9 +13,8 @@ open class Tick (
     @Column(name = "id", unique = true, nullable = false)
     override var id: Int? = null,
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "timestamp", nullable = false, length = 26)
-    open var timestamp: Date? = null,
+    open var timestamp: OffsetDateTime? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contender_id", nullable = false)

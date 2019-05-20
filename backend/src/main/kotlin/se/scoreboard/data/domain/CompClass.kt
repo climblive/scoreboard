@@ -1,9 +1,10 @@
 package se.scoreboard.data.domain
 
+import java.io.Serializable
+import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
-import java.io.Serializable
 
 @Entity
 @Table(name = "comp_class")
@@ -26,13 +27,11 @@ open class CompClass (
     @Column(name = "description", length = 255)
     open var description: String? = null,
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "time_begin", length = 26, nullable = false)
-    open var timeBegin: Date? = null,
+    open var timeBegin: OffsetDateTime? = null,
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "time_end", length = 26, nullable = false)
-    open var timeEnd: Date? = null,
+    open var timeEnd: OffsetDateTime? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "compClass")
     open var contenders: MutableSet<Contender> = HashSet(0)) : Serializable, AbstractEntity<Int>

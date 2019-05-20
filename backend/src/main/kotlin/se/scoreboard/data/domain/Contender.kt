@@ -1,6 +1,7 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
+import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
@@ -31,9 +32,8 @@ open class Contender (
     @Column(name = "name", nullable = true, length = 64)
     open var name: String? = null,
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "entered", length = 26)
-    open var entered: Date? = null,
+    open var entered: OffsetDateTime? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contender")
     open var ticks: MutableSet<Tick> = HashSet(0)) : Serializable, AbstractEntity<Int>

@@ -16,8 +16,11 @@ open class Color (
     @Column(name = "name", nullable = false, length = 32, unique = true)
     open var name: String? = null,
 
-    @Column(name = "rgb", length = 6, nullable = false)
-    open var rgb: String? = null,
+    @Column(name = "rgb_primary", length = 7, nullable = false)
+    open var rgbPrimary: String? = null,
+
+    @Column(name = "rgb_secondary", length = 7, nullable = true)
+    open var rgbSecondary: String? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
     open var problems: MutableSet<Problem> = HashSet(0)) : Serializable, AbstractEntity<Int>

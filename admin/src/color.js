@@ -7,7 +7,8 @@ export const ColorList = props => (
         <Datagrid rowClick="edit">
             <TextField source="id" />
             <TextField source="name" />
-            <ColorField source="rgb" />
+            <ColorField source="rgbPrimary" />
+            <ColorField source="rgbSecondary" />
         </Datagrid>
     </List>
 );
@@ -17,7 +18,8 @@ export const ColorEdit = props => (
         <SimpleForm>
             <DisabledInput source="id" />
             <TextInput source="name" />
-            <ColorInput source="rgb" picker="Swatches" />
+            <ColorInput source="rgbPrimary" picker="Swatches" />
+            <ColorInput source="rgbSecondary" picker="Swatches" />
         </SimpleForm>
     </Edit>
 );
@@ -26,7 +28,8 @@ export const ColorCreate = props => (
     <Create {...props}>
         <SimpleForm>
             <TextInput source="name" />
-            <ColorInput source="rgb" picker="Swatches" />
+            <ColorInput source="rgbPrimary" picker="Swatches" />
+            <ColorInput source="rgbSecondary" picker="Swatches" />
         </SimpleForm>
     </Create>
 );

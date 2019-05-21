@@ -7,7 +7,7 @@ export const ProblemList = props => (
         <Datagrid rowClick="edit">
             <TextField source="id" />
             <ReferenceField source="colorId" reference="color">
-                <ColorField source="rgb"/>
+                <ColorField source="rgbPrimary"/>
             </ReferenceField>
             <ReferenceField source="contestId" reference="contest">
                 <TextField source="name" />

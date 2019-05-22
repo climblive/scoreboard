@@ -76,7 +76,7 @@ export default class MainView extends React.Component<Props, State> {
                   <div className="activationWrapper">
                      <img style={{width:200, position:'absolute', top:70, right: 0, marginRight: 'auto',left: 0, marginLeft: 'auto'}} src="clmb_MainLogo_NoShadow.png"/>
                      <div style={{marginTop:50, textAlign:"center"}}>
-                        <div style={{marginBottom:10}}>Registreringskoden är inte giltig.<br/>Vänligen kontrollera att att den är rätt.</div>
+                        <div style={{marginBottom:10}}>Registreringskoden är inte giltig.<br/>Vänligen kontrollera att den är rätt.</div>
                         <button className="large" onClick={goBack}>Försök igen</button>
                      </div>
                   </div>

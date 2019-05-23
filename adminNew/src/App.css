@@ -1,0 +1,131 @@
+.App {
+   height:100%;
+   display:flex;
+   flex-direction:row;
+   margin:auto;
+   max-width:1280px;
+   box-shadow: 0px 1px 10px black;
+}
+
+.view {
+   padding:10px;
+   padding-bottom:0;
+}
+
+.selector {
+   border: 1px solid #949494;
+   color: #333;
+   background: white;
+   cursor:pointer;
+   flex-basis: 0;
+   flex-grow:1;
+   text-align: center;
+   padding: 2px 5px;
+   border-left: none;
+}
+
+.selector:not(:last-child) {
+   border-right-width: 1px!important;
+}
+
+.selector:active {
+   background: #f0f0f0;
+}
+
+.selector:last-child {
+   border-top-right-radius: 3px;
+   border-bottom-right-radius: 3px;
+}
+
+.selector:first-child {
+   border-left: 1px solid #949494;
+   border-top-left-radius: 3px;
+   border-bottom-left-radius: 3px;
+}
+
+.selector.selected {
+   background: #949494;
+   color: white;
+}
+
+.selector.selected:active {
+   background: #848484;
+}
+
+button {
+   font-size:14px;
+   border: 1px solid grey;
+   border-radius: 5px;
+   padding: 2px 5px;
+   background: white;
+   cursor: pointer;
+}
+
+button.large {
+   width:100%;
+   margin-top: 20px;
+   border-radius: 8px;
+   background-color: #58b864;
+   height:50px;
+   border:none;
+   color:white;
+   font-size:17px;
+}
+
+button.large.disabled {
+   color:white;
+   background-color: #58b864;
+   opacity:0.2;
+   cursor: not-allowed;
+}
+
+
+button.disabled {
+   color: grey;
+   cursor: not-allowed;
+}
+
+input {
+   border: 1px solid #c6cbd4;
+   text-align: center;
+   width:100%;
+   font-size:16px;   
+}
+
+.modal {
+   position: absolute;
+   top: 40px;
+   left: 40px;
+   right: 40px;
+   background: white;
+   border: 1px solid #333;
+   border-radius: 5px;
+   padding: 10px;
+}
+
+.modal:focus {
+   outline: none;
+}
+
+.maxWidth {
+   flex-direction: column;
+   width:100%;
+   display:flex;
+   flex-grow:1;
+   max-width: 500px;
+   margin-left:auto;
+   margin-right:auto;
+}
+
+button {
+   padding: 5px 20px;
+}
+
+input {
+   border: none;
+   border-bottom: 1px solid #333;
+}
+
+input:focus {
+   outline:none;
+}

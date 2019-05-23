@@ -1,0 +1,41 @@
+{
+   "name": "scoreboard",
+   "version": "0.1.0",
+   "private": true,
+   "dependencies": {
+      "@material-ui/core": "^3.9.3",
+      "@material-ui/icons": "^3.0.2",
+      "@stomp/stompjs": "^5.2.0",
+      "@types/chroma-js": "^1.4.1",
+      "@types/react-modal": "^3.8.0",
+      "chroma-js": "^2.0.3",
+      "react": "^16.7.0",
+      "react-dom": "^16.7.0",
+      "react-modal": "^3.8.1",
+      "react-redux": "^6.0.0",
+      "react-router-dom": "^4.3.1",
+      "react-scripts-ts": "3.1.0",
+      "redux": "^4.0.1",
+      "redux-thunk": "^2.3.0",
+      "reselect": "^4.0.0",
+      "sockjs-client": "^1.3.0",
+      "typesafe-actions": "^3.0.0"
+   },
+   "scripts": {
+      "start": "react-scripts-ts start",
+      "build": "react-scripts-ts build",
+      "test": "react-scripts-ts test --env=jsdom",
+      "eject": "react-scripts-ts eject"
+   },
+   "devDependencies": {
+      "@types/jest": "^23.3.11",
+      "@types/node": "^10.12.18",
+      "@types/react": "^16.7.18",
+      "@types/react-dom": "^16.0.11",
+      "@types/react-redux": "^4.4.36",
+      "@types/react-router-dom": "^4.3.1",
+      "@types/redux-thunk": "^2.1.0",
+      "redux-devtools": "^3.5.0",
+      "typescript": "^3.2.2"
+   }
+}

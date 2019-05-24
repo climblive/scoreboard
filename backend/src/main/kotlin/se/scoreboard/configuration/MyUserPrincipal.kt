@@ -9,7 +9,7 @@ import se.scoreboard.data.domain.User
 
 class MyUserPrincipal(private val username: String, private val password: String, private val role: String) : UserDetails {
 
-    constructor(user: User) : this(user.name!!, MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user.password!!), "ROLE_ADMIN")
+    constructor(user: User, role: String) : this(user.name!!, MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user.password!!), role)
 
     constructor(contender: Contender) : this(contender.registrationCode!!, MyPasswordEncoder.createPassword(MyPasswordEncoder.REGCODE, contender.registrationCode!!), "ROLE_CONTENDER")
 

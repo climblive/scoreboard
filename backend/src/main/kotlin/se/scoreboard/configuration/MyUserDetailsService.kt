@@ -20,7 +20,15 @@ class MyUserDetailsService : UserDetailsService {
         val user = userRepository!!.findByEmail(username)
 
         if (user != null) {
-            return MyUserPrincipal(user)
+            val role: String
+
+            if (user.isAdmin) {
+                role = "ROLE_ADMIN"
+            } else {
+                role = "ROLE_ORGANIZER"
+            }
+
+            return MyUserPrincipal(user, role)
         }
 
         val contender = contenderRepository!!.findByRegistrationCode(username)

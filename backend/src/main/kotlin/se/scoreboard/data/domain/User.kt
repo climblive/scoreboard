@@ -22,6 +22,9 @@ open class User (
     @Column(name = "password", nullable = false, length = 60)
     open var password: String? = null,
 
+    @Column(name = "admin", nullable = false)
+    open var isAdmin: Boolean = false,
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_organizer",
             joinColumns = arrayOf(JoinColumn(name = "user_id", nullable = false, updatable = false)),

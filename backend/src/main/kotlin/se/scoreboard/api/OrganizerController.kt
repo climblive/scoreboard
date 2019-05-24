@@ -10,6 +10,7 @@ import se.scoreboard.dto.UserDto
 import se.scoreboard.mapper.ContestMapper
 import se.scoreboard.mapper.UserMapper
 import se.scoreboard.service.OrganizerService
+import javax.transaction.Transactional
 
 @RestController
 @CrossOrigin
@@ -26,27 +27,34 @@ class OrganizerController @Autowired constructor(
     }
 
     @GetMapping("/organizer")
+    @Transactional
     fun getOrganizers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = organizerService.search(filter, pageable)
 
     @GetMapping("/organizer/{id}")
+    @Transactional
     fun getOrganizer(@PathVariable("id") id: Int) = organizerService.findById(id)
 
     @GetMapping("/organizer/{id}/contest")
+    @Transactional
     fun getOrganizerContests(@PathVariable("id") id: Int) : List<ContestDto> =
             organizerService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
 
     @GetMapping("/organizer/{id}/user")
+    @Transactional
     fun getOrganizerUsers(@PathVariable("id") id: Int) : List<UserDto> =
             organizerService.fetchEntity(id).users.map { user -> userMapper.convertToDto(user) }
 
     @PostMapping("/organizer")
+    @Transactional
     fun createOrganizer(@RequestBody organizer : OrganizerDto) = organizerService.create(organizer)
 
     @PutMapping("/organizer/{id}")
+    @Transactional
     fun updateOrganizer(
             @PathVariable("id") id: Int,
             @RequestBody organizer : OrganizerDto) = organizerService.update(id, organizer)
 
     @DeleteMapping("/organizer/{id}")
+    @Transactional
     fun deleteOrganizer(@PathVariable("id") id: Int) = organizerService.delete(id)
 }

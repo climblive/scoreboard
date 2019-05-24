@@ -26,12 +26,15 @@ class TickController @Autowired constructor(
         val broadcastService : BroadcastService) {
 
     @GetMapping("/tick")
+    @Transactional
     fun getTicks(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(filter, pageable)
 
     @GetMapping("/tick/{id}")
+    @Transactional
     fun getTick(@PathVariable("id") id: Int) = tickService.findById(id)
 
     @PostMapping("/tick")
+    @Transactional
     fun createTick(@RequestBody tick : TickDto): TickDto {
         val contender = contenderService.fetchEntity(tick.contenderId!!)
         if(!contender.compClass!!.allowedToAlterTick()) {
@@ -44,6 +47,7 @@ class TickController @Autowired constructor(
     }
 
     @PutMapping("/tick/{id}")
+    @Transactional
     fun updateTick(
             @PathVariable("id") id: Int,
             @RequestBody tick : TickDto): TickDto {
@@ -57,6 +61,7 @@ class TickController @Autowired constructor(
     }
 
     @DeleteMapping("/tick/{id}")
+    @Transactional
     fun deleteTick(@PathVariable("id") id: Int) {
         var tick = tickService.fetchEntity(id)
         val contender = tick.contender!!

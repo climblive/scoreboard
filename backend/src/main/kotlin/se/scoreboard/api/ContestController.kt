@@ -17,6 +17,7 @@ import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
+import javax.transaction.Transactional
 
 @RestController
 @CrossOrigin
@@ -36,35 +37,44 @@ class ContestController @Autowired constructor(
     }
 
     @GetMapping("/contest")
+    @Transactional
     fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(filter, pageable)
 
     @GetMapping("/contest/{id}")
+    @Transactional
     fun getContest(@PathVariable("id") id: Int) = contestService.findById(id)
 
     @GetMapping("/contest/{id}/problem")
+    @Transactional
     fun getContestProblems(@PathVariable("id") id: Int) : List<ProblemDto> =
             contestService.fetchEntity(id).problems.map { problem -> problemMapper.convertToDto(problem) }
 
     @GetMapping("/contest/{id}/contender")
+    @Transactional
     fun getContestContenders(@PathVariable("id") id: Int) : List<ContenderDto> =
             contestService.fetchEntity(id).contenders.map { contender -> contenderMapper.convertToDto(contender) }
 
     @GetMapping("/contest/{id}/compClass")
+    @Transactional
     fun getContestCompClasses(@PathVariable("id") id: Int) : List<CompClassDto> =
             contestService.fetchEntity(id).compClasses.map { compClass -> compClassMapper.convertToDto(compClass) }
 
     @PostMapping("/contest")
+    @Transactional
     fun createContest(@RequestBody contest : ContestDto) = contestService.create(contest)
 
     @PutMapping("/contest/{id}")
+    @Transactional
     fun updateContest(
             @PathVariable("id") id: Int,
             @RequestBody contest : ContestDto) = contestService.update(id, contest)
 
     @DeleteMapping("/contest/{id}")
+    @Transactional
     fun deleteContest(@PathVariable("id") id: Int) = contestService.delete(id)
 
     @GetMapping("/contest/export/{id}")
+    @Transactional
     fun export(@PathVariable("id") id: Int) : ResponseEntity<ByteArray> {
         val data = contestService.export(id)
         val headers = HttpHeaders()
@@ -74,6 +84,7 @@ class ContestController @Autowired constructor(
     }
 
     @PostMapping(path = arrayOf("/contest/{id}/pdf"), consumes = arrayOf("application/pdf"))
+    @Transactional
     fun createPdf(@PathVariable("id") id: Int, @RequestBody payload:ByteArray) : ResponseEntity<ByteArray> {
         val data = contestService.getPdf(id, payload)
         val headers = HttpHeaders()
@@ -87,6 +98,7 @@ class ContestController @Autowired constructor(
     }
 
     @GetMapping("/contest/{id}/scoreboard")
+    @Transactional
     fun getScoreboard(@PathVariable("id") id: Int) : List<ScoreboardListDto> {
         val contest = contestService.fetchEntity(id)
         val contenders = contest.contenders
@@ -94,6 +106,7 @@ class ContestController @Autowired constructor(
     }
 
     @PutMapping("/contest/{id}/createContenders")
+    @Transactional
     fun createContenders(
             @PathVariable("id") id: Int,
             @RequestBody createContendersParamsDto: CreateContendersParamsDto): Array<ContenderDto> {

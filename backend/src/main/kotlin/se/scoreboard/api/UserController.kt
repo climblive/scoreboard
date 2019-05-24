@@ -14,6 +14,7 @@ import se.scoreboard.service.UserService
 import java.util.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import se.scoreboard.configuration.MyPasswordEncoder
+import javax.transaction.Transactional
 
 
 @RestController
@@ -32,29 +33,36 @@ class UserController @Autowired constructor(
     }
 
     @GetMapping("/user")
+    @Transactional
     fun getUsers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(filter, pageable)
 
     @GetMapping("/user/{id}")
+    @Transactional
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)
 
     @GetMapping("/user/{id}/organizer")
+    @Transactional
     fun getUserOrganizers(@PathVariable("id") id: Int) : List<OrganizerDto> =
             userService.fetchEntity(id).organizers.map { organizer -> organizerMapper.convertToDto(organizer) }
 
     @PostMapping("/user")
+    @Transactional
     fun createUser(@RequestBody user : UserDto) = userService.create(user)
 
     @PutMapping("/user/{id}")
+    @Transactional
     fun updateUser(
             @PathVariable("id") id: Int,
             @RequestBody user : UserDto) = userService.update(id, user)
 
     @DeleteMapping("/user/{id}")
+    @Transactional
     fun deleteUser(@PathVariable("id") id: Int) = userService.delete(id)
 
     data class AuthData(val username: String, val password: String)
 
     @PostMapping("/user/login", produces = arrayOf("application/json"))
+    @Transactional
     fun login(@RequestBody auth: AuthData) : ResponseEntity<String> {
         val user = userRepository.findByEmail(auth.username)
         if (passwordEncoder.matches(auth.password, MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user?.password!!))) {

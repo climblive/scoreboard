@@ -13,6 +13,7 @@ import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.CompClassService
 import se.scoreboard.service.ContenderService
+import javax.transaction.Transactional
 
 @RestController
 @CrossOrigin
@@ -29,23 +30,29 @@ class ContenderController @Autowired constructor(
     }
 
     @GetMapping("/contender")
+    @Transactional
     fun getContenders(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contenderService.search(filter, pageable)
 
     @GetMapping("/contender/{id}")
+    @Transactional
     fun getContender(@PathVariable("id") id: Int) = contenderService.findById(id)
 
     @GetMapping("/contender/findByCode")
+    @Transactional
     fun getContenderByCode(@RequestParam("code") code: String) = contenderService.findByCode(code)
 
     @GetMapping("/contender/{id}/tick")
+    @Transactional
     fun getContenderTicks(@PathVariable("id") id: Int) : List<TickDto> {
         return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
     }
 
     @PostMapping("/contender")
+    @Transactional
     fun createContender(@RequestBody contender : ContenderDto) = contenderService.create(contender)
 
     @PutMapping("/contender/{id}")
+    @Transactional
     fun updateContender(@PathVariable("id") id: Int,
                         @RequestBody contender : ContenderDto): ContenderDto {
         val compClass = compClassService.fetchEntity(contender.compClassId!!)
@@ -60,5 +67,6 @@ class ContenderController @Autowired constructor(
     }
 
     @DeleteMapping("/contender/{id}")
+    @Transactional
     fun deleteContender(@PathVariable("id") id: Int) = contenderService.delete(id)
 }

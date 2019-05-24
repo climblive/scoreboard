@@ -9,6 +9,8 @@ import {ProblemState} from "../model/problemState";
 import {Tick} from "../model/tick";
 import {CompClass} from "../model/compClass";
 import {Color} from "../model/color";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 export interface Props {
    contenderData?: ContenderData,
@@ -34,14 +36,14 @@ export interface Props {
 }
 
 type State = {
-   userInfoModalIsOpen: boolean,
+   selectedTab: number,
    rulesModalIsOpen: boolean,
    goBack: boolean,
 }
 
 export default class ContestView extends React.Component<Props, State> {
    public readonly state: State = {
-      userInfoModalIsOpen: false,
+      selectedTab: 0,
       rulesModalIsOpen: false,
       goBack: false
    };
@@ -57,10 +59,25 @@ export default class ContestView extends React.Component<Props, State> {
       this.props.loadUserData!(code);
    }
 
+   selectTab = (event: any, newValue: number) => {
+      this.state.selectedTab = newValue;
+      this.setState(this.state)
+   };
+
    render() {
+      let selectedTab = this.state.selectedTab;
       return (
          <div>
-            Contest
+               <Tabs value={selectedTab} onChange={this.selectTab}>
+                  <Tab label="General information" />
+                  <Tab label="Classes" />
+                  <Tab label="Problems" />
+                  <Tab label="Contenders" />
+               </Tabs>
+            {selectedTab === 0 && <div>Item One</div>}
+            {selectedTab === 1 && <div>Item Two</div>}
+            {selectedTab === 2 && <div>Item Three</div>}
+            {selectedTab === 3 && <div>Item Three</div>}
          </div>
       )
    }

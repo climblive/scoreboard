@@ -12,7 +12,7 @@ import {
    receiveContest, receiveContests,
    receiveProblems,
    receiveScoreboardData,
-   receiveTicks,
+   receiveTicks, setErrorMessage,
    setProblemStateFailed,
    startProblemUpdate,
    updateScoreboardTimer, updateTick
@@ -26,6 +26,10 @@ export function loadContests(): any {
       Api.getContests()
          .then(contests => {
             dispatch(receiveContests(contests));
+         })
+         .catch(error => {
+            dispatch(receiveContests([]));
+            dispatch(setErrorMessage(error));
          });
    }
 }

@@ -11,11 +11,13 @@ import {Tick} from "../model/tick";
 import {Color} from "../model/color";
 
 export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[]>();
+export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
+export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
 
 
 export const startProblemUpdate = createStandardAction('START_PROBLEM_UPDATE')<Problem>();
 export const setProblemStateFailed = createStandardAction('SET_PROBLEM_STATE_FAILED')<string>();
-export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
+
 export const receiveContenderData = createStandardAction('RECEIVE_USER_DATA')<ContenderData>();
 export const receiveContenderNotFound = createStandardAction('RECEIVE_CONTENDER_NOT_FOUND')();
 export const receiveScoreboardData = createStandardAction('RECEIVE_SCOREBOARD_DATA')<ScoreboardContenderList[]>();

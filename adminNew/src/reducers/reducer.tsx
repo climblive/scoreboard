@@ -31,14 +31,22 @@ function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
 
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
    switch (action.type) {
+      case getType(scoreboardActions.receiveContests):
+         return { ...state, contests: action.payload };
+
+      case getType(scoreboardActions.clearErrorMessage):
+         return { ...state, errorMessage: undefined};
+
+      case getType(scoreboardActions.setErrorMessage):
+         return { ...state, errorMessage: action.payload};
+
+
       case getType(scoreboardActions.startProblemUpdate):
          return { ...state, problemIdBeingUpdated: action.payload.id };
 
       case getType(scoreboardActions.setProblemStateFailed):
          return { ...state, problemIdBeingUpdated: undefined, errorMessage: action.payload};
 
-      case getType(scoreboardActions.clearErrorMessage):
-         return { ...state, errorMessage: undefined};
 
       case getType(scoreboardActions.sortProblems):
          let newProblems2: Problem[] = getSortedProblems(state.problems, action.payload);

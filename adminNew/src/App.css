@@ -7,6 +7,19 @@
    box-shadow: 0px 1px 10px black;
 }
 
+a {
+   text-decoration:none;
+}
+
+.mainView {
+   display:flex;
+   flex-direction:column;
+   flex-grow:1;
+   flex-basis:0;
+   background: #fafafa;
+   padding:10px;
+}
+
 .view {
    padding:10px;
    padding-bottom:0;

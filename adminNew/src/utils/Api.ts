@@ -8,6 +8,8 @@ import {Color} from "../model/color";
 
 export class Api {
 
+   static credentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=" + "dummy";
+
    static getLiveUrl(): any {
       let url: string = "";
       console.log(window.location.protocol);
@@ -26,7 +28,7 @@ export class Api {
    } 
 
    private static getBaseUrl(): string {
-      return (window.location.hostname === "localhost" ?  "http://localhost:8080" : "") + "/api/";
+      return (window.location.hostname === "localhost" ?  "https://clmb.live" : "") + "/api/";
    }
 
    private static async handleErrors(data: Response): Promise<Response> {
@@ -39,57 +41,61 @@ export class Api {
       return data;
    }
 
-   private static getAuthHeader(activationCode?: string) : any {
-      return activationCode ? {Authorization: "Basic " + window.btoa(activationCode + ":" + activationCode)} : {}
+   private static getAuthHeader() : any {
+      return this.credentials ? {Authorization: "Basic " + this.credentials} : {}
    }
 
-   private static async get(url: string, activationCode?: string) {
+   private static async get(url: string) {
       let response = await fetch(this.getBaseUrl() + url,
          {
-            headers: Api.getAuthHeader(activationCode)
+            headers: Api.getAuthHeader()
          });
       return (await this.handleErrors(response)).json();
    }
 
-   private static async post(url: string, postData: any, activationCode?: string) {
+   private static async post(url: string, postData: any) {
       let response = await fetch(this.getBaseUrl() + url,
          {
             method: "POST",
             body: JSON.stringify(postData),
             headers: {
                "Content-Type": "application/json",
-               ...Api.getAuthHeader(activationCode)
+               ...Api.getAuthHeader()
             }
          }
       );
       return (await this.handleErrors(response)).json();
    }
 
-   private static async delete(url: string, activationCode?: string) {
+   private static async delete(url: string) {
       let response = await fetch(this.getBaseUrl() + url,
          {
             method: "DELETE",
             headers: {
                "Content-Type": "application/json",
-               ...Api.getAuthHeader(activationCode)
+               ...Api.getAuthHeader()
             },
          }
       );
       return this.handleErrors(response);
    }
 
-   private static async put(url: string, postData: any, activationCode?: string) {
+   private static async put(url: string, postData: any) {
       let response = await fetch(this.getBaseUrl() + url,
          {
             method: "PUT",
             body: JSON.stringify(postData),
             headers: {
                "Content-Type": "application/json",
-               ...Api.getAuthHeader(activationCode)
+               ...Api.getAuthHeader()
             },
          }
       );
       return (await this.handleErrors(response)).json();
+   }
+
+   static setCredentials(credentials:string) {
+      this.credentials = credentials
    }
 
    static getContests(): Promise<Contest[]> {
@@ -97,19 +103,19 @@ export class Api {
    }
 
    static getContest(contestId: number, activationCode: string): Promise<Contest> {
-      return this.get("contest/" + contestId, activationCode);
+      return this.get("contest/" + contestId);
    }
 
    static getProblems(contestId: number, activationCode: string): Promise<Problem[]> {
-      return this.get("contest/" + contestId + "/problem", activationCode);
+      return this.get("contest/" + contestId + "/problem");
    }
 
    static getCompClasses(contestId: number, activationCode: string): Promise<CompClass[]> {
-      return this.get("contest/" + contestId + "/compClass", activationCode);
+      return this.get("contest/" + contestId + "/compClass");
    }
 
    static getTicks(contenderId: number, activationCode: string): Promise<Tick[]> {
-      return this.get("contender/" + contenderId + "/tick", activationCode);
+      return this.get("contender/" + contenderId + "/tick");
    }
 
    static createTick(problemId: number, contenderId: number, flash: boolean, activationCode: string): Promise<Tick> {
@@ -118,27 +124,27 @@ export class Api {
          contenderId,
          problemId
       }
-      return this.post("tick", newTick, activationCode);
+      return this.post("tick", newTick);
    }
 
    static updateTick(tick: Tick, activationCode: string): Promise<any> {
-      return this.put("tick/" + tick.id, tick, activationCode);
+      return this.put("tick/" + tick.id, tick);
    }
 
    static deleteTick(tick: Tick, activationCode: string): Promise<any> {
-      return this.delete("tick/" + tick.id, activationCode);
+      return this.delete("tick/" + tick.id);
    }
 
    static getColors(activationCode: string): Promise<Color[]> {
-      return this.get("color", activationCode);
+      return this.get("color");
    }
 
    static getContender(code: string): Promise<ContenderData> {
-      return this.get("contender/findByCode?code=" + code, code);
+      return this.get("contender/findByCode?code=" + code);
    }
  
    static setContender(contenderData : ContenderData, activationCode: string): Promise<ContenderData> {
-      return this.put("contender/" + contenderData.id, contenderData, activationCode);
+      return this.put("contender/" + contenderData.id, contenderData);
    }
 
    static getScoreboard(id:number): Promise<ScoreboardContenderList[]> {

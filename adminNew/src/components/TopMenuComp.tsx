@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button} from "@material-ui/core";
+import {Button, StyledComponentProps} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,7 +8,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import MenuIcon from '@material-ui/icons/Menu';
 
 export interface TopMenuCompProps {
-   classes: any
+   title:string
 }
 
 const styles = {
@@ -24,7 +24,8 @@ const styles = {
    },
 };
 
-function TopMenuComp({classes }: TopMenuCompProps) {
+function TopMenuComp({title, classes}: TopMenuCompProps & StyledComponentProps) {
+   classes = classes!!;
    return (
       <div>
          <AppBar position="static">
@@ -33,7 +34,7 @@ function TopMenuComp({classes }: TopMenuCompProps) {
                   <MenuIcon />
                </IconButton>
                <Typography variant="h6" color="inherit" className={classes.grow}>
-                  News
+                  {title}
                </Typography>
                <Button color="inherit">Login</Button>
             </Toolbar>

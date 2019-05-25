@@ -13,6 +13,7 @@ import {Color} from "../model/color";
 export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[]>();
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
+export const setTitle = createStandardAction('SET_TITLE')<string>();
 
 
 export const startProblemUpdate = createStandardAction('START_PROBLEM_UPDATE')<Problem>();

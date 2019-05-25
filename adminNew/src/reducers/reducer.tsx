@@ -40,6 +40,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.setErrorMessage):
          return { ...state, errorMessage: action.payload};
 
+      case getType(scoreboardActions.setTitle):
+         return { ...state, title: action.payload};
+
 
       case getType(scoreboardActions.startProblemUpdate):
          return { ...state, problemIdBeingUpdated: action.payload.id };

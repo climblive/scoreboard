@@ -27,7 +27,7 @@ const styles = ({ spacing }: Theme) => createStyles({
 export interface Props  {
    contests: Contest[],
    loadContests?: () => void,
-   saveUserData?: (contenderData: ContenderData) => Promise<ContenderData>,
+   setTitle?: (title: string) => void,
 }
 
 type State = {
@@ -45,6 +45,7 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
 
    componentDidMount() {
       this.props.loadContests!();
+      this.props.setTitle!("Contests");
    }
 
    render() {

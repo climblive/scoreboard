@@ -9,6 +9,7 @@ import {Color} from "./color";
 
 export interface StoreState {
    contests: Contest[],
+   title: string,
 
    contenderData?: ContenderData;
    contenderNotFound: boolean;

@@ -1,18 +1,25 @@
 package se.scoreboard.data.domain.extension
 
 import se.scoreboard.data.domain.CompClass
-import java.time.Instant
+import se.scoreboard.userHasRole
 import java.time.OffsetDateTime
-import java.util.*
 
 fun CompClass.allowedToAlterContender() : Boolean {
     val now = OffsetDateTime.now()
-    return now.isBefore(timeEndWithGracePeriod())
+    if (userHasRole("CONTENDER")) {
+        return now.isBefore(timeEndWithGracePeriod())
+    } else {
+        return true
+    }
 }
 
 fun CompClass.allowedToAlterTick() : Boolean {
     val now = OffsetDateTime.now()
-    return now.isAfter(timeBegin) && now.isBefore(timeEndWithGracePeriod())
+    if (userHasRole("CONTENDER")) {
+        return now.isAfter(timeBegin) && now.isBefore(timeEndWithGracePeriod())
+    } else {
+        return true
+    }
 }
 
 private fun CompClass.timeEndWithGracePeriod() : OffsetDateTime {

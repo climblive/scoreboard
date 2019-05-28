@@ -34,24 +34,47 @@ export function loadContests(): any {
    }
 }
 
+export function loadContest(contestId: number): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.getContest(contestId).then(contest => {
+         dispatch(receiveContest(contest));
+      }).catch(error => {
+         dispatch(setErrorMessage(error));
+      });
+
+      Api.getProblems(contestId).then(problems => {
+         dispatch(receiveProblems(problems));
+      }).catch(error => {
+         dispatch(setErrorMessage(error));
+      });
+
+      Api.getCompClasses(contestId).then(compClasses => {
+         dispatch(receiveCompClasses(compClasses));
+      }).catch(error => {
+         dispatch(setErrorMessage(error));
+      });
+
+   }
+}
+
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
       Api.getContender(code)
          .then(contenderData => {
             dispatch(receiveContenderData(contenderData));
-            Api.getProblems(contenderData.contestId, contenderData.registrationCode).then(problems => {
+            Api.getProblems(contenderData.contestId).then(problems => {
                dispatch(receiveProblems(problems));
             });
-            Api.getContest(contenderData.contestId, contenderData.registrationCode).then(contest => {
+            Api.getContest(contenderData.contestId).then(contest => {
                dispatch(receiveContest(contest));
             });
-            Api.getCompClasses(contenderData.contestId, contenderData.registrationCode).then(compClasses => {
+            Api.getCompClasses(contenderData.contestId).then(compClasses => {
                dispatch(receiveCompClasses(compClasses));
             });
-            Api.getTicks(contenderData.id, contenderData.registrationCode).then(ticks => {
+            Api.getTicks(contenderData.id).then(ticks => {
                dispatch(receiveTicks(ticks));
             });
-            Api.getColors(contenderData.registrationCode).then(colors => {
+            Api.getColors().then(colors => {
                dispatch(receiveColors(colors));
             });
          })
@@ -79,7 +102,7 @@ export function loadScoreboardData(id: number): any {
 
 export function saveUserData(contenderData: ContenderData): any {
    return (dispatch: Dispatch<any>) => {
-      let promise: Promise<ContenderData> = Api.setContender(contenderData, contenderData.registrationCode);
+      let promise: Promise<ContenderData> = Api.setContender(contenderData);
       promise.then(contenderData => dispatch(receiveContenderData(contenderData)));
       return promise;
    };
@@ -104,7 +127,7 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
 
          } else if (problemState == ProblemState.NOT_SENT) {
             // Delete the tick:
-            Api.deleteTick(tick, activationCode)
+            Api.deleteTick(tick)
                .then(() => {
                   dispatch(deleteTick(tick))
                })
@@ -115,7 +138,7 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
             // Update the tick:
             const newTick:Tick = JSON.parse(JSON.stringify(tick));
             newTick.flash = problemState == ProblemState.FLASHED;
-            Api.updateTick(newTick, activationCode)
+            Api.updateTick(newTick)
                .then(() => {
                   dispatch(updateTick(newTick))
                })

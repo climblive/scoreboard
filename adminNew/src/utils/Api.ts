@@ -8,7 +8,7 @@ import {Color} from "../model/color";
 
 export class Api {
 
-   static credentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=" + "dummy";
+   static credentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=";
 
    static getLiveUrl(): any {
       let url: string = "";
@@ -102,19 +102,19 @@ export class Api {
       return this.get("contest");
    }
 
-   static getContest(contestId: number, activationCode: string): Promise<Contest> {
+   static getContest(contestId: number): Promise<Contest> {
       return this.get("contest/" + contestId);
    }
 
-   static getProblems(contestId: number, activationCode: string): Promise<Problem[]> {
+   static getProblems(contestId: number): Promise<Problem[]> {
       return this.get("contest/" + contestId + "/problem");
    }
 
-   static getCompClasses(contestId: number, activationCode: string): Promise<CompClass[]> {
+   static getCompClasses(contestId: number): Promise<CompClass[]> {
       return this.get("contest/" + contestId + "/compClass");
    }
 
-   static getTicks(contenderId: number, activationCode: string): Promise<Tick[]> {
+   static getTicks(contenderId: number): Promise<Tick[]> {
       return this.get("contender/" + contenderId + "/tick");
    }
 
@@ -127,15 +127,15 @@ export class Api {
       return this.post("tick", newTick);
    }
 
-   static updateTick(tick: Tick, activationCode: string): Promise<any> {
+   static updateTick(tick: Tick): Promise<any> {
       return this.put("tick/" + tick.id, tick);
    }
 
-   static deleteTick(tick: Tick, activationCode: string): Promise<any> {
+   static deleteTick(tick: Tick): Promise<any> {
       return this.delete("tick/" + tick.id);
    }
 
-   static getColors(activationCode: string): Promise<Color[]> {
+   static getColors(): Promise<Color[]> {
       return this.get("color");
    }
 
@@ -143,7 +143,7 @@ export class Api {
       return this.get("contender/findByCode?code=" + code);
    }
  
-   static setContender(contenderData : ContenderData, activationCode: string): Promise<ContenderData> {
+   static setContender(contenderData : ContenderData): Promise<ContenderData> {
       return this.put("contender/" + contenderData.id, contenderData);
    }
 

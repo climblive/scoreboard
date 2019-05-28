@@ -1,6 +1,4 @@
 import * as React from 'react';
-import './ContestsView.css';
-import { ContenderData } from '../model/contenderData';
 import { Contest } from '../model/contest';
 import {StyledComponentProps, TableCell, Theme} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
@@ -12,6 +10,10 @@ import TableHead from "@material-ui/core/TableHead";
 import createStyles from "@material-ui/core/styles/createStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {RouteComponentProps, withRouter} from "react-router-dom";
+import {StoreState} from "../model/storeState";
+import {connect, Dispatch} from "react-redux";
+import * as asyncActions from "../actions/asyncActions";
+import * as actions from "../actions/actions";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -24,7 +26,7 @@ const styles = ({ spacing }: Theme) => createStyles({
    },
 });
 
-export interface Props  {
+interface Props  {
    contests: Contest[],
    loadContests?: () => void,
    setTitle?: (title: string) => void,
@@ -60,11 +62,12 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                <Table className={classes.table}>
                   <TableHead>
                      <TableRow>
-                        <TableCell>Dessert (100g serving)</TableCell>
-                        <TableCell align="right">Calories</TableCell>
-                        <TableCell align="right">Fat (g)</TableCell>
-                        <TableCell align="right">Carbs (g)</TableCell>
-                        <TableCell align="right">Protein (g)</TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Description</TableCell>
+                        <TableCell align="right">Location</TableCell>
+                        <TableCell align="right">Organizer</TableCell>
+                        <TableCell align="right">Qualifying problems</TableCell>
+                        <TableCell>Rules</TableCell>
                      </TableRow>
                   </TableHead>
                   <TableBody>
@@ -73,24 +76,33 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                                   style={{cursor:'pointer'}}
                                   hover
                                   onClick={() => this.props.history.push("/contests/" + contest.id)}>
-                           <TableCell component="th" scope="row">
-                              {contest.name}
-                           </TableCell>
-                           <TableCell align="right">{contest.name}</TableCell>
-                           <TableCell align="right">{contest.name}</TableCell>
-                           <TableCell align="right">{contest.name}</TableCell>
-                           <TableCell align="right">{contest.name}</TableCell>
+                           <TableCell component="th" scope="row">{contest.name}</TableCell>
+                           <TableCell>{contest.description}</TableCell>
+                           <TableCell align="right">{contest.locationId}</TableCell>
+                           <TableCell align="right">{contest.organizerId}</TableCell>
+                           <TableCell align="right">{contest.qualifyingProblems}</TableCell>
+                           <TableCell>{contest.rules}</TableCell>
                         </TableRow>
                      ))}
                   </TableBody>
                </Table>
             </Paper>
-
-
-
          </div>
       );
    }
 }
 
-export default withStyles(styles)(withRouter(ContestsView));
+function mapStateToProps(state: StoreState, props: any): Props {
+   return {
+      contests: state.contests,
+   };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+   return {
+      loadContests: () => dispatch(asyncActions.loadContests()),
+      setTitle: (title:string) => dispatch(actions.setTitle(title)),
+   };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(ContestsView)));

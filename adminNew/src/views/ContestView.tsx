@@ -1,51 +1,38 @@
 import * as React from 'react';
-import './ContestView.css';
-import { Problem } from '../model/problem';
-import { ContenderData } from '../model/contenderData';
 import * as ReactModal from 'react-modal';
 import { Contest } from '../model/contest';
-import {SortBy} from "../constants/constants";
-import {ProblemState} from "../model/problemState";
-import {Tick} from "../model/tick";
-import {CompClass} from "../model/compClass";
-import {Color} from "../model/color";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import {StoreState} from "../model/storeState";
+import {connect, Dispatch} from "react-redux";
+import * as asyncActions from "../actions/asyncActions";
+import * as actions from "../actions/actions";
+import ProblemsComp from "../components/ProblemsComp";
+import {CompClass} from "../model/compClass";
+import {Problem} from "../model/problem";
+import CompClassesComp from "../components/CompClassesComp";
+import ContestGeneralComp from "../components/ContestGeneralComp";
 
-export interface Props {
-   contenderData?: ContenderData,
-   contenderNotFound: boolean,
+interface Props {
    match: {
       params: {
-         code: string
+         contestId: string
       }
-   }
-   contest: Contest,
-   problems: Problem[],
-   compClasses: CompClass[],
-   ticks: Tick[],
-   colors: Map<number, Color>,
-   problemsSortedBy: string,
-   problemIdBeingUpdated?: number,
-   errorMessage?: string,
-   loadUserData?: (code: string) => void,
-   saveUserData?: (contenderData: ContenderData) => Promise<ContenderData>,
-   setProblemStateAndSave?: (problem: Problem, problemState: ProblemState, tick?: Tick) => void,
-   sortProblems?: (sortBy: SortBy) => void,
-   clearErrorMessage?: () => void
+   },
+   contest:Contest,
+   problems:Problem[],
+   compClasses:CompClass[],
+   loadContest?: (contestId: number) => void,
+   setTitle?: (title: string) => void,
 }
 
 type State = {
    selectedTab: number,
-   rulesModalIsOpen: boolean,
-   goBack: boolean,
 }
 
-export default class ContestView extends React.Component<Props, State> {
+class ContestView extends React.Component<Props, State> {
    public readonly state: State = {
-      selectedTab: 0,
-      rulesModalIsOpen: false,
-      goBack: false
+      selectedTab: 2,
    };
 
    constructor(props: Props) {
@@ -55,8 +42,12 @@ export default class ContestView extends React.Component<Props, State> {
    componentDidMount() {
       ReactModal.setAppElement("body");
 
-      let code : string = this.props.match.params.code;
-      this.props.loadUserData!(code);
+      let contestId : string = this.props.match.params.contestId;
+      this.props.loadContest!(parseInt(contestId));
+   }
+
+   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+      this.props.setTitle!(this.props.contest ? this.props.contest.name : "");
    }
 
    selectTab = (event: any, newValue: number) => {
@@ -66,19 +57,42 @@ export default class ContestView extends React.Component<Props, State> {
 
    render() {
       let selectedTab = this.state.selectedTab;
-      return (
-         <div>
-               <Tabs value={selectedTab} onChange={this.selectTab}>
-                  <Tab label="General information" />
-                  <Tab label="Classes" />
-                  <Tab label="Problems" />
-                  <Tab label="Contenders" />
-               </Tabs>
-            {selectedTab === 0 && <div>Item One</div>}
-            {selectedTab === 1 && <div>Item Two</div>}
-            {selectedTab === 2 && <div>Item Three</div>}
-            {selectedTab === 3 && <div>Item Three</div>}
-         </div>
-      )
+      let tab;
+      if(selectedTab == 0) {
+         tab = (<ContestGeneralComp key="general" contest={this.props.contest} />);
+      } else if(selectedTab == 1) {
+         tab = (<CompClassesComp key="compClasses" compClasses={this.props.compClasses} />);
+      } else if(selectedTab == 2) {
+         tab = (<ProblemsComp key="problems" problems={this.props.problems} />);
+      } else if(selectedTab == 3) {
+         tab = (<div id="contenders">Item One</div>);
+      }
+      return [
+         (<Tabs key="tabs" value={selectedTab} onChange={this.selectTab}>
+            <Tab label="General information" />
+            <Tab label="Classes" />
+            <Tab label="Problems" />
+            <Tab label="Contenders" />
+         </Tabs>),
+         tab
+      ]
    }
 }
+
+export function mapStateToProps(state: StoreState, props: any): Props {
+   return {
+      contest: state.contest,
+      problems: state.problems,
+      compClasses: state.compClasses,
+      match: props.match
+   };
+}
+
+export function mapDispatchToProps(dispatch: Dispatch<any>) {
+   return {
+      loadContest: (contestId: number) => dispatch(asyncActions.loadContest(contestId)),
+      setTitle: (title: string) => dispatch(actions.setTitle(title)),
+   };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContestView);

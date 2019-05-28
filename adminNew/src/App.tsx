@@ -5,8 +5,6 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import StartContainer from './containers/StartContainer';
 import SideMenuComp from "./components/SideMenuComp";
 import TopMenuComp from "./components/TopMenuComp";
-import ContestsContainer from "./containers/ContestsContainer";
-import ContestContainer from "./containers/ContestContainer";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,6 +13,8 @@ import {Close} from "@material-ui/icons";
 import {StoreState} from "./model/storeState";
 import {connect, Dispatch} from "react-redux";
 import * as actions from "./actions/actions";
+import ContestsView from "./views/ContestsView";
+import ContestView from "./views/ContestView";
 
 export interface Props  {
    title: string,
@@ -57,8 +57,8 @@ class App extends React.Component<Props> {
                      <div className="mainView">
                         <Switch>
                            <Route path="/" exact component={StartContainer} />
-                           <Route path="/contests" exact component={ContestsContainer} />
-                           <Route path="/contests/:id" component={ContestContainer} />
+                           <Route path="/contests" exact component={ContestsView} />
+                           <Route path="/contests/:contestId" component={ContestView} />
                            <Route path="/colors" exact component={StartContainer} />
                         </Switch>
                      </div>

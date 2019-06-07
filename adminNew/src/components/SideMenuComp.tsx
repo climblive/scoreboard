@@ -37,8 +37,10 @@ function SideMenuComp({ classes }: SideMenuCompProps & StyledComponentProps) {
           <div style={{textAlign:'center'}}>
                <img style={{width:120, marginTop:20}} src="/clmb_MainLogo_NoShadow.png"/>
           </div>
-          <Link to="/colors"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Colors</span></Button></Link>
           <Link to="/contests"><Button className={classes!!.menuItem}><TableChart /><span className={classes!!.menuText}>Contests</span></Button></Link>
+          <Link to="/colors"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Colors</span></Button></Link>
+          <Link to="/locations"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Locations</span></Button></Link>
+          <Link to="/organizers"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Organizers</span></Button></Link>
       </div>
    );
 }

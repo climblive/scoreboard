@@ -6,6 +6,8 @@ import {Problem} from "./problem";
 import {CompClass} from "./compClass";
 import {Tick} from "./tick";
 import {Color} from "./color";
+import {Organizer} from "./organizer";
+import {CompLocation} from "./compLocation";
 
 export interface StoreState {
    contests: Contest[],
@@ -14,12 +16,16 @@ export interface StoreState {
    contenderData?: ContenderData;
    contenderNotFound: boolean;
    problemsSortedBy: SortBy;
-   scoreboardData: ScoreboardContenderList[];
    contest: Contest;
    problems: Problem[];
    compClasses: CompClass[];
    ticks: Tick[];
-   colors: Map<number, Color>,
+   colors: Color[],
+   colorMap: Map<number, Color>,
+   locations: CompLocation[],
+   locationMap: Map<number, CompLocation>,
+   organizers: Organizer[],
+   organizerMap: Map<number, Organizer>,
    pagingCounter: number;
    problemIdBeingUpdated?: number;
    errorMessage?: string;

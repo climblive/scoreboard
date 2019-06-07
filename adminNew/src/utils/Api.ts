@@ -5,6 +5,8 @@ import {Problem} from "../model/problem";
 import {CompClass} from "../model/compClass";
 import {Tick} from "../model/tick";
 import {Color} from "../model/color";
+import {Organizer} from "../model/organizer";
+import {CompLocation} from "../model/compLocation";
 
 export class Api {
 
@@ -139,15 +141,15 @@ export class Api {
       return this.get("color");
    }
 
-   static getContender(code: string): Promise<ContenderData> {
-      return this.get("contender/findByCode?code=" + code);
-   }
- 
-   static setContender(contenderData : ContenderData): Promise<ContenderData> {
-      return this.put("contender/" + contenderData.id, contenderData);
+   static getLocations(): Promise<CompLocation[]> {
+      return this.get("location");
    }
 
-   static getScoreboard(id:number): Promise<ScoreboardContenderList[]> {
-      return this.get("contest/" + id + "/scoreboard");
+   static getOrganizers(): Promise<Organizer[]> {
+      return this.get("organizer");
+   }
+
+   static setContender(contenderData : ContenderData): Promise<ContenderData> {
+      return this.put("contender/" + contenderData.id, contenderData);
    }
 }

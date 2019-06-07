@@ -9,7 +9,7 @@ import {
    receiveCompClasses,
    receiveContenderData,
    receiveContenderNotFound,
-   receiveContest, receiveContests,
+   receiveContest, receiveContests, receiveLocations, receiveOrganizers,
    receiveProblems,
    receiveScoreboardData,
    receiveTicks, setErrorMessage,
@@ -57,48 +57,47 @@ export function loadContest(contestId: number): any {
    }
 }
 
-export function loadUserData(code: string): any {
+export function loadColors(): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getContender(code)
-         .then(contenderData => {
-            dispatch(receiveContenderData(contenderData));
-            Api.getProblems(contenderData.contestId).then(problems => {
-               dispatch(receiveProblems(problems));
-            });
-            Api.getContest(contenderData.contestId).then(contest => {
-               dispatch(receiveContest(contest));
-            });
-            Api.getCompClasses(contenderData.contestId).then(compClasses => {
-               dispatch(receiveCompClasses(compClasses));
-            });
-            Api.getTicks(contenderData.id).then(ticks => {
-               dispatch(receiveTicks(ticks));
-            });
-            Api.getColors().then(colors => {
-               dispatch(receiveColors(colors));
-            });
+      Api.getColors()
+         .then(colors => {
+            dispatch(receiveColors(colors));
          })
-         .catch(() => dispatch(receiveContenderNotFound())
-      )
-   };
+         .catch(error => {
+            dispatch(receiveColors([]));
+            dispatch(setErrorMessage(error));
+         });
+   }
 }
 
-export function loadScoreboardData(id: number): any {
+export function loadLocations(): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getScoreboard(id).then(scoreboardData => {
-         dispatch(receiveScoreboardData(scoreboardData));
-         dispatch(updateScoreboardTimer());
-      })
-   };
+      Api.getLocations()
+         .then(locations => {
+            dispatch(receiveLocations(locations));
+         })
+         .catch(error => {
+            dispatch(receiveLocations([]));
+            dispatch(setErrorMessage(error));
+         });
+   }
 }
 
-/*export function loadContest(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      Api.getContest(0).then(contest => {
-         dispatch(receiveContest(contest));
-      })
-   };
-}*/
+export function loadOrganizers(): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.getOrganizers()
+         .then(organizers => {
+            dispatch(receiveOrganizers(organizers));
+         })
+         .catch(error => {
+            dispatch(receiveOrganizers([]));
+            dispatch(setErrorMessage(error));
+         });
+   }
+}
+
+
+
 
 export function saveUserData(contenderData: ContenderData): any {
    return (dispatch: Dispatch<any>) => {

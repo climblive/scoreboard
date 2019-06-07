@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect'
 import { StoreState } from '../model/storeState';
-import { ScoreboardListItem } from '../model/scoreboardListItem';
-import {ScoreboardContender} from "../model/scoreboardContender";
 
-const getScoreboardContenders = (state: StoreState, props: any) => {
+console.log("test");
+
+/*const getScoreboardContenders = (state: StoreState, props: any) => {
    if (state.scoreboardData) {
       return state.scoreboardData.find(list => list.compClass.name == props.compClass.name)!.contenders;
    } else {
@@ -60,4 +60,4 @@ export const makeGetFinalistList = () => {
       [getScoreboardContenders],
       (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.qualifyingScore, 7, scoreboardContenders)
    )
-}
+}*/

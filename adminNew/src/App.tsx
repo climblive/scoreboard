@@ -2,7 +2,6 @@ import * as React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
-import StartContainer from './containers/StartContainer';
 import SideMenuComp from "./components/SideMenuComp";
 import TopMenuComp from "./components/TopMenuComp";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
@@ -15,6 +14,7 @@ import {connect, Dispatch} from "react-redux";
 import * as actions from "./actions/actions";
 import ContestsView from "./views/ContestsView";
 import ContestView from "./views/ContestView";
+import ColorsView from "./views/ColorsView";
 
 export interface Props  {
    title: string,
@@ -56,10 +56,10 @@ class App extends React.Component<Props> {
                      <TopMenuComp title={this.props.title} />
                      <div className="mainView">
                         <Switch>
-                           <Route path="/" exact component={StartContainer} />
+                           <Route path="/" exact component={ContestsView} />
                            <Route path="/contests" exact component={ContestsView} />
                            <Route path="/contests/:contestId" component={ContestView} />
-                           <Route path="/colors" exact component={StartContainer} />
+                           <Route path="/colors" exact component={ColorsView} />
                         </Switch>
                      </div>
                   </div>

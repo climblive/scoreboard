@@ -100,6 +100,10 @@ export class Api {
       this.credentials = credentials
    }
 
+   static getUser(code: string): Promise<String> {
+      return this.get("user/" + code);
+   }
+
    static getContests(): Promise<Contest[]> {
       return this.get("contest");
    }

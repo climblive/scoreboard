@@ -13,6 +13,9 @@ export interface StoreState {
    contests: Contest[],
    title: string,
 
+   loggingIn: boolean,
+   loggedInUser?: string
+
    contenderData?: ContenderData;
    contenderNotFound: boolean;
    problemsSortedBy: SortBy;

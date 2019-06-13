@@ -15,6 +15,10 @@ import {CompLocation} from "../model/compLocation";
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
 export const setTitle = createStandardAction('SET_TITLE')<string>();
+export const setLoggingIn = createStandardAction('SET_LOGGING_IN')<boolean>();
+export const setLoggedInUser = createStandardAction('SET_LOGGED_IN_USER')<string>();
+export const logout = createStandardAction('LOGOUT')();
+
 
 export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[]>();
 export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();

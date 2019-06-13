@@ -2,34 +2,36 @@ import {Problem} from '../model/problem';
 import {ContenderData} from '../model/contenderData';
 import {Dispatch} from 'react-redux';
 import {Api} from '../utils/Api';
-import {
-   createTick,
-   deleteTick,
-   receiveColors,
-   receiveCompClasses,
-   receiveContenderData,
-   receiveContenderNotFound,
-   receiveContest, receiveContests, receiveLocations, receiveOrganizers,
-   receiveProblems,
-   receiveScoreboardData,
-   receiveTicks, setErrorMessage,
-   setProblemStateFailed,
-   startProblemUpdate,
-   updateScoreboardTimer, updateTick
-} from './actions';
+import * as actions from './actions';
 import {StoreState} from '../model/storeState';
 import {ProblemState} from "../model/problemState";
 import {Tick} from "../model/tick";
+
+export function login(code:string): any {
+   return (dispatch: Dispatch<any>) => {
+      dispatch(actions.setLoggingIn(true));
+      Api.getUser(code)
+         .then(userData => {
+            console.log(userData);
+            dispatch(actions.setLoggingIn(false));
+            dispatch(actions.setLoggedInUser("USER"));
+         })
+         .catch(error => {
+            dispatch(actions.setLoggingIn(false));
+            dispatch(actions.setErrorMessage(error));
+      })
+   }
+}
 
 export function loadContests(): any {
    return (dispatch: Dispatch<any>) => {
       Api.getContests()
          .then(contests => {
-            dispatch(receiveContests(contests));
+            dispatch(actions.receiveContests(contests));
          })
          .catch(error => {
-            dispatch(receiveContests([]));
-            dispatch(setErrorMessage(error));
+            dispatch(actions.receiveContests([]));
+            dispatch(actions.setErrorMessage(error));
          });
    }
 }
@@ -37,21 +39,21 @@ export function loadContests(): any {
 export function loadContest(contestId: number): any {
    return (dispatch: Dispatch<any>) => {
       Api.getContest(contestId).then(contest => {
-         dispatch(receiveContest(contest));
+         dispatch(actions.receiveContest(contest));
       }).catch(error => {
-         dispatch(setErrorMessage(error));
+         dispatch(actions.setErrorMessage(error));
       });
 
       Api.getProblems(contestId).then(problems => {
-         dispatch(receiveProblems(problems));
+         dispatch(actions.receiveProblems(problems));
       }).catch(error => {
-         dispatch(setErrorMessage(error));
+         dispatch(actions.setErrorMessage(error));
       });
 
       Api.getCompClasses(contestId).then(compClasses => {
-         dispatch(receiveCompClasses(compClasses));
+         dispatch(actions.receiveCompClasses(compClasses));
       }).catch(error => {
-         dispatch(setErrorMessage(error));
+         dispatch(actions.setErrorMessage(error));
       });
 
    }
@@ -61,11 +63,11 @@ export function loadColors(): any {
    return (dispatch: Dispatch<any>) => {
       Api.getColors()
          .then(colors => {
-            dispatch(receiveColors(colors));
+            dispatch(actions.receiveColors(colors));
          })
          .catch(error => {
-            dispatch(receiveColors([]));
-            dispatch(setErrorMessage(error));
+            dispatch(actions.receiveColors([]));
+            dispatch(actions.setErrorMessage(error));
          });
    }
 }
@@ -74,11 +76,11 @@ export function loadLocations(): any {
    return (dispatch: Dispatch<any>) => {
       Api.getLocations()
          .then(locations => {
-            dispatch(receiveLocations(locations));
+            dispatch(actions.receiveLocations(locations));
          })
          .catch(error => {
-            dispatch(receiveLocations([]));
-            dispatch(setErrorMessage(error));
+            dispatch(actions.receiveLocations([]));
+            dispatch(actions.setErrorMessage(error));
          });
    }
 }
@@ -87,11 +89,11 @@ export function loadOrganizers(): any {
    return (dispatch: Dispatch<any>) => {
       Api.getOrganizers()
          .then(organizers => {
-            dispatch(receiveOrganizers(organizers));
+            dispatch(actions.receiveOrganizers(organizers));
          })
          .catch(error => {
-            dispatch(receiveOrganizers([]));
-            dispatch(setErrorMessage(error));
+            dispatch(actions.receiveOrganizers([]));
+            dispatch(actions.setErrorMessage(error));
          });
    }
 }
@@ -102,7 +104,7 @@ export function loadOrganizers(): any {
 export function saveUserData(contenderData: ContenderData): any {
    return (dispatch: Dispatch<any>) => {
       let promise: Promise<ContenderData> = Api.setContender(contenderData);
-      promise.then(contenderData => dispatch(receiveContenderData(contenderData)));
+      promise.then(contenderData => dispatch(actions.receiveContenderData(contenderData)));
       return promise;
    };
 }
@@ -111,27 +113,27 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       const oldState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
       if(oldState != problemState) {
-         dispatch(startProblemUpdate(problem));
+         dispatch(actions.startProblemUpdate(problem));
          const activationCode: string = getState().contenderData!.registrationCode;
          if(!tick) {
             // Create a new tick:
             Api.createTick(problem.id, getState().contenderData!.id, problemState == ProblemState.FLASHED, activationCode)
                .then((tick) => {
-                  dispatch(createTick(tick))
+                  dispatch(actions.createTick(tick))
                })
                .catch((error) => {
                   console.log(error);
-                  dispatch(setProblemStateFailed(error))
+                  dispatch(actions.setProblemStateFailed(error))
                });
 
          } else if (problemState == ProblemState.NOT_SENT) {
             // Delete the tick:
             Api.deleteTick(tick)
                .then(() => {
-                  dispatch(deleteTick(tick))
+                  dispatch(actions.deleteTick(tick))
                })
                .catch((error) => {
-                  dispatch(setProblemStateFailed(error))
+                  dispatch(actions.setProblemStateFailed(error))
                });
          } else {
             // Update the tick:
@@ -139,10 +141,10 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
             newTick.flash = problemState == ProblemState.FLASHED;
             Api.updateTick(newTick)
                .then(() => {
-                  dispatch(updateTick(newTick))
+                  dispatch(actions.updateTick(newTick))
                })
                .catch((error) => {
-                  dispatch(setProblemStateFailed(error))
+                  dispatch(actions.setProblemStateFailed(error))
                });
          }
       }

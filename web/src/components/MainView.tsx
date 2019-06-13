@@ -143,8 +143,9 @@ export default class MainView extends React.Component<Props, State> {
             return tick.flash ? problem.points : problem.points;
          }).sort((a, b) => b - a);
          console.log("POINTS:", points);
+         let qualifyingProblems = this.props.contest.qualifyingProblems;
          let totalPoints = points.reduce((s, p) => s + p, 0);
-         let tenBest = points.slice(0, 10).reduce((s, p) => s + p, 0);
+         let tenBest = points.slice(0, qualifyingProblems).reduce((s, p) => s + p, 0);
 
          let openUserInfoModal = () => {
             console.log("openUserInfoModal");
@@ -172,7 +173,7 @@ export default class MainView extends React.Component<Props, State> {
                   <div className="pointsRow">
                      <div className="points">{totalPoints}</div>
                      <div className="pointsDesc total">Totalt</div>
-                     <div className="pointsDesc">10 bästa</div>
+                     <div className="pointsDesc">{qualifyingProblems} bästa</div>
                      <div className="points">{tenBest}</div>
                   </div>
                   <div className="headerRow">

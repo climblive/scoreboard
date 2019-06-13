@@ -22,7 +22,10 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
    const problemState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
    const className = "problem " + (tick ? 'done' : '');
    const color = colors.get(problem.colorId)!;
-   let rgbColor = '#' + color.rgb;
+   let rgbColor = color.rgbPrimary;
+   if(rgbColor.charAt(0) != '#') {
+      rgbColor = "#" + rgbColor
+   }
    const secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
    const chromaInst = Chroma(rgbColor);
    const luminance = chromaInst.luminance();

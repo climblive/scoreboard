@@ -40,8 +40,8 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
       const code = query.code;
       if(code) {
          console.log("CODE " + code);
-         this.props.login!(code);
-         this.props.history.push("/");
+         //this.props.login!(code);
+         //this.props.history.push("/");
       }
    }
 
@@ -50,7 +50,8 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
 
       let url = "https://clmb.auth.eu-west-1.amazoncognito.com/";
       url += command;
-      url += "?response_type=code&client_id=55s3rmvp8t26lmi0898n9d1lfn&redirect_uri=";
+      // Response type token or code
+      url += "?response_type=token&client_id=55s3rmvp8t26lmi0898n9d1lfn&redirect_uri=";
       url += encodeURIComponent(window.location.origin);
       console.log(url);
       return url;

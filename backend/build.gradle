@@ -192,6 +192,10 @@ dependencies {
     implementation "org.apache.pdfbox:pdfbox:2.0.13"
     implementation "com.google.zxing:core:3.3.0"
     implementation 'com.google.zxing:javase:3.3.0'
+    implementation 'com.auth0:java-jwt:3.8.1'
+    implementation 'com.auth0:jwks-rsa:0.8.2'
+    
+    implementation 'com.github.kittinunf.fuel:fuel:2.1.0'
 
     runtimeOnly "mysql:mysql-connector-java"
     testImplementation "org.springframework.boot:spring-boot-starter-test"

@@ -65,27 +65,18 @@ class JwtTest:RSAKeyProvider {
                     .build() //Reusable verifier instance
 
             val jwt = verifier.verify(token)
-            println(jwt.header)
             val payloadString = String(Base64.getDecoder().decode(jwt.payload))
-            println(payloadString)
             val gson = Gson()
             val payload = gson.fromJson(payloadString, JwtPayload::class.java)
             println(payload)
-
-            println(jwt.signature)
-            println(jwt.token)
         } catch (exception: JWTVerificationException) {
             //Invalid signature/claims
             throw exception
         }
-
     }
 }
 
 fun main(args: Array<String>) {
-
-    val id_token = "eyJraWQiOiJ1QjQ5bTJKa0lkZW9sNEVxMWh5Q1VEQmRReVM1R0VSQ2xIbXpkWm5TWnFRPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoia0RXQ2w0UGlQWXlnQ3ZURWZFenhTZyIsInN1YiI6IjliNDllM2JhLTIwNTYtNGEwYS04ODM5LWJmNThkNTY2NGQzMyIsImNvZ25pdG86Z3JvdXBzIjpbIkFkbWluIl0sImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9KZnRueW1zMm4iLCJjb2duaXRvOnVzZXJuYW1lIjoiamVzcGVyIiwiYXVkIjoiNTVzM3JtdnA4dDI2bG1pMDg5OG45ZDFsZm4iLCJldmVudF9pZCI6ImQyNjY1N2RkLTYzN2UtNGU4MC1hNTRmLWE1MzM2MGE2YmVkYiIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTYxMzc1MzY2LCJuYW1lIjoiSmVzcGVyIEZyYW5zc29uIiwiZXhwIjoxNTYxMzc4OTY2LCJpYXQiOjE1NjEzNzUzNjYsImVtYWlsIjoiamVwcG9mQGdtYWlsLmNvbSJ9.dzagOdlgipfjIX-280x7DQ67NPbIAYFC_gQ51Hwr5ziaGyVlB5PoXXzkvMW3FGykgshYrfgOSHvXHY4KYcYMscoUIs-r1ZLvfCKzyNrEAtzNjVce17MbGPvkn1h2Xu2cbx_82HULsdtDyyxXMyJCU3sj7NAS2WLCodpG7btRrTMiGv5HFz26VuWvqmOvzUSw95ggEno2p1S52MkI7o5oGswPzDWUcfNssw37p5uWxiM697X4hyqXUIoGU_3GL9UcBcgb9ZrzceDlPr21hb9hnkTkUOySQivDxEQK31SzUgJ0h0m5kbB42muXddQErZLoaErozwoev0nBYwsEy6XJRg"
     val access_token="eyJraWQiOiJhOFB0NUdVVVFoYlp5ZHNjd2I1N3oweUJlK3NkSzl4bmJ6YXNpNFE4SGxNPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI5YjQ5ZTNiYS0yMDU2LTRhMGEtODgzOS1iZjU4ZDU2NjRkMzMiLCJjb2duaXRvOmdyb3VwcyI6WyJBZG1pbiJdLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9KZnRueW1zMm4iLCJ2ZXJzaW9uIjoyLCJjbGllbnRfaWQiOiI1NXMzcm12cDh0MjZsbWkwODk4bjlkMWxmbiIsImV2ZW50X2lkIjoiZDI2NjU3ZGQtNjM3ZS00ZTgwLWE1NGYtYTUzMzYwYTZiZWRiIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiBwaG9uZSBvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImF1dGhfdGltZSI6MTU2MTM3NTM2NiwiZXhwIjoxNTYxMzc4OTY2LCJpYXQiOjE1NjEzNzUzNjYsImp0aSI6ImE3NDM0MjI5LTAyZjUtNDQ3Ny05MDU3LWNhMTUxNDk2M2JlYSIsInVzZXJuYW1lIjoiamVzcGVyIn0.cvjbMbHb6unk021JKdWH7g_8d9G_WQ1K72bLqOFkujMHukyV83V2X0vGanEL7iBRrTHir_wntsLe-ue78GohjymDrNU7Rw4oSC-LHGFDXhE0_svyltoDerManF4zOmRJzjuKKtndZvpwBXpYkGh7zBykDCfRFGCsIuS6BCcJ5jk_uRfdlIDbjTXqRi9FXu1aV3BmzDZ7_HJjtrRaZ-SZUQQwIktbrSmqc5jobOtQphzlA4tWfuQpIqPsJcEBbka5JNx0-8etyo1o3WgnkIOFXNdECtH-vnKCgcf-cKX6q-MZ6V43Pc7D3eM-aKIRE-UlS3vAZbcGypAzjRfbp7SznQ"
-    JwtTest().validate(id_token)
     JwtTest().validate(access_token)
 }

@@ -4,7 +4,6 @@ import {ActionType, getType} from 'typesafe-actions';
 import {Color} from "../model/color";
 import {Problem} from "../model/problem";
 import {SortBy} from "../constants/constants";
-import {ContenderData} from "../model/contenderData";
 import {CompLocation} from "../model/compLocation";
 import {Organizer} from "../model/organizer";
 
@@ -13,9 +12,9 @@ export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
    let newProblems: Problem[] = [...problems];
    if (sortBy === SortBy.BY_POINTS) {
-      newProblems = newProblems.sort((a, b) => a.points - b.points);
+      newProblems = newProblems.sort((a, b) => (a.points || 0) - (b.points || 0));
    } else {
-      newProblems = newProblems.sort((a, b) => a.id - b.id);
+      newProblems = newProblems.sort((a, b) => (a.number || 0) - (b.number || 0));
    }
    return newProblems;
 }
@@ -34,34 +33,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.setTitle):
          return { ...state, title: action.payload};
 
-
-      case getType(scoreboardActions.startProblemUpdate):
-         return { ...state, problemIdBeingUpdated: action.payload.id };
-
-      case getType(scoreboardActions.setProblemStateFailed):
-         return { ...state, problemIdBeingUpdated: undefined, errorMessage: action.payload};
-
-
-      case getType(scoreboardActions.sortProblems):
-         let newProblems2: Problem[] = getSortedProblems(state.problems, action.payload);
-         return { ...state, problems: newProblems2, problemsSortedBy: action.payload };
-
-      case getType(scoreboardActions.receiveContenderData):
-         let contenderData:ContenderData = action.payload;
-         if(contenderData.compClassId == null) {
-            contenderData.compClassId = undefined;
-         }
-         if(contenderData.name == null) {
-            contenderData.name = undefined;
-         }
-         return { ...state, contenderData: contenderData, contenderNotFound: false};
-
-      case getType(scoreboardActions.receiveContenderNotFound):
-         return { ...state, contenderData: undefined, contenderNotFound: true};
-
-      case getType(scoreboardActions.receiveScoreboardData):
-         return { ...state, scoreboardData: action.payload };
-
       case getType(scoreboardActions.receiveContest):
          return { ...state, contest: action.payload };
 
@@ -72,6 +43,24 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          const sortedBy = state.problemsSortedBy || SortBy.BY_NUMBER;
          const problems = getSortedProblems(action.payload, sortedBy);
          return { ...state, problems: problems, problemsSortedBy: sortedBy};
+
+      case getType(scoreboardActions.startEditProblem):
+         return { ...state, editProblemId: action.payload.id};
+
+      case getType(scoreboardActions.cancelEditProblem):
+         const newProblems1 = state.problems.filter(p => p.id != -1);
+         return { ...state, editProblemId: undefined, problems: newProblems1};
+
+      case getType(scoreboardActions.startAddProblem):
+         const problem = action.payload;
+         const newProblems = [];
+         for(let p of state.problems) {
+            newProblems.push(p);
+            if (p == problem) {
+               newProblems.push({id: -1, number: p.number + 1});
+            }
+         }
+         return { ...state, editProblemId: -1, problems: newProblems};
 
       case getType(scoreboardActions.receiveColors):
          const colorMap = new Map<number, Color>();
@@ -87,24 +76,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          const organizerMap = new Map<number, Organizer>();
          action.payload.forEach(organizer => organizerMap.set(organizer.id, organizer));
          return { ...state, organizers: action.payload, organizerMap: organizerMap };
-
-
-
-      case getType(scoreboardActions.receiveTicks):
-         return { ...state, ticks: action.payload };
-
-      case getType(scoreboardActions.createTick):
-         let newTicks1 = [...state.ticks, action.payload];
-         return { ...state, ticks: newTicks1, problemIdBeingUpdated: undefined};
-
-      case getType(scoreboardActions.updateTick):
-         let newTicks2 = state.ticks.filter(tick => tick.id !== action.payload.id);
-         newTicks2.push(action.payload);
-         return { ...state, ticks: newTicks2, problemIdBeingUpdated: undefined};
-
-      case getType(scoreboardActions.deleteTick):
-         let newTicks3 = state.ticks.filter(tick => tick.id !== action.payload.id);
-         return { ...state, ticks: newTicks3, problemIdBeingUpdated: undefined};
 
       default:
          return state;

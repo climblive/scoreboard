@@ -21,6 +21,7 @@ export interface StoreState {
    problemsSortedBy: SortBy;
    contest: Contest;
    problems: Problem[];
+   editProblemId?: number;
    compClasses: CompClass[];
    ticks: Tick[];
    colors: Color[],

@@ -12,6 +12,7 @@ import {CompClass} from "../model/compClass";
 import {Problem} from "../model/problem";
 import CompClassesComp from "../components/CompClassesComp";
 import ContestGeneralComp from "../components/ContestGeneralComp";
+import {Color} from "../model/color";
 
 interface Props {
    match: {
@@ -21,9 +22,18 @@ interface Props {
    },
    contest:Contest,
    problems:Problem[],
+   colorMap: Map<number, Color>,
    compClasses:CompClass[],
+   editProblemId?: number
+
    loadContest?: (contestId: number) => void,
+   loadColors?: () => void,
    setTitle?: (title: string) => void,
+   startEditProblem?:(problem:Problem) => void
+   cancelEditProblem?:() => void
+   saveEditProblem?:() => void
+   startAddProblem?:(problem:Problem) => void
+   deleteProblem?:(problem:Problem) => void
 }
 
 type State = {
@@ -44,6 +54,7 @@ class ContestView extends React.Component<Props, State> {
 
       let contestId : string = this.props.match.params.contestId;
       this.props.loadContest!(parseInt(contestId));
+      this.props.loadColors!();
    }
 
    componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
@@ -63,7 +74,16 @@ class ContestView extends React.Component<Props, State> {
       } else if(selectedTab == 1) {
          tab = (<CompClassesComp key="compClasses" compClasses={this.props.compClasses} />);
       } else if(selectedTab == 2) {
-         tab = (<ProblemsComp key="problems" problems={this.props.problems} />);
+         tab = (<ProblemsComp key="problems"
+                              problems={this.props.problems}
+                              colorMap={this.props.colorMap}
+                              editProblemId={this.props.editProblemId}
+                              startEditProblem={this.props.startEditProblem}
+                              cancelEditProblem={this.props.cancelEditProblem}
+                              saveEditProblem={this.props.saveEditProblem}
+                              startAddProblem={this.props.startAddProblem}
+                              deleteProblem={this.props.deleteProblem}
+         />);
       } else if(selectedTab == 3) {
          tab = (<div id="contenders">Item One</div>);
       }
@@ -84,6 +104,8 @@ export function mapStateToProps(state: StoreState, props: any): Props {
       contest: state.contest,
       problems: state.problems,
       compClasses: state.compClasses,
+      colorMap: state.colorMap,
+      editProblemId: state.editProblemId,
       match: props.match
    };
 }
@@ -91,7 +113,13 @@ export function mapStateToProps(state: StoreState, props: any): Props {
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
       loadContest: (contestId: number) => dispatch(asyncActions.loadContest(contestId)),
+      loadColors: () => dispatch(asyncActions.loadColors()),
       setTitle: (title: string) => dispatch(actions.setTitle(title)),
+      startEditProblem: (problem: Problem) => dispatch(actions.startEditProblem(problem)),
+      cancelEditProblem: () => dispatch(actions.cancelEditProblem()),
+      saveEditProblem: () => dispatch(asyncActions.saveEditProblem()),
+      startAddProblem: (problem: Problem) => dispatch(actions.startAddProblem(problem)),
+      deleteProblem: (problem: Problem) => dispatch(asyncActions.deleteProblem(problem)),
    };
 }
 

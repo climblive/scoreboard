@@ -21,8 +21,8 @@ export interface ProblemCompProps {
 function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblemState, onToggle }: ProblemCompProps) {
    const problemState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
    const className = "problem " + (tick ? 'done' : '');
-   const color = colors.get(problem.colorId)!;
-   let rgbColor = '#' + color.rgb;
+   const color = colors.get(problem.colorId!)!;
+   let rgbColor = '#' + color.rgbPrimary;
    const secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
    const chromaInst = Chroma(rgbColor);
    const luminance = chromaInst.luminance();

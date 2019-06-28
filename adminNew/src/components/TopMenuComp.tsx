@@ -34,14 +34,17 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
 
    componentDidMount() {
       console.log(this.props);
-      let query = qs.parse(this.props.location.search, {
+      /*let query = qs.parse(this.props.location.search, {
+         ignoreQueryPrefix: true
+      });*/
+      let query = qs.parse(this.props.location.hash, {
          ignoreQueryPrefix: true
       });
-      const code = query.code;
-      if(code) {
-         console.log("CODE " + code);
-         //this.props.login!(code);
-         //this.props.history.push("/");
+      const accessToken = query.access_token;
+      if(accessToken) {
+         console.log("accessToken " + accessToken);
+         this.props.login!(accessToken);
+         this.props.history.push("/");
       }
    }
 

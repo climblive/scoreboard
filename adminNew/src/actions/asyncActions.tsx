@@ -1,11 +1,7 @@
 import {Problem} from '../model/problem';
-import {ContenderData} from '../model/contenderData';
 import {Dispatch} from 'react-redux';
 import {Api} from '../utils/Api';
 import * as actions from './actions';
-import {StoreState} from '../model/storeState';
-import {ProblemState} from "../model/problemState";
-import {Tick} from "../model/tick";
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -98,55 +94,16 @@ export function loadOrganizers(): any {
    }
 }
 
-
-
-
-export function saveUserData(contenderData: ContenderData): any {
+export function saveEditProblem(): any {
    return (dispatch: Dispatch<any>) => {
-      let promise: Promise<ContenderData> = Api.setContender(contenderData);
-      promise.then(contenderData => dispatch(actions.receiveContenderData(contenderData)));
-      return promise;
-   };
+      // TODO: Implement
+      dispatch(actions.cancelEditProblem());
+   }
 }
 
-export function setProblemStateAndSave(problem: Problem, problemState: ProblemState, tick?:Tick): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      const oldState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
-      if(oldState != problemState) {
-         dispatch(actions.startProblemUpdate(problem));
-         const activationCode: string = getState().contenderData!.registrationCode;
-         if(!tick) {
-            // Create a new tick:
-            Api.createTick(problem.id, getState().contenderData!.id, problemState == ProblemState.FLASHED, activationCode)
-               .then((tick) => {
-                  dispatch(actions.createTick(tick))
-               })
-               .catch((error) => {
-                  console.log(error);
-                  dispatch(actions.setProblemStateFailed(error))
-               });
-
-         } else if (problemState == ProblemState.NOT_SENT) {
-            // Delete the tick:
-            Api.deleteTick(tick)
-               .then(() => {
-                  dispatch(actions.deleteTick(tick))
-               })
-               .catch((error) => {
-                  dispatch(actions.setProblemStateFailed(error))
-               });
-         } else {
-            // Update the tick:
-            const newTick:Tick = JSON.parse(JSON.stringify(tick));
-            newTick.flash = problemState == ProblemState.FLASHED;
-            Api.updateTick(newTick)
-               .then(() => {
-                  dispatch(actions.updateTick(newTick))
-               })
-               .catch((error) => {
-                  dispatch(actions.setProblemStateFailed(error))
-               });
-         }
-      }
-   };
+export function deleteProblem(problem:Problem): any {
+   return (dispatch: Dispatch<any>) => {
+      // TODO: Implement
+      dispatch(actions.cancelEditProblem());
+   }
 }

@@ -22,11 +22,15 @@ interface Props {
    },
    contest:Contest,
    problems:Problem[],
+   colors:Color[],
    colorMap: Map<number, Color>,
    compClasses:CompClass[],
    editProblemId?: number
 
    loadContest?: (contestId: number) => void,
+   setNewContest?: () => void,
+   updateContest?: (propName:string, value:any) => void,
+   saveContest?: () => any,
    loadColors?: () => void,
    setTitle?: (title: string) => void,
    startEditProblem?:(problem:Problem) => void
@@ -42,7 +46,7 @@ type State = {
 
 class ContestView extends React.Component<Props, State> {
    public readonly state: State = {
-      selectedTab: 2,
+      selectedTab: 0,
    };
 
    constructor(props: Props) {
@@ -53,12 +57,21 @@ class ContestView extends React.Component<Props, State> {
       ReactModal.setAppElement("body");
 
       let contestId : string = this.props.match.params.contestId;
-      this.props.loadContest!(parseInt(contestId));
+      if(contestId == "new") {
+         this.props.setNewContest!();
+      } else {
+         this.props.loadContest!(parseInt(contestId));
+      }
       this.props.loadColors!();
+      this.setState(this.state);
    }
 
    componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-      this.props.setTitle!(this.props.contest ? this.props.contest.name : "");
+      let title = "";
+      if(this.props.contest) {
+         title = this.props.contest.isNew ? "Add contest" : this.props.contest.name;
+      }
+      this.props.setTitle!(title);
    }
 
    selectTab = (event: any, newValue: number) => {
@@ -69,13 +82,19 @@ class ContestView extends React.Component<Props, State> {
    render() {
       let selectedTab = this.state.selectedTab;
       let tab;
+      let isNew = this.props.contest == undefined || this.props.contest.isNew;
       if(selectedTab == 0) {
-         tab = (<ContestGeneralComp key="general" contest={this.props.contest} />);
+         tab = (<ContestGeneralComp key="general"
+                                    contest={this.props.contest}
+                                    updateContest={this.props.updateContest}
+                                    saveContest={this.props.saveContest}
+         />);
       } else if(selectedTab == 1) {
          tab = (<CompClassesComp key="compClasses" compClasses={this.props.compClasses} />);
       } else if(selectedTab == 2) {
          tab = (<ProblemsComp key="problems"
                               problems={this.props.problems}
+                              colors={this.props.colors}
                               colorMap={this.props.colorMap}
                               editProblemId={this.props.editProblemId}
                               startEditProblem={this.props.startEditProblem}
@@ -90,29 +109,33 @@ class ContestView extends React.Component<Props, State> {
       return [
          (<Tabs key="tabs" value={selectedTab} onChange={this.selectTab}>
             <Tab label="General information" />
-            <Tab label="Classes" />
-            <Tab label="Problems" />
-            <Tab label="Contenders" />
+            {!isNew && <Tab label="Classes" />}
+            {!isNew && <Tab label="Problems" />}
+            {!isNew && <Tab label="Contenders" />}
          </Tabs>),
          tab
       ]
    }
 }
 
-export function mapStateToProps(state: StoreState, props: any): Props {
+function mapStateToProps(state: StoreState, props: any): Props {
    return {
       contest: state.contest,
       problems: state.problems,
       compClasses: state.compClasses,
+      colors: state.colors,
       colorMap: state.colorMap,
       editProblemId: state.editProblemId,
       match: props.match
    };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
       loadContest: (contestId: number) => dispatch(asyncActions.loadContest(contestId)),
+      setNewContest: () => dispatch(actions.setNewContest()),
+      updateContest: (propName:string, value:any) => dispatch(actions.updateContest({propName: propName, value: value})),
+      saveContest: () => dispatch(asyncActions.saveContest()),
       loadColors: () => dispatch(asyncActions.loadColors()),
       setTitle: (title: string) => dispatch(actions.setTitle(title)),
       startEditProblem: (problem: Problem) => dispatch(actions.startEditProblem(problem)),

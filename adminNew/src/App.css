@@ -100,7 +100,6 @@ button.disabled {
 
 input {
    border: 1px solid #c6cbd4;
-   text-align: center;
    width:100%;
    font-size:16px;   
 }

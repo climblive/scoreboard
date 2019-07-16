@@ -2,6 +2,8 @@ import {Problem} from '../model/problem';
 import {Dispatch} from 'react-redux';
 import {Api} from '../utils/Api';
 import * as actions from './actions';
+import {Contest} from "../model/contest";
+import {StoreState} from "../model/storeState";
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -52,6 +54,17 @@ export function loadContest(contestId: number): any {
          dispatch(actions.setErrorMessage(error));
       });
 
+   }
+}
+
+export function saveContest(): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contest = getState().contest;
+      Api.saveContest(contest).then(contest => {
+         dispatch(actions.receiveContest(contest));
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
    }
 }
 

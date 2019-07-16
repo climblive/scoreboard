@@ -112,6 +112,14 @@ export class Api {
       return this.get("contest/" + contestId);
    }
 
+   static saveContest(contest: Contest): Promise<Contest> {
+      if(contest.isNew) {
+         return this.post("contest", contest);
+      } else {
+         return this.put("contest/" + contest.id, contest);
+      }
+   }
+
    static getProblems(contestId: number): Promise<Problem[]> {
       return this.get("contest/" + contestId + "/problem");
    }

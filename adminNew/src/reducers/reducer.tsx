@@ -36,6 +36,24 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveContest):
          return { ...state, contest: action.payload };
 
+      case getType(scoreboardActions.setNewContest):
+         return { ...state, contest: {
+               id: -1,
+               name: "",
+               description: "",
+               organizerId: 1,
+               locationId: 1,
+               qualifyingProblems:10,
+               gracePeriod: 15,
+               rules: "",
+               isNew: true
+            }};
+
+      case getType(scoreboardActions.updateContest):
+         let newContest = {...state.contest};
+         newContest[action.payload.propName] = action.payload.value;
+         return { ...state, contest: newContest};
+
       case getType(scoreboardActions.receiveCompClasses):
          return { ...state, compClasses: action.payload.sort((a, b) => a.id - b.id) };
 
@@ -78,6 +96,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, organizers: action.payload, organizerMap: organizerMap };
 
       default:
+         console.log("ACTION", action);
          return state;
    }
 };

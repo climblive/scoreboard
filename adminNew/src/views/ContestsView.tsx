@@ -14,6 +14,8 @@ import {StoreState} from "../model/storeState";
 import {connect, Dispatch} from "react-redux";
 import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from '@material-ui/icons/AddCircleOutline';
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -50,11 +52,13 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
       this.props.setTitle!("Contests");
    }
 
+
+
    render() {
       let contests = this.props.contests;
       let classes = this.props.classes!!;
       if(!contests) {
-         return (<CircularProgress/>)
+         return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       return (
          <div className="mainView">
@@ -64,10 +68,15 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                      <TableRow>
                         <TableCell>Name</TableCell>
                         <TableCell>Description</TableCell>
-                        <TableCell align="right">Location</TableCell>
-                        <TableCell align="right">Organizer</TableCell>
-                        <TableCell align="right">Qualifying problems</TableCell>
-                        <TableCell>Rules</TableCell>
+                        <TableCell>Location</TableCell>
+                        <TableCell>Organizer</TableCell>
+                        <TableCell>Qualifying problems</TableCell>
+                        <TableCell>
+                           <IconButton color="inherit" aria-label="Menu" title="Add contest" onClick={() => this.props.history.push("/contests/new")}>
+                              <AddIcon />
+                           </IconButton>
+                        </TableCell>
+
                      </TableRow>
                   </TableHead>
                   <TableBody>
@@ -78,10 +87,9 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                                   onClick={() => this.props.history.push("/contests/" + contest.id)}>
                            <TableCell component="th" scope="row">{contest.name}</TableCell>
                            <TableCell>{contest.description}</TableCell>
-                           <TableCell align="right">{contest.locationId}</TableCell>
-                           <TableCell align="right">{contest.organizerId}</TableCell>
-                           <TableCell align="right">{contest.qualifyingProblems}</TableCell>
-                           <TableCell>{contest.rules}</TableCell>
+                           <TableCell>{contest.locationId}</TableCell>
+                           <TableCell>{contest.organizerId}</TableCell>
+                           <TableCell colSpan={2}>{contest.qualifyingProblems}</TableCell>
                         </TableRow>
                      ))}
                   </TableBody>

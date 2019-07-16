@@ -1,5 +1,5 @@
 
-import { createStandardAction } from 'typesafe-actions'
+import {action, createAction, createStandardAction} from 'typesafe-actions'
 import { Problem } from '../model/problem';
 import { Contest } from '../model/contest';
 import {CompClass} from "../model/compClass";
@@ -15,6 +15,8 @@ export const setLoggedInUser = createStandardAction('SET_LOGGED_IN_USER')<string
 export const logout = createStandardAction('LOGOUT')();
 
 
+export const setNewContest = createStandardAction('SET_NEW_CONTEST')();
+export const updateContest = createStandardAction('UPDATE_CONTEST')<{propName:string, value:any}>();
 export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[]>();
 export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();
 

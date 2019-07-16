@@ -7,15 +7,17 @@ import {TextField} from "@material-ui/core";
 
 interface Props {
    contest:Contest,
+   updateContest?: (propName:string, value:any) => void,
+   saveContest?: () => Promise<Contest>
 }
 
 type State = {
-   numberOfContenders:number
+   numberOfContenders: number;
 }
 
 class ContestGeneralComp extends React.Component<Props, State> {
    public readonly state: State = {
-      numberOfContenders:0,
+      numberOfContenders:0
    };
 
    constructor(props: Props) {
@@ -30,7 +32,7 @@ class ContestGeneralComp extends React.Component<Props, State> {
       this.setState({
          numberOfContenders: evt.target.value
       });
-   }
+   };
 
    batchCreateContenders = () => {
       console.log("batchCreateContenders");
@@ -100,47 +102,84 @@ class ContestGeneralComp extends React.Component<Props, State> {
       })*/
    }
 
+   onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.updateContest!("name", e.target.value);
+   };
+
+   onDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.updateContest!("description", e.target.value);
+   };
+
+   onQualifyingProblemsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.updateContest!("qualifyingProblems", e.target.value);
+   };
+
+   onGracePeriodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.updateContest!("gracePeriod", e.target.value);
+   };
+
+   onRulesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.updateContest!("rules", e.target.value);
+   };
+
+   onSave = () => {
+      this.props.saveContest!().then(contest => {
+         console.log("Saved! ", contest);
+      })
+   };
+
    render() {
       let contest = this.props.contest;
       if(!contest) {
-         return (<CircularProgress/>)
+         return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       return (
          <Paper>
-            <div>
+            <div style={{padding:10}}>
                {/*<ReferenceInput source="locationId" reference="location">
                   <SelectInput optionText="name"/>
                </ReferenceInput>
                <ReferenceInput source="organizerId" reference="organizer">
                   <SelectInput optionText="name"/>
                </ReferenceInput>*/}
-               <TextField value={contest.name} />
-               <TextField value={contest.description} />
-               <TextField value={contest.qualifyingProblems} />
-               {/*<TextField value={contest.finalists} />
-               <RichTextInput source="rules"/>
-               <NumberInput source="gracePeriod"/>*/}
-               <div style={{display:'flex', marginTop:16}}>
-                  <Paper style={{padding:'16px 24px', flexBasis:0, marginRight:16, flexGrow:1}}>
-                     <div style={{marginBottom:16}}>1. Batch create contenders</div>
-                     <div>
-                        <TextField label="Number of contenders" value={this.state ? this.state.numberOfContenders : '0'} onChange={this.onNumberOfContendersChange}/>
-                        <Button variant="outlined" style={{marginTop:10, display:'block'}} onClick={this.batchCreateContenders}>Create</Button>
-                     </div>
-                  </Paper>
-                  <Paper style={{padding:'16px 24px', flexBasis:0, marginRight:16, flexGrow:1}}>
-                     <div style={{marginBottom:16}}>2. Create PDF</div>
-                     <div>
-                        <input type='file' id='multi' onChange={this.onChange} />
-                     </div>
-                  </Paper>
-                  <Paper style={{padding:'16px 24px', flexBasis:0, flexGrow:1}}>
-                     <div style={{marginBottom:16}}>3. Export results</div>
-                     <div>
-                        <Button variant="outlined" onClick={this.exportResults}>Export</Button>
-                     </div>
-                  </Paper>
+               <div style={{display:"flex", flexDirection:"row"}}>
+                  <div style={{display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>
+                     <TextField label="Name" value={contest.name} onChange={this.onNameChange}/>
+                     <TextField style={{marginTop:10}} label="Description" value={contest.description} onChange={this.onDescriptionChange}/>
+                     <TextField style={{marginTop:10}} label="Number of qualifying problems" value={contest.qualifyingProblems} onChange={this.onQualifyingProblemsChange}/>
+                     <TextField style={{marginTop:10}} label="Grace period"value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>
+                  </div>
+                  <div style={{marginLeft:10, display:"flex", flexDirection:"row", flexGrow:1, flexBasis:0}}>
+                     <TextField style={{flexGrow:1}} multiline label="Rules" value={contest.rules} onChange={this.onRulesChange}/>
+                  </div>
                </div>
+               <Button style={{marginTop:10}} variant="outlined" color="primary" onClick={this.onSave}>{contest.isNew ? 'Add' : 'Save'}</Button>
+               {!contest.isNew &&
+               <div style={{display: 'flex', marginTop: 16}}>
+                   <Paper style={{padding: '16px 24px', flexBasis: 0, marginRight: 16, flexGrow: 1}}>
+                       <div style={{marginBottom: 16}}>1. Batch create contenders</div>
+                       <div>
+                           <TextField label="Number of contenders"
+                                      value={this.state ? this.state.numberOfContenders : '0'}
+                                      onChange={this.onNumberOfContendersChange}/>
+                           <Button variant="outlined" style={{marginTop: 10, display: 'block'}}
+                                   onClick={this.batchCreateContenders}>Create</Button>
+                       </div>
+                   </Paper>
+                   <Paper style={{padding: '16px 24px', flexBasis: 0, marginRight: 16, flexGrow: 1}}>
+                       <div style={{marginBottom: 16}}>2. Create PDF</div>
+                       <div>
+                           <input type='file' id='multi' onChange={this.onChange}/>
+                       </div>
+                   </Paper>
+                   <Paper style={{padding: '16px 24px', flexBasis: 0, flexGrow: 1}}>
+                       <div style={{marginBottom: 16}}>3. Export results</div>
+                       <div>
+                           <Button variant="outlined" onClick={this.exportResults}>Export</Button>
+                       </div>
+                   </Paper>
+               </div>
+               }
             </div>
          </Paper>
       );

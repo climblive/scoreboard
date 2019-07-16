@@ -13,9 +13,13 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import {StyledComponentProps} from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {ConfirmationDialog} from "./ConfirmationDialog";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 interface Props {
    problems:Problem[],
+   colors:Color[]
    colorMap:Map<number, Color>
    editProblemId?: number
 
@@ -28,6 +32,8 @@ interface Props {
 
 type State = {
    deleteProblem?:Problem
+   points?:number
+   colorId?:number
 }
 
 const styles = {
@@ -78,8 +84,20 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       }
    };
 
+   getEditProblemStyle = () => {
+      let problem:Problem = {
+         id: this.props.editProblemId ? this.props.editProblemId! : -1,
+         number: -1,
+         colorId: this.state.colorId
+      };
+      return this.getProblemStyle(problem);
+   };
+
    edit = (problem:Problem) => {
-      this.props.startEditProblem!(problem)
+      this.props.startEditProblem!(problem);
+      this.state.points = problem.points;
+      this.state.colorId = problem.colorId;
+      this.setState(this.state);
    };
 
    editOk = () => {
@@ -107,12 +125,23 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       this.setState(this.state);
    };
 
+   onPointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.state.points = parseInt(e.target.value);
+      this.setState(this.state);
+   };
+
+   onColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      this.state.colorId = parseInt(e.target.value);
+      this.setState(this.state);
+   };
+
    render() {
       const classes = this.props.classes!!;
       let problems = this.props.problems;
       if(!problems || !this.props.colorMap) {
-         return (<CircularProgress/>)
+         return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
+      console.log("COLORS: " + this.props.colors);
       return [
          <Paper key={"content"} style={{flexGrow:1, display:"flex", flexDirection:"column"}}>
             <div style={{flexBasis:0, overflowY:"auto", flexGrow:1}}>
@@ -122,7 +151,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                         return (
                            <li key={problem.id} style={this.getProblemStyle(problem)}>
                               <div style={{width: 20, fontSize:16}}>{problem.number}</div>
-                              <div style={{width:60, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>{this.getColorName(problem)}</div>
+                              <div style={{width:100, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>{this.getColorName(problem)}</div>
                               <div style={{textAlign: "right", width:60, fontSize:28, marginRight:10}}>{problem.points}</div>
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Edit" title="Edit" onClick={() => {this.edit(problem);}}>
                                  <EditIcon />
@@ -137,10 +166,19 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                         )
                      } else {
                         return (
-                           <li key={problem.id} style={this.getProblemStyle(problem)}>
+                           <li key={problem.id} style={this.getEditProblemStyle()}>
                               <div style={{width: 20, fontSize:16}}>{problem.number}</div>
-                              <div style={{width:60, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>{this.getColorName(problem)}</div>
-                              <div style={{textAlign: "right", width:60, fontSize:28, marginRight:10}}>{problem.points}</div>
+                              <FormControl style={{width:100, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>
+                                 <Select
+                                    value={this.state.colorId}
+                                    onChange={this.onColorChange}
+                                 >
+                                    {this.props.colors.map(color =>
+                                       <MenuItem key={color.id} value={color.id}>{color.name}</MenuItem>
+                                    )}
+                                 </Select>
+                              </FormControl>
+                              <input style={{textAlign: "right", width:60, fontSize:28, marginRight:10}} value={this.state.points} onChange={this.onPointsChange} />
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Ok" title="Ok" onClick={this.editOk}>
                                  <CheckIcon />
                               </IconButton>

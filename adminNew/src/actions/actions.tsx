@@ -27,8 +27,13 @@ export const receiveOrganizers = createStandardAction('RECEIVE_ORGANIZERS')<Orga
 export const receiveColors = createStandardAction('RECEIVE_COLORS')<Color[]>();
 
 export const receiveCompClasses = createStandardAction('RECEIVE_COMP_CLASSES')<CompClass[]>();
+export const startEditCompClass = createStandardAction('START_EDIT_COMP_CLASS')<CompClass>();
+export const cancelEditCompClass = createStandardAction('CANCEL_EDIT_COMP_CLASS')();
+export const startAddCompClass = createStandardAction('START_ADD_COMP_CLASS')();
+export const updateEditCompClass = createStandardAction('UPDATE_EDIT_COMP_CLASS')<{propName:string, value:any}>();
 
 export const receiveProblems = createStandardAction('RECEIVE_PROBLEMS')<Problem[]>();
 export const startEditProblem = createStandardAction('START_EDIT_PROBLEM')<Problem>();
 export const cancelEditProblem = createStandardAction('CANCEL_EDIT_PROBLEM')();
 export const startAddProblem = createStandardAction('START_ADD_PROBLEM')<Problem>();
+export const updateEditProblem = createStandardAction('UPDATE_EDIT_PROBLEM')<{propName:string, value:any}>();

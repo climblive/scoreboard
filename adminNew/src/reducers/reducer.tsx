@@ -6,6 +6,7 @@ import {Problem} from "../model/problem";
 import {SortBy} from "../constants/constants";
 import {CompLocation} from "../model/compLocation";
 import {Organizer} from "../model/organizer";
+import {CompClass} from "../model/compClass";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -57,28 +58,64 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveCompClasses):
          return { ...state, compClasses: action.payload.sort((a, b) => a.id - b.id) };
 
+      case getType(scoreboardActions.startEditCompClass):
+         return { ...state, editCompClass: action.payload};
+
+      case getType(scoreboardActions.cancelEditCompClass):
+         const newCompClasses1 = state.compClasses.filter(p2 => p2.id != -1);
+         return { ...state, editCompClass: undefined, compClasses: newCompClasses1};
+
+      case getType(scoreboardActions.startAddCompClass):
+         const newCompClasses = [...state.compClasses];
+         let newCompClass:CompClass = {
+            id: -1,
+            contestId: state.contest.id,
+            name: "",
+            description: "",
+            timeBegin: "",
+            timeEnd: ""
+         };
+         newCompClasses.push(newCompClass);
+         return { ...state, editCompClass: newCompClass, compClasses: newCompClasses};
+
+      case getType(scoreboardActions.updateEditCompClass):
+         let newEditCompClass = {...state.editCompClass!};
+         newEditCompClass[action.payload.propName] = action.payload.value;
+         return { ...state, editCompClass: newEditCompClass};
+
       case getType(scoreboardActions.receiveProblems):
          const sortedBy = state.problemsSortedBy || SortBy.BY_NUMBER;
          const problems = getSortedProblems(action.payload, sortedBy);
          return { ...state, problems: problems, problemsSortedBy: sortedBy};
 
       case getType(scoreboardActions.startEditProblem):
-         return { ...state, editProblemId: action.payload.id};
+         return { ...state, editProblem: action.payload};
 
       case getType(scoreboardActions.cancelEditProblem):
-         const newProblems1 = state.problems.filter(p => p.id != -1);
-         return { ...state, editProblemId: undefined, problems: newProblems1};
+         const newProblems1 = state.problems.filter(p1 => p1.id != -1);
+         return { ...state, editProblem: undefined, problems: newProblems1};
 
       case getType(scoreboardActions.startAddProblem):
          const problem = action.payload;
          const newProblems = [];
+         let newProblem:Problem = {
+            id: -1,
+            contestId: state.contest.id,
+            number: -1
+         };
          for(let p of state.problems) {
             newProblems.push(p);
             if (p == problem) {
-               newProblems.push({id: -1, number: p.number + 1});
+               newProblem.number = p.number + 1;
+               newProblems.push(newProblem);
             }
          }
-         return { ...state, editProblemId: -1, problems: newProblems};
+         return { ...state, editProblem: newProblem, problems: newProblems};
+
+      case getType(scoreboardActions.updateEditProblem):
+         let newEditProblem = {...state.editProblem!};
+         newEditProblem[action.payload.propName] = action.payload.value;
+         return { ...state, editProblem: newEditProblem};
 
       case getType(scoreboardActions.receiveColors):
          const colorMap = new Map<number, Color>();

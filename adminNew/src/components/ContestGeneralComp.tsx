@@ -4,25 +4,22 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import {Contest} from "../model/contest";
 import {TextField} from "@material-ui/core";
+import {RouteComponentProps, withRouter} from "react-router";
 
 interface Props {
    contest:Contest,
    updateContest?: (propName:string, value:any) => void,
-   saveContest?: () => Promise<Contest>
+   saveContest?: (onSuccess:(contest:Contest) => void) => void
 }
 
 type State = {
    numberOfContenders: number;
 }
 
-class ContestGeneralComp extends React.Component<Props, State> {
+class ContestGeneralComp extends React.Component<Props & RouteComponentProps, State> {
    public readonly state: State = {
       numberOfContenders:0
    };
-
-   constructor(props: Props) {
-      super(props);
-   }
 
    componentDidMount() {
    }
@@ -51,7 +48,7 @@ class ContestGeneralComp extends React.Component<Props, State> {
       }).catch(error => {
          console.log(error);
       })*/
-   }
+   };
 
    onChange = (evt: any) => {
       console.log(evt);
@@ -100,7 +97,7 @@ class ContestGeneralComp extends React.Component<Props, State> {
       }).catch(error => {
          console.log(error);
       })*/
-   }
+   };
 
    onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.props.updateContest!("name", e.target.value);
@@ -123,8 +120,11 @@ class ContestGeneralComp extends React.Component<Props, State> {
    };
 
    onSave = () => {
-      this.props.saveContest!().then(contest => {
-         console.log("Saved! ", contest);
+      let isNew = this.props.contest.isNew;
+      this.props.saveContest!((contest:Contest) => {
+         if(isNew) {
+            this.props.history.push("/contests/" + contest.id);
+         }
       })
    };
 
@@ -147,7 +147,7 @@ class ContestGeneralComp extends React.Component<Props, State> {
                      <TextField label="Name" value={contest.name} onChange={this.onNameChange}/>
                      <TextField style={{marginTop:10}} label="Description" value={contest.description} onChange={this.onDescriptionChange}/>
                      <TextField style={{marginTop:10}} label="Number of qualifying problems" value={contest.qualifyingProblems} onChange={this.onQualifyingProblemsChange}/>
-                     <TextField style={{marginTop:10}} label="Grace period"value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>
+                     <TextField style={{marginTop:10}} label="Grace period" value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>
                   </div>
                   <div style={{marginLeft:10, display:"flex", flexDirection:"row", flexGrow:1, flexBasis:0}}>
                      <TextField style={{flexGrow:1}} multiline label="Rules" value={contest.rules} onChange={this.onRulesChange}/>
@@ -186,4 +186,4 @@ class ContestGeneralComp extends React.Component<Props, State> {
    }
 }
 
-export default ContestGeneralComp;
+export default withRouter(ContestGeneralComp);

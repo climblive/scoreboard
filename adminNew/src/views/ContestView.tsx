@@ -25,19 +25,29 @@ interface Props {
    colors:Color[],
    colorMap: Map<number, Color>,
    compClasses:CompClass[],
-   editProblemId?: number
+   editProblem?: Problem
+   editCompClass?: CompClass
 
    loadContest?: (contestId: number) => void,
    setNewContest?: () => void,
    updateContest?: (propName:string, value:any) => void,
-   saveContest?: () => any,
+   saveContest?: (onSuccess:(contest:Contest) => void) => any,
    loadColors?: () => void,
    setTitle?: (title: string) => void,
+
    startEditProblem?:(problem:Problem) => void
    cancelEditProblem?:() => void
    saveEditProblem?:() => void
    startAddProblem?:(problem:Problem) => void
    deleteProblem?:(problem:Problem) => void
+   updateEditProblem?: (propName:string, value:any) => void,
+
+   startEditCompClass?:(compClass:CompClass) => void
+   cancelEditCompClass?:() => void
+   saveEditCompClass?:() => void
+   startAddCompClass?:() => void
+   deleteCompClass?:(compClass:CompClass) => void
+   updateEditCompClass?: (propName:string, value:any) => void,
 }
 
 type State = {
@@ -90,18 +100,28 @@ class ContestView extends React.Component<Props, State> {
                                     saveContest={this.props.saveContest}
          />);
       } else if(selectedTab == 1) {
-         tab = (<CompClassesComp key="compClasses" compClasses={this.props.compClasses} />);
+         tab = (<CompClassesComp key="compClasses"
+                                 compClasses={this.props.compClasses}
+                                 editCompClass={this.props.editCompClass}
+                                 startEditCompClass={this.props.startEditCompClass}
+                                 cancelEditCompClass={this.props.cancelEditCompClass}
+                                 saveEditCompClass={this.props.saveEditCompClass}
+                                 startAddCompClass={this.props.startAddCompClass}
+                                 deleteCompClass={this.props.deleteCompClass}
+                                 updateEditCompClass={this.props.updateEditCompClass}
+         />);
       } else if(selectedTab == 2) {
          tab = (<ProblemsComp key="problems"
                               problems={this.props.problems}
                               colors={this.props.colors}
                               colorMap={this.props.colorMap}
-                              editProblemId={this.props.editProblemId}
+                              editProblem={this.props.editProblem}
                               startEditProblem={this.props.startEditProblem}
                               cancelEditProblem={this.props.cancelEditProblem}
                               saveEditProblem={this.props.saveEditProblem}
                               startAddProblem={this.props.startAddProblem}
                               deleteProblem={this.props.deleteProblem}
+                              updateEditProblem={this.props.updateEditProblem}
          />);
       } else if(selectedTab == 3) {
          tab = (<div id="contenders">Item One</div>);
@@ -125,7 +145,8 @@ function mapStateToProps(state: StoreState, props: any): Props {
       compClasses: state.compClasses,
       colors: state.colors,
       colorMap: state.colorMap,
-      editProblemId: state.editProblemId,
+      editProblem: state.editProblem,
+      editCompClass: state.editCompClass,
       match: props.match
    };
 }
@@ -135,14 +156,23 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadContest: (contestId: number) => dispatch(asyncActions.loadContest(contestId)),
       setNewContest: () => dispatch(actions.setNewContest()),
       updateContest: (propName:string, value:any) => dispatch(actions.updateContest({propName: propName, value: value})),
-      saveContest: () => dispatch(asyncActions.saveContest()),
+      saveContest: (onSuccess:(contest:Contest) => void) => dispatch(asyncActions.saveContest(onSuccess)),
       loadColors: () => dispatch(asyncActions.loadColors()),
       setTitle: (title: string) => dispatch(actions.setTitle(title)),
+
       startEditProblem: (problem: Problem) => dispatch(actions.startEditProblem(problem)),
       cancelEditProblem: () => dispatch(actions.cancelEditProblem()),
       saveEditProblem: () => dispatch(asyncActions.saveEditProblem()),
       startAddProblem: (problem: Problem) => dispatch(actions.startAddProblem(problem)),
       deleteProblem: (problem: Problem) => dispatch(asyncActions.deleteProblem(problem)),
+      updateEditProblem: (propName:string, value:any) => dispatch(actions.updateEditProblem({propName: propName, value: value})),
+
+      startEditCompClass: (compClass: CompClass) => dispatch(actions.startEditCompClass(compClass)),
+      cancelEditCompClass: () => dispatch(actions.cancelEditCompClass()),
+      saveEditCompClass: () => dispatch(asyncActions.saveEditCompClass()),
+      startAddCompClass: () => dispatch(actions.startAddCompClass()),
+      deleteCompClass: (compClass: CompClass) => dispatch(asyncActions.deleteCompClass(compClass)),
+      updateEditCompClass: (propName:string, value:any) => dispatch(actions.updateEditCompClass({propName: propName, value: value})),
    };
 }
 

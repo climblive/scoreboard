@@ -1,9 +1,7 @@
 import { ContenderData } from '../model/contenderData';
-import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
 import {Problem} from "../model/problem";
 import {CompClass} from "../model/compClass";
-import {Tick} from "../model/tick";
 import {Color} from "../model/color";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
@@ -128,25 +126,16 @@ export class Api {
       return this.get("contest/" + contestId + "/compClass");
    }
 
-   static getTicks(contenderId: number): Promise<Tick[]> {
-      return this.get("contender/" + contenderId + "/tick");
-   }
-
-   static createTick(problemId: number, contenderId: number, flash: boolean, activationCode: string): Promise<Tick> {
-      const newTick:Tick = {
-         flash,
-         contenderId,
-         problemId
+   static saveCompClass(compClass:CompClass): Promise<CompClass> {
+      if(compClass.id == -1) {
+         return this.post("compClass", compClass);
+      } else {
+         return this.put("compClass/" + compClass.id, compClass);
       }
-      return this.post("tick", newTick);
    }
 
-   static updateTick(tick: Tick): Promise<any> {
-      return this.put("tick/" + tick.id, tick);
-   }
-
-   static deleteTick(tick: Tick): Promise<any> {
-      return this.delete("tick/" + tick.id);
+   static deleteCompClass(compClass: CompClass): Promise<any> {
+      return this.delete("compClass/" + compClass.id);
    }
 
    static getColors(): Promise<Color[]> {

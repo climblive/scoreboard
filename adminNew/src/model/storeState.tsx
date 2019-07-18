@@ -1,5 +1,4 @@
 import { ContenderData } from './contenderData';
-import { ScoreboardContenderList } from './scoreboardContenderList';
 import { Contest } from './contest';
 import {SortBy} from "../constants/constants";
 import {Problem} from "./problem";
@@ -20,9 +19,13 @@ export interface StoreState {
    contenderNotFound: boolean;
    problemsSortedBy: SortBy;
    contest: Contest;
+
    problems: Problem[];
-   editProblemId?: number;
+   editProblem?: Problem;
+
    compClasses: CompClass[];
+   editCompClass?: CompClass;
+
    ticks: Tick[];
    colors: Color[],
    colorMap: Map<number, Color>,

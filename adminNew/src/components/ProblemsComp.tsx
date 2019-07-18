@@ -21,19 +21,18 @@ interface Props {
    problems:Problem[],
    colors:Color[]
    colorMap:Map<number, Color>
-   editProblemId?: number
+   editProblem?: Problem
 
    startEditProblem?:(problem:Problem) => void
    cancelEditProblem?:() => void
    saveEditProblem?:() => void
    startAddProblem?:(problem:Problem) => void
    deleteProblem?:(problem:Problem) => void
+   updateEditProblem?:(propName:string, propValue:any) => void
 }
 
 type State = {
    deleteProblem?:Problem
-   points?:number
-   colorId?:number
 }
 
 const styles = {
@@ -70,7 +69,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       let borderColor = chromaInst.darken(1).hex();
       let textColor = luminance < 0.5 ? "#FFF" : "#333";
       let borderWidth = luminance < 0.5 ? 0 : 1;
-      const editProblemId = this.props.editProblemId;
+      const editProblem = this.props.editProblem;
       return {
          display:"flex",
          border: borderWidth + "px solid " + borderColor,
@@ -80,24 +79,12 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
          color: textColor,
          borderRadius: 5,
          alignItems: "center",
-         opacity: (editProblemId == undefined || editProblemId == problem.id) ? 1 : 0.08
+         opacity: (editProblem == undefined || editProblem.id == problem.id) ? 1 : 0.08
       }
-   };
-
-   getEditProblemStyle = () => {
-      let problem:Problem = {
-         id: this.props.editProblemId ? this.props.editProblemId! : -1,
-         number: -1,
-         colorId: this.state.colorId
-      };
-      return this.getProblemStyle(problem);
    };
 
    edit = (problem:Problem) => {
       this.props.startEditProblem!(problem);
-      this.state.points = problem.points;
-      this.state.colorId = problem.colorId;
-      this.setState(this.state);
    };
 
    editOk = () => {
@@ -126,18 +113,17 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
    };
 
    onPointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.state.points = parseInt(e.target.value);
-      this.setState(this.state);
+      this.props.updateEditProblem!("points", parseInt(e.target.value));
    };
 
    onColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      this.state.colorId = parseInt(e.target.value);
-      this.setState(this.state);
+      this.props.updateEditProblem!("colorId", parseInt(e.target.value));
    };
 
    render() {
       const classes = this.props.classes!!;
       let problems = this.props.problems;
+      let editProblem = this.props.editProblem;
       if(!problems || !this.props.colorMap) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
@@ -147,7 +133,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
             <div style={{flexBasis:0, overflowY:"auto", flexGrow:1}}>
                <ul style={{padding: 10, margin:0}}>
                   {problems.map(problem => {
-                     if(this.props.editProblemId != problem.id) {
+                     if(editProblem == undefined || editProblem.id != problem.id) {
                         return (
                            <li key={problem.id} style={this.getProblemStyle(problem)}>
                               <div style={{width: 20, fontSize:16}}>{problem.number}</div>
@@ -156,7 +142,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Edit" title="Edit" onClick={() => {this.edit(problem);}}>
                                  <EditIcon />
                               </IconButton>
-                              <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" title="Edit" onClick={() => {this.add(problem);}}>
+                              <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" title="Add" onClick={() => {this.add(problem);}}>
                                  <AddIcon />
                               </IconButton>
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Delete" title="Delete" onClick={() => {this.delete(problem);}}>
@@ -166,11 +152,11 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                         )
                      } else {
                         return (
-                           <li key={problem.id} style={this.getEditProblemStyle()}>
+                           <li key={problem.id} style={this.getProblemStyle(editProblem)}>
                               <div style={{width: 20, fontSize:16}}>{problem.number}</div>
                               <FormControl style={{width:100, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>
                                  <Select
-                                    value={this.state.colorId}
+                                    value={editProblem.colorId}
                                     onChange={this.onColorChange}
                                  >
                                     {this.props.colors.map(color =>
@@ -178,7 +164,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                                     )}
                                  </Select>
                               </FormControl>
-                              <input style={{textAlign: "right", width:60, fontSize:28, marginRight:10}} value={this.state.points} onChange={this.onPointsChange} />
+                              <input style={{textAlign: "right", width:60, fontSize:28, marginRight:10}} value={editProblem.points} onChange={this.onPointsChange} />
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Ok" title="Ok" onClick={this.editOk}>
                                  <CheckIcon />
                               </IconButton>

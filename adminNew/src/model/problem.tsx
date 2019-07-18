@@ -1,5 +1,6 @@
 export interface Problem {
    id: number;
+   contestId: number;
    number: number;
    colorId?: number;
    points?: number;

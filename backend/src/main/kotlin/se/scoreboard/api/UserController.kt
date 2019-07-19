@@ -73,7 +73,7 @@ class UserController @Autowired constructor(
     @Transactional
     fun login(@RequestBody auth: AuthData) : ResponseEntity<String> {
         val user = userRepository.findByEmail(auth.username)
-        if (passwordEncoder.matches(auth.password, MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user?.password!!))) {
+        if (passwordEncoder.matches(auth.password, MyPasswordEncoder.createPassword(MyPasswordEncoder.PasswordType.BCRYPT, user?.password!!))) {
             val token = Base64.getEncoder().encodeToString((auth.username + ":" + auth.password).toByteArray())
             return ResponseEntity(ObjectMapper().writeValueAsString(token), HttpStatus.OK)
         } else {

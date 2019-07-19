@@ -13,7 +13,6 @@ class ExceptionController {
     @ExceptionHandler(WebException::class)
     @ResponseBody
     fun handleForbiddenException(e: WebException): ResponseEntity<ExceptionEntity> {
-        println(ExceptionEntity(e.message))
         return ResponseEntity(ExceptionEntity(e.message), e.httpStatus)
     }
 

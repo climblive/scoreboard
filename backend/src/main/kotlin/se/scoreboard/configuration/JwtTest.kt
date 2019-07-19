@@ -15,13 +15,12 @@ import java.net.URL
 import java.util.*
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json
 import com.google.gson.Gson
+import org.slf4j.LoggerFactory
 
 
+class JwtTest : RSAKeyProvider {
+    private var logger = LoggerFactory.getLogger(JwtTest::class.java)
 
-
-
-
-class JwtTest:RSAKeyProvider {
     var jwkProvider: UrlJwkProvider? = null
     var issuer: String? = null
 
@@ -30,17 +29,17 @@ class JwtTest:RSAKeyProvider {
         val userPoolId = "eu-west-1_Jftnyms2n"
         val jwksUrl = "https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json"
         this.issuer = "https://cognito-idp.${region}.amazonaws.com/${userPoolId}"
-        println(jwksUrl)
+        logger.debug(jwksUrl)
         jwkProvider = UrlJwkProvider(URL(jwksUrl))
-        /*println(jwksUrl)
+        /*logger.debug(jwksUrl)
         val (request, response, result) = jwksUrl.httpGet().timeout(10000).timeoutRead(10000).responseString(Charset.forName("UTF-8"))
         val (string, error) = result
         if (string != null) {
             val parser = JsonParser()
             this.keys = parser.parse(string).asJsonObject.get("keys").asJsonArray
-            println("[jwks] ${keys}")
+            logger.debug("[jwks] ${keys}")
         }
-        println(jwksUrl)*/
+        logger.debug(jwksUrl)*/
     }
 
     override fun getPrivateKeyId(): String {
@@ -52,7 +51,7 @@ class JwtTest:RSAKeyProvider {
     }
 
     override fun getPublicKeyById(keyId: String?): RSAPublicKey {
-        println("getPublicKeyById " + keyId)
+        logger.debug("getPublicKeyById " + keyId)
         return jwkProvider!!.get(keyId).publicKey as RSAPublicKey
     }
 
@@ -68,7 +67,7 @@ class JwtTest:RSAKeyProvider {
             val payloadString = String(Base64.getDecoder().decode(jwt.payload))
             val gson = Gson()
             val payload = gson.fromJson(payloadString, JwtPayload::class.java)
-            println(payload)
+            logger.debug(payload.toString())
         } catch (exception: JWTVerificationException) {
             //Invalid signature/claims
             throw exception

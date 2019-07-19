@@ -4,6 +4,7 @@ import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import se.scoreboard.createRegistrationCode
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.repo.ContenderRepository
@@ -27,7 +28,7 @@ class ContenderService @Autowired constructor(
     }
 
     @Transactional
-    open fun findByCode(code: String): ContenderDto {
+    fun findByCode(code: String): ContenderDto {
         val contender = contenderRepository.findByRegistrationCode(code) ?: throw WebException(HttpStatus.NOT_FOUND, super.MSG_NOT_FOUND)
         return entityMapper.convertToDto(contender)
     }
@@ -38,18 +39,11 @@ class ContenderService @Autowired constructor(
     }
 
     fun createContenders(contest: Contest, contenderCount: Int) :Array<ContenderDto> {
-        val validChars = "ACEFGHJKLMNPQRSTXY345679"
         return Array(contenderCount) {
-            // Create a code:
-            var code = ""
-            repeat(8) {
-               code += validChars[Random.nextInt(validChars.length)]
-            }
             var contender = Contender()
             contender.contest = contest
-            contender.registrationCode = code
+            contender.registrationCode = createRegistrationCode(8)
 
-            println("save contender " + contender + " with contest " + contender.contest)
             contender = entityRepository.save(contender)
             entityMapper.convertToDto(contender)
         }

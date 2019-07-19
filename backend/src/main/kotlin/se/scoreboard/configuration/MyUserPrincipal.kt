@@ -11,7 +11,7 @@ class MyUserPrincipal(private val username: String, private val password: String
 
     constructor(user: User, role: String, organizerIds: List<Int>) : this(
             user.name!!,
-            MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user.password!!),
+            MyPasswordEncoder.createPassword(MyPasswordEncoder.PasswordType.BCRYPT, user.password!!),
             role,
             null,
             null,
@@ -19,7 +19,7 @@ class MyUserPrincipal(private val username: String, private val password: String
 
     constructor(contender: Contender) : this(
             contender.registrationCode!!,
-            MyPasswordEncoder.createPassword(MyPasswordEncoder.REGCODE, contender.registrationCode!!),
+            MyPasswordEncoder.createPassword(MyPasswordEncoder.PasswordType.REGCODE, contender.registrationCode!!),
             "ROLE_CONTENDER",
             contender.id,
             contender.contest?.id,

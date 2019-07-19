@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.extension.allowedToAlterContender
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.TickDto
@@ -64,18 +65,21 @@ class ContenderController @Autowired constructor(
     fun updateContender(@PathVariable("id") id: Int,
                         @RequestBody contender : ContenderDto): ContenderDto {
         val compClass = compClassService.fetchEntity(contender.compClassId!!)
-        if(!compClass.allowedToAlterContender()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
+        checkTimeAllowed(compClass)
 
-        }
-        val newContender = contenderService.update(id, contender)
-        val entity = contenderService.fetchEntity(id)
-        broadcastService.broadcast(entity)
-        return newContender
+        val updatedContender = contenderService.update(id, contender)
+        broadcastService.broadcast(contenderService.fetchEntity(id))
+        return updatedContender
     }
 
     @DeleteMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'ContenderDto', 'delete')")
     @Transactional
     fun deleteContender(@PathVariable("id") id: Int) = contenderService.delete(id)
+
+    fun checkTimeAllowed(compClass: CompClass) {
+        if (!compClass.allowedToAlterContender()) {
+            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
+        }
+    }
 }

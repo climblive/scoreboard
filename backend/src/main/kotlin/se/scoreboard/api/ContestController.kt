@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.extension.getQualificationScore
@@ -37,43 +39,52 @@ class ContestController @Autowired constructor(
     }
 
     @GetMapping("/contest")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(filter, pageable)
+    fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(pageable)
 
     @GetMapping("/contest/{id}")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContest(@PathVariable("id") id: Int) = contestService.findById(id)
 
     @GetMapping("/contest/{id}/problem")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContestProblems(@PathVariable("id") id: Int) : List<ProblemDto> =
             contestService.fetchEntity(id).problems.map { problem -> problemMapper.convertToDto(problem) }
 
     @GetMapping("/contest/{id}/contender")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContestContenders(@PathVariable("id") id: Int) : List<ContenderDto> =
             contestService.fetchEntity(id).contenders.map { contender -> contenderMapper.convertToDto(contender) }
 
     @GetMapping("/contest/{id}/compClass")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContestCompClasses(@PathVariable("id") id: Int) : List<CompClassDto> =
             contestService.fetchEntity(id).compClasses.map { compClass -> compClassMapper.convertToDto(compClass) }
 
     @PostMapping("/contest")
+    @PreAuthorize("hasPermission(#contest, 'create')")
     @Transactional
     fun createContest(@RequestBody contest : ContestDto) = contestService.create(contest)
 
     @PutMapping("/contest/{id}")
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'update') && hasPermission(#contest, 'update')")
     @Transactional
     fun updateContest(
             @PathVariable("id") id: Int,
             @RequestBody contest : ContestDto) = contestService.update(id, contest)
 
     @DeleteMapping("/contest/{id}")
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'delete')")
     @Transactional
     fun deleteContest(@PathVariable("id") id: Int) = contestService.delete(id)
 
     @GetMapping("/contest/export/{id}")
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
     @Transactional
     fun export(@PathVariable("id") id: Int) : ResponseEntity<ByteArray> {
         val data = contestService.export(id)
@@ -84,6 +95,7 @@ class ContestController @Autowired constructor(
     }
 
     @PostMapping(path = arrayOf("/contest/{id}/pdf"), consumes = arrayOf("application/pdf"))
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
     @Transactional
     fun createPdf(@PathVariable("id") id: Int, @RequestBody payload:ByteArray) : ResponseEntity<ByteArray> {
         val data = contestService.getPdf(id, payload)
@@ -106,6 +118,7 @@ class ContestController @Autowired constructor(
     }
 
     @PutMapping("/contest/{id}/createContenders")
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
     @Transactional
     fun createContenders(
             @PathVariable("id") id: Int,

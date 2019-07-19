@@ -25,7 +25,7 @@ open class User (
     @Column(name = "admin", nullable = false)
     open var isAdmin: Boolean = false,
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_organizer",
             joinColumns = arrayOf(JoinColumn(name = "user_id", nullable = false, updatable = false)),
             inverseJoinColumns = arrayOf(JoinColumn(name = "organizer_id", nullable = false, updatable = false)))

@@ -20,7 +20,7 @@ import javax.transaction.Transactional
 abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID> constructor(
     protected val entityRepository: ScoreboardRepository<EntityType, ID>) {
 
-    protected var MSG_NOT_FOUND = "Not found";
+    protected var MSG_NOT_FOUND = "Not found"
 
     abstract var entityMapper: AbstractMapper<EntityType, DtoType>
 
@@ -95,7 +95,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     @Transactional
     open fun fetchEntities(ids: List<ID>) : Iterable<EntityType> {
-        return entityRepository.findAllById(ids);
+        return entityRepository.findAllById(ids)
     }
 
     open protected fun handleNested(entity: EntityType, dto: DtoType) {

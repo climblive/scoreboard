@@ -43,7 +43,7 @@ class TickController @Autowired constructor(
     fun createTick(@RequestBody tick : TickDto): TickDto {
         val contender = contenderService.fetchEntity(tick.contenderId!!)
         if(!contender.compClass!!.allowedToAlterTick()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
+            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
         }
 
         val newTick = tickService.create(tick)
@@ -59,7 +59,7 @@ class TickController @Autowired constructor(
             @RequestBody tick : TickDto): TickDto {
         val contender = contenderService.fetchEntity(tick.contenderId!!)
         if(!contender.compClass!!.allowedToAlterTick()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
+            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
         }
         val newTick =tickService.update(id, tick)
         broadcastService.broadcast(contender)
@@ -73,7 +73,7 @@ class TickController @Autowired constructor(
         var tick = tickService.fetchEntity(id)
         val contender = tick.contender!!
         if(!contender.compClass!!.allowedToAlterTick()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
+            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
         }
         tickService.delete(id)
         contender.ticks.remove(tick)

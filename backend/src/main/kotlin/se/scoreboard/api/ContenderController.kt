@@ -65,7 +65,7 @@ class ContenderController @Autowired constructor(
                         @RequestBody contender : ContenderDto): ContenderDto {
         val compClass = compClassService.fetchEntity(contender.compClassId!!)
         if(!compClass.allowedToAlterContender()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress");
+            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
 
         }
         val newContender = contenderService.update(id, contender)

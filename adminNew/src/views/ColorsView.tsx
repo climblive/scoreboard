@@ -18,7 +18,7 @@ import {Color} from "../model/color";
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
       width: '100%',
-      marginTop: spacing.unit * 3,
+      marginTop: spacing(3),
       overflowX: 'auto',
    },
    table: {

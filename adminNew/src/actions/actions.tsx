@@ -6,6 +6,7 @@ import {CompClass} from "../model/compClass";
 import {Color} from "../model/color";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
+import {ContenderData} from "../model/contenderData";
 
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
@@ -37,3 +38,5 @@ export const startEditProblem = createStandardAction('START_EDIT_PROBLEM')<Probl
 export const cancelEditProblem = createStandardAction('CANCEL_EDIT_PROBLEM')();
 export const startAddProblem = createStandardAction('START_ADD_PROBLEM')<Problem>();
 export const updateEditProblem = createStandardAction('UPDATE_EDIT_PROBLEM')<{propName:string, value:any}>();
+
+export const receiveContenders = createStandardAction('RECEIVE_CONTENDERS')<ContenderData[]>();

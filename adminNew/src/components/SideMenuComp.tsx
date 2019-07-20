@@ -26,7 +26,7 @@ const styles = ({ spacing }: Theme) => createStyles({
    menuText: {
       flexGrow: 1,
       textAlign: "left",
-      marginLeft: spacing.unit,
+      marginLeft: spacing(1),
       textDecoration:"none"
    }
 });

@@ -6,33 +6,27 @@ import TableRow from "@material-ui/core/TableRow";
 import {TableCell} from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {CompClass} from "../model/compClass";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import DeleteIcon from '@material-ui/icons/DeleteOutline';
-import EditIcon from '@material-ui/icons/Edit';
-import CheckIcon from '@material-ui/icons/Check';
-import CancelIcon from "@material-ui/icons/Cancel";
-import {ConfirmationDialog} from "./ConfirmationDialog";
-import {DateTimePicker} from "@material-ui/pickers";
+import {ContenderData} from "../model/contenderData";
 
 interface Props {
-   compClasses:CompClass[],
-   editCompClass?:CompClass,
+   contenders:ContenderData[],
+   /*editCompClass?:CompClass,
 
    startEditCompClass?:(compClass:CompClass) => void
    cancelEditCompClass?:() => void
    saveEditCompClass?:() => void
    startAddCompClass?:() => void
    deleteCompClass?:(compClass:CompClass) => void
-   updateEditCompClass?:(propName:string, propValue:any) => void
+   updateEditCompClass?:(propName:string, propValue:any) => void*/
 }
 
 type State = {
-   deleteCompClass?:CompClass
+   //deleteCompClass?:CompClass
 }
 
-class CompClassesComp extends React.Component<Props, State> {
+class ContendersComp extends React.Component<Props, State> {
    public readonly state: State = {
    };
 
@@ -43,7 +37,11 @@ class CompClassesComp extends React.Component<Props, State> {
    componentDidMount() {
    }
 
-   deleteCompClass = (compClass:CompClass) => {
+   startAddContenders = () => {
+      console.log("startAddContenders");
+   };
+
+   /*deleteCompClass = (compClass:CompClass) => {
       this.state.deleteCompClass = compClass;
       this.setState(this.state);
    };
@@ -68,16 +66,14 @@ class CompClassesComp extends React.Component<Props, State> {
 
    onTimeEndChange = (e: any) => {
       console.log(e);
-   };
+   };*/
 
    render() {
-      let compClasses = this.props.compClasses;
-      let editCompClass = this.props.editCompClass;
-      if(!compClasses) {
+      let contenders = this.props.contenders;
+      //let editCompClass = this.props.editCompClass;
+      if(!contenders) {
          return (<CircularProgress/>)
       }
-      let timeBegin = new Date();
-      let timeEnd = new Date();
       return (
          <Paper>
             <Table>
@@ -88,37 +84,24 @@ class CompClassesComp extends React.Component<Props, State> {
                      <TableCell style={{minWidth:110}}>Start time</TableCell>
                      <TableCell style={{minWidth:110}}>End time</TableCell>
                      <TableCell style={{minWidth:96}}>
-                        <IconButton color="inherit" aria-label="Menu" title="Add class" onClick={this.props.startAddCompClass}>
+                        <IconButton color="inherit" aria-label="Menu" title="Add class" onClick={this.startAddContenders}>
                            <AddIcon />
                         </IconButton>
                      </TableCell>
                   </TableRow>
                </TableHead>
                <TableBody>
-                  {compClasses.map(compClass => {
-                     if(editCompClass == undefined || editCompClass.id != compClass.id) {
+                  {contenders.map(contender => {
+                     //if(editCompClass == undefined || editCompClass.id != compClass.id) {
                         return (
-                           <TableRow key={compClass.id}
+                           <TableRow key={contender.id}
                                      style={{cursor: 'pointer'}}
                                      hover
                                      onClick={() => console.log("click")}>
-                              <TableCell component="th" scope="row">{compClass.name}</TableCell>
-                              <TableCell>{compClass.description}</TableCell>
-                              <TableCell>{compClass.timeBegin}</TableCell>
-                              <TableCell>{compClass.timeEnd}</TableCell>
-                              <TableCell>
-                                 <IconButton color="inherit" aria-label="Menu" title="Edit"
-                                             onClick={() => this.props.startEditCompClass!(compClass)}>
-                                    <EditIcon/>
-                                 </IconButton>
-                                 <IconButton color="inherit" aria-label="Menu" title="Delete"
-                                             onClick={() => this.deleteCompClass(compClass)}>
-                                    <DeleteIcon/>
-                                 </IconButton>
-                              </TableCell>
+                              <TableCell component="th" scope="row">{contender.name}</TableCell>
                            </TableRow>
                         )
-                     } else {
+                     /*} else {
                         return (
                            <TableRow key={compClass.id}
                                      style={{cursor: 'pointer'}}
@@ -148,17 +131,17 @@ class CompClassesComp extends React.Component<Props, State> {
                               </TableCell>
                            </TableRow>
                         )
-                     }
+                     }*/
                   })}
                </TableBody>
             </Table>
-            <ConfirmationDialog open={this.state.deleteCompClass != undefined}
+            {/*<ConfirmationDialog open={this.state.deleteCompClass != undefined}
                                 title={"Delete class"}
                                 message={"Do you wish to delete the selected class?"}
-                                onClose={this.onDeleteConfirmed} />
+                                onClose={this.onDeleteConfirmed} />*/}
          </Paper>
       );
    }
 }
 
-export default CompClassesComp;
+export default ContendersComp;

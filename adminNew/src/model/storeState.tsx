@@ -1,9 +1,7 @@
 import { ContenderData } from './contenderData';
 import { Contest } from './contest';
-import {SortBy} from "../constants/constants";
 import {Problem} from "./problem";
 import {CompClass} from "./compClass";
-import {Tick} from "./tick";
 import {Color} from "./color";
 import {Organizer} from "./organizer";
 import {CompLocation} from "./compLocation";
@@ -15,9 +13,6 @@ export interface StoreState {
    loggingIn: boolean,
    loggedInUser?: string
 
-   contenderData?: ContenderData;
-   contenderNotFound: boolean;
-   problemsSortedBy: SortBy;
    contest: Contest;
 
    problems: Problem[];
@@ -26,7 +21,8 @@ export interface StoreState {
    compClasses: CompClass[];
    editCompClass?: CompClass;
 
-   ticks: Tick[];
+   contenders: ContenderData[];
+
    colors: Color[],
    colorMap: Map<number, Color>,
    locations: CompLocation[],

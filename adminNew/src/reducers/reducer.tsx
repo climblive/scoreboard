@@ -3,22 +3,11 @@ import * as scoreboardActions from '../actions/actions';
 import {ActionType, getType} from 'typesafe-actions';
 import {Color} from "../model/color";
 import {Problem} from "../model/problem";
-import {SortBy} from "../constants/constants";
 import {CompLocation} from "../model/compLocation";
 import {Organizer} from "../model/organizer";
 import {CompClass} from "../model/compClass";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
-
-function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
-   let newProblems: Problem[] = [...problems];
-   if (sortBy === SortBy.BY_POINTS) {
-      newProblems = newProblems.sort((a, b) => (a.points || 0) - (b.points || 0));
-   } else {
-      newProblems = newProblems.sort((a, b) => (a.number || 0) - (b.number || 0));
-   }
-   return newProblems;
-}
 
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
    switch (action.type) {
@@ -84,9 +73,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editCompClass: newEditCompClass};
 
       case getType(scoreboardActions.receiveProblems):
-         const sortedBy = state.problemsSortedBy || SortBy.BY_NUMBER;
-         const problems = getSortedProblems(action.payload, sortedBy);
-         return { ...state, problems: problems, problemsSortedBy: sortedBy};
+         const problems2 = action.payload.sort((a, b) => (a.number || 0) - (b.number || 0));
+         return { ...state, problems: problems2};
 
       case getType(scoreboardActions.startEditProblem):
          return { ...state, editProblem: action.payload};
@@ -116,6 +104,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          let newEditProblem = {...state.editProblem!};
          newEditProblem[action.payload.propName] = action.payload.value;
          return { ...state, editProblem: newEditProblem};
+
+      case getType(scoreboardActions.receiveContenders):
+         return { ...state, contenders: action.payload };
 
       case getType(scoreboardActions.receiveColors):
          const colorMap = new Map<number, Color>();

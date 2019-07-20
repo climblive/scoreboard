@@ -13,6 +13,8 @@ import {Problem} from "../model/problem";
 import CompClassesComp from "../components/CompClassesComp";
 import ContestGeneralComp from "../components/ContestGeneralComp";
 import {Color} from "../model/color";
+import ContendersComp from "../components/ContendersComp";
+import {ContenderData} from "../model/contenderData";
 
 interface Props {
    match: {
@@ -25,6 +27,7 @@ interface Props {
    colors:Color[],
    colorMap: Map<number, Color>,
    compClasses:CompClass[],
+   contenders:ContenderData[],
    editProblem?: Problem
    editCompClass?: CompClass
 
@@ -124,7 +127,9 @@ class ContestView extends React.Component<Props, State> {
                               updateEditProblem={this.props.updateEditProblem}
          />);
       } else if(selectedTab == 3) {
-         tab = (<div id="contenders">Item One</div>);
+         tab = (<ContendersComp key="contenders"
+                                contenders={this.props.contenders}
+         />);
       }
       return [
          (<Tabs key="tabs" value={selectedTab} onChange={this.selectTab}>
@@ -143,6 +148,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
       contest: state.contest,
       problems: state.problems,
       compClasses: state.compClasses,
+      contenders: state.contenders,
       colors: state.colors,
       colorMap: state.colorMap,
       editProblem: state.editProblem,

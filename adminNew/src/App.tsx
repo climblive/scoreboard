@@ -1,7 +1,8 @@
 import * as React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 import SideMenuComp from "./components/SideMenuComp";
 import TopMenuComp from "./components/TopMenuComp";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
@@ -54,47 +55,49 @@ class App extends React.Component<Props> {
    public render() {
       return (
          <Router>
-            <MuiThemeProvider theme={this.theme}>
-               <div className="App">
-                  <SideMenuComp/>
-                  <div style={{flexGrow: 1, flexBasis: 0, display:'flex', flexDirection:'column'}}>
-                     <TopMenuComp login={this.props.login}
-                                  logout={this.props.logout}
-                                  loggingIn={this.props.loggingIn}
-                                  loggedInUser={this.props.loggedInUser}
-                                  title={this.props.title} />
-                     <div className="mainView">
-                        <Switch>
-                           <Route path="/" exact component={ContestsView} />
-                           <Route path="/contests" exact component={ContestsView} />
-                           <Route path="/contests/:contestId" component={ContestView} />
-                           <Route path="/colors" exact component={ColorsView} />
-                        </Switch>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+               <MuiThemeProvider theme={this.theme}>
+                  <div className="App">
+                     <SideMenuComp/>
+                     <div style={{flexGrow: 1, flexBasis: 0, display:'flex', flexDirection:'column'}}>
+                        <TopMenuComp login={this.props.login}
+                                     logout={this.props.logout}
+                                     loggingIn={this.props.loggingIn}
+                                     loggedInUser={this.props.loggedInUser}
+                                     title={this.props.title} />
+                        <div className="mainView">
+                           <Switch>
+                              <Route path="/" exact component={ContestsView} />
+                              <Route path="/contests" exact component={ContestsView} />
+                              <Route path="/contests/:contestId" component={ContestView} />
+                              <Route path="/colors" exact component={ColorsView} />
+                           </Switch>
+                        </div>
                      </div>
                   </div>
-               </div>
-               <Snackbar
-                  anchorOrigin={{
-                     vertical: 'bottom',
-                     horizontal: 'center',
-                  }}
-                  style={{bottom:15}}
-                  open={this.props.errorMessage != undefined}
-                  autoHideDuration={6000}
-                  onClose={this.handleClose}
-                  message={<span id="message-id">{"" + this.props.errorMessage}</span>}
-                  action={[
-                     <IconButton
-                        key="close"
-                        aria-label="Close"
-                        color="inherit"
-                        onClick={this.handleClose}
-                     >
-                        <Close />
-                     </IconButton>,
-                  ]}
-               />
-            </MuiThemeProvider>
+                  <Snackbar
+                     anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                     }}
+                     style={{bottom:15}}
+                     open={this.props.errorMessage != undefined}
+                     autoHideDuration={6000}
+                     onClose={this.handleClose}
+                     message={<span id="message-id">{"" + this.props.errorMessage}</span>}
+                     action={[
+                        <IconButton
+                           key="close"
+                           aria-label="Close"
+                           color="inherit"
+                           onClick={this.handleClose}
+                        >
+                           <Close />
+                        </IconButton>,
+                     ]}
+                  />
+               </MuiThemeProvider>
+            </MuiPickersUtilsProvider>
          </Router>
       );
    }

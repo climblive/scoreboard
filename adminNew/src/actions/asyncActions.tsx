@@ -55,6 +55,12 @@ export function loadContest(contestId: number): any {
          dispatch(actions.setErrorMessage(error));
       });
 
+      Api.getContenders(contestId).then(contenders => {
+         dispatch(actions.receiveContenders(contenders));
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+
    }
 }
 

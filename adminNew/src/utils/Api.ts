@@ -138,6 +138,10 @@ export class Api {
       return this.delete("compClass/" + compClass.id);
    }
 
+   static getContenders(contestId: number): Promise<ContenderData[]> {
+      return this.get("contest/" + contestId + "/contender");
+   }
+
    static getColors(): Promise<Color[]> {
       return this.get("color");
    }

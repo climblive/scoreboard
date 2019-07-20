@@ -47,6 +47,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers("/swagger-ui.html").permitAll()
             .antMatchers("/webjars/**").permitAll()
             .antMatchers("/admin/**").permitAll()
+            .antMatchers("/api/admin/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/api/user/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/api/user/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/api/user/**").hasRole("ADMIN")

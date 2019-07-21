@@ -80,11 +80,10 @@ class ContendersComp extends React.Component<Props, State> {
                <TableHead>
                   <TableRow>
                      <TableCell>Name</TableCell>
-                     <TableCell style={{width:"100%"}}>Description</TableCell>
-                     <TableCell style={{minWidth:110}}>Start time</TableCell>
-                     <TableCell style={{minWidth:110}}>End time</TableCell>
+                     <TableCell style={{minWidth:110}}>Competition class</TableCell>
+                     <TableCell style={{minWidth:110}}>Registration code</TableCell>
                      <TableCell style={{minWidth:96}}>
-                        <IconButton color="inherit" aria-label="Menu" title="Add class" onClick={this.startAddContenders}>
+                        <IconButton color="inherit" aria-label="Menu" title="Add contenders" onClick={this.startAddContenders}>
                            <AddIcon />
                         </IconButton>
                      </TableCell>
@@ -99,6 +98,8 @@ class ContendersComp extends React.Component<Props, State> {
                                      hover
                                      onClick={() => console.log("click")}>
                               <TableCell component="th" scope="row">{contender.name}</TableCell>
+                              <TableCell component="th" scope="row">{contender.compClassId}</TableCell>
+                              <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>
                            </TableRow>
                         )
                      /*} else {

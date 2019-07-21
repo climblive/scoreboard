@@ -13,6 +13,8 @@ import se.scoreboard.mapper.OrganizerMapper
 import se.scoreboard.service.UserService
 import java.util.*
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.security.access.prepost.PreAuthorize
 import se.scoreboard.configuration.MyPasswordEncoder
 import javax.transaction.Transactional
 
@@ -33,29 +35,35 @@ class UserController @Autowired constructor(
     }
 
     @GetMapping("/user")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getUsers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(filter, pageable)
+    fun getUsers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(pageable)
 
     @GetMapping("/user/{id}")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)
 
     @GetMapping("/user/{id}/organizer")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getUserOrganizers(@PathVariable("id") id: Int) : List<OrganizerDto> =
             userService.fetchEntity(id).organizers.map { organizer -> organizerMapper.convertToDto(organizer) }
 
     @PostMapping("/user")
+    @PreAuthorize("hasPermission(#user, 'create')")
     @Transactional
     fun createUser(@RequestBody user : UserDto) = userService.create(user)
 
     @PutMapping("/user/{id}")
+    @PreAuthorize("hasPermission(#id, 'UserDto', 'update') && hasPermission(#user, 'update')")
     @Transactional
     fun updateUser(
             @PathVariable("id") id: Int,
             @RequestBody user : UserDto) = userService.update(id, user)
 
     @DeleteMapping("/user/{id}")
+    @PreAuthorize("hasPermission(#id, 'UserDto', 'delete')")
     @Transactional
     fun deleteUser(@PathVariable("id") id: Int) = userService.delete(id)
 
@@ -65,7 +73,7 @@ class UserController @Autowired constructor(
     @Transactional
     fun login(@RequestBody auth: AuthData) : ResponseEntity<String> {
         val user = userRepository.findByEmail(auth.username)
-        if (passwordEncoder.matches(auth.password, MyPasswordEncoder.createPassword(MyPasswordEncoder.BCRYPT, user?.password!!))) {
+        if (passwordEncoder.matches(auth.password, MyPasswordEncoder.createPassword(MyPasswordEncoder.PasswordType.BCRYPT, user?.password!!))) {
             val token = Base64.getEncoder().encodeToString((auth.username + ":" + auth.password).toByteArray())
             return ResponseEntity(ObjectMapper().writeValueAsString(token), HttpStatus.OK)
         } else {

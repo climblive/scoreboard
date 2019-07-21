@@ -4,6 +4,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.core.userdetails.UserDetails
 import se.scoreboard.data.repo.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import se.scoreboard.data.repo.ContenderRepository
@@ -28,7 +29,13 @@ class MyUserDetailsService : UserDetailsService {
                 role = "ROLE_ORGANIZER"
             }
 
-            return MyUserPrincipal(user, role)
+            val organizerIds = user.organizers.map { it.id!! }
+
+            if (!organizerIds.isEmpty()) {
+                return MyUserPrincipal(user, role, organizerIds)
+            } else {
+                throw InsufficientAuthenticationException("Orphaned user")
+            }
         }
 
         val contender = contenderRepository!!.findByRegistrationCode(username)

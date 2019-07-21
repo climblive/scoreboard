@@ -1,25 +1,26 @@
 package se.scoreboard.service
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.springframework.data.repository.findByIdOrNull
-import se.scoreboard.data.domain.AbstractEntity
-import se.scoreboard.mapper.AbstractMapper
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import javax.transaction.Transactional
-import com.fasterxml.jackson.module.kotlin.*
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import se.scoreboard.data.domain.AbstractEntity
+import se.scoreboard.data.repo.ScoreboardRepository
 import se.scoreboard.exception.WebException
+import se.scoreboard.getUserPrincipal
+import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.userHasRole
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+import javax.transaction.Transactional
 
 abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID> constructor(
-    protected val entityRepository: PagingAndSortingRepository<EntityType, ID>) {
+    protected val entityRepository: ScoreboardRepository<EntityType, ID>) {
 
-    protected var MSG_NOT_FOUND = "Not found";
+    protected var MSG_NOT_FOUND = "Not found"
 
     abstract var entityMapper: AbstractMapper<EntityType, DtoType>
 
@@ -28,26 +29,30 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     @Transactional
     open fun findAll() : List<DtoType> {
-        return entityRepository.findAll().map { resource -> entityMapper.convertToDto(resource) }
+        return search(PageRequest.of(0, 1000)).body
     }
 
     @Transactional
-    open fun search(filter: String?, pageable: Pageable?) : ResponseEntity<List<DtoType>> {
+    open fun search(pageable: Pageable?) : ResponseEntity<List<DtoType>> {
         var result: List<DtoType>
 
         var headers = HttpHeaders()
         headers.set("Access-Control-Expose-Headers", "Content-Range")
+        var page: Page<EntityType>
 
-        if (filter == null || filter == "{}") {
-            var page: Page<EntityType> = entityRepository.findAll(pageable!!)
-            headers.set("Content-Range", "bytes %d-%d/%d".format(page.number * page.size, page.numberOfElements, page.totalElements))
-            result = page.content.map { entity -> entityMapper.convertToDto(entity) }
+        val principal = getUserPrincipal()
+
+        if (userHasRole("ORGANIZER")) {
+            page = entityRepository.findAllByOrganizerIds(principal?.organizerIds!!, pageable)
+        } else if (userHasRole("CONTENDER")) {
+            page = entityRepository.findAllByContenderId(principal?.contenderId!!, pageable)
         } else {
-            val mapper = jacksonObjectMapper()
-            var filterMap: Map<String, List<ID>> = mapper.readValue(filter)
-            result = if (filterMap.containsKey("id")) fetchEntities(filterMap["id"]!!).map { entity -> entityMapper.convertToDto(entity) } else findAll()
-            headers.set("Content-Range", "bytes 0-%d/%d".format(result.size, result.size))
+            page = entityRepository.findAll(pageable)
         }
+
+        headers.set("Content-Range", "bytes %d-%d/%d".format(
+                page.number * page.size, page.number * page.size + page.numberOfElements, page.totalElements))
+        result = page.content.map { entity -> entityMapper.convertToDto(entity) }
 
         return ResponseEntity(result, headers, HttpStatus.OK)
     }
@@ -90,7 +95,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     @Transactional
     open fun fetchEntities(ids: List<ID>) : Iterable<EntityType> {
-        return entityRepository.findAllById(ids);
+        return entityRepository.findAllById(ids)
     }
 
     open protected fun handleNested(entity: EntityType, dto: DtoType) {

@@ -33,6 +33,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.TRACE, "/**").denyAll()
             .antMatchers("/api/user/login").permitAll()
             .antMatchers("/api/live/websocket").permitAll()
+            .antMatchers("/api/contest/*/scoreboard").permitAll()
             .antMatchers("/*").permitAll()
             .antMatchers("/scoreboard/*").permitAll()
             .antMatchers("/**/*.ico").permitAll()

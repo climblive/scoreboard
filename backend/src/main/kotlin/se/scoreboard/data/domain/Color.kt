@@ -13,6 +13,10 @@ open class Color (
     @Column(name = "id", unique = true, nullable = false)
     override var id: Int? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    open var organizer: Organizer? = null,
+
     @Column(name = "name", nullable = false, length = 32, unique = true)
     open var name: String? = null,
 

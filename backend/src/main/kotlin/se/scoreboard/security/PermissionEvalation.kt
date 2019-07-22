@@ -15,13 +15,6 @@ data class PermissionEvalation @Autowired constructor(
         var lastError: String? = null) {
 
     fun run(): Boolean {
-        if (permission == "READ") {
-            when (targetType) {
-                "Color", "Location" -> return true
-                else -> {}
-            }
-        }
-
         return when (role.authority) {
             "ROLE_ADMIN" -> true
             "ROLE_ORGANIZER" -> checkPrivilegeForOrganizer()

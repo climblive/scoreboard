@@ -12,7 +12,9 @@ class OwnershipDeriver @Autowired constructor(
         val contestRepository: ContestRepository,
         val problemRepository: ProblemRepository,
         val tickRepository: TickRepository,
-        val userRepository: UserRepository) {
+        val userRepository: UserRepository,
+        val colorRepository: ColorRepository,
+        val locationRepository: LocationRepository) {
 
     fun derive(identifierType: IdentifierType, targetType: String, targetIds: List<Int>): List<Int>? {
         return when (identifierType) {
@@ -74,6 +76,8 @@ class OwnershipDeriver @Autowired constructor(
             "Contest" -> dtos.mapNotNull { (it as ContestDto).organizerId }
             "Problem" -> deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ProblemDto).contestId })
             "Tick" -> flattenNullableLists(deriveOrganizerIdentifiers("Problem", dtos.mapNotNull { (it as TickDto).problemId }), deriveOrganizerIdentifiers("Contender", dtos.mapNotNull { (it as TickDto).contenderId }))
+            "Color" -> dtos.mapNotNull { (it as ColorDto).organizerId }
+            "Location" -> dtos.mapNotNull { (it as LocationDto).organizerId }
             else -> null
         }
     }
@@ -86,6 +90,8 @@ class OwnershipDeriver @Autowired constructor(
             "Problem" -> problemRepository
             "Tick" -> tickRepository
             "User" -> userRepository
+            "Color" -> colorRepository
+            "Location" -> locationRepository
             else -> null
         }
     }

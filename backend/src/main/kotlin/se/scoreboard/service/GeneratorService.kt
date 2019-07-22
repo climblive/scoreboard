@@ -27,10 +27,10 @@ class GeneratorService @Autowired constructor(
     @Transactional
     fun generateContest() {
         val organizer = getRandomOrganizerOfUser()
-        val location = createLocation()
-        val contest = createContest(location, organizer!!)
+        val location = createLocation(organizer!!)
+        val contest = createContest(location, organizer)
         val compClasses: List<CompClass> = createCompClasses(contest)
-        val colors = getColors().toList()
+        val colors = createColors(organizer)
         val problems = createProblems(contest, colors)
         val contenders = createContenders(compClasses)
         createTicks(contenders, problems)
@@ -40,7 +40,7 @@ class GeneratorService @Autowired constructor(
         return organizerRepository.findByIdOrNull(getUserPrincipal()?.organizerIds?.random())
     }
 
-    private fun createLocation(): Location {
+    private fun createLocation(organizer: Organizer): Location {
         val names = listOf(
                 "Alphaville", "Bottleneck", "Brigadoon", "Brushwood Gluch", "Castle Rock", "Castleville",
                 "Cross Corners", "Dirt", "Domingo", "Emerald City", "Fairview", "Fernfield", "Flagstone",
@@ -49,7 +49,7 @@ class GeneratorService @Autowired constructor(
                 "Oakey Oaks", "Perfection", "Pleasantville", "Questa Verde", "Raccoon City", "Radiator Springs",
                 "Red Gap", "Rivertown", "Rock Ridge", "Rockwell", "San Fransokyo", "Shinbone", "Tromaville")
 
-        val location = Location(null, names.random(), "", "")
+        val location = Location(null, organizer, names.random(), "", "")
         return locationRepository.save(location)
     }
 
@@ -82,8 +82,20 @@ class GeneratorService @Autowired constructor(
         return compClassRepository.saveAll(compClasses).toList()
     }
 
-    private fun getColors(): Iterable<Color> {
-        return colorRepository.findAll()
+    private fun createColors(organizer: Organizer): List<Color> {
+        val colors = listOf(
+            Pair("Red", "#f44336"),
+            Pair("Green", "#4caf50"),
+            Pair("Blue", "#0288d1"),
+            Pair("Purple", "#E410EB"),
+            Pair("Yellow", "#ffeb3b"),
+            Pair("Black", "#050505"),
+            Pair("Orange", "#ff9800"),
+            Pair("Pink", "#F628A5"),
+            Pair("White", "#FAFAFA")
+        ).map { pair -> Color(null, organizer, pair.first, pair.second, null) }
+
+        return colorRepository.saveAll(colors).toList()
     }
 
     private fun createProblems(contest: Contest, colors: List<Color>): List<Problem> {

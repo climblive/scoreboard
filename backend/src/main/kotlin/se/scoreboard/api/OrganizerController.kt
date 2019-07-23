@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.dto.ContestDto
-import se.scoreboard.dto.OrganizerDto
-import se.scoreboard.dto.UserDto
+import se.scoreboard.dto.*
+import se.scoreboard.mapper.ColorMapper
 import se.scoreboard.mapper.ContestMapper
+import se.scoreboard.mapper.LocationMapper
 import se.scoreboard.mapper.UserMapper
 import se.scoreboard.service.OrganizerService
 import javax.transaction.Transactional
@@ -21,10 +21,14 @@ class OrganizerController @Autowired constructor(
         val organizerService: OrganizerService) {
 
     private lateinit var contestMapper: ContestMapper
+    private lateinit var colorMapper: ColorMapper
+    private lateinit var locationMapper: LocationMapper
     private lateinit var userMapper: UserMapper
 
     init {
         contestMapper = Mappers.getMapper(ContestMapper::class.java)
+        colorMapper = Mappers.getMapper(ColorMapper::class.java)
+        locationMapper = Mappers.getMapper(LocationMapper::class.java)
         userMapper = Mappers.getMapper(UserMapper::class.java)
     }
 
@@ -43,6 +47,18 @@ class OrganizerController @Autowired constructor(
     @Transactional
     fun getOrganizerContests(@PathVariable("id") id: Int) : List<ContestDto> =
             organizerService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
+
+    @GetMapping("/organizer/{id}/color")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @Transactional
+    fun getOrganizerColors(@PathVariable("id") id: Int) : List<ColorDto> =
+            organizerService.fetchEntity(id).colors.map { color -> colorMapper.convertToDto(color) }
+
+    @GetMapping("/organizer/{id}/location")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @Transactional
+    fun getOrganizerLocations(@PathVariable("id") id: Int) : List<LocationDto> =
+            organizerService.fetchEntity(id).locations.map { location -> locationMapper.convertToDto(location) }
 
     @GetMapping("/organizer/{id}/user")
     @PostAuthorize("hasPermission(returnObject, 'read')")

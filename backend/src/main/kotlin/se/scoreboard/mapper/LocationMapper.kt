@@ -9,6 +9,11 @@ import se.scoreboard.dto.LocationDto
 
 @Mapper
 interface LocationMapper : AbstractMapper<Location, LocationDto> {
+    @Mappings(
+            Mapping(source = "organizer.id", target = "organizerId")
+    )
+    override fun convertToDto(source: Location): LocationDto
+
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
             Mapping(target = "contests", ignore = true)

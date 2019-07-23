@@ -9,6 +9,11 @@ import se.scoreboard.dto.ColorDto
 
 @Mapper
 interface ColorMapper : AbstractMapper<Color, ColorDto> {
+    @Mappings(
+            Mapping(source = "organizer.id", target = "organizerId")
+    )
+    override fun convertToDto(source: Color): ColorDto
+
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
             Mapping(target = "problems", ignore = true)

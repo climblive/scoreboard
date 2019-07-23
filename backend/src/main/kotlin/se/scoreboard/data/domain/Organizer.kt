@@ -22,6 +22,12 @@ open class Organizer (
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
     open var contests: MutableSet<Contest> = HashSet(0),
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
+    open var colors: MutableSet<Color> = HashSet(0),
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
+    open var locations: MutableSet<Location> = HashSet(0),
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_organizer", joinColumns = arrayOf(JoinColumn(name = "organizer_id", nullable = false, updatable = false)), inverseJoinColumns = arrayOf(JoinColumn(name = "user_id", nullable = false, updatable = false)))
     open var users: MutableSet<User> = HashSet(0)) : Serializable, AbstractEntity<Int>

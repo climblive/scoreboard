@@ -9,15 +9,15 @@ import se.scoreboard.data.domain.Color
 
 @Repository
 interface ColorRepository : ScoreboardRepository<Color, Int> {
-    @Query("SELECT c FROM Color c")
-    override fun findAllByOrganizerIds(organizerIds: List<Int>, pageable: Pageable?): Page<Color>
+    @Query("SELECT c FROM Color c WHERE c.organizer.id IN :organizerIds")
+    override fun findAllByOrganizerIds(@Param("organizerIds") organizerIds: List<Int>, pageable: Pageable?): Page<Color>
 
-    @Query("SELECT c FROM Color c")
+    @Query("SELECT c FROM Color c WHERE 1 = 0")
     override fun findAllByContenderId(contenderId: Int, pageable: Pageable?): Page<Color>
 
     @Query("SELECT c.id FROM Contest c WHERE 1 = 0")
     override fun deriveContestIds(targetIds: List<Int>): List<Int>
 
-    @Query("SELECT o.id FROM Organizer o WHERE 1 = 0")
-    override fun deriveOrganizerIds(targetIds: List<Int>): List<Int>
+    @Query("SELECT c.organizer.id FROM Color c WHERE c.id IN :colorIds")
+    override fun deriveOrganizerIds(@Param("colorIds") targetIds: List<Int>): List<Int>
 }

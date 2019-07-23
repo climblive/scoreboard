@@ -14,6 +14,7 @@ import {connect, Dispatch} from "react-redux";
 import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
 import {Color} from "../model/color";
+import { PhotoshopPicker } from 'react-color';
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -72,11 +73,12 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                   </TableHead>
                   <TableBody>
                      {colors.map(color => (
-                        <TableRow key={color.id}
-                                  style={{cursor:'pointer'}}
-                                  hover
-                                  onClick={() => this.props.history.push("/contests/" + color.id)}>
+                        <TableRow key={color.id}>
                            <TableCell component="th" scope="row">{color.name}</TableCell>
+                           <TableCell component="th" scope="row">
+                              <PhotoshopPicker
+                              />
+                           </TableCell>
                         </TableRow>
                      ))}
                   </TableBody>

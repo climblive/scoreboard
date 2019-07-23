@@ -66,8 +66,6 @@ class ContestView extends React.Component<Props, State> {
    }
 
    componentDidMount() {
-      ReactModal.setAppElement("body");
-
       let contestId : string = this.props.match.params.contestId;
       if(contestId == "new") {
          this.props.setNewContest!();

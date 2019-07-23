@@ -9,13 +9,15 @@ import {CompClass} from "../model/compClass";
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
       dispatch(actions.setLoggingIn(true));
-      Api.getUser(code)
+      Api.setCredentials(code);
+      Api.getUser()
          .then(userData => {
             console.log(userData);
             dispatch(actions.setLoggingIn(false));
             dispatch(actions.setLoggedInUser("USER"));
          })
          .catch(error => {
+            Api.setCredentials(undefined);
             dispatch(actions.setLoggingIn(false));
             dispatch(actions.setErrorMessage(error));
       })

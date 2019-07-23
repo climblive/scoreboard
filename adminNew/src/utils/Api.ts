@@ -8,27 +8,11 @@ import {CompLocation} from "../model/compLocation";
 
 export class Api {
 
-   static credentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=";
-
-   static getLiveUrl(): any {
-      let url: string = "";
-      console.log(window.location.protocol);
-      if (window.location.hostname === "localhost") {
-         url = "ws://localhost:8080";
-      } else {
-         if (window.location.protocol.indexOf("https") === 0) {
-            url = "wss"
-         } else { 
-            url = "ws"
-         }
-         url += "://" + window.location.hostname
-      }
-      url += "/api/live/websocket";
-      return url;
-   } 
+   static oldCredentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=";
+   static credentials?:string;
 
    private static getBaseUrl(): string {
-      return (window.location.hostname === "localhost" ?  "https://clmb.live" : "") + "/api/";
+      return (window.location.hostname === "localhost" ?  "http://localhost:8080" : "") + "/api/";
    }
 
    private static async handleErrors(data: Response): Promise<Response> {
@@ -42,7 +26,13 @@ export class Api {
    }
 
    private static getAuthHeader() : any {
-      return this.credentials ? {Authorization: "Basic " + this.credentials} : {}
+      let authHeaders:any = {};
+      if(this.credentials) {
+         authHeaders.Authorization = "Bearer " + this.credentials;
+      } else if(this.oldCredentials) {
+         authHeaders.Authorization = "Basic " + this.oldCredentials;
+      }
+      return authHeaders;
    }
 
    private static async get(url: string) {
@@ -98,8 +88,8 @@ export class Api {
       this.credentials = credentials
    }
 
-   static getUser(code: string): Promise<String> {
-      return this.get("user/" + code);
+   static getUser(): Promise<String> {
+      return this.get("user");
    }
 
    static getContests(): Promise<Contest[]> {

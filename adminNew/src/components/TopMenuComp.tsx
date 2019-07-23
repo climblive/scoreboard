@@ -1,13 +1,12 @@
 import * as React from 'react';
 import {Button, StyledComponentProps} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
 import withStyles from "@material-ui/core/styles/withStyles";
-import MenuIcon from '@material-ui/icons/Menu';
 import {RouteComponentProps, withRouter} from "react-router";
 import * as qs from "qs";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export interface TopMenuCompProps {
    title:string
@@ -70,19 +69,25 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
 
    render() {
       const title = this.props.title;
+      const loggingIn = this.props.loggingIn;
+      const loggedInUser = this.props.loggedInUser;
       const classes = this.props.classes!!;
       return (
          <div>
             <AppBar position="static">
                <Toolbar>
-                  <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                     <MenuIcon />
-                  </IconButton>
                   <Typography variant="h6" color="inherit" className={classes.grow}>
                      {title}
                   </Typography>
-                  <Button color="inherit" onClick={this.login}>Login</Button>
-                  <Button color="inherit" onClick={this.props.logout!}>Logout</Button>
+                  {loggingIn && <CircularProgress style={{color:"white", width:20, height:20}}/>}
+                  {(!loggingIn && !loggedInUser) && <div>
+                      <Button color="inherit" onClick={this.login}>Login</Button>
+                      <Button color="inherit" onClick={this.signup}>Sign up</Button>
+                  </div>}
+                  {loggedInUser && <div>
+                     <span>{loggedInUser}</span>
+                     <Button color="inherit" onClick={this.props.logout!}>Logout</Button>
+                  </div>}
                </Toolbar>
             </AppBar>
 

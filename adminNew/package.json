@@ -11,6 +11,7 @@
       "@types/chroma-js": "^1.4.1",
       "@types/qs": "^6.5.3",
       "chroma-js": "^2.0.3",
+      "file-saver": "^2.0.2",
       "moment": "^2.24.0",
       "qs": "^6.7.0",
       "react": "^16.8.3",
@@ -31,9 +32,11 @@
       "eject": "react-scripts-ts eject"
    },
    "devDependencies": {
+      "@types/file-saver": "^2.0.1",
       "@types/jest": "^23.3.11",
       "@types/node": "^10.12.18",
       "@types/react": "^16.8.3",
+      "@types/react-color": "^3.0.1",
       "@types/react-dom": "^16.8.2",
       "@types/react-redux": "^4.4.36",
       "@types/react-router-dom": "^4.3.1",

@@ -12,7 +12,7 @@ export class Api {
    static credentials?:string;
 
    private static getBaseUrl(): string {
-      return (window.location.hostname === "localhost" ?  "http://localhost:8080" : "") + "/api/";
+      return (window.location.hostname === "localhost" ?  "https://clmb.live" : "") + "/api/";
    }
 
    private static async handleErrors(data: Response): Promise<Response> {
@@ -84,12 +84,12 @@ export class Api {
       return (await this.handleErrors(response)).json();
    }
 
-   static setCredentials(credentials:string) {
+   static setCredentials(credentials?:string) {
       this.credentials = credentials
    }
 
    static getUser(): Promise<String> {
-      return this.get("user");
+      return this.get("user/me");
    }
 
    static getContests(): Promise<Contest[]> {
@@ -110,6 +110,18 @@ export class Api {
 
    static getProblems(contestId: number): Promise<Problem[]> {
       return this.get("contest/" + contestId + "/problem");
+   }
+
+   static saveProblem(problem:Problem): Promise<Problem> {
+      if(problem.id == -1) {
+         return this.post("problem", problem);
+      } else {
+         return this.put("problem/" + problem.id, problem);
+      }
+   }
+
+   static deleteProblem(problem: Problem): Promise<any> {
+      return this.delete("problem/" + problem.id);
    }
 
    static getCompClasses(contestId: number): Promise<CompClass[]> {
@@ -146,5 +158,39 @@ export class Api {
 
    static setContender(contenderData : ContenderData): Promise<ContenderData> {
       return this.put("contender/" + contenderData.id, contenderData);
+   }
+
+   static createContenders(contestId: number, nNewContenders: number) {
+      return this.put("contest/" + contestId + "/createContenders",
+         {
+            count: nNewContenders
+         })
+   }
+
+   static resetContenders(contestId: number): Promise<any> {
+      return this.put("contest/" + contestId + "/resetContenders", {})
+   }
+
+   static async exportContest(contestId: number) {
+      let url = "contest/export/" + contestId;
+      let response = await fetch(this.getBaseUrl() + url,
+         {
+            headers: Api.getAuthHeader()
+         });
+      return (await this.handleErrors(response)).blob();
+   }
+
+   static async generatePdf(contestId: number, arrayBuffer: any) {
+      let url = "contest/" + contestId + "/pdf";
+      let response = await fetch(this.getBaseUrl() + url,
+         {
+            method: "POST",
+            body: arrayBuffer,
+            headers: {
+               "Content-Type": "application/pdf",
+               ...Api.getAuthHeader()
+            }
+         });
+      return (await this.handleErrors(response)).blob();
    }
 }

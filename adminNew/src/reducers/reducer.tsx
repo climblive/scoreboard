@@ -74,7 +74,16 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
       case getType(scoreboardActions.receiveProblems):
          const problems2 = action.payload.sort((a, b) => (a.number || 0) - (b.number || 0));
-         return { ...state, problems: problems2};
+         let editProblem = undefined;
+         if(problems2.length == 0) {
+            editProblem = {
+               id: -1,
+               contestId: state.contest.id,
+               number: 1
+            };
+            problems2.push(editProblem);
+         }
+         return { ...state, problems: problems2, editProblem: editProblem};
 
       case getType(scoreboardActions.startEditProblem):
          return { ...state, editProblem: action.payload};

@@ -29,7 +29,7 @@
     "jest",
     "src/setupTests.ts"
   ],
-  "include": [
+  "xxinclude": [
     "./typings-custom/**/*.ts"
   ]
 }

@@ -16,6 +16,7 @@ import {ConfirmationDialog} from "./ConfirmationDialog";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
 
 interface Props {
    problems:Problem[],
@@ -27,7 +28,7 @@ interface Props {
    cancelEditProblem?:() => void
    saveEditProblem?:() => void
    startAddProblem?:(problem:Problem) => void
-   deleteProblem?:(problem:Problem) => void
+   deleteProblem?:(problem?:Problem) => void
    updateEditProblem?:(propName:string, propValue:any) => void
 }
 
@@ -63,7 +64,10 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       if(!color) {
          color = {id: -1, name: "None", rgbPrimary: "888"};
       }
-      let rgbColor = '#' + color.rgbPrimary;
+      let rgbColor = color.rgbPrimary;
+      if(rgbColor.charAt(0) !== '#') {
+         rgbColor = '#' + rgbColor;
+      }
       const chromaInst = Chroma(rgbColor);
       const luminance = chromaInst.luminance();
       let borderColor = chromaInst.darken(1).hex();
@@ -113,7 +117,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
    };
 
    onPointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.updateEditProblem!("points", parseInt(e.target.value));
+      this.props.updateEditProblem!("points", parseInt(e.target.value) || 0);
    };
 
    onColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -156,7 +160,8 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                               <div style={{width: 20, fontSize:16}}>{problem.number}</div>
                               <FormControl style={{width:100, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>
                                  <Select
-                                    value={editProblem.colorId}
+                                    style={{color: "inherit"}}
+                                    value={editProblem.colorId == undefined ? "Select color" : editProblem.colorId}
                                     onChange={this.onColorChange}
                                  >
                                     {this.props.colors.map(color =>
@@ -164,7 +169,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                                     )}
                                  </Select>
                               </FormControl>
-                              <input style={{textAlign: "right", width:60, fontSize:28, marginRight:10}} value={editProblem.points} onChange={this.onPointsChange} />
+                              <TextField style={{textAlign: "right", width:60, fontSize:28, marginRight:10}} value={editProblem.points == undefined ? "" : editProblem.points} onChange={this.onPointsChange} />
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Ok" title="Ok" onClick={this.editOk}>
                                  <CheckIcon />
                               </IconButton>

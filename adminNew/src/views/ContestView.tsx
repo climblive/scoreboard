@@ -36,6 +36,7 @@ interface Props {
    saveContest?: (onSuccess:(contest:Contest) => void) => any,
    loadColors?: () => void,
    setTitle?: (title: string) => void,
+   createPdf?: (file:Blob) => void
 
    startEditProblem?:(problem:Problem) => void
    cancelEditProblem?:() => void
@@ -50,6 +51,10 @@ interface Props {
    startAddCompClass?:() => void
    deleteCompClass?:(compClass:CompClass) => void
    updateEditCompClass?: (propName:string, value:any) => void,
+
+   createContenders?:(nNewContenders:number) => void,
+   exportResults?:() => void,
+   resetContenders?:() => void,
 }
 
 type State = {
@@ -98,6 +103,7 @@ class ContestView extends React.Component<Props, State> {
                                     contest={this.props.contest}
                                     updateContest={this.props.updateContest}
                                     saveContest={this.props.saveContest}
+                                    createPdf={this.props.createPdf}
          />);
       } else if(selectedTab == 1) {
          tab = (<CompClassesComp key="compClasses"
@@ -126,6 +132,9 @@ class ContestView extends React.Component<Props, State> {
       } else if(selectedTab == 3) {
          tab = (<ContendersComp key="contenders"
                                 contenders={this.props.contenders}
+                                createContenders={this.props.createContenders}
+                                exportResults={this.props.exportResults}
+                                resetContenders={this.props.resetContenders}
          />);
       }
       return [
@@ -176,6 +185,11 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       startAddCompClass: () => dispatch(actions.startAddCompClass()),
       deleteCompClass: (compClass: CompClass) => dispatch(asyncActions.deleteCompClass(compClass)),
       updateEditCompClass: (propName:string, value:any) => dispatch(actions.updateEditCompClass({propName: propName, value: value})),
+
+      createContenders: (nNewContenders:number) => dispatch(asyncActions.createContenders(nNewContenders)),
+      exportResults: () => dispatch(asyncActions.exportResults()),
+      createPdf: (file:Blob) => dispatch(asyncActions.generatePdf(file)),
+      resetContenders: () => dispatch(asyncActions.resetContenders()),
    };
 }
 

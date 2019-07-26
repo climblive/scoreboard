@@ -15,6 +15,8 @@ import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from "@material-ui/icons/Cancel";
 import {ConfirmationDialog} from "./ConfirmationDialog";
 import {DateTimePicker} from "@material-ui/pickers";
+import moment from 'moment';
+import TextField from "@material-ui/core/TextField";
 
 interface Props {
    compClasses:CompClass[],
@@ -33,6 +35,8 @@ type State = {
 }
 
 class CompClassesComp extends React.Component<Props, State> {
+   format = "YYYY-MM-DD HH:mm";
+
    public readonly state: State = {
    };
 
@@ -42,6 +46,8 @@ class CompClassesComp extends React.Component<Props, State> {
 
    componentDidMount() {
    }
+
+   //formatDate = (date) => moment(date).format(this.format);
 
    deleteCompClass = (compClass:CompClass) => {
       this.state.deleteCompClass = compClass;
@@ -63,11 +69,13 @@ class CompClassesComp extends React.Component<Props, State> {
    };
 
    onTimeBeginChange = (e: any) => {
-      console.log(e);
+      let newTimeBegin = e.toDate();
+      this.props.updateEditCompClass!("timeBegin", newTimeBegin);
    };
 
    onTimeEndChange = (e: any) => {
-      console.log(e);
+      let newTimeEnd = e.toDate();
+      this.props.updateEditCompClass!("timeEnd", newTimeEnd);
    };
 
    render() {
@@ -76,17 +84,15 @@ class CompClassesComp extends React.Component<Props, State> {
       if(!compClasses) {
          return (<CircularProgress/>)
       }
-      let timeBegin = new Date();
-      let timeEnd = new Date();
       return (
          <Paper>
             <Table>
                <TableHead>
                   <TableRow>
-                     <TableCell>Name</TableCell>
+                     <TableCell style={{minWidth:120}}>Name</TableCell>
                      <TableCell style={{width:"100%"}}>Description</TableCell>
-                     <TableCell style={{minWidth:110}}>Start time</TableCell>
-                     <TableCell style={{minWidth:110}}>End time</TableCell>
+                     <TableCell style={{minWidth:120}}>Start time</TableCell>
+                     <TableCell style={{minWidth:120}}>End time</TableCell>
                      <TableCell style={{minWidth:96}}>
                         <IconButton color="inherit" aria-label="Menu" title="Add class" onClick={this.props.startAddCompClass}>
                            <AddIcon />
@@ -104,8 +110,8 @@ class CompClassesComp extends React.Component<Props, State> {
                                      onClick={() => console.log("click")}>
                               <TableCell component="th" scope="row">{compClass.name}</TableCell>
                               <TableCell>{compClass.description}</TableCell>
-                              <TableCell>{compClass.timeBegin}</TableCell>
-                              <TableCell>{compClass.timeEnd}</TableCell>
+                              <TableCell>{moment(compClass.timeBegin).format(this.format)}</TableCell>
+                              <TableCell>{moment(compClass.timeEnd).format(this.format)}</TableCell>
                               <TableCell>
                                  <IconButton color="inherit" aria-label="Menu" title="Edit"
                                              onClick={() => this.props.startEditCompClass!(compClass)}>
@@ -119,22 +125,24 @@ class CompClassesComp extends React.Component<Props, State> {
                            </TableRow>
                         )
                      } else {
+                        let timeBegin = Date.parse(editCompClass!.timeBegin);
+                        let timeEnd = Date.parse(editCompClass.timeEnd); //= new Date();
                         return (
                            <TableRow key={compClass.id}
                                      style={{cursor: 'pointer'}}
                                      hover
                                      onClick={() => console.log("click")}>
                               <TableCell component="th" scope="row">
-                                 <input style={{}} value={editCompClass.name} placeholder="Name" onChange={this.onNameChange} />
+                                 <TextField style={{}} value={editCompClass.name} onChange={this.onNameChange} />
                               </TableCell>
                               <TableCell>
-                                 <input style={{}} value={editCompClass.description} onChange={this.onDescriptionChange} />
+                                 <TextField style={{}} value={editCompClass.description} onChange={this.onDescriptionChange} />
                               </TableCell>
                               <TableCell>
-                                 <DateTimePicker ampm={false} value={timeBegin} onChange={this.onTimeBeginChange} />
+                                 <DateTimePicker ampm={false} format={this.format} value={timeBegin} onChange={this.onTimeBeginChange} />
                               </TableCell>
                               <TableCell>
-                                 <DateTimePicker ampm={false} value={timeEnd} onChange={this.onTimeEndChange} />
+                                 <DateTimePicker ampm={false} format = {this.format} value={timeEnd} onChange={this.onTimeEndChange} />
                               </TableCell>
                               <TableCell>
                                  <IconButton color="inherit" aria-label="Menu" title="Save"

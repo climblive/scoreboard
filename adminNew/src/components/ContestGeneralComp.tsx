@@ -5,99 +5,37 @@ import Button from "@material-ui/core/Button";
 import {Contest} from "../model/contest";
 import {TextField} from "@material-ui/core";
 import {RouteComponentProps, withRouter} from "react-router";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContentText from "@material-ui/core/DialogContentText";
 
 interface Props {
    contest:Contest,
    updateContest?: (propName:string, value:any) => void,
-   saveContest?: (onSuccess:(contest:Contest) => void) => void
+   saveContest?: (onSuccess:(contest:Contest) => void) => void,
+   createPdf?: (file:Blob) => void
 }
 
 type State = {
-   numberOfContenders: number;
+   showPopup:boolean
 }
 
 class ContestGeneralComp extends React.Component<Props & RouteComponentProps, State> {
    public readonly state: State = {
-      numberOfContenders:0
+      showPopup:false
    };
+
+   inputRef:any;
+
+   constructor(props: Props & RouteComponentProps) {
+      super(props);
+      this.inputRef = React.createRef();
+   }
 
    componentDidMount() {
    }
-
-   onNumberOfContendersChange = (evt: any) => {
-      console.log(evt);
-      this.setState({
-         numberOfContenders: evt.target.value
-      });
-   };
-
-   batchCreateContenders = () => {
-      console.log("batchCreateContenders");
-      // Send stuff:
-      /*etch(API_URL + "/contest/" + this.props.id + "/createContenders",
-         {
-            method: "PUT",
-            headers: {
-               "Content-Type": "application/json",
-               "Authorization": this.getAuthorization()
-
-            },
-            body: JSON.stringify({count: parseInt(this.state.numberOfContenders)})
-         }).then(response => {
-         console.log("Created stuff");
-      }).catch(error => {
-         console.log(error);
-      })*/
-   };
-
-   onChange = (evt: any) => {
-      console.log(evt);
-      /*const files = Array.from(evt.target.files);
-      var reader = new FileReader();
-      reader.readAsArrayBuffer(files[0]);
-      reader.onload = (evt) => {
-         var arrayBuffer = evt.currentTarget.result;
-         console.log("ArrayBuffer", arrayBuffer);
-         // Send stuff:
-         fetch(API_URL + "/contest/" + this.props.id + "/pdf",
-            {
-               method: "POST",
-               headers: {
-                  "Content-Type": "application/pdf",
-                  "Authorization": this.getAuthorization()
-               },
-               body: arrayBuffer, // body data type must match "Content-Type" header
-            }).then(response => {
-            response.blob().then(blob => {
-               console.log(blob)
-               saveAs(blob, "contest.pdf");
-            })
-         }).catch(error => {
-            console.log(error);
-         })
-      }
-      reader.onerror = function (evt) {
-         console.log("onerror", evt);
-      }*/
-   };
-
-   exportResults = () => {
-      console.log("exportResults");
-      /*fetch(API_URL + "/contest/export/" + this.props.id,
-         {
-            headers: {
-               "Content-Type": "application/pdf",
-               "Authorization": this.getAuthorization()
-            }
-         }).then(response => {
-         response.blob().then(blob => {
-            console.log(blob)
-            saveAs(blob, "contest.xls");
-         })
-      }).catch(error => {
-         console.log(error);
-      })*/
-   };
 
    onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.props.updateContest!("name", e.target.value);
@@ -119,6 +57,19 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       this.props.updateContest!("rules", e.target.value);
    };
 
+   createPdf = () => {
+      this.closePopup();
+      console.log("Create PDF", this.inputRef.current);
+      this.inputRef.current.click();
+   };
+
+   onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log(e);
+      if(e.target.files != null && e.target.files.length > 0) {
+         this.props.createPdf!(e.target.files.item(0) as Blob);
+      }
+   };
+
    onSave = () => {
       let isNew = this.props.contest.isNew;
       this.props.saveContest!((contest:Contest) => {
@@ -126,6 +77,16 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
             this.props.history.push("/contests/" + contest.id);
          }
       })
+   };
+
+   startPdfCreate = () => {
+      this.state.showPopup = true;
+      this.setState(this.state);
+   };
+
+   closePopup = () => {
+      this.state.showPopup = false;
+      this.setState(this.state);
    };
 
    render() {
@@ -142,6 +103,11 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                <ReferenceInput source="organizerId" reference="organizer">
                   <SelectInput optionText="name"/>
                </ReferenceInput>*/}
+               {!contest.isNew &&
+                  <div>
+                      <Button variant="outlined" color="primary" onClick={this.startPdfCreate}>Create PDF</Button>
+                  </div>
+               }
                <div style={{display:"flex", flexDirection:"row"}}>
                   <div style={{display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>
                      <TextField label="Name" value={contest.name} onChange={this.onNameChange}/>
@@ -154,33 +120,26 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                   </div>
                </div>
                <Button style={{marginTop:10}} variant="outlined" color="primary" onClick={this.onSave}>{contest.isNew ? 'Add' : 'Save'}</Button>
-               {!contest.isNew &&
-               <div style={{display: 'flex', marginTop: 16}}>
-                   <Paper style={{padding: '16px 24px', flexBasis: 0, marginRight: 16, flexGrow: 1}}>
-                       <div style={{marginBottom: 16}}>1. Batch create contenders</div>
-                       <div>
-                           <TextField label="Number of contenders"
-                                      value={this.state ? this.state.numberOfContenders : '0'}
-                                      onChange={this.onNumberOfContendersChange}/>
-                           <Button variant="outlined" style={{marginTop: 10, display: 'block'}}
-                                   onClick={this.batchCreateContenders}>Create</Button>
-                       </div>
-                   </Paper>
-                   <Paper style={{padding: '16px 24px', flexBasis: 0, marginRight: 16, flexGrow: 1}}>
-                       <div style={{marginBottom: 16}}>2. Create PDF</div>
-                       <div>
-                           <input type='file' id='multi' onChange={this.onChange}/>
-                       </div>
-                   </Paper>
-                   <Paper style={{padding: '16px 24px', flexBasis: 0, flexGrow: 1}}>
-                       <div style={{marginBottom: 16}}>3. Export results</div>
-                       <div>
-                           <Button variant="outlined" onClick={this.exportResults}>Export</Button>
-                       </div>
-                   </Paper>
-               </div>
-               }
             </div>
+            <input style={{display:"none"}} type='file' onChange={this.onChange} ref={this.inputRef}/>
+            <Dialog
+               open={this.state.showPopup}
+               disableBackdropClick
+               disableEscapeKeyDown
+               maxWidth="xs"
+               aria-labelledby="confirmation-dialog-title"
+            >
+               <DialogTitle id="confirmation-dialog-title">Create contenders</DialogTitle>
+               <DialogContent>
+                  <DialogContentText>Apa</DialogContentText>
+               </DialogContent>
+               <DialogActions>
+                  <Button onClick={this.closePopup} color="primary">Cancel</Button>
+                  <Button onClick={this.createPdf} color="primary">Add</Button>
+               </DialogActions>
+
+            </Dialog>
+
          </Paper>
       );
    }

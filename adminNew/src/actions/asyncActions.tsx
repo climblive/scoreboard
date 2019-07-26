@@ -5,6 +5,7 @@ import * as actions from './actions';
 import {Contest} from "../model/contest";
 import {StoreState} from "../model/storeState";
 import {CompClass} from "../model/compClass";
+import { saveAs } from 'file-saver';
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -41,28 +42,12 @@ export function loadContest(contestId: number): any {
    return (dispatch: Dispatch<any>) => {
       Api.getContest(contestId).then(contest => {
          dispatch(actions.receiveContest(contest));
+         reloadProblems(dispatch, contestId);
+         reloadCompClasses(dispatch, contestId);
+         reloadContenders(dispatch, contestId);
       }).catch(error => {
          dispatch(actions.setErrorMessage(error));
       });
-
-      Api.getProblems(contestId).then(problems => {
-         dispatch(actions.receiveProblems(problems));
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
-      });
-
-      Api.getCompClasses(contestId).then(compClasses => {
-         dispatch(actions.receiveCompClasses(compClasses));
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
-      });
-
-      Api.getContenders(contestId).then(contenders => {
-         dispatch(actions.receiveContenders(contenders));
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
-      });
-
    }
 }
 
@@ -117,17 +102,36 @@ export function loadOrganizers(): any {
    }
 }
 
+let reloadProblems = (dispatch: Dispatch<any>, contestId: number) => {
+   Api.getProblems(contestId).then(problems => {
+      dispatch(actions.receiveProblems(problems));
+   }).catch(error => {
+      dispatch(actions.setErrorMessage(error));
+   });
+};
+
 export function saveEditProblem(): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       // TODO: Implement
-      dispatch(actions.cancelEditProblem());
+      let problem = getState().editProblem!;
+      Api.saveProblem(problem).then(problem => {
+         // Reload the list of problems:
+         dispatch(actions.cancelEditProblem());
+         reloadProblems(dispatch, problem.contestId);
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
    }
 }
 
 export function deleteProblem(problem:Problem): any {
    return (dispatch: Dispatch<any>) => {
-      // TODO: Implement
-      dispatch(actions.cancelEditProblem());
+      Api.deleteProblem(problem)
+         .then(() => {
+            dispatch(actions.cancelEditProblem());
+            reloadProblems(dispatch, problem.contestId);
+         })
+         .catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }
 
@@ -142,7 +146,6 @@ let reloadCompClasses = (dispatch: Dispatch<any>, contestId: number) => {
 
 export function saveEditCompClass(): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      // TODO: Implement
       let compClass = getState().editCompClass!;
       Api.saveCompClass(compClass).then(compClass => {
          // Reload the list of comp classes:
@@ -156,10 +159,70 @@ export function saveEditCompClass(): any {
 
 export function deleteCompClass(compClass:CompClass): any {
    return (dispatch: Dispatch<any>) => {
-      // TODO: Implement
       Api.deleteCompClass(compClass).then(() => {
          dispatch(actions.cancelEditCompClass());
          reloadCompClasses(dispatch, compClass.contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }
+
+let reloadContenders = (dispatch: Dispatch<any>, contestId: number) => {
+   Api.getContenders(contestId).then(contenders => {
+      dispatch(actions.receiveContenders(contenders));
+   }).catch(error => {
+      dispatch(actions.setErrorMessage(error));
+   });
+};
+
+export function createContenders(nNewContenders:number):any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest.id;
+      Api.createContenders(contestId, nNewContenders).then(() => {
+         reloadContenders(dispatch, contestId);
+      }).catch(error => {dispatch(actions.setErrorMessage(error))});
+   }
+}
+
+export function resetContenders():any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest.id;
+      Api.resetContenders(contestId).then(() => {
+         reloadContenders(dispatch, contestId);
+      }).catch(error => {dispatch(actions.setErrorMessage(error))});
+   }
+}
+
+export function exportResults():any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest.id;
+      Api.exportContest(contestId).then(response => {
+         console.log(response);
+         saveAs(response, "contest.xls");
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error))
+      });
+   }
+}
+
+export function generatePdf(file:Blob):any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest.id;
+      let reader = new FileReader();
+      reader.onload = (evt:any) => {
+         let arrayBuffer = evt.currentTarget.result;
+         console.log("ArrayBuffer", arrayBuffer);
+         Api.generatePdf(contestId, arrayBuffer).then(response => {
+            console.log(response);
+            saveAs(response, "contest.pdf");
+         }).catch(error => {
+            dispatch(actions.setErrorMessage(error))
+         });
+      };
+      reader.onerror = function (evt) {
+         dispatch(actions.setErrorMessage("Failed to load file:" + evt))
+      };
+      reader.readAsArrayBuffer(file);
+   }
+}
+
+

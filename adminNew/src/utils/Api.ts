@@ -148,6 +148,18 @@ export class Api {
       return this.get("color");
    }
 
+   static saveColor(color:Color): Promise<Color> {
+      if(color.id == -1) {
+         return this.post("color", color);
+      } else {
+         return this.put("color/" + color.id, color);
+      }
+   }
+
+   static deleteColor(color: Color): Promise<any> {
+      return this.delete("color/" + color.id);
+   }
+
    static getLocations(): Promise<CompLocation[]> {
       return this.get("location");
    }

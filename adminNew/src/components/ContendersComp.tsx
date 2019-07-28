@@ -211,7 +211,6 @@ class ContendersComp extends React.Component<Props, State> {
                   <Button onClick={this.closePopups} color="primary">Cancel</Button>
                   <Button onClick={this.addContendersConfirmed} color="primary">Add</Button>
                </DialogActions>
-
             </Dialog>
             <ConfirmationDialog
                open={this.state.showResetConfirmationPopup}

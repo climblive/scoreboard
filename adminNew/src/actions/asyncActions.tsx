@@ -6,6 +6,7 @@ import {Contest} from "../model/contest";
 import {StoreState} from "../model/storeState";
 import {CompClass} from "../model/compClass";
 import { saveAs } from 'file-saver';
+import {Color} from "../model/color";
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -63,16 +64,43 @@ export function saveContest(onSuccess:(contest:Contest) => void): any {
    }
 }
 
+let reloadColors = (dispatch: Dispatch<any>) => {
+   Api.getColors().then(colors => {
+      dispatch(actions.receiveColors(colors));
+   })
+   .catch(error => {
+      dispatch(actions.receiveColors([]));
+      dispatch(actions.setErrorMessage(error));
+   });
+};
+
 export function loadColors(): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getColors()
-         .then(colors => {
-            dispatch(actions.receiveColors(colors));
+      reloadColors(dispatch);
+   }
+}
+
+export function saveEditColor(): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let color = getState().editColor!;
+      Api.saveColor(color).then(color => {
+         // Reload the list of comp classes:
+         dispatch(actions.cancelEditColor());
+         reloadColors(dispatch);
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+   }
+}
+
+export function deleteColor(color:Color): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.deleteColor(color)
+         .then(() => {
+            dispatch(actions.cancelEditColor());
+            reloadColors(dispatch);
          })
-         .catch(error => {
-            dispatch(actions.receiveColors([]));
-            dispatch(actions.setErrorMessage(error));
-         });
+         .catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }
 

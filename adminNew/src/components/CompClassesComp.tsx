@@ -47,8 +47,6 @@ class CompClassesComp extends React.Component<Props, State> {
    componentDidMount() {
    }
 
-   //formatDate = (date) => moment(date).format(this.format);
-
    deleteCompClass = (compClass:CompClass) => {
       this.state.deleteCompClass = compClass;
       this.setState(this.state);
@@ -160,10 +158,10 @@ class CompClassesComp extends React.Component<Props, State> {
                   })}
                </TableBody>
             </Table>
-            <ConfirmationDialog open={this.state.deleteCompClass != undefined}
-                                title={"Delete class"}
-                                message={"Do you wish to delete the selected class?"}
-                                onClose={this.onDeleteConfirmed} />
+               <ConfirmationDialog open={this.state.deleteCompClass != undefined}
+                                   title={"Delete class"}
+                                   message={"Do you wish to delete the selected class?"}
+                                   onClose={this.onDeleteConfirmed} />
          </Paper>
       );
    }

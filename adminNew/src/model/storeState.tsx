@@ -25,6 +25,8 @@ export interface StoreState {
 
    colors: Color[],
    colorMap: Map<number, Color>,
+   editColor?: Color;
+
    locations: CompLocation[],
    locationMap: Map<number, CompLocation>,
    organizers: Organizer[],

@@ -9,6 +9,12 @@ import {CompClass} from "../model/compClass";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
+let getColorMap = (colors:Color[]) => {
+   const colorMap = new Map<number, Color>();
+   colors.forEach(color => colorMap.set(color.id, color));
+   return colorMap;
+}
+
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
    switch (action.type) {
       case getType(scoreboardActions.receiveContests):
@@ -118,9 +124,29 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, contenders: action.payload };
 
       case getType(scoreboardActions.receiveColors):
-         const colorMap = new Map<number, Color>();
-         action.payload.forEach(color => colorMap.set(color.id, color));
-         return { ...state, colors: action.payload, colorMap: colorMap };
+         return { ...state, colors: action.payload, colorMap: getColorMap(action.payload)};
+
+      case getType(scoreboardActions.startEditColor):
+         return { ...state, editColor: action.payload};
+
+      case getType(scoreboardActions.cancelEditColor):
+         const newColors = state.colors.filter(p2 => p2.id != -1);
+         return { ...state, editColor: undefined, colors: newColors, newColors};
+
+      case getType(scoreboardActions.startAddColor):
+         const newColors2 = [...state.colors];
+         let newColor:Color = {
+            rgbPrimary:"#000000",
+            id: -1,
+            name: "",
+         };
+         newColors2.push(newColor);
+         return { ...state, editColor: newColor, colors: newColors2};
+
+      case getType(scoreboardActions.updateEditColor):
+         let newEditColor = {...state.editColor!};
+         newEditColor[action.payload.propName] = action.payload.value;
+         return { ...state, editColor: newEditColor};
 
       case getType(scoreboardActions.receiveLocations):
          const locationMap = new Map<number, CompLocation>();

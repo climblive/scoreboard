@@ -26,6 +26,10 @@ export const receiveLocations = createStandardAction('RECEIVE_LOCATIONS')<CompLo
 export const receiveOrganizers = createStandardAction('RECEIVE_ORGANIZERS')<Organizer[]>();
 
 export const receiveColors = createStandardAction('RECEIVE_COLORS')<Color[]>();
+export const startEditColor = createStandardAction('START_EDIT_COLOR')<Color>();
+export const cancelEditColor = createStandardAction('CANCEL_EDIT_COLOR')();
+export const startAddColor = createStandardAction('START_ADD_COLOR')();
+export const updateEditColor = createStandardAction('UPDATE_EDIT_COLOR')<{propName:string, value:any}>();
 
 export const receiveCompClasses = createStandardAction('RECEIVE_COMP_CLASSES')<CompClass[]>();
 export const startEditCompClass = createStandardAction('START_EDIT_COMP_CLASS')<CompClass>();

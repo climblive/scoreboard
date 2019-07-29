@@ -21,6 +21,10 @@ open class Contest (
     @JoinColumn(name = "organizer_id", nullable = false)
     open var organizer: Organizer? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "series_id", nullable = false)
+    open var series: Series? = null,
+
     @Column(name = "name", nullable = false, length = 64)
     open var name: String? = null,
 

@@ -11,7 +11,8 @@ import se.scoreboard.dto.ContestDto
 interface ContestMapper : AbstractMapper<Contest, ContestDto> {
     @Mappings(
         Mapping(source = "location.id", target = "locationId"),
-        Mapping(source = "organizer.id", target = "organizerId")
+        Mapping(source = "organizer.id", target = "organizerId"),
+        Mapping(source = "series.id", target = "seriesId")
     )
     override fun convertToDto(source: Contest): ContestDto
 

@@ -17,6 +17,9 @@ export const ContestList = props => (
             <ReferenceField source="organizerId" reference="organizer">
                 <TextField source="name" />
             </ReferenceField>
+            <ReferenceField source="seriesId" reference="series">
+                <TextField source="name" />
+            </ReferenceField>
             <TextField source="name" />
             <RichTextField source="description" />
             <NumberField source="qualifyingProblems" />
@@ -125,6 +128,9 @@ export class ContestEdit extends React.Component {
                         <ReferenceInput source="organizerId" reference="organizer">
                             <SelectInput optionText="name"/>
                         </ReferenceInput>
+                        <ReferenceInput source="seriesId" reference="series" allowEmpty>
+                            <SelectInput optionText="name"/>
+                        </ReferenceInput>
                         <TextInput source="name"/>
                         <TextInput source="description"/>
                         <NumberInput source="qualifyingProblems"/>
@@ -166,6 +172,9 @@ export const ContestCreate = props => (
                 <SelectInput optionText="name" />
             </ReferenceInput>
             <ReferenceInput source="organizerId" reference="organizer">
+                <SelectInput optionText="name" />
+            </ReferenceInput>
+            <ReferenceInput source="seriesId" reference="series" allowEmpty>
                 <SelectInput optionText="name" />
             </ReferenceInput>
             <TextInput source="name" />

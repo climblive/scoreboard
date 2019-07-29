@@ -7,10 +7,7 @@ import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
-import se.scoreboard.mapper.ColorMapper
-import se.scoreboard.mapper.ContestMapper
-import se.scoreboard.mapper.LocationMapper
-import se.scoreboard.mapper.UserMapper
+import se.scoreboard.mapper.*
 import se.scoreboard.service.OrganizerService
 import javax.transaction.Transactional
 
@@ -23,12 +20,14 @@ class OrganizerController @Autowired constructor(
     private lateinit var contestMapper: ContestMapper
     private lateinit var colorMapper: ColorMapper
     private lateinit var locationMapper: LocationMapper
+    private lateinit var seriesMapper: SeriesMapper
     private lateinit var userMapper: UserMapper
 
     init {
         contestMapper = Mappers.getMapper(ContestMapper::class.java)
         colorMapper = Mappers.getMapper(ColorMapper::class.java)
         locationMapper = Mappers.getMapper(LocationMapper::class.java)
+        seriesMapper = Mappers.getMapper(SeriesMapper::class.java)
         userMapper = Mappers.getMapper(UserMapper::class.java)
     }
 
@@ -59,6 +58,12 @@ class OrganizerController @Autowired constructor(
     @Transactional
     fun getOrganizerLocations(@PathVariable("id") id: Int) : List<LocationDto> =
             organizerService.fetchEntity(id).locations.map { location -> locationMapper.convertToDto(location) }
+
+    @GetMapping("/organizer/{id}/series")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @Transactional
+    fun getOrganizerSeries(@PathVariable("id") id: Int) : List<SeriesDto> =
+            organizerService.fetchEntity(id).series.map { series -> seriesMapper.convertToDto(series) }
 
     @GetMapping("/organizer/{id}/user")
     @PostAuthorize("hasPermission(returnObject, 'read')")

@@ -7,10 +7,7 @@ import org.mapstruct.factory.Mappers
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.Contest
-import se.scoreboard.data.domain.Location
-import se.scoreboard.data.domain.Organizer
+import se.scoreboard.data.domain.*
 import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.ContestRepository
 import se.scoreboard.dto.ContestDto
@@ -24,7 +21,7 @@ class ContestService @Autowired constructor(
         val pdfService: PdfService) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
 
-    var logger = LoggerFactory.getLogger(PdfService::class.java)
+    var logger = LoggerFactory.getLogger(ContestService::class.java)
 
     override lateinit var entityMapper: AbstractMapper<Contest, ContestDto>
 
@@ -35,6 +32,7 @@ class ContestService @Autowired constructor(
     override fun handleNested(entity: Contest, dto: ContestDto) {
         entity.location = entityManager.getReference(Location::class.java, dto.locationId)
         entity.organizer = entityManager.getReference(Organizer::class.java, dto.organizerId)
+        entity.series = entityManager.getReference(Series::class.java, dto.seriesId)
     }
 
     fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {

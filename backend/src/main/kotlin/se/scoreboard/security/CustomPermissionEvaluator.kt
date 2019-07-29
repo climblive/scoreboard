@@ -43,6 +43,7 @@ class CustomPermissionEvaluator @Autowired constructor(
                 is LocationDto -> it.id
                 is OrganizerDto -> it.id
                 is ProblemDto -> it.id
+                is SeriesDto -> it.id
                 is TickDto -> it.id
                 is UserDto -> it.id
                 else -> null

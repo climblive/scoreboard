@@ -6,6 +6,7 @@ import { ContestList, ContestEdit, ContestCreate } from "./contest";
 import { CompClassList, CompClassEdit, CompClassCreate } from "./compClass";
 import { TickList, TickEdit, TickCreate } from "./tick";
 import { ProblemList, ProblemEdit, ProblemCreate } from "./problem";
+import { SeriesList, SeriesEdit, SeriesCreate } from "./series";
 import { ColorList, ColorEdit, ColorCreate } from "./color";
 import { LocationList, LocationEdit, LocationCreate } from "./location";
 import { OrganizerList, OrganizerEdit, OrganizerCreate } from "./organizer";
@@ -41,6 +42,7 @@ const App = () => (
         <Resource name="contest" icon={DateRangeIcon} list={ContestList} edit={ContestEdit} create={ContestCreate} />
         <Resource name="tick" icon={CheckIcon} list={TickList} edit={TickEdit} create={TickCreate} />
         <Resource name="problem" icon={ReportProblemIcon} list={ProblemList} edit={ProblemEdit} create={ProblemCreate} />
+        <Resource name="series" icon={DateRangeIcon} list={SeriesList} edit={SeriesEdit} create={SeriesCreate} />
         <Resource name="color" icon={ColorLensIcon} list={ColorList} edit={ColorEdit} create={ColorCreate} />
         <Resource name="organizer" icon={HomeIcon} list={OrganizerList} edit={OrganizerEdit} create={OrganizerCreate} />
         <Resource name="location" icon={LocationOnIcon} list={LocationList} edit={LocationEdit} create={LocationCreate} />

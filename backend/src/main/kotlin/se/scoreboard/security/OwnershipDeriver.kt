@@ -14,7 +14,8 @@ class OwnershipDeriver @Autowired constructor(
         val tickRepository: TickRepository,
         val userRepository: UserRepository,
         val colorRepository: ColorRepository,
-        val locationRepository: LocationRepository) {
+        val locationRepository: LocationRepository,
+        val seriesRepository: SeriesRepository) {
 
     fun derive(identifierType: IdentifierType, targetType: String, targetIds: List<Int>): List<Int>? {
         return when (identifierType) {
@@ -73,11 +74,12 @@ class OwnershipDeriver @Autowired constructor(
         return handleEmpty(dtos) ?: when (type) {
             "CompClass" -> deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as CompClassDto).contestId })
             "Contender" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ContenderDto).contestId }), deriveOrganizerIdentifiers("CompClass", dtos.mapNotNull { (it as ContenderDto).compClassId }))
-            "Contest" -> dtos.mapNotNull { (it as ContestDto).organizerId }
-            "Problem" -> deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ProblemDto).contestId })
+            "Contest" -> flattenNullableLists(dtos.mapNotNull { (it as ContestDto).organizerId }, deriveOrganizerIdentifiers("Location", dtos.mapNotNull { (it as ContestDto).locationId }), deriveOrganizerIdentifiers("Series", dtos.mapNotNull { (it as ContestDto).seriesId }))
+            "Problem" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ProblemDto).contestId }), deriveOrganizerIdentifiers("Color", dtos.mapNotNull { (it as ProblemDto).colorId }))
             "Tick" -> flattenNullableLists(deriveOrganizerIdentifiers("Problem", dtos.mapNotNull { (it as TickDto).problemId }), deriveOrganizerIdentifiers("Contender", dtos.mapNotNull { (it as TickDto).contenderId }))
             "Color" -> dtos.mapNotNull { (it as ColorDto).organizerId }
             "Location" -> dtos.mapNotNull { (it as LocationDto).organizerId }
+            "Series" -> dtos.mapNotNull { (it as SeriesDto).organizerId }
             else -> null
         }
     }
@@ -92,6 +94,7 @@ class OwnershipDeriver @Autowired constructor(
             "User" -> userRepository
             "Color" -> colorRepository
             "Location" -> locationRepository
+            "Series" -> seriesRepository
             else -> null
         }
     }

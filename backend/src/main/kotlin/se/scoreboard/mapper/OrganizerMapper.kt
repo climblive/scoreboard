@@ -14,7 +14,8 @@ interface OrganizerMapper : AbstractMapper<Organizer, OrganizerDto> {
             Mapping(target = "users", ignore = true),
             Mapping(target = "contests", ignore = true),
             Mapping(target = "colors", ignore = true),
-            Mapping(target = "locations", ignore = true)
+            Mapping(target = "locations", ignore = true),
+            Mapping(target = "series", ignore = true)
     )
     override fun convertToEntity(source: OrganizerDto): Organizer
 }

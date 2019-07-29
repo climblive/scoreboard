@@ -56,7 +56,7 @@ class GeneratorService @Autowired constructor(
     private fun createContest(location: Location, organizer: Organizer): Contest {
         val formats = listOf("Boulder Cup", "Bouldering National Championship", "Bouldering World Championship", "Rock Master")
 
-        val contest = Contest(null, location, organizer, "%s %s".format(location.name, formats.random()),
+        val contest = Contest(null, location, organizer, null, "%s %s".format(location.name, formats.random()),
                 null,
                 Random.nextInt(5, 10), Random.nextInt(5, 10),
                 null, 15 * 60)

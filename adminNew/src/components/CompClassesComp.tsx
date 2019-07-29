@@ -52,8 +52,10 @@ class CompClassesComp extends React.Component<Props, State> {
       this.setState(this.state);
    };
 
-   onDeleteConfirmed = () => {
-      this.props.deleteCompClass!(this.state.deleteCompClass!);
+   onDeleteConfirmed = (result: boolean) => {
+      if(result) {
+         this.props.deleteCompClass!(this.state.deleteCompClass!);
+      }
       this.state.deleteCompClass = undefined;
       this.setState(this.state)
    };
@@ -83,7 +85,7 @@ class CompClassesComp extends React.Component<Props, State> {
          return (<CircularProgress/>)
       }
       return (
-         <Paper>
+         <Paper style={{flexGrow:1, display:"flex", flexDirection:"column"}}>
             <Table>
                <TableHead>
                   <TableRow>
@@ -91,7 +93,7 @@ class CompClassesComp extends React.Component<Props, State> {
                      <TableCell style={{width:"100%"}}>Description</TableCell>
                      <TableCell style={{minWidth:120}}>Start time</TableCell>
                      <TableCell style={{minWidth:120}}>End time</TableCell>
-                     <TableCell style={{minWidth:96}}>
+                     <TableCell className={"icon-cell"} style={{minWidth:96}}>
                         <IconButton color="inherit" aria-label="Menu" title="Add class" onClick={this.props.startAddCompClass}>
                            <AddIcon />
                         </IconButton>
@@ -110,7 +112,7 @@ class CompClassesComp extends React.Component<Props, State> {
                               <TableCell>{compClass.description}</TableCell>
                               <TableCell>{moment(compClass.timeBegin).format(this.format)}</TableCell>
                               <TableCell>{moment(compClass.timeEnd).format(this.format)}</TableCell>
-                              <TableCell>
+                              <TableCell className={"icon-cell"}>
                                  <IconButton color="inherit" aria-label="Menu" title="Edit"
                                              onClick={() => this.props.startEditCompClass!(compClass)}>
                                     <EditIcon/>

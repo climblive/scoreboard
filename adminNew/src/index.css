@@ -22,3 +22,25 @@ button:focus {
 .chrome-picker {
     width:300px !important;
 }
+
+.MuiTableCell-root {
+    padding: 10px 15px !important;
+}
+
+.MuiTableCell-root.icon-cell {
+    padding: 2px 15px !important;
+}
+
+.textfield-inherited .MuiInputBase-root {
+    color:inherit;
+    font-size:inherit;
+}
+
+.textfield-inherited input {
+    text-align: right;
+    padding-bottom:0;
+}
+
+.textfield-inherited .MuiInput-underline:before {
+    border-bottom-color:white !important;
+}

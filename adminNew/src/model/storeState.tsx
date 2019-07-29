@@ -13,25 +13,23 @@ export interface StoreState {
    loggingIn: boolean,
    loggedInUser?: string
 
-   contest: Contest;
+   contest?: Contest;
 
-   problems: Problem[];
+   problems?: Problem[];
    editProblem?: Problem;
+   problemIdBeingUpdated?: number;
 
-   compClasses: CompClass[];
+   compClasses?: CompClass[];
    editCompClass?: CompClass;
 
-   contenders: ContenderData[];
+   contenders?: ContenderData[];
 
    colors: Color[],
-   colorMap: Map<number, Color>,
    editColor?: Color;
 
    locations: CompLocation[],
-   locationMap: Map<number, CompLocation>,
+
    organizers: Organizer[],
-   organizerMap: Map<number, Organizer>,
-   pagingCounter: number;
-   problemIdBeingUpdated?: number;
+
    errorMessage?: string;
 }

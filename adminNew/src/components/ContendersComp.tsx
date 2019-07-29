@@ -18,9 +18,12 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import {ConfirmationDialog} from "./ConfirmationDialog";
+import {CompClass} from "../model/compClass";
 
 interface Props {
    contenders:ContenderData[],
+   compClassMap:Map<number,CompClass>
+
    createContenders?: (nContenders:number) => void,
    exportResults?: () => void
    resetContenders?: () => void
@@ -52,6 +55,11 @@ class ContendersComp extends React.Component<Props, State> {
    }
 
    componentDidMount() {
+   }
+
+   private getCompClassName(id?: number) {
+      let compClass = id ? this.props.compClassMap.get(id!) : undefined;
+      return compClass ? compClass.name : "-";
    }
 
    startAddContenders = () => {
@@ -124,7 +132,7 @@ class ContendersComp extends React.Component<Props, State> {
          return (<CircularProgress/>)
       }
       return (
-         <Paper>
+         <Paper style={{flexGrow:1, display:"flex", flexDirection:"column"}}>
             <div style={{display:"flex", marginTop:14, alignItems:"center"}}>
                <div style={{marginLeft:16, marginRight:"auto"}}>{contenders.length} contenders:</div>
                <IconButton color="inherit" aria-label="Menu" title="Add contenders" onClick={this.startAddContenders}>
@@ -137,61 +145,63 @@ class ContendersComp extends React.Component<Props, State> {
                   <ClearIcon />
                </IconButton>
             </div>
-            <Table>
-               <TableHead>
-                  <TableRow>
-                     <TableCell style={{width:"100%"}}>Name</TableCell>
-                     <TableCell style={{minWidth:110}}>Competition class</TableCell>
-                     <TableCell style={{minWidth:110}}>Registration code</TableCell>
-                  </TableRow>
-               </TableHead>
-               <TableBody>
-                  {contenders.map(contender => {
-                     //if(editCompClass == undefined || editCompClass.id != compClass.id) {
-                        return (
-                           <TableRow key={contender.id}
-                                     style={{cursor: 'pointer'}}
-                                     hover
-                                     onClick={() => console.log("click")}>
-                              <TableCell component="th" scope="row">{contender.name}</TableCell>
-                              <TableCell component="th" scope="row">{contender.compClassId}</TableCell>
-                              <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>
-                           </TableRow>
-                        )
-                     /*} else {
-                        return (
-                           <TableRow key={compClass.id}
-                                     style={{cursor: 'pointer'}}
-                                     hover
-                                     onClick={() => console.log("click")}>
-                              <TableCell component="th" scope="row">
-                                 <input style={{}} value={editCompClass.name} placeholder="Name" onChange={this.onNameChange} />
-                              </TableCell>
-                              <TableCell>
-                                 <input style={{}} value={editCompClass.description} onChange={this.onDescriptionChange} />
-                              </TableCell>
-                              <TableCell>
-                                 <DateTimePicker ampm={false} value={timeBegin} onChange={this.onTimeBeginChange} />
-                              </TableCell>
-                              <TableCell>
-                                 <DateTimePicker ampm={false} value={timeEnd} onChange={this.onTimeEndChange} />
-                              </TableCell>
-                              <TableCell>
-                                 <IconButton color="inherit" aria-label="Menu" title="Save"
-                                             onClick={this.props.saveEditCompClass!}>
-                                    <CheckIcon/>
-                                 </IconButton>
-                                 <IconButton color="inherit" aria-label="Menu" title="Cancel"
-                                             onClick={this.props.cancelEditCompClass!}>
-                                    <CancelIcon/>
-                                 </IconButton>
-                              </TableCell>
-                           </TableRow>
-                        )
-                     }*/
-                  })}
-               </TableBody>
-            </Table>
+            <div style={{flexBasis:0, flexGrow:1, overflowY:"auto"}} >
+               <Table>
+                  <TableHead>
+                     <TableRow>
+                        <TableCell style={{width:"100%"}}>Name</TableCell>
+                        <TableCell style={{minWidth:110}}>Competition class</TableCell>
+                        <TableCell style={{minWidth:110}}>Registration code</TableCell>
+                     </TableRow>
+                  </TableHead>
+                  <TableBody>
+                     {contenders.map(contender => {
+                        //if(editCompClass == undefined || editCompClass.id != compClass.id) {
+                           return (
+                              <TableRow key={contender.id}
+                                        style={{cursor: 'pointer'}}
+                                        hover
+                                        onClick={() => console.log("click")}>
+                                 <TableCell component="th" scope="row">{contender.name}</TableCell>
+                                 <TableCell component="th" scope="row">{this.getCompClassName(contender.compClassId)}</TableCell>
+                                 <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>
+                              </TableRow>
+                           )
+                        /*} else {
+                           return (
+                              <TableRow key={compClass.id}
+                                        style={{cursor: 'pointer'}}
+                                        hover
+                                        onClick={() => console.log("click")}>
+                                 <TableCell component="th" scope="row">
+                                    <input style={{}} value={editCompClass.name} placeholder="Name" onChange={this.onNameChange} />
+                                 </TableCell>
+                                 <TableCell>
+                                    <input style={{}} value={editCompClass.description} onChange={this.onDescriptionChange} />
+                                 </TableCell>
+                                 <TableCell>
+                                    <DateTimePicker ampm={false} value={timeBegin} onChange={this.onTimeBeginChange} />
+                                 </TableCell>
+                                 <TableCell>
+                                    <DateTimePicker ampm={false} value={timeEnd} onChange={this.onTimeEndChange} />
+                                 </TableCell>
+                                 <TableCell>
+                                    <IconButton color="inherit" aria-label="Menu" title="Save"
+                                                onClick={this.props.saveEditCompClass!}>
+                                       <CheckIcon/>
+                                    </IconButton>
+                                    <IconButton color="inherit" aria-label="Menu" title="Cancel"
+                                                onClick={this.props.cancelEditCompClass!}>
+                                       <CancelIcon/>
+                                    </IconButton>
+                                 </TableCell>
+                              </TableRow>
+                           )
+                        }*/
+                     })}
+                  </TableBody>
+               </Table>
+            </div>
             {/*<ConfirmationDialog open={this.state.deleteCompClass != undefined}
                                 title={"Delete class"}
                                 message={"Do you wish to delete the selected class?"}

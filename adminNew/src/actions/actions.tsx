@@ -16,6 +16,7 @@ export const setLoggedInUser = createStandardAction('SET_LOGGED_IN_USER')<string
 export const logout = createStandardAction('LOGOUT')();
 
 
+export const clearContest = createStandardAction('CLEAR_CONTEST')();
 export const setNewContest = createStandardAction('SET_NEW_CONTEST')();
 export const updateContest = createStandardAction('UPDATE_CONTEST')<{propName:string, value:any}>();
 export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[]>();

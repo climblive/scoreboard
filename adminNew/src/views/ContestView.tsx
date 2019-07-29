@@ -14,6 +14,7 @@ import ContestGeneralComp from "../components/ContestGeneralComp";
 import {Color} from "../model/color";
 import ContendersComp from "../components/ContendersComp";
 import {ContenderData} from "../model/contenderData";
+import {getColorMap, getCompClassMap} from "../selectors/selector";
 
 interface Props {
    match: {
@@ -21,12 +22,13 @@ interface Props {
          contestId: string
       }
    },
-   contest:Contest,
-   problems:Problem[],
+   contest?:Contest,
+   problems?:Problem[],
    colors:Color[],
    colorMap: Map<number, Color>,
-   compClasses:CompClass[],
-   contenders:ContenderData[],
+   compClasses?:CompClass[],
+   compClassMap:Map<number, CompClass>,
+   contenders?:ContenderData[],
    editProblem?: Problem
    editCompClass?: CompClass
 
@@ -100,14 +102,14 @@ class ContestView extends React.Component<Props, State> {
       let isNew = this.props.contest == undefined || this.props.contest.isNew;
       if(selectedTab == 0) {
          tab = (<ContestGeneralComp key="general"
-                                    contest={this.props.contest}
+                                    contest={this.props.contest!}
                                     updateContest={this.props.updateContest}
                                     saveContest={this.props.saveContest}
                                     createPdf={this.props.createPdf}
          />);
       } else if(selectedTab == 1) {
          tab = (<CompClassesComp key="compClasses"
-                                 compClasses={this.props.compClasses}
+                                 compClasses={this.props.compClasses!}
                                  editCompClass={this.props.editCompClass}
                                  startEditCompClass={this.props.startEditCompClass}
                                  cancelEditCompClass={this.props.cancelEditCompClass}
@@ -131,7 +133,8 @@ class ContestView extends React.Component<Props, State> {
          />);
       } else if(selectedTab == 3) {
          tab = (<ContendersComp key="contenders"
-                                contenders={this.props.contenders}
+                                contenders={this.props.contenders!}
+                                compClassMap={this.props.compClassMap}
                                 createContenders={this.props.createContenders}
                                 exportResults={this.props.exportResults}
                                 resetContenders={this.props.resetContenders}
@@ -154,9 +157,10 @@ function mapStateToProps(state: StoreState, props: any): Props {
       contest: state.contest,
       problems: state.problems,
       compClasses: state.compClasses,
+      compClassMap: getCompClassMap(state),
       contenders: state.contenders,
       colors: state.colors,
-      colorMap: state.colorMap,
+      colorMap: getColorMap(state),
       editProblem: state.editProblem,
       editCompClass: state.editCompClass,
       match: props.match

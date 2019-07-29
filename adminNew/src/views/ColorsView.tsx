@@ -33,8 +33,6 @@ import AddIcon from '@material-ui/icons/AddCircleOutline';
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
       width: '100%',
-      marginTop: spacing(3),
-      overflowX: 'auto',
    },
    table: {
       minWidth: 700,
@@ -85,8 +83,10 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
       this.setState(this.state);
    };
 
-   onDeleteConfirmed = () => {
-      this.props.deleteColor!(this.state.deleteColor!);
+   onDeleteConfirmed = (result: boolean) => {
+      if(result) {
+         this.props.deleteColor!(this.state.deleteColor!);
+      }
       this.state.deleteColor = undefined;
       this.setState(this.state)
    };
@@ -162,15 +162,15 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
          return (<CircularProgress/>)
       }
       return (
-         <div className="mainView">
-            <Paper className={classes.root}>
+         <Paper className={classes.root} style={{flexGrow:1, display:"flex", flexDirection:"column"}}>
+            <div style={{flexBasis:0, flexGrow:1, overflowY:"auto"}}>
                <Table className={classes.table}>
                   <TableHead>
                      <TableRow>
                         <TableCell style={{width:"100%"}}>Name</TableCell>
                         <TableCell style={{minWidth:110}}>Primary color</TableCell>
                         <TableCell style={{minWidth:110}}>Secondary color</TableCell>
-                        <TableCell style={{minWidth:96}}>
+                        <TableCell className={"icon-cell"} style={{minWidth:96}}>
                            <IconButton color="inherit" aria-label="Menu" title="Add color" onClick={this.props.startAddColor}>
                               <AddIcon />
                            </IconButton>
@@ -189,7 +189,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                                  <TableCell component="th" scope="row">
                                     <div style={this.getColorStyle(color.rgbSecondary)}>{color.rgbSecondary || "None"}</div>
                                  </TableCell>
-                                 <TableCell>
+                                 <TableCell className={"icon-cell"}>
                                     <IconButton color="inherit" aria-label="Menu" title="Edit"
                                                 onClick={() => this.props.startEditColor!(color)}>
                                        <EditIcon/>
@@ -230,7 +230,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                      })}
                   </TableBody>
                </Table>
-            </Paper>
+            </div>
             <Dialog
                open={this.state.popupType !== undefined}
                disableBackdropClick
@@ -252,7 +252,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                                 title={"Delete color"}
                                 message={"Do you wish to delete the selected color?"}
                                 onClose={this.onDeleteConfirmed} />
-         </div>
+         </Paper>
       );
    }
 }

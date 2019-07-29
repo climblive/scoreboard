@@ -9,12 +9,6 @@ import {CompClass} from "../model/compClass";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
-let getColorMap = (colors:Color[]) => {
-   const colorMap = new Map<number, Color>();
-   colors.forEach(color => colorMap.set(color.id, color));
-   return colorMap;
-}
-
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
    switch (action.type) {
       case getType(scoreboardActions.receiveContests):
@@ -32,6 +26,16 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveContest):
          return { ...state, contest: action.payload };
 
+      case getType(scoreboardActions.clearContest):
+         return { ...state,
+            contest: undefined,
+            compClasses:undefined,
+            editCompClass:undefined,
+            contenders: undefined,
+            problems: undefined,
+            editProblem:undefined
+         };
+
       case getType(scoreboardActions.setNewContest):
          return { ...state, contest: {
                id: -1,
@@ -46,7 +50,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             }};
 
       case getType(scoreboardActions.updateContest):
-         let newContest = {...state.contest};
+         let newContest = {...state.contest!};
          newContest[action.payload.propName] = action.payload.value;
          return { ...state, contest: newContest};
 
@@ -57,14 +61,14 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editCompClass: action.payload};
 
       case getType(scoreboardActions.cancelEditCompClass):
-         const newCompClasses1 = state.compClasses.filter(p2 => p2.id != -1);
+         const newCompClasses1 = state.compClasses!.filter(p2 => p2.id != -1);
          return { ...state, editCompClass: undefined, compClasses: newCompClasses1};
 
       case getType(scoreboardActions.startAddCompClass):
-         const newCompClasses = [...state.compClasses];
+         const newCompClasses = [...state.compClasses!];
          let newCompClass:CompClass = {
             id: -1,
-            contestId: state.contest.id,
+            contestId: state.contest!.id,
             name: "",
             description: "",
             timeBegin: "",
@@ -84,7 +88,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          if(problems2.length == 0) {
             editProblem = {
                id: -1,
-               contestId: state.contest.id,
+               contestId: state.contest!.id,
                number: 1
             };
             problems2.push(editProblem);
@@ -95,7 +99,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editProblem: action.payload};
 
       case getType(scoreboardActions.cancelEditProblem):
-         const newProblems1 = state.problems.filter(p1 => p1.id != -1);
+         const newProblems1 = state.problems!.filter(p1 => p1.id != -1);
          return { ...state, editProblem: undefined, problems: newProblems1};
 
       case getType(scoreboardActions.startAddProblem):
@@ -103,10 +107,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          const newProblems = [];
          let newProblem:Problem = {
             id: -1,
-            contestId: state.contest.id,
+            contestId: state.contest!.id,
             number: -1
          };
-         for(let p of state.problems) {
+         for(let p of state.problems!) {
             newProblems.push(p);
             if (p == problem) {
                newProblem.number = p.number + 1;
@@ -124,7 +128,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, contenders: action.payload };
 
       case getType(scoreboardActions.receiveColors):
-         return { ...state, colors: action.payload, colorMap: getColorMap(action.payload)};
+         return { ...state, colors: action.payload};
 
       case getType(scoreboardActions.startEditColor):
          return { ...state, editColor: action.payload};

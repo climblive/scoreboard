@@ -20,8 +20,6 @@ import AddIcon from '@material-ui/icons/AddCircleOutline';
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
       width: '100%',
-      marginTop: spacing(3),
-      overflowX: 'auto',
    },
    table: {
       minWidth: 700,
@@ -61,8 +59,8 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       return (
-         <div className="mainView">
-            <Paper className={classes.root}>
+         <Paper className={classes.root} style={{flexGrow:1, display:"flex", flexDirection:"column"}}>
+            <div style={{flexBasis:0, flexGrow:1, overflowY:"auto"}} >
                <Table className={classes.table}>
                   <TableHead>
                      <TableRow>
@@ -71,7 +69,7 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                         <TableCell>Location</TableCell>
                         <TableCell>Organizer</TableCell>
                         <TableCell>Qualifying problems</TableCell>
-                        <TableCell>
+                        <TableCell className={"icon-cell"}>
                            <IconButton color="inherit" aria-label="Menu" title="Add contest" onClick={() => this.props.history.push("/contests/new")}>
                               <AddIcon />
                            </IconButton>
@@ -94,8 +92,8 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                      ))}
                   </TableBody>
                </Table>
-            </Paper>
-         </div>
+            </div>
+         </Paper>
       );
    }
 }

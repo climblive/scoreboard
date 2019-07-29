@@ -1,7 +1,33 @@
 import { createSelector } from 'reselect'
 import { StoreState } from '../model/storeState';
+import {Color} from "../model/color";
+import {CompClass} from "../model/compClass";
 
-console.log("test");
+const getColors = (state: StoreState) => state.colors;
+const getCompClasses = (state: StoreState) => state.compClasses;
+
+export const getColorMap = createSelector(
+   [getColors],
+   (colors) => {
+      const colorMap = new Map<number, Color>();
+      if(colors) {
+         colors.forEach(color => colorMap.set(color.id, color));
+      }
+      return colorMap;
+   }
+);
+
+export const getCompClassMap = createSelector(
+   [getCompClasses],
+   (compClasses) => {
+      const map = new Map<number, CompClass>();
+      if(compClasses) {
+         compClasses.forEach(compClass => map.set(compClass.id, compClass));
+      }
+      return map;
+   }
+);
+
 
 /*const getScoreboardContenders = (state: StoreState, props: any) => {
    if (state.scoreboardData) {

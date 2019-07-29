@@ -41,6 +41,7 @@ export function loadContests(): any {
 
 export function loadContest(contestId: number): any {
    return (dispatch: Dispatch<any>) => {
+      dispatch(actions.clearContest());
       Api.getContest(contestId).then(contest => {
          dispatch(actions.receiveContest(contest));
          reloadProblems(dispatch, contestId);
@@ -55,7 +56,7 @@ export function loadContest(contestId: number): any {
 export function saveContest(onSuccess:(contest:Contest) => void): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contest = getState().contest;
-      Api.saveContest(contest).then(contest => {
+      Api.saveContest(contest!).then(contest => {
          dispatch(actions.receiveContest(contest));
          onSuccess(contest);
       }).catch(error => {
@@ -204,7 +205,7 @@ let reloadContenders = (dispatch: Dispatch<any>, contestId: number) => {
 
 export function createContenders(nNewContenders:number):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest.id;
+      let contestId = getState().contest!.id;
       Api.createContenders(contestId, nNewContenders).then(() => {
          reloadContenders(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
@@ -213,7 +214,7 @@ export function createContenders(nNewContenders:number):any {
 
 export function resetContenders():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest.id;
+      let contestId = getState().contest!.id;
       Api.resetContenders(contestId).then(() => {
          reloadContenders(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
@@ -222,7 +223,7 @@ export function resetContenders():any {
 
 export function exportResults():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest.id;
+      let contestId = getState().contest!.id;
       Api.exportContest(contestId).then(response => {
          console.log(response);
          saveAs(response, "contest.xls");
@@ -234,7 +235,7 @@ export function exportResults():any {
 
 export function generatePdf(file:Blob):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest.id;
+      let contestId = getState().contest!.id;
       let reader = new FileReader();
       reader.onload = (evt:any) => {
          let arrayBuffer = evt.currentTarget.result;

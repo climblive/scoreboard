@@ -19,7 +19,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 
 interface Props {
-   problems:Problem[],
+   problems?:Problem[],
    colors:Color[]
    colorMap:Map<number, Color>
    editProblem?: Problem
@@ -169,7 +169,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                                     )}
                                  </Select>
                               </FormControl>
-                              <TextField style={{textAlign: "right", width:60, fontSize:28, marginRight:10}} value={editProblem.points == undefined ? "" : editProblem.points} onChange={this.onPointsChange} />
+                              <TextField className="textfield-inherited" style={{textAlign: "right", width:60, fontSize:28, marginRight:10, color:"inherit"}} value={editProblem.points == undefined ? "" : editProblem.points} onChange={this.onPointsChange} />
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Ok" title="Ok" onClick={this.editOk}>
                                  <CheckIcon />
                               </IconButton>

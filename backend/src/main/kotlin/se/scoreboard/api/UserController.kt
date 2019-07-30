@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import se.scoreboard.configuration.MyPasswordEncoder
+import se.scoreboard.exception.WebException
+import se.scoreboard.getUserPrincipal
 import javax.transaction.Transactional
 
 
@@ -43,6 +45,13 @@ class UserController @Autowired constructor(
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)
+
+    @GetMapping("/user/me")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @Transactional
+    fun getCurrentUser() =
+            userService.findByEmail(getUserPrincipal()?.username!!)
+                ?: throw WebException(HttpStatus.INTERNAL_SERVER_ERROR, null)
 
     @GetMapping("/user/{id}/organizer")
     @PostAuthorize("hasPermission(returnObject, 'read')")

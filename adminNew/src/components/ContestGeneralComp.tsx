@@ -90,6 +90,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       this.setState(this.state);
    };
 
+   url = "https://clmb.live/scoreboard/1";
+
    render() {
       let contest = this.props.contest;
       if(!contest) {
@@ -99,8 +101,9 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
          <Paper>
             <div style={{padding:10}}>
                {!contest.isNew &&
-                  <div>
-                      <Button variant="outlined" color="primary" onClick={this.startPdfCreate}>Create PDF</Button>
+                  <div style={{marginBottom:10}}>
+                      <Button style={{marginRight:10}} variant="outlined" color="primary" onClick={this.startPdfCreate}>Create PDF</Button>
+                      <Button href={this.url} target="_blank" variant="outlined" color="primary">Open scoreboard</Button>
                   </div>
                }
                <div style={{display:"flex", flexDirection:"row"}}>

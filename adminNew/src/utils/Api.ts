@@ -5,6 +5,7 @@ import {CompClass} from "../model/compClass";
 import {Color} from "../model/color";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
+import {Serie} from "../model/serie";
 
 export class Api {
 
@@ -153,6 +154,22 @@ export class Api {
          return this.post("color", color);
       } else {
          return this.put("color/" + color.id, color);
+      }
+   }
+
+   static deleteSerie(serie: Serie): Promise<any> {
+      return this.delete("serie/" + serie.id);
+   }
+
+   static getSeries(): Promise<Serie[]> {
+      return this.get("serie");
+   }
+
+   static saveSerie(serie:Serie): Promise<Serie> {
+      if(serie.id == -1) {
+         return this.post("serie", serie);
+      } else {
+         return this.put("serie/" + serie.id, serie);
       }
    }
 

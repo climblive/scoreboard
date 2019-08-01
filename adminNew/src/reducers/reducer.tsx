@@ -6,6 +6,7 @@ import {Problem} from "../model/problem";
 import {CompLocation} from "../model/compLocation";
 import {Organizer} from "../model/organizer";
 import {CompClass} from "../model/compClass";
+import {Serie} from "../model/serie";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -127,6 +128,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveContenders):
          return { ...state, contenders: action.payload };
 
+      // ********
+
       case getType(scoreboardActions.receiveColors):
          return { ...state, colors: action.payload};
 
@@ -135,7 +138,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
       case getType(scoreboardActions.cancelEditColor):
          const newColors = state.colors.filter(p2 => p2.id != -1);
-         return { ...state, editColor: undefined, colors: newColors, newColors};
+         return { ...state, editColor: undefined, colors: newColors};
 
       case getType(scoreboardActions.startAddColor):
          const newColors2 = [...state.colors];
@@ -151,6 +154,34 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          let newEditColor = {...state.editColor!};
          newEditColor[action.payload.propName] = action.payload.value;
          return { ...state, editColor: newEditColor};
+
+      // ********
+
+      case getType(scoreboardActions.receiveSeries):
+         return { ...state, series: action.payload};
+
+      case getType(scoreboardActions.startEditSerie):
+         return { ...state, editSerie: action.payload};
+
+      case getType(scoreboardActions.cancelEditSerie):
+         const newSeries = state.series.filter(p2 => p2.id != -1);
+         return { ...state, editSerie: undefined, series: newSeries};
+
+      case getType(scoreboardActions.startAddSerie):
+         const newSeries2 = [...state.series];
+         let newSerie:Serie = {
+            id: -1,
+            name: "",
+         };
+         newSeries2.push(newSerie);
+         return { ...state, editSerie: newSerie, series: newSeries2};
+
+      case getType(scoreboardActions.updateEditSerie):
+         let newEditSerie = {...state.editSerie!};
+         newEditSerie[action.payload.propName] = action.payload.value;
+         return { ...state, editSerie: newEditSerie};
+
+      // ********
 
       case getType(scoreboardActions.receiveLocations):
          const locationMap = new Map<number, CompLocation>();

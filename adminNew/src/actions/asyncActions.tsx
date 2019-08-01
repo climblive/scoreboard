@@ -7,6 +7,7 @@ import {StoreState} from "../model/storeState";
 import {CompClass} from "../model/compClass";
 import { saveAs } from 'file-saver';
 import {Color} from "../model/color";
+import {Serie} from "../model/serie";
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -65,6 +66,8 @@ export function saveContest(onSuccess:(contest:Contest) => void): any {
    }
 }
 
+// ************
+
 let reloadColors = (dispatch: Dispatch<any>) => {
    Api.getColors().then(colors => {
       dispatch(actions.receiveColors(colors));
@@ -104,6 +107,50 @@ export function deleteColor(color:Color): any {
          .catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }
+
+// ************
+
+let reloadSeries = (dispatch: Dispatch<any>) => {
+   Api.getSeries().then(series => {
+      dispatch(actions.receiveSeries(series));
+   })
+      .catch(error => {
+         dispatch(actions.receiveSeries([]));
+         dispatch(actions.setErrorMessage(error));
+      });
+};
+
+export function loadSeries(): any {
+   return (dispatch: Dispatch<any>) => {
+      reloadColors(dispatch);
+   }
+}
+
+export function saveEditSerie(): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let serie = getState().editSerie!;
+      Api.saveSerie(serie).then(serie => {
+         // Reload the list of comp classes:
+         dispatch(actions.cancelEditSerie());
+         reloadSeries(dispatch);
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+   }
+}
+
+export function deleteSerie(serie:Serie): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.deleteSerie(serie)
+         .then(() => {
+            dispatch(actions.cancelEditSerie());
+            reloadColors(dispatch);
+         })
+         .catch(error => {dispatch(actions.setErrorMessage(error))});
+   }
+}
+
+// ************
 
 export function loadLocations(): any {
    return (dispatch: Dispatch<any>) => {

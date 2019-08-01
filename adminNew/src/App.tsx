@@ -17,6 +17,7 @@ import * as asyncActions from "./actions/asyncActions";
 import ContestsView from "./views/ContestsView";
 import ContestView from "./views/ContestView";
 import ColorsView from "./views/ColorsView";
+import SeriesView from "./views/SeriesView";
 
 export interface Props  {
    title: string,
@@ -71,6 +72,7 @@ class App extends React.Component<Props> {
                               <Route path="/contests" exact component={ContestsView} />
                               <Route path="/contests/:contestId" component={ContestView} />
                               <Route path="/colors" exact component={ColorsView} />
+                              <Route path="/series" exact component={SeriesView} />
                            </Switch>
                         </div>
                      </div>

@@ -39,8 +39,8 @@ function SideMenuComp({ classes }: SideMenuCompProps & StyledComponentProps) {
           </div>
           <Link to="/contests"><Button className={classes!!.menuItem}><TableChart /><span className={classes!!.menuText}>Contests</span></Button></Link>
           <Link to="/colors"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Colors</span></Button></Link>
-          <Link to="/locations"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Locations</span></Button></Link>
-          <Link to="/organizers"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Organizers</span></Button></Link>
+          {/*<Link to="/locations"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Locations</span></Button></Link>*/}
+          <Link to="/series"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Series</span></Button></Link>
       </div>
    );
 }

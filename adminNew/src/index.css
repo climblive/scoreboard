@@ -55,7 +55,7 @@ div.DraftEditor-root {
 
 .editor-action {
     cursor:pointer;
-
+    width:18px !important;
 }
 
 .editor-action:active {

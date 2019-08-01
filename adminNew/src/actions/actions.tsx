@@ -7,6 +7,7 @@ import {Color} from "../model/color";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {ContenderData} from "../model/contenderData";
+import {Serie} from "../model/serie";
 
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
@@ -31,6 +32,12 @@ export const startEditColor = createStandardAction('START_EDIT_COLOR')<Color>();
 export const cancelEditColor = createStandardAction('CANCEL_EDIT_COLOR')();
 export const startAddColor = createStandardAction('START_ADD_COLOR')();
 export const updateEditColor = createStandardAction('UPDATE_EDIT_COLOR')<{propName:string, value:any}>();
+
+export const receiveSeries = createStandardAction('RECEIVE_SERIE')<Serie[]>();
+export const startEditSerie = createStandardAction('START_EDIT_SERIE')<Serie>();
+export const cancelEditSerie = createStandardAction('CANCEL_EDIT_SERIE')();
+export const startAddSerie = createStandardAction('START_ADD_SERIE')();
+export const updateEditSerie = createStandardAction('UPDATE_EDIT_SERIE')<{propName:string, value:any}>();
 
 export const receiveCompClasses = createStandardAction('RECEIVE_COMP_CLASSES')<CompClass[]>();
 export const startEditCompClass = createStandardAction('START_EDIT_COMP_CLASS')<CompClass>();

@@ -159,7 +159,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
       let classes = this.props.classes!!;
       let editColor = this.props.editColor;
       if(!colors) {
-         return (<CircularProgress/>)
+         return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       return (
          <Paper className={classes.root} style={{flexGrow:1, display:"flex", flexDirection:"column"}}>

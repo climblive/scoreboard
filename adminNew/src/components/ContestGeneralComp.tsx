@@ -10,6 +10,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import RichTextEditor from "./RichTextEditor";
 
 interface Props {
    contest:Contest,
@@ -24,7 +25,7 @@ type State = {
 
 class ContestGeneralComp extends React.Component<Props & RouteComponentProps, State> {
    public readonly state: State = {
-      showPopup:false
+      showPopup:false,
    };
 
    inputRef:any;
@@ -53,8 +54,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       this.props.updateContest!("gracePeriod", e.target.value);
    };
 
-   onRulesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.updateContest!("rules", e.target.value);
+   onRulesChange = (rules: string) => {
+      this.props.updateContest!("rules", rules);
    };
 
    createPdf = () => {
@@ -97,12 +98,6 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       return (
          <Paper>
             <div style={{padding:10}}>
-               {/*<ReferenceInput source="locationId" reference="location">
-                  <SelectInput optionText="name"/>
-               </ReferenceInput>
-               <ReferenceInput source="organizerId" reference="organizer">
-                  <SelectInput optionText="name"/>
-               </ReferenceInput>*/}
                {!contest.isNew &&
                   <div>
                       <Button variant="outlined" color="primary" onClick={this.startPdfCreate}>Create PDF</Button>
@@ -115,8 +110,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                      <TextField style={{marginTop:10}} label="Number of qualifying problems" value={contest.qualifyingProblems} onChange={this.onQualifyingProblemsChange}/>
                      <TextField style={{marginTop:10}} label="Grace period" value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>
                   </div>
-                  <div style={{marginLeft:10, display:"flex", flexDirection:"row", flexGrow:1, flexBasis:0}}>
-                     <TextField style={{flexGrow:1}} multiline label="Rules" value={contest.rules} onChange={this.onRulesChange}/>
+                  <div style={{marginLeft:10, display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>
+                     <RichTextEditor title="Rules:" value={contest.rules} onChange={this.onRulesChange}/>
                   </div>
                </div>
                <Button style={{marginTop:10}} variant="outlined" color="primary" onClick={this.onSave}>{contest.isNew ? 'Add' : 'Save'}</Button>

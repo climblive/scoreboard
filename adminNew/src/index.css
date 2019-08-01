@@ -44,3 +44,20 @@ button:focus {
 .textfield-inherited .MuiInput-underline:before {
     border-bottom-color:white !important;
 }
+
+div.DraftEditor-root {
+    flex-grow:1;
+    box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.5);
+    overflow-y: scroll;
+    padding:5px;
+    font-size: 16px;
+}
+
+.editor-action {
+    cursor:pointer;
+
+}
+
+.editor-action:active {
+    background:lightgrey;
+}

@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import {Contest} from "../model/contest";
-import {TextField} from "@material-ui/core";
+import {InputLabel, TextField} from "@material-ui/core";
 import {RouteComponentProps, withRouter} from "react-router";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -11,9 +11,14 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import RichTextEditor from "./RichTextEditor";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import {Serie} from "../model/serie";
 
 interface Props {
    contest:Contest,
+   series?:Serie[],
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => void,
    createPdf?: (file:Blob) => void
@@ -50,12 +55,20 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       this.props.updateContest!("qualifyingProblems", e.target.value);
    };
 
+   onFinalistsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.updateContest!("finalists", e.target.value);
+   };
+
    onGracePeriodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.props.updateContest!("gracePeriod", e.target.value);
    };
 
    onRulesChange = (rules: string) => {
       this.props.updateContest!("rules", rules);
+   };
+
+   onSeriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      this.props.updateContest!("seriesId", parseInt(e.target.value));
    };
 
    createPdf = () => {
@@ -94,7 +107,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
 
    render() {
       let contest = this.props.contest;
-      if(!contest) {
+      let series = [] as Serie[]//this.props.series;
+      if(!(contest && series)) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       return (
@@ -110,8 +124,22 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                   <div style={{display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>
                      <TextField label="Name" value={contest.name} onChange={this.onNameChange}/>
                      <TextField style={{marginTop:10}} label="Description" value={contest.description} onChange={this.onDescriptionChange}/>
+                     <FormControl style={{marginTop:10}} >
+                        <InputLabel shrink htmlFor="series-select">Serie</InputLabel>
+                        <Select
+                           id="series-select"
+                           value={contest.seriesId == undefined ? "" : contest.seriesId}
+                           onChange={this.onSeriesChange}
+                        >
+                           <MenuItem value=""><em>None</em></MenuItem>
+                           {series!.map(serie =>
+                              <MenuItem key={serie.id} value={serie.id}>{serie.name}</MenuItem>
+                           )}
+                        </Select>
+                     </FormControl>
                      <TextField style={{marginTop:10}} label="Number of qualifying problems" value={contest.qualifyingProblems} onChange={this.onQualifyingProblemsChange}/>
-                     <TextField style={{marginTop:10}} label="Grace period" value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>
+                     <TextField style={{marginTop:10}} label="Number of finalists" value={contest.finalists} onChange={this.onFinalistsChange}/>
+                     <TextField style={{marginTop:10}} label="Grace period (minutes)" value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>
                   </div>
                   <div style={{marginLeft:10, display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>
                      <RichTextEditor title="Rules:" value={contest.rules} onChange={this.onRulesChange}/>

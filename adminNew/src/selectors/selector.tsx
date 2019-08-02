@@ -5,6 +5,8 @@ import {CompClass} from "../model/compClass";
 
 const getColors = (state: StoreState) => state.colors;
 const getCompClasses = (state: StoreState) => state.compClasses;
+const getContests = (state: StoreState) => state.contests;
+const getOrganizer = (state: StoreState) => state.organizer;
 
 export const getColorMap = createSelector(
    [getColors],
@@ -25,6 +27,20 @@ export const getCompClassMap = createSelector(
          compClasses.forEach(compClass => map.set(compClass.id, compClass));
       }
       return map;
+   }
+);
+
+export const getOrganizerContests = createSelector(
+   [getContests, getOrganizer],
+   (contests, organizer) => {
+      return contests && organizer ? contests.filter(c => c.organizerId == organizer.id) : undefined;
+   }
+);
+
+export const getOrganizerColors = createSelector(
+   [getColors, getOrganizer],
+   (colors, organizer) => {
+      return colors && organizer ? colors.filter(c => c.organizerId == organizer.id) : undefined;
    }
 );
 

@@ -6,14 +6,15 @@ import {Color} from "./color";
 import {Organizer} from "./organizer";
 import {CompLocation} from "./compLocation";
 import {Serie} from "./serie";
+import {User} from "./user";
 
 export interface StoreState {
-   contests: Contest[],
    title: string,
 
    loggingIn: boolean,
-   loggedInUser?: string
+   loggedInUser?: User
 
+   contests?: Contest[],
    contest?: Contest;
 
    problems?: Problem[];
@@ -25,15 +26,16 @@ export interface StoreState {
 
    contenders?: ContenderData[];
 
-   colors: Color[],
+   colors?: Color[],
    editColor?: Color;
 
-   series: Serie[],
+   series?: Serie[],
    editSerie?: Serie;
 
-   locations: CompLocation[],
+   locations?: CompLocation[],
 
-   organizers: Organizer[],
+   organizers?: Organizer[],
+   organizer?: Organizer
 
    errorMessage?: string;
 }

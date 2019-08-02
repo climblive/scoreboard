@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, StyledComponentProps} from "@material-ui/core";
+import {Button, InputLabel, StyledComponentProps} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
@@ -7,13 +7,24 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {RouteComponentProps, withRouter} from "react-router";
 import * as qs from "qs";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {User} from "../model/user";
+import {Organizer} from "../model/organizer";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 export interface TopMenuCompProps {
    title:string
    loggingIn: boolean
-   loggedInUser?: string
+   loggedInUser?: User
+   organizers?: Organizer[],
+   organizer?: Organizer
+
    login?: (code: string) => void
    logout?: () => void
+   setOrganizer?: (organizer:Organizer) => void
 }
 
 const styles = {
@@ -31,6 +42,25 @@ const styles = {
 
 class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps & StyledComponentProps> {
 
+   theme = createMuiTheme({
+      palette: {
+         type: "dark",
+         primary: {
+            // light: will be calculated from palette.primary.main,
+            main: '#5f524a',
+            // dark: will be calculated from palette.primary.main,
+            // contrastText: will be calculated to contrast with palette.primary.main
+         },
+         secondary: {
+            //light: '#0066ff',
+            main: '#eb0708',
+            // dark: will be calculated from palette.secondary.main,
+            //contrastText: '#ffcc00',
+         },
+         // error: will use the default color
+      },
+   });
+
    componentDidMount() {
       console.log(this.props);
       /*let query = qs.parse(this.props.location.search, {
@@ -47,6 +77,11 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
       }
    }
 
+   onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const id = parseInt(e.target.value);
+      this.props.setOrganizer!(this.props.organizers!.find(o => o.id == id)!);
+   };
+
    getUrl = (command:string) => {
       console.log(encodeURIComponent(window.location.origin));
 
@@ -60,7 +95,9 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
    };
 
    login = () => {
-      window.location.href = this.getUrl("login");
+      // TODO: Fix after JWT
+      //window.location.href = this.getUrl("login");
+      this.props.login!("");
    };
 
    signup = () => {
@@ -71,26 +108,41 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
       const title = this.props.title;
       const loggingIn = this.props.loggingIn;
       const loggedInUser = this.props.loggedInUser;
-      const classes = this.props.classes!!;
+      const classes = this.props.classes!;
+      const organizers = this.props.organizers;
+      const organizer = this.props.organizer;
       return (
          <div>
             <AppBar position="static">
-               <Toolbar>
-                  <Typography variant="h6" color="inherit" className={classes.grow}>
-                     {title}
-                  </Typography>
-                  {loggingIn && <CircularProgress style={{color:"white", width:20, height:20}}/>}
-                  {(!loggingIn && !loggedInUser) && <div>
-                      <Button color="inherit" onClick={this.login}>Login</Button>
-                      <Button color="inherit" onClick={this.signup}>Sign up</Button>
-                  </div>}
-                  {loggedInUser && <div>
-                     <span>{loggedInUser}</span>
-                     <Button color="inherit" onClick={this.props.logout!}>Logout</Button>
-                  </div>}
-               </Toolbar>
+               <MuiThemeProvider theme={this.theme}>
+                  <Toolbar>
+                     {organizers && <FormControl style={{minWidth:200, marginRight:10}}>
+                        <InputLabel shrink htmlFor="series-select">Organizer</InputLabel>
+                        <Select
+                           id="series-select"
+                           value={organizer!.id}
+                           onChange={this.onOrganizerChange}
+                        >
+                           {organizers!.map(organizer =>
+                              <MenuItem key={organizer.id} value={organizer.id}>{organizer.name}</MenuItem>
+                           )}
+                        </Select>
+                     </FormControl>}
+                     <Typography variant="h6" style={{marginTop:11}} className={classes.grow}>
+                        {title}
+                     </Typography>
+                     {loggingIn && <CircularProgress style={{color:"white", width:20, height:20}}/>}
+                     {(!loggingIn && !loggedInUser) && <div>
+                         <Button color="inherit" onClick={this.login}>Login</Button>
+                         <Button color="inherit" onClick={this.signup}>Sign up</Button>
+                     </div>}
+                     {loggedInUser && <div>
+                        <span style={{marginRight:10}}>{loggedInUser.name}</span>
+                        <Button color="inherit" onClick={this.props.logout!}>Logout</Button>
+                     </div>}
+                  </Toolbar>
+               </MuiThemeProvider>
             </AppBar>
-
          </div>
       );
    }

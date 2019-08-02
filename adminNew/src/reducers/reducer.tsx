@@ -12,6 +12,15 @@ export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
    switch (action.type) {
+      case getType(scoreboardActions.setLoggingIn):
+         return { ...state, loggingIn: action.payload };
+
+      case getType(scoreboardActions.setLoggedInUser):
+         return { ...state, loggedInUser: action.payload };
+
+      case getType(scoreboardActions.logout):
+         return { title: "", loggingIn: false};
+
       case getType(scoreboardActions.receiveContests):
          return { ...state, contests: action.payload };
 
@@ -42,9 +51,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
                id: -1,
                name: "",
                description: "",
-               organizerId: 1,
+               organizerId: state.organizer!.id,
                locationId: 1,
                qualifyingProblems:10,
+               finalists:7,
                gracePeriod: 15,
                rules: "",
                isNew: true
@@ -137,13 +147,14 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editColor: action.payload};
 
       case getType(scoreboardActions.cancelEditColor):
-         const newColors = state.colors.filter(p2 => p2.id != -1);
+         const newColors = state.colors!.filter(p2 => p2.id != -1);
          return { ...state, editColor: undefined, colors: newColors};
 
       case getType(scoreboardActions.startAddColor):
-         const newColors2 = [...state.colors];
+         const newColors2 = [...state.colors!];
          let newColor:Color = {
             rgbPrimary:"#000000",
+            organizerId: state.organizer!.id,
             id: -1,
             name: "",
          };
@@ -164,11 +175,11 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editSerie: action.payload};
 
       case getType(scoreboardActions.cancelEditSerie):
-         const newSeries = state.series.filter(p2 => p2.id != -1);
+         const newSeries = state.series!.filter(p2 => p2.id != -1);
          return { ...state, editSerie: undefined, series: newSeries};
 
       case getType(scoreboardActions.startAddSerie):
-         const newSeries2 = [...state.series];
+         const newSeries2 = [...state.series!];
          let newSerie:Serie = {
             id: -1,
             name: "",
@@ -191,7 +202,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveOrganizers):
          const organizerMap = new Map<number, Organizer>();
          action.payload.forEach(organizer => organizerMap.set(organizer.id, organizer));
-         return { ...state, organizers: action.payload, organizerMap: organizerMap };
+         return { ...state, organizers: action.payload, organizer: action.payload[0], organizerMap: organizerMap };
+
+      case getType(scoreboardActions.setOrganizer):
+         return  { ...state, organizer: action.payload};
 
       default:
          console.log("ACTION", action);

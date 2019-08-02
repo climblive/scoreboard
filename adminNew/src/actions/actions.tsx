@@ -8,12 +8,13 @@ import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {ContenderData} from "../model/contenderData";
 import {Serie} from "../model/serie";
+import {User} from "../model/user";
 
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
 export const setTitle = createStandardAction('SET_TITLE')<string>();
 export const setLoggingIn = createStandardAction('SET_LOGGING_IN')<boolean>();
-export const setLoggedInUser = createStandardAction('SET_LOGGED_IN_USER')<string>();
+export const setLoggedInUser = createStandardAction('SET_LOGGED_IN_USER')<User>();
 export const logout = createStandardAction('LOGOUT')();
 
 
@@ -26,6 +27,7 @@ export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>()
 export const receiveLocations = createStandardAction('RECEIVE_LOCATIONS')<CompLocation[]>();
 
 export const receiveOrganizers = createStandardAction('RECEIVE_ORGANIZERS')<Organizer[]>();
+export const setOrganizer = createStandardAction('SET_ORGANIZERS')<Organizer>();
 
 export const receiveColors = createStandardAction('RECEIVE_COLORS')<Color[]>();
 export const startEditColor = createStandardAction('START_EDIT_COLOR')<Color>();

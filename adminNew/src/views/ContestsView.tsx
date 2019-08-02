@@ -16,6 +16,7 @@ import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
+import {getOrganizerContests} from "../selectors/selector";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -27,7 +28,7 @@ const styles = ({ spacing }: Theme) => createStyles({
 });
 
 interface Props  {
-   contests: Contest[],
+   contests?: Contest[],
    loadContests?: () => void,
    setTitle?: (title: string) => void,
 }
@@ -49,8 +50,6 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
       this.props.loadContests!();
       this.props.setTitle!("Contests");
    }
-
-
 
    render() {
       let contests = this.props.contests;
@@ -100,7 +99,7 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
 
 function mapStateToProps(state: StoreState, props: any): Props {
    return {
-      contests: state.contests,
+      contests: getOrganizerContests(state)
    };
 }
 

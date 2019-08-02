@@ -29,6 +29,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
+import {getOrganizerColors} from "../selectors/selector";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -40,7 +41,7 @@ const styles = ({ spacing }: Theme) => createStyles({
 });
 
 interface Props  {
-   colors: Color[],
+   colors?: Color[],
    editColor?:Color,
 
    loadColors?: () => void,
@@ -259,7 +260,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
 
 function mapStateToProps(state: StoreState, props: any): Props {
    return {
-      colors: state.colors,
+      colors: getOrganizerColors(state),
       editColor: state.editColor,
    };
 }

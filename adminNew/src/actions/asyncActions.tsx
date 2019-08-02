@@ -12,12 +12,20 @@ import {Serie} from "../model/serie";
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
       dispatch(actions.setLoggingIn(true));
-      Api.setCredentials(code);
+      // TODO: Fix after JWT
+      //Api.setCredentials(code);
+      Api.setCredentials(undefined);
       Api.getUser()
          .then(userData => {
             console.log(userData);
             dispatch(actions.setLoggingIn(false));
-            dispatch(actions.setLoggedInUser("USER"));
+            dispatch(actions.setLoggedInUser(userData));
+            Api.getOrganizers().then(organizers => {
+               dispatch(actions.receiveOrganizers(organizers));
+            }).catch(error => {
+               dispatch(actions.setErrorMessage(error));
+
+            })
          })
          .catch(error => {
             Api.setCredentials(undefined);
@@ -122,7 +130,7 @@ let reloadSeries = (dispatch: Dispatch<any>) => {
 
 export function loadSeries(): any {
    return (dispatch: Dispatch<any>) => {
-      reloadColors(dispatch);
+      reloadSeries(dispatch);
    }
 }
 

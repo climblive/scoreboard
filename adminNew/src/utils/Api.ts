@@ -6,6 +6,7 @@ import {Color} from "../model/color";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {Serie} from "../model/serie";
+import {User} from "../model/user";
 
 export class Api {
 
@@ -89,7 +90,7 @@ export class Api {
       this.credentials = credentials
    }
 
-   static getUser(): Promise<String> {
+   static getUser(): Promise<User> {
       return this.get("user/me");
    }
 
@@ -181,8 +182,20 @@ export class Api {
       return this.get("location");
    }
 
+   static deleteOrganizer(organizer: Organizer): Promise<any> {
+      return this.delete("organizer/" + organizer.id);
+   }
+
    static getOrganizers(): Promise<Organizer[]> {
       return this.get("organizer");
+   }
+
+   static saveOrganizer(organizer: Organizer): Promise<Organizer> {
+      if(organizer.id == -1) {
+         return this.post("organizer", organizer);
+      } else {
+         return this.put("organizer/" + organizer.id, organizer);
+      }
    }
 
    static setContender(contenderData : ContenderData): Promise<ContenderData> {

@@ -18,13 +18,18 @@ import ContestsView from "./views/ContestsView";
 import ContestView from "./views/ContestView";
 import ColorsView from "./views/ColorsView";
 import SeriesView from "./views/SeriesView";
+import {User} from "./model/user";
+import {Organizer} from "./model/organizer";
 
 export interface Props  {
    title: string,
    errorMessage?: string,
-   loggedInUser?: string,
+   loggedInUser?: User,
    loggingIn: boolean,
+   organizers?: Organizer[],
+   organizer?: Organizer
    clearErrorMessage?: () => void
+   setOrganizer?: (organizer:Organizer) => void
    login?: (code:string) => void
    logout?: () => void
 }
@@ -59,21 +64,25 @@ class App extends React.Component<Props> {
             <MuiPickersUtilsProvider utils={MomentUtils}>
                <MuiThemeProvider theme={this.theme}>
                   <div className="App">
-                     <SideMenuComp/>
+                     <SideMenuComp loggedInUser={this.props.loggedInUser} />
                      <div style={{flexGrow: 1, flexBasis: 0, display:'flex', flexDirection:'column'}}>
                         <TopMenuComp login={this.props.login}
                                      logout={this.props.logout}
                                      loggingIn={this.props.loggingIn}
                                      loggedInUser={this.props.loggedInUser}
+                                     organizers={this.props.organizers}
+                                     organizer={this.props.organizer}
+                                     setOrganizer={this.props.setOrganizer}
                                      title={this.props.title} />
                         <div className="mainView">
-                           <Switch>
+
+                           {this.props.loggedInUser && <Switch>
                               <Route path="/" exact component={ContestsView} />
                               <Route path="/contests" exact component={ContestsView} />
                               <Route path="/contests/:contestId" component={ContestView} />
                               <Route path="/colors" exact component={ColorsView} />
                               <Route path="/series" exact component={SeriesView} />
-                           </Switch>
+                           </Switch>}
                         </div>
                      </div>
                   </div>
@@ -111,6 +120,8 @@ export function mapStateToProps(state: StoreState, props: any): Props {
       title: state.title,
       loggingIn: state.loggingIn,
       loggedInUser: state.loggedInUser,
+      organizers: state.organizers,
+      organizer: state.organizer
    };
 }
 
@@ -119,6 +130,7 @@ export function mapDispatchToProps(dispatch: Dispatch<any>) {
       clearErrorMessage: () => dispatch(actions.clearErrorMessage()),
       login: (code:string) => dispatch(asyncActions.login(code)),
       logout: () => dispatch(actions.logout()),
+      setOrganizer: (organizer:Organizer) => dispatch(actions.setOrganizer(organizer))
    };
 }
 

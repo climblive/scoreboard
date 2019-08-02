@@ -4,8 +4,10 @@ import {Palette, TableChart} from "@material-ui/icons";
 import {Button, StyledComponentProps, Theme} from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import {User} from "../model/user";
 
 export interface SideMenuCompProps {
+   loggedInUser?: User
 }
 
 const styles = ({ spacing }: Theme) => createStyles({
@@ -31,16 +33,18 @@ const styles = ({ spacing }: Theme) => createStyles({
    }
 });
 
-function SideMenuComp({ classes }: SideMenuCompProps & StyledComponentProps) {
+function SideMenuComp({ classes, loggedInUser }: SideMenuCompProps & StyledComponentProps) {
    return (
        <div className={classes!!.sideMenu}>
           <div style={{textAlign:'center'}}>
                <img style={{width:120, marginTop:20}} src="/clmb_MainLogo_NoShadow.png"/>
           </div>
-          <Link to="/contests"><Button className={classes!!.menuItem}><TableChart /><span className={classes!!.menuText}>Contests</span></Button></Link>
-          <Link to="/colors"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Colors</span></Button></Link>
-          {/*<Link to="/locations"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Locations</span></Button></Link>*/}
-          <Link to="/series"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Series</span></Button></Link>
+          {loggedInUser && <div>
+             <Link to="/contests"><Button className={classes!!.menuItem}><TableChart /><span className={classes!!.menuText}>Contests</span></Button></Link>
+             <Link to="/colors"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Colors</span></Button></Link>
+             {/*<Link to="/locations"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Locations</span></Button></Link>*/}
+             <Link to="/series"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Series</span></Button></Link>
+          </div>}
       </div>
    );
 }

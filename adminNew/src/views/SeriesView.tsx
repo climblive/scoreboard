@@ -33,7 +33,7 @@ const styles = ({ spacing }: Theme) => createStyles({
 });
 
 interface Props  {
-   series: Serie[],
+   series?: Serie[],
    editSerie?:Serie,
 
    loadSeries?: () => void,

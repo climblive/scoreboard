@@ -20,7 +20,7 @@ import TextField from "@material-ui/core/TextField";
 
 interface Props {
    problems?:Problem[],
-   colors:Color[]
+   colors?:Color[],
    colorMap:Map<number, Color>
    editProblem?: Problem
 
@@ -62,7 +62,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
    getProblemStyle = (problem:Problem) => {
       let color = this.props.colorMap.get(problem.colorId ? problem.colorId : -1)!;
       if(!color) {
-         color = {id: -1, name: "None", rgbPrimary: "888"};
+         color = {id: -1, organizerId: -1, name: "None", rgbPrimary: "888"};
       }
       let rgbColor = color.rgbPrimary;
       if(rgbColor.charAt(0) !== '#') {
@@ -164,7 +164,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                                     value={editProblem.colorId == undefined ? "Select color" : editProblem.colorId}
                                     onChange={this.onColorChange}
                                  >
-                                    {this.props.colors.map(color =>
+                                    {this.props.colors!.map(color =>
                                        <MenuItem key={color.id} value={color.id}>{color.name}</MenuItem>
                                     )}
                                  </Select>

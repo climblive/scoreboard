@@ -58,7 +58,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, contenderData: undefined, contenderNotFound: true};
 
       case getType(scoreboardActions.receiveScoreboardData):
-         return { ...state, scoreboardData: action.payload };
+         return { ...state, scoreboardData: action.payload, currentCompClassId: action.payload[0].compClass.id};
+
+      case getType(scoreboardActions.setCurrentCompClassId):
+         return { ...state, currentCompClassId: action.payload};
 
       case getType(scoreboardActions.receiveContest):
          return { ...state, contest: action.payload };

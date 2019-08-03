@@ -9,7 +9,7 @@ export interface ScoreboardClassHeaderCompProps {
 export function ScoreboardClassHeaderComp({ compClass }: ScoreboardClassHeaderCompProps) {
    return (
       <div className="compClassHeader">
-         <div className="compClass">{compClass.name}</div>
+         <div className="showLarge compClass">{compClass.name}</div>
          <div className="status">{compClass.statusString}</div>
          <div className="time">{compClass.time}</div>
       </div>

@@ -5,7 +5,7 @@ import { ContenderData } from '../model/contenderData';
 import * as ReactModal from 'react-modal';
 import { Contest } from '../model/contest';
 import ContenderInfoComp from "./ContenderInfoComp";
-import {Redirect} from "react-router";
+import {Redirect, RouteComponentProps, withRouter} from "react-router";
 import {SortBy} from "../constants/constants";
 import {ProblemState} from "../model/problemState";
 import {Tick} from "../model/tick";
@@ -13,15 +13,14 @@ import {CompClass} from "../model/compClass";
 import ProblemList from "./ProblemList";
 import {Color} from "../model/color";
 import Spinner from "./Spinner";
+import {StoreState} from "../model/storeState";
+import {connect, Dispatch} from "react-redux";
+import * as asyncActions from "../actions/asyncActions";
+import * as actions from "../actions/actions";
 
 export interface Props {
    contenderData?: ContenderData,
    contenderNotFound: boolean,
-   match: {
-      params: {
-         code: string
-      }
-   }
    contest: Contest,
    problems: Problem[],
    compClasses: CompClass[],
@@ -43,25 +42,22 @@ type State = {
    goBack: boolean,
 }
 
-export default class MainView extends React.Component<Props, State> {
+class MainView extends React.Component<Props & RouteComponentProps, State> {
    public readonly state: State = {
       userInfoModalIsOpen: false,
       rulesModalIsOpen: false,
       goBack: false
    };
 
-   constructor(props: Props) {
-      super(props);
-   }
-
    componentDidMount() {
       ReactModal.setAppElement("body");
 
-      let code : string = this.props.match.params.code;
+      let code : string = this.props.match.params["code"];
       this.props.loadUserData!(code);
    }
 
    render() {
+      const code = this.props.match.params["code"];
       if(this.state.goBack) {
          return <Redirect to="/" />
       } else if(this.props.contenderNotFound) {
@@ -105,7 +101,7 @@ export default class MainView extends React.Component<Props, State> {
                <div className="view mainView">
                   <ContenderInfoComp
                      existingUserData={this.props.contenderData}
-                     activationCode={this.props.match.params.code}
+                     activationCode={code}
                      contest={this.props.contest}
                      compClasses={this.props.compClasses}
                      saveUserData={this.props.saveUserData}
@@ -126,7 +122,7 @@ export default class MainView extends React.Component<Props, State> {
                <div className="view mainView">
                   <ContenderInfoComp
                      existingUserData={this.props.contenderData}
-                     activationCode={this.props.match.params.code}
+                     activationCode={code}
                      contest={this.props.contest}
                      compClasses={this.props.compClasses}
                      saveUserData={this.props.saveUserData}
@@ -211,3 +207,30 @@ export default class MainView extends React.Component<Props, State> {
       }
    }
 }
+
+function mapStateToProps(state: StoreState, props: any): Props {
+   return {
+      contenderData: state.contenderData,
+      contenderNotFound: state.contenderNotFound,
+      contest: state.contest,
+      problems: state.problems,
+      compClasses: state.compClasses,
+      ticks: state.ticks,
+      colors: state.colors,
+      problemsSortedBy: state.problemsSortedBy,
+      problemIdBeingUpdated: state.problemIdBeingUpdated,
+      errorMessage: state.errorMessage,
+   };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+   return {
+      setProblemStateAndSave: (problem: Problem, problemState: ProblemState, tick?:Tick) => dispatch(asyncActions.setProblemStateAndSave(problem, problemState, tick)),
+      loadUserData: (code: string) => dispatch(asyncActions.loadUserData(code)),
+      saveUserData: (contenderData: ContenderData) => dispatch(asyncActions.saveUserData(contenderData)),
+      sortProblems: (sortBy: SortBy) => dispatch(actions.sortProblems(sortBy)),
+      clearErrorMessage: () => dispatch(actions.clearErrorMessage())
+   };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(MainView));

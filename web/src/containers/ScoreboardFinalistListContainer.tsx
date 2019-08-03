@@ -9,7 +9,7 @@ const makeMapStateToProps = () => {
       return {
          compClass: props.compClass,
          totalList: getFinalistList(state, props),
-         isPaging: false,
+         isPaging: props.isPaging,
          pagingCounter: state.pagingCounter
       };
    }

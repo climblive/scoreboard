@@ -8,27 +8,34 @@ import ScoreboardTotalListContainer from '../containers/ScoreboardTotalListConta
 import ScoreboardFinalistListContainer from '../containers/ScoreboardFinalistListContainer';
 import { ScoreboardClassHeaderComp } from './ScoreboardClassHeaderComp';
 import Spinner from "./Spinner";
+import {StoreState} from "../model/storeState";
+import {connect, Dispatch} from "react-redux";
+import * as asyncActions from "../actions/asyncActions";
+import * as actions from "../actions/actions";
+import {Contest} from "../model/contest";
+import {RouteComponentProps, withRouter} from "react-router";
 
 export interface Props {
    scoreboardData: ScoreboardContenderList[];
-   match: {
-      params: {
-         id: number
-      }
-   }
+   currentCompClassId: number;
+   contest: Contest;
    loadScoreboardData?: (id:number) => void;
+   loadContest?: (id:number) => void;
    receiveScoreboardItem?: (scoreboardPushItem: ScoreboardPushItem) => void;
    updateScoreboardTimer?: () => void;
+   setCurrentCompClassId?: (compClassId:number) => void;
 }
 
-export default class ScoreboardView extends React.Component<Props> {
+class ScoreboardView extends React.Component<Props & RouteComponentProps> {
 
    client: Client;
    intervalId: number;
 
    componentDidMount() {
       document.title = "Scoreboard";
-      const contestId = this.props.match.params.id;
+      const contestId = this.props.match.params["id"];
+      this.props.loadContest!(contestId);
+
       this.client = new Client({
          brokerURL: Api.getLiveUrl(),
          /*debug: function (str) {
@@ -59,19 +66,32 @@ export default class ScoreboardView extends React.Component<Props> {
    }
 
    render() {
-      var scoreboardData = this.props.scoreboardData;
-      
+      const scoreboardData = this.props.scoreboardData;
+
       if (scoreboardData) {
-         var headers = scoreboardData.map(scoreboardList => <ScoreboardClassHeaderComp key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
-         var finalistList = scoreboardData.map(scoreboardList => <ScoreboardFinalistListContainer key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
-         var totalList = scoreboardData.map(scoreboardList => <ScoreboardTotalListContainer key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
+         const currentCompClassId = this.props.currentCompClassId;
+         const currentCompClass = scoreboardData.find(sd => sd.compClass.id == currentCompClassId)!.compClass;
+
+         let headers = scoreboardData.map(scoreboardList => <ScoreboardClassHeaderComp key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
+         let finalistList = scoreboardData.map(scoreboardList => <ScoreboardFinalistListContainer key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
+         let totalList = scoreboardData.map(scoreboardList => <ScoreboardTotalListContainer key={scoreboardList.compClass.name} isPaging={true} compClass={scoreboardList.compClass} />);
          return (
             <div className="scoreboardView">
-               <div className="scoreboardListContainer">{headers}</div>
+               <div style={{margin:20}} className="showSmall headerRow">
+                  { scoreboardData.map(scoreboardList =>
+                     <div key={scoreboardList.compClass.id}
+                          style={{padding:5, fontSize:18}}
+                          className={scoreboardList.compClass.id == currentCompClassId ? "selector selected" : "selector"}
+                          onClick={() => this.props.setCurrentCompClassId!(scoreboardList.compClass.id)}>{scoreboardList.compClass.name}</div>)}
+               </div>
+               <div className="showLarge scoreboardListContainer">{headers}</div>
+               <div className="showSmall scoreboardListContainer"><ScoreboardClassHeaderComp compClass={currentCompClass} /></div>
                <div className="header">Finalister</div>
-               <div className="scoreboardListContainer">{finalistList}</div>
+               <div className="showLarge scoreboardListContainer">{finalistList}</div>
+               <div className="showSmall scoreboardListContainer"><ScoreboardFinalistListContainer compClass={currentCompClass} /></div>
                <div className="header">Totalpoäng</div>
-               <div className="scoreboardListContainer total">{totalList}</div>
+               <div className="showLarge scoreboardListContainer total">{totalList}</div>
+               <div className="showSmall scoreboardListContainer total"><ScoreboardTotalListContainer compClass={currentCompClass} /></div>
                <div className="logoContainer">
                   <img height="70" src="/logos/highSport.gif" />
                   <img height="70" src="/logos/klatterdomen.jpg" />
@@ -93,3 +113,23 @@ export default class ScoreboardView extends React.Component<Props> {
       }
    }
 }
+
+function mapStateToProps(state: StoreState, props: any): Props {
+   return {
+      scoreboardData: state.scoreboardData,
+      contest: state.contest,
+      currentCompClassId: state.currentCompClassId
+   };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+   return {
+      loadScoreboardData: (contestId:number) => dispatch(asyncActions.loadScoreboardData(contestId)),
+      loadContest: (contestId:number) => dispatch(asyncActions.loadContest(contestId)),
+      receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem)),
+      updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
+      setCurrentCompClassId: (compClassId:number) => dispatch(actions.setCurrentCompClassId(compClassId))
+   };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ScoreboardView));

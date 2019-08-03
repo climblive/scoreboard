@@ -47,6 +47,14 @@ export function loadUserData(code: string): any {
    };
 }
 
+export function loadContest(contestId:number): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.getContest(contestId).then(contest => {
+         dispatch(receiveContest(contest));
+      })
+   };
+}
+
 export function loadScoreboardData(id: number): any {
    return (dispatch: Dispatch<any>) => {
       Api.getScoreboard(id).then(scoreboardData => {

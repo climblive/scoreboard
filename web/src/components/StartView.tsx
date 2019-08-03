@@ -1,6 +1,10 @@
 import './StartView.css';
 import { Redirect } from 'react-router';
 import * as React from "react";
+import {StoreState} from "../model/storeState";
+import {connect, Dispatch} from "react-redux";
+import {ContenderData} from "../model/contenderData";
+import * as asyncActions from "../actions/asyncActions";
 
 export interface Props {
 }
@@ -10,7 +14,7 @@ type State = {
    redirect: boolean
 }
 
-export default class StartView extends React.Component<Props, State> {
+class StartView extends React.Component<Props, State> {
 
    public readonly state: State = {
       activationCode:"",
@@ -67,3 +71,17 @@ export default class StartView extends React.Component<Props, State> {
       );
    }
 }
+
+function mapStateToProps(state: StoreState, props: any): Props {
+   return {
+      contest: state.contest
+   };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+   return {
+      saveUserData: (contenderData: ContenderData) => dispatch(asyncActions.saveUserData(contenderData))
+   };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StartView);

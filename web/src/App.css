@@ -127,3 +127,15 @@ input {
 input:focus {
    outline:none;
 }
+
+@media screen and (max-width: 899px) {
+   .showLarge {
+      display:none !important;
+   }
+}
+
+@media screen and (min-width: 900px) {
+   .showSmall {
+      display:none !important;
+   }
+}

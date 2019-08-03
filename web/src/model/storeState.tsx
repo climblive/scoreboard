@@ -11,7 +11,6 @@ export interface StoreState {
    contenderData?: ContenderData;
    contenderNotFound: boolean;
    problemsSortedBy: SortBy;
-   scoreboardData: ScoreboardContenderList[];
    contest: Contest;
    problems: Problem[];
    compClasses: CompClass[];
@@ -20,4 +19,9 @@ export interface StoreState {
    pagingCounter: number;
    problemIdBeingUpdated?: number;
    errorMessage?: string;
+
+   // Scoreboard state:
+   scoreboardData: ScoreboardContenderList[];
+   currentCompClassId: number
+
 }

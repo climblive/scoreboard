@@ -39,7 +39,6 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
 
    componentDidMount() {
       if(this.props.isPaging) {
-         this.updateDimensions();
          window.addEventListener("resize", this.updateDimensions);
       }
    }
@@ -50,19 +49,24 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
       }
    }
 
+   componentDidUpdate() {
+      if(this.props.isPaging) {
+         this.updateDimensions();
+      }
+   }
+
    render() {
       let nPages = 0;
       let currentPage = 0;
       let firstItemToShow = 0;
       if(this.props.isPaging) {
-         this.updateDimensions();
          let nItems = this.props.totalList!.length;
          nPages = Math.min(20, Math.ceil(nItems / this.state.nToShow));
          currentPage = (Math.floor(this.props.pagingCounter / 7)) % nPages;
          firstItemToShow = currentPage * this.state.nToShow
       }
 
-      console.log("render " + this.props.totalList!.length + " state " + this.props.pagingCounter, this.state);
+      //console.log("render " + this.props.totalList!.length + " state " + this.props.pagingCounter, this.state);
       let listClass = this.props.isPaging ? "scoreboardListContenders scoreboardListContendersPaging" : "scoreboardListContenders";
       let list = this.props.totalList!.slice(firstItemToShow, firstItemToShow + this.state.nToShow).map(contender =>
          <div key={contender.contenderId} className="contenderRow">
@@ -70,12 +74,12 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
             <div className="name">{contender.contenderName}</div>
             <div className="score">{contender.score}</div>
          </div>
-      )
+      );
 
       let pagerItems = [];
       for (let i = 0; i < nPages; i++) {
          let className = i == currentPage ? "paging current" : "paging";
-         pagerItems.push(<div className={className}></div>)
+         pagerItems.push(<div key={i} className={className}></div>)
       }
 
       return (

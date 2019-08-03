@@ -21,18 +21,34 @@ export interface ProblemCompProps {
 function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblemState, onToggle }: ProblemCompProps) {
    const problemState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
    const className = "problem " + (tick ? 'done' : '');
-   const color = colors.get(problem.colorId)!;
+   let color = colors.get(problem.colorId)!;
+   if(!color) {
+      color = {
+         id: -1,
+         name: "UNKNOWN " + problem.colorId,
+         rgbPrimary: "#CCC"
+      };
+   }
    let rgbColor = color.rgbPrimary;
    if(rgbColor.charAt(0) != '#') {
       rgbColor = "#" + rgbColor
    }
+   let background = rgbColor;
+   if(color.rgbSecondary) {
+      let rgbSecondary = color.rgbSecondary;
+      if(rgbSecondary.charAt(0) !== '#') {
+         rgbSecondary = '#' + rgbSecondary;
+      }
+      background = "repeating-linear-gradient(-30deg," + rgbColor + "," + rgbSecondary + " 15px," + rgbColor + " 30px)";
+   }
+
    const secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
    const chromaInst = Chroma(rgbColor);
    const luminance = chromaInst.luminance();
    let borderColor = chromaInst.darken(1).hex();
    let textColor = luminance < 0.5 ? "#FFF" : "#333";
    if(tick) {
-      rgbColor = "#CDCDCD";
+      background = "#CDCDCD";
       borderColor = "#CDCDCD";
       textColor = "#ADADAD";
    }
@@ -42,7 +58,7 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
    }
    const colorStyle = { color: textColor };
    return (
-      <div style={{borderColor: borderColor, backgroundColor: rgbColor}} className={className} onClick={onToggle}>
+      <div style={{borderColor: borderColor, background: background}} className={className} onClick={onToggle}>
          <div style={colorStyle} className="firstRow">
             <div className="id">{problem.number}</div>
             <div className="color">{color.name}</div>

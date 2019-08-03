@@ -12,7 +12,6 @@ const getScoreboardContenders = (state: StoreState, props: any) => {
 }
 
 const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: number, scoreboardContenders?: ScoreboardContender[]) => {
-   console.log("makeGetTotalList");
    if (scoreboardContenders) {
       scoreboardContenders = scoreboardContenders.sort((a, b) => getScore(b) - getScore(a));
       let position = 0;

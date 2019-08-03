@@ -74,16 +74,25 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       let textColor = luminance < 0.5 ? "#FFF" : "#333";
       let borderWidth = luminance < 0.5 ? 0 : 1;
       const editProblem = this.props.editProblem;
+      let background = rgbColor;
+      if(color.rgbSecondary) {
+         let rgbSecondary = color.rgbSecondary;
+         if(rgbSecondary.charAt(0) !== '#') {
+            rgbSecondary = '#' + rgbSecondary;
+         }
+         background = "repeating-linear-gradient(-30deg," + rgbColor + "," + rgbSecondary + " 15px," + rgbColor + " 30px)";
+         console.log(background);
+      }
       return {
          display:"flex",
          border: borderWidth + "px solid " + borderColor,
          padding: "2px 10px",
-         background: rgbColor,
          marginBottom: 5,
          color: textColor,
          borderRadius: 5,
          alignItems: "center",
-         opacity: (editProblem == undefined || editProblem.id == problem.id) ? 1 : 0.08
+         opacity: (editProblem == undefined || editProblem.id == problem.id) ? 1 : 0.08,
+         background: background
       }
    };
 

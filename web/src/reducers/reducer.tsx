@@ -122,28 +122,31 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.updateScoreboardTimer):
          let now: number = new Date().getTime() / 1000;
          //console.log("UPDATE_SCOREBOARD_TIMER " + now);
-         let newScoreboardData2: ScoreboardContenderList[] = state.scoreboardData.map(scl => {
-            let newCompClass = { ...scl.compClass };
-            newCompClass.inProgress = false;
-            const startTime = Date.parse(newCompClass.timeBegin) / 1000;
-            const endTime = Date.parse(newCompClass.timeEnd) / 1000;
+         if(state.scoreboardData) {
+            let newScoreboardData2: ScoreboardContenderList[] = state.scoreboardData.map(scl => {
+               let newCompClass = {...scl.compClass};
+               newCompClass.inProgress = false;
+               const startTime = Date.parse(newCompClass.timeBegin) / 1000;
+               const endTime = Date.parse(newCompClass.timeEnd) / 1000;
 
-            console.log("startTime: " + startTime, newCompClass.timeBegin);
-            if (startTime > now) {
-               newCompClass.statusString = "Startar om " + getDurationString(startTime - now);
-               newCompClass.time = undefined;
-            } else if (now > endTime) {
-               newCompClass.statusString = "Tävlingen är avslutad";
-               newCompClass.time = undefined;
-            } else { 
-               newCompClass.statusString = "Slutar om";
-               newCompClass.time = getDurationString(endTime - now);
-               newCompClass.inProgress = true;
-            }
-            return { ...scl, compClass: newCompClass }
-         });
-         
-         return { ...state, scoreboardData: newScoreboardData2, pagingCounter: state.pagingCounter ? (state.pagingCounter + 1)  : 1};
+               //console.log("startTime: " + startTime, newCompClass.timeBegin);
+               if (startTime > now) {
+                  newCompClass.statusString = "Startar om " + getDurationString(startTime - now);
+                  newCompClass.time = undefined;
+               } else if (now > endTime) {
+                  newCompClass.statusString = "Tävlingen är avslutad";
+                  newCompClass.time = undefined;
+               } else {
+                  newCompClass.statusString = "Slutar om";
+                  newCompClass.time = getDurationString(endTime - now);
+                  newCompClass.inProgress = true;
+               }
+               return {...scl, compClass: newCompClass}
+            });
+            return { ...state, scoreboardData: newScoreboardData2, pagingCounter: state.pagingCounter ? (state.pagingCounter + 1)  : 1};
+         } else {
+            return { ...state };
+         }
 
       default:
          return state;

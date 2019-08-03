@@ -31,9 +31,9 @@ export default class ScoreboardView extends React.Component<Props> {
       const contestId = this.props.match.params.id;
       this.client = new Client({
          brokerURL: Api.getLiveUrl(),
-         debug: function (str) {
+         /*debug: function (str) {
             console.log("DEBUG: " + str);
-         },
+         },*/
          heartbeatIncoming: 4000,
          heartbeatOutgoing: 4000
       });
@@ -41,7 +41,6 @@ export default class ScoreboardView extends React.Component<Props> {
       this.client.activate();
       this.client.onConnect = () => {
          this.props.loadScoreboardData!(contestId);
-         console.log("onConnect");
          this.client.subscribe("/topic/scoreboard/" + contestId, (message) => {
             console.log(message, JSON.parse(message.body));
             this.props.receiveScoreboardItem!(JSON.parse(message.body))

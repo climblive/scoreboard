@@ -7,11 +7,10 @@ import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.User
 
 
-class MyUserPrincipal(private val username: String, private val password: String, private val role: String, val contenderId: Int?, val contestId: Int?, val organizerIds: List<Int>?) : UserDetails {
+class MyUserPrincipal(private val username: String, private val role: String, val contenderId: Int?, val contestId: Int?, val organizerIds: List<Int>?) : UserDetails {
 
     constructor(user: User, role: String, organizerIds: List<Int>) : this(
             user.email!!,
-            MyPasswordEncoder.createPassword(MyPasswordEncoder.PasswordType.BCRYPT, user.password!!),
             role,
             null,
             null,
@@ -19,7 +18,6 @@ class MyUserPrincipal(private val username: String, private val password: String
 
     constructor(contender: Contender) : this(
             contender.registrationCode!!,
-            MyPasswordEncoder.createPassword(MyPasswordEncoder.PasswordType.REGCODE, contender.registrationCode!!),
             "ROLE_CONTENDER",
             contender.id,
             contender.contest?.id,
@@ -41,8 +39,8 @@ class MyUserPrincipal(private val username: String, private val password: String
         return true
     }
 
-    override fun getPassword(): String {
-        return password
+    override fun getPassword(): String? {
+        return null
     }
 
     override fun isAccountNonExpired(): Boolean {

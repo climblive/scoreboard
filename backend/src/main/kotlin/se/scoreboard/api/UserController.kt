@@ -4,18 +4,13 @@ import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.data.repo.UserRepository
 import se.scoreboard.dto.OrganizerDto
 import se.scoreboard.dto.UserDto
 import se.scoreboard.mapper.OrganizerMapper
 import se.scoreboard.service.UserService
-import java.util.*
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
-import se.scoreboard.configuration.MyPasswordEncoder
 import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import javax.transaction.Transactional
@@ -25,15 +20,12 @@ import javax.transaction.Transactional
 @CrossOrigin
 @RequestMapping("/api")
 class UserController @Autowired constructor(
-        val userService: UserService,
-        val userRepository: UserRepository) {
+        val userService: UserService) {
 
     private lateinit var organizerMapper: OrganizerMapper
-    private lateinit var passwordEncoder: MyPasswordEncoder
 
     init {
         organizerMapper = Mappers.getMapper(OrganizerMapper::class.java)
-        passwordEncoder = MyPasswordEncoder()
     }
 
     @GetMapping("/user")
@@ -75,18 +67,4 @@ class UserController @Autowired constructor(
     @PreAuthorize("hasPermission(#id, 'UserDto', 'delete')")
     @Transactional
     fun deleteUser(@PathVariable("id") id: Int) = userService.delete(id)
-
-    data class AuthData(val username: String, val password: String)
-
-    @PostMapping("/user/login", produces = arrayOf("application/json"))
-    @Transactional
-    fun login(@RequestBody auth: AuthData) : ResponseEntity<String> {
-        val user = userRepository.findByEmail(auth.username)
-        if (passwordEncoder.matches(auth.password, MyPasswordEncoder.createPassword(MyPasswordEncoder.PasswordType.BCRYPT, user?.password!!))) {
-            val token = Base64.getEncoder().encodeToString((auth.username + ":" + auth.password).toByteArray())
-            return ResponseEntity(ObjectMapper().writeValueAsString(token), HttpStatus.OK)
-        } else {
-            return ResponseEntity(HttpStatus.FORBIDDEN)
-        }
-    }
 }

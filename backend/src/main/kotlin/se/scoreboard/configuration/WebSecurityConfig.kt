@@ -10,22 +10,27 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.authentication.AuthenticationManager
+import se.scoreboard.data.repo.SeriesRepository
+
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig @Autowired constructor(
+        private val jwtTokenProvider: JwtTokenProvider) : WebSecurityConfigurerAdapter() {
 
-    @Autowired
-    private var userDetailsService: UserDetailsService? = null
-
-    @Autowired
-    private var authenticationEntryPoint: MyBasicAuthenticationEntryPoint? = null
+    @Bean
+    @Throws(Exception::class)
+    override fun authenticationManagerBean(): AuthenticationManager {
+        return super.authenticationManagerBean()
+    }
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .httpBasic().disable()
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -54,13 +59,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.DELETE, "/api/user/**").hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()
-            .httpBasic()
-            .authenticationEntryPoint(this.authenticationEntryPoint)
-            .and().csrf().disable()
-    }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return MyPasswordEncoder()
+            .apply(JwtConfigurer(jwtTokenProvider))
     }
 }

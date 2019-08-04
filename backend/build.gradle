@@ -80,7 +80,7 @@ task copyWeb(type: Copy) {
 }
 
 task admin(type:Exec) {
-    workingDir '../admin'
+    workingDir '../adminNew'
 
     if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
         commandLine 'cmd', '/c', 'npm'
@@ -93,7 +93,7 @@ task admin(type:Exec) {
 
 task copyAdmin(type: Copy) {
     dependsOn admin
-    from '../admin/build'
+    from '../adminNew/build'
     into 'tmpWeb/admin'
 }
 

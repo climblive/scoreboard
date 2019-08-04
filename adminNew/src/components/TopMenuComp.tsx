@@ -95,9 +95,7 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
    };
 
    login = () => {
-      // TODO: Fix after JWT
-      //window.location.href = this.getUrl("login");
-      this.props.login!("");
+      window.location.href = this.getUrl("login");
    };
 
    signup = () => {

@@ -45,7 +45,7 @@ export class Api {
    }
 
    private static getAuthHeader(activationCode?: string) : any {
-      return activationCode ? {Authorization: "Basic " + window.btoa(activationCode + ":" + activationCode)} : {}
+      return activationCode ? {Authorization: "Bearer " + activationCode} : {}
    }
 
    private static async get(url: string, activationCode?: string) {

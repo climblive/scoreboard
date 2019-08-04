@@ -12,9 +12,7 @@ import {Serie} from "../model/serie";
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
       dispatch(actions.setLoggingIn(true));
-      // TODO: Fix after JWT
-      //Api.setCredentials(code);
-      Api.setCredentials(undefined);
+      Api.setCredentials(code);
       Api.getUser()
          .then(userData => {
             console.log(userData);

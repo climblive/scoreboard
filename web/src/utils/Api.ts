@@ -8,11 +8,12 @@ import {Color} from "../model/color";
 
 export class Api {
 
+   private static useLocalhost = true;
+
    static getLiveUrl(): any {
       let url: string = "";
-      console.log(window.location.protocol);
       if (window.location.hostname === "localhost") {
-         url = "ws://localhost:8080";
+         url = Api.useLocalhost ? "ws://localhost:8080": "wss://clmb.live";
       } else {
          if (window.location.protocol.indexOf("https") === 0) {
             url = "wss"
@@ -26,7 +27,11 @@ export class Api {
    } 
 
    private static getBaseUrl(): string {
-      return (window.location.hostname === "localhost" ?  "http://localhost:8080" : "") + "/api/";
+      let baseUrl = "/api/";
+      if(window.location.hostname === "localhost") {
+         baseUrl = (Api.useLocalhost ? "http://localhost:8080" : "https://clmb.live") + baseUrl;
+      }
+      return baseUrl;
    }
 
    private static async handleErrors(data: Response): Promise<Response> {
@@ -92,7 +97,7 @@ export class Api {
       return (await this.handleErrors(response)).json();
    }
 
-   static getContest(contestId: number, activationCode: string): Promise<Contest> {
+   static getContest(contestId: number, activationCode?: string): Promise<Contest> {
       return this.get("contest/" + contestId, activationCode);
    }
 

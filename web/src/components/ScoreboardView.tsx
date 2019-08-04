@@ -101,12 +101,10 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
          );
       } else { 
          return (
-            <div className="maxWidth">
-              <div className="view mainView">
-                  <div style={{marginTop:50, textAlign:"center"}}>
-                     <div style={{marginBottom:5}}>Vänta...</div>
-                     <Spinner color={"#333"} />
-                  </div>
+            <div className="scoreboardView">
+               <div style={{marginTop:50, textAlign:"center"}}>
+                  <div style={{marginBottom:5}}>Laddar scoreboard...</div>
+                  <Spinner color={"#333"} />
                </div>
             </div>
          )

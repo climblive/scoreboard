@@ -15,7 +15,7 @@ import {Color} from "../model/color";
 import ContendersComp from "../components/ContendersComp";
 import {ContenderData} from "../model/contenderData";
 import {getColorMap, getCompClassMap, getOrganizerColors} from "../selectors/selector";
-import {Serie} from "../model/serie";
+import {Series} from "../model/series";
 
 interface Props {
    match: {
@@ -24,7 +24,7 @@ interface Props {
       }
    },
    contest?:Contest,
-   series?:Serie[],
+   series?:Series[],
    problems?:Problem[],
    colors?:Color[],
    colorMap: Map<number, Color>,

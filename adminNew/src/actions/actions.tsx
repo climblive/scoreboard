@@ -7,7 +7,7 @@ import {Color} from "../model/color";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {ContenderData} from "../model/contenderData";
-import {Serie} from "../model/serie";
+import {Series} from "../model/series";
 import {User} from "../model/user";
 
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
@@ -35,11 +35,11 @@ export const cancelEditColor = createStandardAction('CANCEL_EDIT_COLOR')();
 export const startAddColor = createStandardAction('START_ADD_COLOR')();
 export const updateEditColor = createStandardAction('UPDATE_EDIT_COLOR')<{propName:string, value:any}>();
 
-export const receiveSeries = createStandardAction('RECEIVE_SERIE')<Serie[]>();
-export const startEditSerie = createStandardAction('START_EDIT_SERIE')<Serie>();
-export const cancelEditSerie = createStandardAction('CANCEL_EDIT_SERIE')();
-export const startAddSerie = createStandardAction('START_ADD_SERIE')();
-export const updateEditSerie = createStandardAction('UPDATE_EDIT_SERIE')<{propName:string, value:any}>();
+export const receiveSeries = createStandardAction('RECEIVE_SERIE')<Series[]>();
+export const startEditSeries = createStandardAction('START_EDIT_SERIES')<Series>();
+export const cancelEditSeries = createStandardAction('CANCEL_EDIT_SERIES')();
+export const startAddSeries = createStandardAction('START_ADD_SERIES')();
+export const updateEditSeries = createStandardAction('UPDATE_EDIT_SERIES')<{propName:string, value:any}>();
 
 export const receiveCompClasses = createStandardAction('RECEIVE_COMP_CLASSES')<CompClass[]>();
 export const startEditCompClass = createStandardAction('START_EDIT_COMP_CLASS')<CompClass>();

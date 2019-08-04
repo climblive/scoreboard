@@ -1,4 +1,4 @@
-export interface Serie {
+export interface Series {
    id: number;
    name: string;
 }

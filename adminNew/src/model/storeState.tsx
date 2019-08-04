@@ -5,7 +5,7 @@ import {CompClass} from "./compClass";
 import {Color} from "./color";
 import {Organizer} from "./organizer";
 import {CompLocation} from "./compLocation";
-import {Serie} from "./serie";
+import {Series} from "./series";
 import {User} from "./user";
 
 export interface StoreState {
@@ -29,8 +29,8 @@ export interface StoreState {
    colors?: Color[],
    editColor?: Color;
 
-   series?: Serie[],
-   editSerie?: Serie;
+   series?: Series[],
+   editSeries?: Series;
 
    locations?: CompLocation[],
 

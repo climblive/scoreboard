@@ -6,7 +6,7 @@ import {Problem} from "../model/problem";
 import {CompLocation} from "../model/compLocation";
 import {Organizer} from "../model/organizer";
 import {CompClass} from "../model/compClass";
-import {Serie} from "../model/serie";
+import {Series} from "../model/series";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -171,26 +171,26 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveSeries):
          return { ...state, series: action.payload};
 
-      case getType(scoreboardActions.startEditSerie):
-         return { ...state, editSerie: action.payload};
+      case getType(scoreboardActions.startEditSeries):
+         return { ...state, editSeries: action.payload};
 
-      case getType(scoreboardActions.cancelEditSerie):
-         const newSeries = state.series!.filter(p2 => p2.id != -1);
-         return { ...state, editSerie: undefined, series: newSeries};
+      case getType(scoreboardActions.cancelEditSeries):
+         const newSeriesList = state.series!.filter(p2 => p2.id != -1);
+         return { ...state, editSeries: undefined, series: newSeriesList};
 
-      case getType(scoreboardActions.startAddSerie):
-         const newSeries2 = [...state.series!];
-         let newSerie:Serie = {
+      case getType(scoreboardActions.startAddSeries):
+         const newSeriesList2 = [...state.series!];
+         let newSeries:Series = {
             id: -1,
             name: "",
          };
-         newSeries2.push(newSerie);
-         return { ...state, editSerie: newSerie, series: newSeries2};
+         newSeriesList2.push(newSeries);
+         return { ...state, editSeries: newSeries, series: newSeriesList2};
 
-      case getType(scoreboardActions.updateEditSerie):
-         let newEditSerie = {...state.editSerie!};
-         newEditSerie[action.payload.propName] = action.payload.value;
-         return { ...state, editSerie: newEditSerie};
+      case getType(scoreboardActions.updateEditSeries):
+         let newEditSeries = {...state.editSeries!};
+         newEditSeries[action.payload.propName] = action.payload.value;
+         return { ...state, editSeries: newEditSeries};
 
       // ********
 

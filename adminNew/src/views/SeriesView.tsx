@@ -21,7 +21,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import {Serie} from "../model/serie";
+import {Series} from "../model/series";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -33,21 +33,21 @@ const styles = ({ spacing }: Theme) => createStyles({
 });
 
 interface Props  {
-   series?: Serie[],
-   editSerie?:Serie,
+   series?: Series[],
+   editSeries?:Series,
 
    loadSeries?: () => void,
    setTitle?: (title: string) => void,
-   startEditSerie?:(serie:Serie) => void
-   cancelEditSerie?:() => void
-   saveEditSerie?:() => void
-   startAddSerie?:() => void
-   deleteSerie?:(serie:Serie) => void
-   updateEditSerie?:(propName:string, propValue?:any) => void
+   startEditSeries?:(series:Series) => void
+   cancelEditSeries?:() => void
+   saveEditSeries?:() => void
+   startAddSeries?:() => void
+   deleteSeries?:(series:Series) => void
+   updateEditSeries?:(propName:string, propValue?:any) => void
 }
 
 type State = {
-   deleteSerie?:Serie
+   deleteSeries?:Series
 }
 
 class SeriesView extends React.Component<Props & RouteComponentProps & StyledComponentProps, State> {
@@ -63,28 +63,28 @@ class SeriesView extends React.Component<Props & RouteComponentProps & StyledCom
       this.props.setTitle!("Series");
    }
 
-   deleteSerie = (serie:Serie) => {
-      this.state.deleteSerie = serie;
+   deleteSeries = (series:Series) => {
+      this.state.deleteSeries = series;
       this.setState(this.state);
    };
 
    onDeleteConfirmed = (result: boolean) => {
       if(result) {
-         this.props.deleteSerie!(this.state.deleteSerie!);
+         this.props.deleteSeries!(this.state.deleteSeries!);
       }
-      this.state.deleteSerie = undefined;
+      this.state.deleteSeries = undefined;
       this.setState(this.state)
    };
 
    onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.updateEditSerie!("name", e.target.value);
+      this.props.updateEditSeries!("name", e.target.value);
    };
 
    render() {
-      let series = this.props.series;
+      let seriesList = this.props.series;
       let classes = this.props.classes!!;
-      let editSerie = this.props.editSerie;
-      if(!series) {
+      let editSeries = this.props.editSeries;
+      if(!seriesList) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       return (
@@ -95,25 +95,25 @@ class SeriesView extends React.Component<Props & RouteComponentProps & StyledCom
                      <TableRow>
                         <TableCell style={{width:"100%"}}>Name</TableCell>
                         <TableCell className={"icon-cell"} style={{minWidth:96}}>
-                           <IconButton color="inherit" aria-label="Menu" title="Add serie" onClick={this.props.startAddSerie}>
+                           <IconButton color="inherit" aria-label="Menu" title="Add serie" onClick={this.props.startAddSeries}>
                               <AddIcon />
                            </IconButton>
                         </TableCell>
                      </TableRow>
                   </TableHead>
                   <TableBody>
-                     {series.map(serie => {
-                        if(editSerie == undefined || serie.id != editSerie.id) {
+                     {seriesList.map(series => {
+                        if(editSeries == undefined || series.id != editSeries.id) {
                            return (
-                              <TableRow key={serie.id}>
-                                 <TableCell component="th" scope="row">{serie.name}</TableCell>
+                              <TableRow key={series.id}>
+                                 <TableCell component="th" scope="row">{series.name}</TableCell>
                                  <TableCell className={"icon-cell"}>
                                     <IconButton color="inherit" aria-label="Menu" title="Edit"
-                                                onClick={() => this.props.startEditSerie!(serie)}>
+                                                onClick={() => this.props.startEditSeries!(series)}>
                                        <EditIcon/>
                                     </IconButton>
                                     <IconButton color="inherit" aria-label="Menu" title="Delete"
-                                                onClick={() => this.deleteSerie(serie)}>
+                                                onClick={() => this.deleteSeries(series)}>
                                        <DeleteIcon/>
                                     </IconButton>
                                  </TableCell>
@@ -122,17 +122,17 @@ class SeriesView extends React.Component<Props & RouteComponentProps & StyledCom
                            )
                         } else {
                            return (
-                              <TableRow key={serie.id}>
+                              <TableRow key={series.id}>
                                  <TableCell component="th" scope="row">
-                                    <TextField style={{}} value={editSerie.name} onChange={this.onNameChange} />
+                                    <TextField style={{}} value={editSeries.name} onChange={this.onNameChange} />
                                  </TableCell>
                                  <TableCell>
                                     <IconButton color="inherit" aria-label="Menu" title="Save"
-                                       onClick={this.props.saveEditSerie!}>
+                                       onClick={this.props.saveEditSeries!}>
                                        <CheckIcon/>
                                     </IconButton>
                                     <IconButton color="inherit" aria-label="Menu" title="Cancel"
-                                       onClick={this.props.cancelEditSerie!}>
+                                       onClick={this.props.cancelEditSeries!}>
                                        <CancelIcon/>
                                     </IconButton>
                                  </TableCell>
@@ -143,9 +143,9 @@ class SeriesView extends React.Component<Props & RouteComponentProps & StyledCom
                   </TableBody>
                </Table>
             </div>
-            <ConfirmationDialog open={this.state.deleteSerie != undefined}
-                                title={"Delete serie"}
-                                message={"Do you wish to delete the selected serie?"}
+            <ConfirmationDialog open={this.state.deleteSeries != undefined}
+                                title={"Delete series"}
+                                message={"Do you wish to delete the selected series?"}
                                 onClose={this.onDeleteConfirmed} />
          </Paper>
       );
@@ -155,7 +155,7 @@ class SeriesView extends React.Component<Props & RouteComponentProps & StyledCom
 function mapStateToProps(state: StoreState, props: any): Props {
    return {
       series: state.series,
-      editSerie: state.editSerie,
+      editSeries: state.editSeries,
    };
 }
 
@@ -164,12 +164,12 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadSeries: () => dispatch(asyncActions.loadSeries()),
       setTitle: (title:string) => dispatch(actions.setTitle(title)),
 
-      startEditSerie: (serie: Serie) => dispatch(actions.startEditSerie(serie)),
-      cancelEditSerie: () => dispatch(actions.cancelEditSerie()),
-      saveEditSerie: () => dispatch(asyncActions.saveEditSerie()),
-      startAddSerie: () => dispatch(actions.startAddSerie()),
-      deleteSerie: (serie: Serie) => dispatch(asyncActions.deleteSerie(serie)),
-      updateEditSerie: (propName:string, value:any) => dispatch(actions.updateEditSerie({propName: propName, value: value})),
+      startEditSerie: (serie: Series) => dispatch(actions.startEditSeries(serie)),
+      cancelEditSeries: () => dispatch(actions.cancelEditSeries()),
+      saveEditSeries: () => dispatch(asyncActions.saveEditSeries()),
+      startAddSeries: () => dispatch(actions.startAddSeries()),
+      deleteSeries: (series: Series) => dispatch(asyncActions.deleteSeries(series)),
+      updateEditSeries: (propName:string, value:any) => dispatch(actions.updateEditSeries({propName: propName, value: value})),
    };
 }
 

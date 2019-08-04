@@ -14,11 +14,11 @@ import RichTextEditor from "./RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import {Serie} from "../model/serie";
+import {Series} from "../model/series";
 
 interface Props {
    contest:Contest,
-   series?:Serie[],
+   series?:Series[],
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => void,
    createPdf?: (file:Blob) => void
@@ -107,8 +107,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
 
    render() {
       let contest = this.props.contest;
-      let series = [] as Serie[]//this.props.series;
-      if(!(contest && series)) {
+      let seriesList = this.props.series;
+      if(!(contest && seriesList)) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       return (
@@ -125,15 +125,15 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                      <TextField label="Name" value={contest.name} onChange={this.onNameChange}/>
                      <TextField style={{marginTop:10}} label="Description" value={contest.description} onChange={this.onDescriptionChange}/>
                      <FormControl style={{marginTop:10}} >
-                        <InputLabel shrink htmlFor="series-select">Serie</InputLabel>
+                        <InputLabel shrink htmlFor="series-select">Series</InputLabel>
                         <Select
                            id="series-select"
                            value={contest.seriesId == undefined ? "" : contest.seriesId}
                            onChange={this.onSeriesChange}
                         >
                            <MenuItem value=""><em>None</em></MenuItem>
-                           {series!.map(serie =>
-                              <MenuItem key={serie.id} value={serie.id}>{serie.name}</MenuItem>
+                           {seriesList!.map(series =>
+                              <MenuItem key={series.id} value={series.id}>{series.name}</MenuItem>
                            )}
                         </Select>
                      </FormControl>

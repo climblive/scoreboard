@@ -7,7 +7,7 @@ import {StoreState} from "../model/storeState";
 import {CompClass} from "../model/compClass";
 import { saveAs } from 'file-saver';
 import {Color} from "../model/color";
-import {Serie} from "../model/serie";
+import {Series} from "../model/series";
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -132,12 +132,12 @@ export function loadSeries(): any {
    }
 }
 
-export function saveEditSerie(): any {
+export function saveEditSeries(): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let serie = getState().editSerie!;
-      Api.saveSerie(serie).then(serie => {
+      let series = getState().editSeries!;
+      Api.saveSeries(series).then(serie => {
          // Reload the list of comp classes:
-         dispatch(actions.cancelEditSerie());
+         dispatch(actions.cancelEditSeries());
          reloadSeries(dispatch);
       }).catch(error => {
          dispatch(actions.setErrorMessage(error));
@@ -145,11 +145,11 @@ export function saveEditSerie(): any {
    }
 }
 
-export function deleteSerie(serie:Serie): any {
+export function deleteSeries(series:Series): any {
    return (dispatch: Dispatch<any>) => {
-      Api.deleteSerie(serie)
+      Api.deleteSeries(series)
          .then(() => {
-            dispatch(actions.cancelEditSerie());
+            dispatch(actions.cancelEditSeries());
             reloadColors(dispatch);
          })
          .catch(error => {dispatch(actions.setErrorMessage(error))});

@@ -5,7 +5,7 @@ import {CompClass} from "../model/compClass";
 import {Color} from "../model/color";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
-import {Serie} from "../model/serie";
+import {Series} from "../model/series";
 import {User} from "../model/user";
 
 export class Api {
@@ -13,8 +13,11 @@ export class Api {
    static oldCredentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=";
    static credentials?:string;
 
+   static readonly url = "https://clmb.live";
+   //static const url = "http://localhost:8080";
+
    private static getBaseUrl(): string {
-      return (window.location.hostname === "localhost" ?  "https://clmb.live" : "") + "/api/";
+      return Api.url + "/api/";
    }
 
    private static async handleErrors(data: Response): Promise<Response> {
@@ -158,19 +161,19 @@ export class Api {
       }
    }
 
-   static deleteSerie(serie: Serie): Promise<any> {
-      return this.delete("serie/" + serie.id);
+   static deleteSeries(series: Series): Promise<any> {
+      return this.delete("series/" + series.id);
    }
 
-   static getSeries(): Promise<Serie[]> {
-      return this.get("serie");
+   static getSeries(): Promise<Series[]> {
+      return this.get("series");
    }
 
-   static saveSerie(serie:Serie): Promise<Serie> {
-      if(serie.id == -1) {
-         return this.post("serie", serie);
+   static saveSeries(series:Series): Promise<Series> {
+      if(series.id == -1) {
+         return this.post("series", series);
       } else {
-         return this.put("serie/" + serie.id, serie);
+         return this.put("series/" + series.id, series);
       }
    }
 

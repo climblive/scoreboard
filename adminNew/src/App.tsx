@@ -20,6 +20,7 @@ import ColorsView from "./views/ColorsView";
 import SeriesView from "./views/SeriesView";
 import {User} from "./model/user";
 import {Organizer} from "./model/organizer";
+import WelcomeView from "./views/WelcomeView";
 
 export interface Props  {
    title: string,
@@ -83,6 +84,7 @@ class App extends React.Component<Props> {
                               <Route path="/colors" exact component={ColorsView} />
                               <Route path="/series" exact component={SeriesView} />
                            </Switch>}
+                           {!this.props.loggedInUser && <WelcomeView />}
                         </div>
                      </div>
                   </div>

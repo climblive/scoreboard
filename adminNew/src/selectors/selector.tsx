@@ -2,10 +2,17 @@ import { createSelector } from 'reselect'
 import { StoreState } from '../model/storeState';
 import {Color} from "../model/color";
 import {CompClass} from "../model/compClass";
+import {Organizer} from "../model/organizer";
+import {CompLocation} from "../model/compLocation";
 
 const getColors = (state: StoreState) => state.colors;
 const getCompClasses = (state: StoreState) => state.compClasses;
 const getContests = (state: StoreState) => state.contests;
+const getOrganizers = (state: StoreState) => state.organizers;
+const getLocations = (state: StoreState) => state.locations;
+const getProblems = (state: StoreState) => state.problems;
+const getContenders = (state: StoreState) => state.contenders;
+
 const getOrganizer = (state: StoreState) => state.organizer;
 
 export const getColorMap = createSelector(
@@ -30,6 +37,28 @@ export const getCompClassMap = createSelector(
    }
 );
 
+export const getLocationMap = createSelector(
+   [getLocations],
+   (locations) => {
+      const map = new Map<number, CompLocation>();
+      if(locations) {
+         locations.forEach(location => map.set(location.id, location));
+      }
+      return map;
+   }
+);
+
+export const getOrganizerMap = createSelector(
+   [getOrganizers],
+   (organizers) => {
+      const map = new Map<number, Organizer>();
+      if(organizers) {
+         organizers.forEach(organizer => map.set(organizer.id, organizer));
+      }
+      return map;
+   }
+);
+
 export const getOrganizerContests = createSelector(
    [getContests, getOrganizer],
    (contests, organizer) => {
@@ -43,6 +72,25 @@ export const getOrganizerColors = createSelector(
       return colors && organizer ? colors.filter(c => c.organizerId == organizer.id) : undefined;
    }
 );
+
+export const getContestIssues = createSelector(
+   [getProblems, getCompClasses, getContenders],
+   (problems, compClasses, contenders) => {
+      let issues: string[] = [];
+      if(problems && problems.length < 1) {
+         issues.push("Please add problems")
+      }
+      if(compClasses && compClasses.length == 0) {
+         issues.push("Please add at least one competition class")
+      }
+      if(contenders && contenders.length == 0) {
+         issues.push("Please add contenders")
+      }
+      return issues;
+   }
+);
+
+
 
 
 /*const getScoreboardContenders = (state: StoreState, props: any) => {

@@ -18,12 +18,9 @@ export function login(code:string): any {
             console.log(userData);
             dispatch(actions.setLoggingIn(false));
             dispatch(actions.setLoggedInUser(userData));
-            Api.getOrganizers().then(organizers => {
-               dispatch(actions.receiveOrganizers(organizers));
-            }).catch(error => {
-               dispatch(actions.setErrorMessage(error));
-
-            })
+            reloadSeries(dispatch);
+            reloadOrganizers(dispatch);
+            reloadLocations(dispatch);
          })
          .catch(error => {
             Api.setCredentials(undefined);
@@ -119,11 +116,10 @@ export function deleteColor(color:Color): any {
 let reloadSeries = (dispatch: Dispatch<any>) => {
    Api.getSeries().then(series => {
       dispatch(actions.receiveSeries(series));
-   })
-      .catch(error => {
-         dispatch(actions.receiveSeries([]));
-         dispatch(actions.setErrorMessage(error));
-      });
+   }).catch(error => {
+      dispatch(actions.receiveSeries([]));
+      dispatch(actions.setErrorMessage(error));
+   });
 };
 
 export function loadSeries(): any {
@@ -158,31 +154,40 @@ export function deleteSeries(series:Series): any {
 
 // ************
 
+let reloadLocations = (dispatch: Dispatch<any>) => {
+   Api.getLocations().then(locations => {
+      dispatch(actions.receiveLocations(locations));
+   })
+   .catch(error => {
+      dispatch(actions.receiveLocations([]));
+      dispatch(actions.setErrorMessage(error));
+   });
+};
+
 export function loadLocations(): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getLocations()
-         .then(locations => {
-            dispatch(actions.receiveLocations(locations));
-         })
-         .catch(error => {
-            dispatch(actions.receiveLocations([]));
-            dispatch(actions.setErrorMessage(error));
-         });
+      reloadLocations(dispatch);
    }
 }
 
+// ************
+
+let reloadOrganizers = (dispatch: Dispatch<any>) => {
+   Api.getOrganizers().then(organizers => {
+      dispatch(actions.receiveOrganizers(organizers));
+   }).catch(error => {
+      dispatch(actions.setErrorMessage(error));
+   })
+};
+
+
 export function loadOrganizers(): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getOrganizers()
-         .then(organizers => {
-            dispatch(actions.receiveOrganizers(organizers));
-         })
-         .catch(error => {
-            dispatch(actions.receiveOrganizers([]));
-            dispatch(actions.setErrorMessage(error));
-         });
+      reloadOrganizers(dispatch);
    }
 }
+
+// ************
 
 let reloadProblems = (dispatch: Dispatch<any>, contestId: number) => {
    Api.getProblems(contestId).then(problems => {

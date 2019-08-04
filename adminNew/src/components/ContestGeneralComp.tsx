@@ -13,12 +13,14 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import RichTextEditor from "./RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import WarningIcon from '@material-ui/icons/Warning';
 import MenuItem from "@material-ui/core/MenuItem";
 import {Series} from "../model/series";
 
 interface Props {
    contest:Contest,
    series?:Series[],
+   contestIssues:string[],
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => void,
    createPdf?: (file:Blob) => void
@@ -68,7 +70,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
    };
 
    onSeriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      this.props.updateContest!("seriesId", parseInt(e.target.value));
+      const seriesId = e.target.value == "None" ? undefined : parseInt(e.target.value);
+      this.props.updateContest!("seriesId", seriesId);
    };
 
    createPdf = () => {
@@ -111,10 +114,12 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       if(!(contest && seriesList)) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
+      console.log("contestIssues", this.props.contestIssues);
       return (
          <Paper>
+            {this.props.contestIssues.map(issue => <div style={{padding:10, display:"flex", alignItems:"center", fontWeight:"bold", color:"#e49c3b"}} key={issue}><WarningIcon style={{marginRight:10}}/>{issue}</div>)}
             <div style={{padding:10}}>
-               {!contest.isNew &&
+               {((!contest.isNew) && this.props.contestIssues.length == 0) &&
                   <div style={{marginBottom:10}}>
                       <Button style={{marginRight:10}} variant="outlined" color="primary" onClick={this.startPdfCreate}>Create PDF</Button>
                       <Button href={this.url} target="_blank" variant="outlined" color="primary">Open scoreboard</Button>
@@ -128,10 +133,10 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                         <InputLabel shrink htmlFor="series-select">Series</InputLabel>
                         <Select
                            id="series-select"
-                           value={contest.seriesId == undefined ? "" : contest.seriesId}
+                           value={(contest.seriesId == undefined || contest.seriesId == null) ? "None" : contest.seriesId}
                            onChange={this.onSeriesChange}
                         >
-                           <MenuItem value=""><em>None</em></MenuItem>
+                           <MenuItem value="None"><em>None</em></MenuItem>
                            {seriesList!.map(series =>
                               <MenuItem key={series.id} value={series.id}>{series.name}</MenuItem>
                            )}

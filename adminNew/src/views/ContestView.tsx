@@ -14,7 +14,7 @@ import ContestGeneralComp from "../components/ContestGeneralComp";
 import {Color} from "../model/color";
 import ContendersComp from "../components/ContendersComp";
 import {ContenderData} from "../model/contenderData";
-import {getColorMap, getCompClassMap, getOrganizerColors} from "../selectors/selector";
+import {getColorMap, getCompClassMap, getContestIssues, getOrganizerColors} from "../selectors/selector";
 import {Series} from "../model/series";
 
 interface Props {
@@ -33,6 +33,7 @@ interface Props {
    contenders?:ContenderData[],
    editProblem?: Problem
    editCompClass?: CompClass
+   contestIssues: string[]
 
    loadContest?: (contestId: number) => void,
    setNewContest?: () => void,
@@ -106,6 +107,7 @@ class ContestView extends React.Component<Props, State> {
          tab = (<ContestGeneralComp key="general"
                                     contest={this.props.contest!}
                                     series={this.props.series}
+                                    contestIssues={this.props.contestIssues}
                                     updateContest={this.props.updateContest}
                                     saveContest={this.props.saveContest}
                                     createPdf={this.props.createPdf}
@@ -162,6 +164,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
       series: state.series,
       compClasses: state.compClasses,
       compClassMap: getCompClassMap(state),
+      contestIssues: getContestIssues(state),
       contenders: state.contenders,
       colors: getOrganizerColors(state),
       colorMap: getColorMap(state),

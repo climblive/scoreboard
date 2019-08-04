@@ -16,7 +16,9 @@ import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import {getOrganizerContests} from "../selectors/selector";
+import {getLocationMap, getOrganizerContests, getOrganizerMap} from "../selectors/selector";
+import {Organizer} from "../model/organizer";
+import {CompLocation} from "../model/compLocation";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -29,6 +31,8 @@ const styles = ({ spacing }: Theme) => createStyles({
 
 interface Props  {
    contests?: Contest[],
+   organizerMap: Map<number, Organizer>
+   locationMap: Map<number, CompLocation>
    loadContests?: () => void,
    setTitle?: (title: string) => void,
 }
@@ -50,6 +54,16 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
       this.props.loadContests!();
       this.props.setTitle!("Contests");
    }
+
+   getOrganizerName = (id: number) => {
+      const organizer = this.props.organizerMap.get(id);
+      return organizer ? organizer.name : ("Unknown organizer " + id);
+   };
+
+   getLocationName = (id: number) => {
+      const location = this.props.locationMap.get(id);
+      return location ? location.name : ("Unknown location " + id);
+   };
 
    render() {
       let contests = this.props.contests;
@@ -84,8 +98,8 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                                   onClick={() => this.props.history.push("/contests/" + contest.id)}>
                            <TableCell component="th" scope="row">{contest.name}</TableCell>
                            <TableCell>{contest.description}</TableCell>
-                           <TableCell>{contest.locationId}</TableCell>
-                           <TableCell>{contest.organizerId}</TableCell>
+                           <TableCell>{this.getLocationName(contest.locationId)}</TableCell>
+                           <TableCell>{this.getOrganizerName(contest.organizerId)}</TableCell>
                            <TableCell colSpan={2}>{contest.qualifyingProblems}</TableCell>
                         </TableRow>
                      ))}
@@ -99,7 +113,9 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
 
 function mapStateToProps(state: StoreState, props: any): Props {
    return {
-      contests: getOrganizerContests(state)
+      contests: getOrganizerContests(state),
+      organizerMap: getOrganizerMap(state),
+      locationMap: getLocationMap(state)
    };
 }
 

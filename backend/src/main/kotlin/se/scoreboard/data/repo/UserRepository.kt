@@ -21,5 +21,5 @@ interface UserRepository : ScoreboardRepository<User, Int> {
     @Query("SELECT o.id FROM User u JOIN u.organizers o WHERE u.id IN :userIds")
     override fun deriveOrganizerIds(@Param("userIds") targetIds: List<Int>): List<Int>
 
-    fun findByEmail(username : String) : User?
+    fun findByUsername(username : String) : User?
 }

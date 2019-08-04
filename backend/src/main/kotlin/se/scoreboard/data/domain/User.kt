@@ -6,7 +6,7 @@ import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
 @Entity
-@Table(name = "user", uniqueConstraints = arrayOf(UniqueConstraint(columnNames = arrayOf("email"))))
+@Table(name = "user", uniqueConstraints = arrayOf(UniqueConstraint(columnNames = arrayOf("username"))))
 open class User (
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -16,11 +16,8 @@ open class User (
     @Column(name = "name", nullable = false, length = 32)
     open var name: String? = null,
 
-    @Column(name = "email", unique = true, nullable = false, length = 64)
-    open var email: String? = null,
-
-    @Column(name = "password", nullable = false, length = 60)
-    open var password: String? = null,
+    @Column(name = "username", unique = true, nullable = false, length = 64)
+    open var username: String? = null,
 
     @Column(name = "admin", nullable = false)
     open var isAdmin: Boolean = false,

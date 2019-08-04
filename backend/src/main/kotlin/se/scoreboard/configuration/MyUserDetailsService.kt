@@ -18,7 +18,7 @@ class MyUserDetailsService : UserDetailsService {
     private val contenderRepository: ContenderRepository? = null
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = userRepository!!.findByEmail(username)
+        val user = userRepository!!.findByUsername(username)
 
         if (user != null) {
             val role: String

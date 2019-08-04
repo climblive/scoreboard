@@ -42,7 +42,7 @@ class UserController @Autowired constructor(
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getCurrentUser() =
-            userService.findByEmail(getUserPrincipal()?.username!!)
+            userService.findByUsername(getUserPrincipal()?.username!!)
                 ?: throw WebException(HttpStatus.INTERNAL_SERVER_ERROR, null)
 
     @GetMapping("/user/{id}/organizer")

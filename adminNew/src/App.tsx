@@ -21,6 +21,8 @@ import SeriesView from "./views/SeriesView";
 import {User} from "./model/user";
 import {Organizer} from "./model/organizer";
 import WelcomeView from "./views/WelcomeView";
+import OrganizersView from "./views/OrganizersView";
+import LocationsView from "./views/LocationsView";
 
 export interface Props  {
    title: string,
@@ -78,11 +80,13 @@ class App extends React.Component<Props> {
                         <div className="mainView">
 
                            {this.props.loggedInUser && <Switch>
-                              <Route path="/" exact component={ContestsView} />
-                              <Route path="/contests" exact component={ContestsView} />
-                              <Route path="/contests/:contestId" component={ContestView} />
-                              <Route path="/colors" exact component={ColorsView} />
-                              <Route path="/series" exact component={SeriesView} />
+                               <Route path="/" exact component={ContestsView} />
+                               <Route path="/contests" exact component={ContestsView} />
+                               <Route path="/contests/:contestId" component={ContestView} />
+                               <Route path="/colors" exact component={ColorsView} />
+                               <Route path="/series" exact component={SeriesView} />
+                               <Route path="/organizers" exact component={OrganizersView} />
+                               <Route path="/locations" exact component={LocationsView} />
                            </Switch>}
                            {!this.props.loggedInUser && <WelcomeView />}
                         </div>

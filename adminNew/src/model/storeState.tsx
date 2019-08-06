@@ -33,9 +33,11 @@ export interface StoreState {
    editSeries?: Series;
 
    locations?: CompLocation[],
+   editLocation?: CompLocation,
 
    organizers?: Organizer[],
    organizer?: Organizer
+   editOrganizer?:Organizer
 
    errorMessage?: string;
 }

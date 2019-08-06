@@ -25,9 +25,17 @@ export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[
 export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();
 
 export const receiveLocations = createStandardAction('RECEIVE_LOCATIONS')<CompLocation[]>();
+export const startEditLocation = createStandardAction('START_EDIT_LOCATION')<CompLocation>();
+export const cancelEditLocation = createStandardAction('CANCEL_EDIT_LOCATION')();
+export const startAddLocation = createStandardAction('START_ADD_LOCATION')();
+export const updateEditLocation = createStandardAction('UPDATE_EDIT_LOCATION')<{propName:string, value:any}>();
 
 export const receiveOrganizers = createStandardAction('RECEIVE_ORGANIZERS')<Organizer[]>();
 export const setOrganizer = createStandardAction('SET_ORGANIZERS')<Organizer>();
+export const startEditOrganizer = createStandardAction('START_EDIT_ORGANIZER')<Organizer>();
+export const cancelEditOrganizer = createStandardAction('CANCEL_EDIT_ORGANIZER')();
+export const startAddOrganizer = createStandardAction('START_ADD_ORGANIZER')();
+export const updateEditOrganizer = createStandardAction('UPDATE_EDIT_ORGANIZER')<{propName:string, value:any}>();
 
 export const receiveColors = createStandardAction('RECEIVE_COLORS')<Color[]>();
 export const startEditColor = createStandardAction('START_EDIT_COLOR')<Color>();

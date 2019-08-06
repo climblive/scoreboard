@@ -185,6 +185,18 @@ export class Api {
       return this.get("location");
    }
 
+   static saveLocation(location: CompLocation): Promise<CompLocation> {
+      if(location.id == -1) {
+         return this.post("location", location);
+      } else {
+         return this.put("location/" + location.id, location);
+      }
+   }
+
+   static deleteLocation(location: CompLocation): Promise<any> {
+      return this.delete("location/" + location.id);
+   }
+
    static deleteOrganizer(organizer: Organizer): Promise<any> {
       return this.delete("organizer/" + organizer.id);
    }

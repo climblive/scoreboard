@@ -199,6 +199,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          action.payload.forEach(location => locationMap.set(location.id, location));
          return { ...state, locations: action.payload, locationMap: locationMap };
 
+      // ********
+
       case getType(scoreboardActions.receiveOrganizers):
          const organizerMap = new Map<number, Organizer>();
          action.payload.forEach(organizer => organizerMap.set(organizer.id, organizer));
@@ -206,6 +208,29 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
       case getType(scoreboardActions.setOrganizer):
          return  { ...state, organizer: action.payload};
+
+      case getType(scoreboardActions.startEditOrganizer):
+         return { ...state, editOrganizer: action.payload};
+
+      case getType(scoreboardActions.cancelEditOrganizer):
+         const newOrganizerList = state.organizers!.filter(p2 => p2.id != -1);
+         return { ...state, editOrganizer: undefined, organizers: newOrganizerList};
+
+      case getType(scoreboardActions.startAddOrganizer):
+         const newOrganizerList2 = [...state.organizers!];
+         let newOrganizer:Organizer = {
+            id: -1,
+            name: "",
+         };
+         newOrganizerList2.push(newOrganizer);
+         return { ...state, editOrganizer: newOrganizer, organizers: newOrganizerList2};
+
+      case getType(scoreboardActions.updateEditOrganizer):
+         let newEditOrganizer = {...state.editOrganizer!};
+         newEditOrganizer[action.payload.propName] = action.payload.value;
+         return { ...state, editOrganizer: newEditOrganizer};
+
+      // ********
 
       default:
          console.log("ACTION", action);

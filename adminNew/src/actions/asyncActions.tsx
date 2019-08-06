@@ -8,6 +8,8 @@ import {CompClass} from "../model/compClass";
 import { saveAs } from 'file-saver';
 import {Color} from "../model/color";
 import {Series} from "../model/series";
+import {Organizer} from "../model/organizer";
+import {CompLocation} from "../model/compLocation";
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -170,6 +172,30 @@ export function loadLocations(): any {
    }
 }
 
+export function saveEditLocation(): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let location = getState().editLocation!;
+      Api.saveLocation(location).then(location => {
+         // Reload the list of comp classes:
+         dispatch(actions.cancelEditLocation());
+         reloadLocations(dispatch);
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+   }
+}
+
+export function deleteLocation(location:CompLocation): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.deleteLocation(location)
+         .then(() => {
+            dispatch(actions.cancelEditLocation());
+            reloadColors(dispatch);
+         })
+         .catch(error => {dispatch(actions.setErrorMessage(error))});
+   }
+}
+
 // ************
 
 let reloadOrganizers = (dispatch: Dispatch<any>) => {
@@ -184,6 +210,30 @@ let reloadOrganizers = (dispatch: Dispatch<any>) => {
 export function loadOrganizers(): any {
    return (dispatch: Dispatch<any>) => {
       reloadOrganizers(dispatch);
+   }
+}
+
+export function saveEditOrganizer(): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let organizer = getState().editOrganizer!;
+      Api.saveOrganizer(organizer).then(organizer => {
+         // Reload the list of comp classes:
+         dispatch(actions.cancelEditOrganizer());
+         reloadOrganizers(dispatch);
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+   }
+}
+
+export function deleteOrganizer(organizer:Organizer): any {
+   return (dispatch: Dispatch<any>) => {
+      Api.deleteOrganizer(organizer)
+         .then(() => {
+            dispatch(actions.cancelEditOrganizer());
+            reloadColors(dispatch);
+         })
+         .catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }
 

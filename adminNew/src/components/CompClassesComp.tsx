@@ -68,9 +68,15 @@ class CompClassesComp extends React.Component<Props, State> {
       this.props.updateEditCompClass!("description", e.target.value);
    };
 
-   onTimeBeginChange = (e: any) => {
-      let newTimeBegin = e.toDate();
-      this.props.updateEditCompClass!("timeBegin", newTimeBegin);
+   onTimeBeginChange = (newTimeBegin: any) => {
+      let oldTimeBegin = moment(this.props.editCompClass!.timeBegin);
+      let diff = newTimeBegin.diff(oldTimeBegin); // Diff in ms
+
+      let newTimeEnd = moment(this.props.editCompClass!.timeEnd);
+      newTimeEnd.add(diff, "ms");
+
+      this.props.updateEditCompClass!("timeBegin", newTimeBegin.toDate());
+      this.props.updateEditCompClass!("timeEnd", newTimeEnd.toDate());
    };
 
    onTimeEndChange = (e: any) => {
@@ -91,8 +97,8 @@ class CompClassesComp extends React.Component<Props, State> {
                   <TableRow>
                      <TableCell style={{minWidth:120}}>Name</TableCell>
                      <TableCell style={{width:"100%"}}>Description</TableCell>
-                     <TableCell style={{minWidth:120}}>Start time</TableCell>
-                     <TableCell style={{minWidth:120}}>End time</TableCell>
+                     <TableCell style={{minWidth:130}}>Start time</TableCell>
+                     <TableCell style={{minWidth:130}}>End time</TableCell>
                      <TableCell className={"icon-cell"} style={{minWidth:96}}>
                         <IconButton color="inherit" aria-label="Menu" title="Add class" onClick={this.props.startAddCompClass}>
                            <AddIcon />
@@ -104,10 +110,7 @@ class CompClassesComp extends React.Component<Props, State> {
                   {compClasses.map(compClass => {
                      if(editCompClass == undefined || editCompClass.id != compClass.id) {
                         return (
-                           <TableRow key={compClass.id}
-                                     style={{cursor: 'pointer'}}
-                                     hover
-                                     onClick={() => console.log("click")}>
+                           <TableRow key={compClass.id}>
                               <TableCell component="th" scope="row">{compClass.name}</TableCell>
                               <TableCell>{compClass.description}</TableCell>
                               <TableCell>{moment(compClass.timeBegin).format(this.format)}</TableCell>

@@ -10,6 +10,10 @@
    padding-bottom:0;
 }
 
+a, a:visited {
+   color:inherit;
+}
+
 .selector {
    border: 1px solid #949494;
    color: #333;

@@ -82,8 +82,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             contestId: state.contest!.id,
             name: "",
             description: "",
-            timeBegin: "",
-            timeEnd: ""
+            timeBegin: new Date().toISOString(),
+            timeEnd: new Date().toISOString()
          };
          newCompClasses.push(newCompClass);
          return { ...state, editCompClass: newCompClass, compClasses: newCompClasses};

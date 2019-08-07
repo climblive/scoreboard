@@ -199,6 +199,28 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          action.payload.forEach(location => locationMap.set(location.id, location));
          return { ...state, locations: action.payload, locationMap: locationMap };
 
+      case getType(scoreboardActions.startEditLocation):
+         return { ...state, editLocation: action.payload};
+
+      case getType(scoreboardActions.cancelEditLocation):
+         const newLocations = state.locations!.filter(p2 => p2.id != -1);
+         return { ...state, editLocation: undefined, locations: newLocations};
+
+      case getType(scoreboardActions.startAddLocation):
+         const newLocations2 = [...state.locations!];
+         let newLocation2:CompLocation = {
+            id: -1,
+            organizerId: state.organizer!.id,
+            name: "",
+         };
+         newLocations2.push(newLocation2);
+         return { ...state, editLocation: newLocation2, locations: newLocations2};
+
+      case getType(scoreboardActions.updateEditLocation):
+         let newEditLocation = {...state.editLocation!};
+         newEditLocation[action.payload.propName] = action.payload.value;
+         return { ...state, editLocation: newEditLocation};
+
       // ********
 
       case getType(scoreboardActions.receiveOrganizers):

@@ -78,6 +78,16 @@ class LocationsView extends React.Component<Props & RouteComponentProps & Styled
       this.props.updateEditLocation!("name", e.target.value);
    };
 
+   onLatitudeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseFloat(e.target.value) | 0;
+      this.props.updateEditLocation!("latitude", value);
+   };
+
+   onLongitudeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseFloat(e.target.value) | 0;
+      this.props.updateEditLocation!("longitude", value);
+   };
+
    render() {
       let locations = this.props.locations;
       let classes = this.props.classes!!;
@@ -92,8 +102,10 @@ class LocationsView extends React.Component<Props & RouteComponentProps & Styled
                   <TableHead>
                      <TableRow>
                         <TableCell style={{width:"100%"}}>Name</TableCell>
+                        <TableCell style={{width:"100"}}>Latitude</TableCell>
+                        <TableCell style={{width:"100"}}>Longitude</TableCell>
                         <TableCell className={"icon-cell"} style={{minWidth:96}}>
-                           <IconButton color="inherit" aria-label="Menu" title="Add serie" onClick={this.props.startAddLocation}>
+                           <IconButton color="inherit" aria-label="Menu" title="Add location" onClick={this.props.startAddLocation}>
                               <AddIcon />
                            </IconButton>
                         </TableCell>
@@ -105,12 +117,14 @@ class LocationsView extends React.Component<Props & RouteComponentProps & Styled
                            return (
                               <TableRow key={location.id}>
                                  <TableCell component="th" scope="row">{location.name}</TableCell>
+                                 <TableCell component="th" scope="row">{location.latitude}</TableCell>
+                                 <TableCell component="th" scope="row">{location.longitude}</TableCell>
                                  <TableCell className={"icon-cell"}>
-                                    <IconButton color="inherit" aria-label="Menu" title="Edit"
+                                    <IconButton color="inherit" aria-label="Menu" title="Edit location"
                                                 onClick={() => this.props.startEditLocation!(location)}>
                                        <EditIcon/>
                                     </IconButton>
-                                    <IconButton color="inherit" aria-label="Menu" title="Delete"
+                                    <IconButton color="inherit" aria-label="Menu" title="Delete location"
                                                 onClick={() => this.deleteLocation(location)}>
                                        <DeleteIcon/>
                                     </IconButton>
@@ -123,6 +137,12 @@ class LocationsView extends React.Component<Props & RouteComponentProps & Styled
                               <TableRow key={location.id}>
                                  <TableCell component="th" scope="row">
                                     <TextField style={{}} value={editLocation.name} onChange={this.onNameChange} />
+                                 </TableCell>
+                                 <TableCell component="th" scope="row">
+                                    <TextField style={{}} value={editLocation.latitude} onChange={this.onLatitudeChange} />
+                                 </TableCell>
+                                 <TableCell component="th" scope="row">
+                                    <TextField style={{}} value={editLocation.longitude} onChange={this.onLongitudeChange} />
                                  </TableCell>
                                  <TableCell>
                                     <IconButton color="inherit" aria-label="Menu" title="Save"

@@ -16,7 +16,6 @@ class ColorController @Autowired constructor(
         val colorService: ColorService) {
 
     @GetMapping("/color")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getColors(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = colorService.search(pageable)
 

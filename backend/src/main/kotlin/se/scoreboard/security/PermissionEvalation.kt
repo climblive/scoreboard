@@ -90,6 +90,10 @@ data class PermissionEvalation @Autowired constructor(
                 } else ownershipDeriver.deriveInnerReferences(identifierType, targetType, dtos)
         }
 
+        if (derivedIdentifiers?.let { it.isEmpty() } ?: true) {
+            return false
+        }
+
         val principalIdentifiers: List<Int>? = when (identifierType) {
             IdentifierType.CONTEST -> principal.contestId?.let { listOf(it) }
             IdentifierType.CONTENDER -> principal.contenderId?.let { listOf(it) }

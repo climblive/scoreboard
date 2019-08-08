@@ -38,8 +38,9 @@ interface Props {
 
 type State = {
    showAddContendersPopup:boolean
+   addContendersErrorMessage?:string
    showResetConfirmationPopup:boolean
-   nNewContenders:number
+   nNewContenders:string
    //deleteCompClass?:CompClass
 }
 
@@ -47,12 +48,15 @@ class ContendersComp extends React.Component<Props, State> {
    public readonly state: State = {
       showAddContendersPopup: false,
       showResetConfirmationPopup: false,
-      nNewContenders: 0
+      nNewContenders: ""
    };
 
    constructor(props: Props) {
       super(props);
    }
+
+
+   readonly MAX_CONTENDER_COUNT = 500;
 
    componentDidMount() {
    }
@@ -64,6 +68,7 @@ class ContendersComp extends React.Component<Props, State> {
 
    startAddContenders = () => {
       this.state.showAddContendersPopup = true;
+      this.state.addContendersErrorMessage = undefined;
       this.setState(this.state);
    };
 
@@ -74,14 +79,23 @@ class ContendersComp extends React.Component<Props, State> {
    };
 
    onNNewContendersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.state.nNewContenders = parseInt(e.target.value) || 0;
+      this.state.nNewContenders = e.target.value;
       this.setState(this.state);
    };
 
    addContendersConfirmed = () => {
-      this.props.createContenders!(this.state.nNewContenders);
-      this.state.showAddContendersPopup = false;
-      this.state.nNewContenders = 0;
+      const nContenders = parseInt(this.state.nNewContenders);
+      if(nContenders) {
+         if (this.props.contenders.length + nContenders > this.MAX_CONTENDER_COUNT) {
+            this.state.addContendersErrorMessage = "Maximum number of contenders exceeded!"
+         } else {
+            this.props.createContenders!(nContenders);
+            this.state.showAddContendersPopup = false;
+            this.state.nNewContenders = "";
+         }
+      } else {
+         this.state.addContendersErrorMessage = "Illegal input!"
+      }
       this.setState(this.state);
    };
 
@@ -215,11 +229,15 @@ class ContendersComp extends React.Component<Props, State> {
                >
                <DialogTitle id="confirmation-dialog-title">Create contenders</DialogTitle>
                <DialogContent>
-                  <TextField label="Number of contenders" value={this.state.nNewContenders} onChange={this.onNNewContendersChange}/>
+                  <div>Before a contest starts, you have to create activation codes enough for all contenders.</div>
+                  <div style={{marginTop:5}}>Currently you have {contenders.length} activation codes.</div>
+                  <div style={{marginTop:5, marginBottom:20}}>You can create a maximum of {this.MAX_CONTENDER_COUNT} activation codes per contest.</div>
+                  <TextField style={{width:250}}label="Number of contenders to create" value={this.state.nNewContenders} onChange={this.onNNewContendersChange}/>
+                  {this.state.addContendersErrorMessage && <div style={{marginTop:5,color:"red",fontWeight:"bold"}}>{this.state.addContendersErrorMessage}</div>}
                </DialogContent>
                <DialogActions>
                   <Button onClick={this.closePopups} color="primary">Cancel</Button>
-                  <Button onClick={this.addContendersConfirmed} color="primary">Add</Button>
+                  <Button onClick={this.addContendersConfirmed} color="primary">Create</Button>
                </DialogActions>
             </Dialog>
             <ConfirmationDialog

@@ -36,6 +36,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveContest):
          return { ...state, contest: action.payload };
 
+      case getType(scoreboardActions.clearContests):
+         return { ...state, contests: undefined };
+
       case getType(scoreboardActions.clearContest):
          return { ...state,
             contest: undefined,
@@ -65,8 +68,13 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          newContest[action.payload.propName] = action.payload.value;
          return { ...state, contest: newContest};
 
+      // ********
+
       case getType(scoreboardActions.receiveCompClasses):
          return { ...state, compClasses: action.payload.sort((a, b) => a.id - b.id) };
+
+      case getType(scoreboardActions.clearCompClasses):
+         return { ...state, compClasses: undefined, editCompClass: undefined };
 
       case getType(scoreboardActions.startEditCompClass):
          return { ...state, editCompClass: action.payload};
@@ -93,6 +101,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          newEditCompClass[action.payload.propName] = action.payload.value;
          return { ...state, editCompClass: newEditCompClass};
 
+      // ********
+
       case getType(scoreboardActions.receiveProblems):
          const problems2 = action.payload.sort((a, b) => (a.number || 0) - (b.number || 0));
          let editProblem = undefined;
@@ -105,6 +115,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             problems2.push(editProblem);
          }
          return { ...state, problems: problems2, editProblem: editProblem};
+
+      case getType(scoreboardActions.clearProblems):
+         return { ...state, problems: undefined, editProblem: undefined};
 
       case getType(scoreboardActions.startEditProblem):
          return { ...state, editProblem: action.payload};
@@ -143,6 +156,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveColors):
          return { ...state, colors: action.payload};
 
+      case getType(scoreboardActions.clearColors):
+         return { ...state, colors: undefined, editColor:undefined};
+
       case getType(scoreboardActions.startEditColor):
          return { ...state, editColor: action.payload};
 
@@ -171,6 +187,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveSeries):
          return { ...state, series: action.payload};
 
+      case getType(scoreboardActions.clearSeries):
+         return { ...state, series: undefined, editSeries: undefined};
+
       case getType(scoreboardActions.startEditSeries):
          return { ...state, editSeries: action.payload};
 
@@ -183,6 +202,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          let newSeries:Series = {
             id: -1,
             name: "",
+            organizerId: state.organizer!.id
          };
          newSeriesList2.push(newSeries);
          return { ...state, editSeries: newSeries, series: newSeriesList2};
@@ -195,9 +215,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       // ********
 
       case getType(scoreboardActions.receiveLocations):
-         const locationMap = new Map<number, CompLocation>();
-         action.payload.forEach(location => locationMap.set(location.id, location));
-         return { ...state, locations: action.payload, locationMap: locationMap };
+         return { ...state, locations: action.payload };
+
+      case getType(scoreboardActions.clearLocations):
+         return { ...state, locations: undefined, editLocation: undefined };
 
       case getType(scoreboardActions.startEditLocation):
          return { ...state, editLocation: action.payload};
@@ -224,9 +245,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       // ********
 
       case getType(scoreboardActions.receiveOrganizers):
-         const organizerMap = new Map<number, Organizer>();
-         action.payload.forEach(organizer => organizerMap.set(organizer.id, organizer));
-         return { ...state, organizers: action.payload, organizer: action.payload[0], organizerMap: organizerMap };
+         return { ...state, organizers: action.payload, organizer: action.payload[0] };
+
+      case getType(scoreboardActions.clearOrganizers):
+         return { ...state, organizers: undefined, editOrganizer:undefined };
 
       case getType(scoreboardActions.setOrganizer):
          return  { ...state, organizer: action.payload};

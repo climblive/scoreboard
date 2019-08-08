@@ -16,6 +16,8 @@ import ContendersComp from "../components/ContendersComp";
 import {ContenderData} from "../model/contenderData";
 import {getColorMap, getCompClassMap, getContestIssues, getOrganizerColors} from "../selectors/selector";
 import {Series} from "../model/series";
+import {Organizer} from "../model/organizer";
+import {Redirect} from "react-router";
 
 interface Props {
    match: {
@@ -24,6 +26,7 @@ interface Props {
       }
    },
    contest?:Contest,
+   organizer?:Organizer,
    series?:Series[],
    problems?:Problem[],
    colors?:Color[],
@@ -100,6 +103,10 @@ class ContestView extends React.Component<Props, State> {
    };
 
    render() {
+      if(this.props.contest && this.props.organizer && this.props.contest!.organizerId !== this.props.organizer!.id) {
+         return <Redirect to="/contests" />
+      }
+
       let selectedTab = this.state.selectedTab;
       let tab;
       let isNew = this.props.contest == undefined || this.props.contest.isNew;
@@ -160,6 +167,7 @@ class ContestView extends React.Component<Props, State> {
 function mapStateToProps(state: StoreState, props: any): Props {
    return {
       contest: state.contest,
+      organizer: state.organizer,
       problems: state.problems,
       series: state.series,
       compClasses: state.compClasses,

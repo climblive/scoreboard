@@ -10,6 +10,7 @@ const getCompClasses = (state: StoreState) => state.compClasses;
 const getContests = (state: StoreState) => state.contests;
 const getOrganizers = (state: StoreState) => state.organizers;
 const getLocations = (state: StoreState) => state.locations;
+const getSeries = (state: StoreState) => state.series;
 const getProblems = (state: StoreState) => state.problems;
 const getContenders = (state: StoreState) => state.contenders;
 
@@ -63,6 +64,20 @@ export const getOrganizerContests = createSelector(
    [getContests, getOrganizer],
    (contests, organizer) => {
       return contests && organizer ? contests.filter(c => c.organizerId == organizer.id) : undefined;
+   }
+);
+
+export const getOrganizerSeries = createSelector(
+   [getSeries, getOrganizer],
+   (series, organizer) => {
+      return series && organizer ? series.filter(c => c.organizerId == organizer.id) : undefined;
+   }
+);
+
+export const getOrganizerLocations = createSelector(
+   [getLocations, getOrganizer],
+   (locations, organizer) => {
+      return locations && organizer ? locations.filter(c => c.organizerId == organizer.id) : undefined;
    }
 );
 

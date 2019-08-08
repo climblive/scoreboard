@@ -22,6 +22,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import {CompLocation} from "../model/compLocation";
+import {getOrganizerLocations} from "../selectors/selector";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -172,7 +173,7 @@ class LocationsView extends React.Component<Props & RouteComponentProps & Styled
 
 function mapStateToProps(state: StoreState, props: any): Props {
    return {
-      locations: state.locations,
+      locations: getOrganizerLocations(state),
       editLocation: state.editLocation,
    };
 }

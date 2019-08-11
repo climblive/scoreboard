@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.*
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
+import se.scoreboard.data.repo.ContenderRepository
+import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.*
+import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
+import java.time.OffsetDateTime
 import javax.transaction.Transactional
 
 @RestController
@@ -26,7 +30,9 @@ import javax.transaction.Transactional
 @RequestMapping("/api")
 class ContestController @Autowired constructor(
         private val contestService: ContestService,
-        private val contenderService: ContenderService) {
+        private val contenderService: ContenderService,
+        private val tickRepository: TickRepository,
+        private val contenderRepository: ContenderRepository) {
 
     private lateinit var problemMapper: ProblemMapper
     private lateinit var contenderMapper: ContenderMapper
@@ -139,4 +145,24 @@ class ContestController @Autowired constructor(
         return contenderService.createContenders(contest, createContendersParamsDto.count)
     }
 
+    @GetMapping("/contest/{id}/resetContenders")
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
+    @Transactional
+    fun resetContenders(@PathVariable("id") id: Int) {
+        val contest= contestService.fetchEntity(id)
+        val now = OffsetDateTime.now()
+
+        if (now >= contest.compClasses.minBy { it.timeBegin!! }?.timeBegin) {
+            throw WebException(HttpStatus.FORBIDDEN,
+                    "Cannot reset contenders after competition has started")
+        }
+
+        contenderRepository.saveAll(contest.contenders.map { contender ->
+            contender.compClass = null
+            contender.name = null
+            contender.entered = null
+            tickRepository.deleteAll(contender.ticks)
+            contender
+        })
+    }
 }

@@ -14,10 +14,17 @@ import ContestGeneralComp from "../components/ContestGeneralComp";
 import {Color} from "../model/color";
 import ContendersComp from "../components/ContendersComp";
 import {ContenderData} from "../model/contenderData";
-import {getColorMap, getCompClassMap, getContestIssues, getOrganizerColors} from "../selectors/selector";
+import {
+   getColorMap,
+   getCompClassMap,
+   getContestIssues,
+   getOrganizerColors,
+   getOrganizerLocations
+} from "../selectors/selector";
 import {Series} from "../model/series";
 import {Organizer} from "../model/organizer";
 import {Redirect} from "react-router";
+import {CompLocation} from "../model/compLocation";
 
 interface Props {
    match: {
@@ -27,7 +34,9 @@ interface Props {
    },
    contest?:Contest,
    organizer?:Organizer,
+   creatingPdf:boolean,
    series?:Series[],
+   locations?:CompLocation[],
    problems?:Problem[],
    colors?:Color[],
    colorMap: Map<number, Color>,
@@ -113,7 +122,9 @@ class ContestView extends React.Component<Props, State> {
       if(selectedTab == 0) {
          tab = (<ContestGeneralComp key="general"
                                     contest={this.props.contest!}
+                                    creatingPdf={this.props.creatingPdf}
                                     series={this.props.series}
+                                    locations={this.props.locations}
                                     contestIssues={this.props.contestIssues}
                                     updateContest={this.props.updateContest}
                                     saveContest={this.props.saveContest}
@@ -168,6 +179,8 @@ function mapStateToProps(state: StoreState, props: any): Props {
    return {
       contest: state.contest,
       organizer: state.organizer,
+      creatingPdf: state.creatingPdf,
+      locations: getOrganizerLocations(state),
       problems: state.problems,
       series: state.series,
       compClasses: state.compClasses,

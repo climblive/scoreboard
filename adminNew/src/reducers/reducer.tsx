@@ -19,7 +19,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, loggedInUser: action.payload };
 
       case getType(scoreboardActions.logout):
-         return { title: "", loggingIn: false};
+         return { title: "", loggingIn: false, creatingPdf:false};
+
+      case getType(scoreboardActions.setCreatingPdf):
+         return { ...state, creatingPdf: action.payload };
 
       case getType(scoreboardActions.receiveContests):
          return { ...state, contests: action.payload };

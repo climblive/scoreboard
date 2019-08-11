@@ -25,24 +25,42 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
 
     val qrCodeWriter = QRCodeWriter()
 
+    fun createPdf(codes: List<String>): ByteArray {
+        val document = PDDocument()
+        val logoObject = getLogo(document)
+        var count = 0
+        var page:PDPage = PDPage()
+        var offset = 0f
+        document.addPage(page)
+        codes.forEach { code ->
+            if(count == 6) {
+                page = PDPage()
+                document.addPage(page)
+                count = 0
+                offset = 0f
+            }
+            count++
+            offset = addHeader(document, offset, logoObject, page, code)
+        }
+        ByteArrayOutputStream().use {
+            document.save(it)
+            return it.toByteArray()
+        }
+    }
+
     fun createPdf(pdfTemplate: ByteArray, codes: List<String>): ByteArray {
         val document = PDDocument.load(pdfTemplate)
         val page = document.getPage(0)
         val pageDict = page.cosObject
         document.removePage(0)
 
-        // Get the logo:
-        var logo:BufferedImage? = null
-        PdfService::class.java.getResourceAsStream("/logo.png").use {
-            logo = ImageIO.read(it)
-        }
-        val logoObject = LosslessFactory.createFromImage(document, logo)
+        val logoObject = getLogo(document)
 
         codes.forEach { code ->
             var newPageDict = COSDictionary(pageDict)
             newPageDict.removeItem(COSName.ANNOTS)
             var newPage = PDPage(newPageDict)
-            addHeader(document, logoObject, newPage, code)
+            addHeader(document, 0f, logoObject, newPage, code)
             document.addPage(newPage)
         }
         ByteArrayOutputStream().use {
@@ -51,7 +69,15 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
         }
     }
 
-    private fun addHeader(document: PDDocument, logo: PDImageXObject, page: PDPage, code: String) {
+    private fun getLogo(document: PDDocument): PDImageXObject {
+        var logo:BufferedImage? = null
+        PdfService::class.java.getResourceAsStream("/logo.png").use {
+            logo = ImageIO.read(it)
+        }
+        return LosslessFactory.createFromImage(document, logo)
+    }
+
+    private fun addHeader(document: PDDocument, offset: Float, logo: PDImageXObject, page: PDPage, code: String) : Float {
         val cs = PDPageContentStream(document, page, PDPageContentStream.AppendMode.PREPEND, true)
         val outerM = 20f
         val qrM = 2f
@@ -59,7 +85,7 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
         val boxW = page.mediaBox.width - outerM * 2
         val boxH = 80
         val boxX = outerM
-        val boxY = page.mediaBox.height - boxH - outerM
+        val boxY = page.mediaBox.height - boxH - outerM - offset
 
         val qrSize = boxH - qrM * 2
 
@@ -94,6 +120,8 @@ class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: Stri
         cs.drawImage(qrCode, boxX + boxW - qrSize - qrM, boxY + qrM, qrSize, qrSize)
 
         cs.close()
+
+        return offset + boxH + (outerM * 2)
     }
 
     private fun getQRCode(text: String, dimension: Int): BufferedImage {

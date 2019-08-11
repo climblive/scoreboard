@@ -16,4 +16,25 @@ internal class PdfServiceTest {
             //File("hej.pdf").writeBytes(data!!)
         }
     }
+
+    @Test
+    fun testWithoutTemplate() {
+        val data = pdfService.createPdf(listOf(
+                "DASDFGaasdasdRWFMS",
+                "DASDFGadsdasdRWFMS",
+                "DASDFGadadasdRWFMS",
+                "SDFGadasdasdRWFMS",
+                "DAFGadasdasdRWFMS",
+                "DASDadasdasdRWFMS",
+                "DASDFGasdasdRWFMS",
+                "DASDFGaddasdRWFMS",
+                "DASDFGadasdasdRWFMS",
+                "DASDFGadassdRWFMS",
+                "DASDFGadasdasdRWFMS",
+                "DASDFGadasdaRWFMS",
+                "DASDFGadasdasdMS",
+                "ERFMasdasdasdasdSF"
+        ))
+        File("hej.pdf").writeBytes(data!!)
+    }
 }

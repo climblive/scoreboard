@@ -40,6 +40,11 @@ class ContestService @Autowired constructor(
         return pdfService.createPdf(pdfTemplate, codes)
     }
 
+    fun getPdf(id:Int) : ByteArray {
+        val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }
+        return pdfService.createPdf(codes)
+    }
+
     fun export(id: Int): ByteArray {
         val workbook: Workbook = HSSFWorkbook()
         val contest: Contest = fetchEntity(id)

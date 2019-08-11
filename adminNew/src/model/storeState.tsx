@@ -16,6 +16,7 @@ export interface StoreState {
 
    contests?: Contest[],
    contest?: Contest;
+   creatingPdf: boolean;
 
    problems?: Problem[];
    editProblem?: Problem;

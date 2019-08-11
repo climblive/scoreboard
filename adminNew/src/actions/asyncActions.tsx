@@ -345,17 +345,21 @@ export function generatePdf(file:Blob):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
       let reader = new FileReader();
+      dispatch(actions.setCreatingPdf(true));
       reader.onload = (evt:any) => {
          let arrayBuffer = evt.currentTarget.result;
          console.log("ArrayBuffer", arrayBuffer);
          Api.generatePdf(contestId, arrayBuffer).then(response => {
             console.log(response);
+            dispatch(actions.setCreatingPdf(false));
             saveAs(response, "contest.pdf");
          }).catch(error => {
+            dispatch(actions.setCreatingPdf(false));
             dispatch(actions.setErrorMessage(error))
          });
       };
       reader.onerror = function (evt) {
+         dispatch(actions.setCreatingPdf(false));
          dispatch(actions.setErrorMessage("Failed to load file:" + evt))
       };
       reader.readAsArrayBuffer(file);

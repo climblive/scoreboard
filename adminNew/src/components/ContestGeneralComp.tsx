@@ -5,21 +5,20 @@ import Button from "@material-ui/core/Button";
 import {Contest} from "../model/contest";
 import {InputLabel, TextField} from "@material-ui/core";
 import {RouteComponentProps, withRouter} from "react-router";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import RichTextEditor from "./RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import WarningIcon from '@material-ui/icons/Warning';
 import MenuItem from "@material-ui/core/MenuItem";
 import {Series} from "../model/series";
+import {CompLocation} from "../model/compLocation";
+import {CreatePdfDialog} from "./CreatePdfDialog";
 
 interface Props {
    contest:Contest,
    series?:Series[],
+   creatingPdf:boolean,
+   locations?:CompLocation[],
    contestIssues:string[],
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => void,
@@ -35,11 +34,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       showPopup:false,
    };
 
-   inputRef:any;
-
    constructor(props: Props & RouteComponentProps) {
       super(props);
-      this.inputRef = React.createRef();
    }
 
    componentDidMount() {
@@ -69,22 +65,14 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       this.props.updateContest!("rules", rules);
    };
 
+   onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const locationId = e.target.value == "None" ? undefined : parseInt(e.target.value);
+      this.props.updateContest!("locationId", locationId);
+   };
+
    onSeriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const seriesId = e.target.value == "None" ? undefined : parseInt(e.target.value);
       this.props.updateContest!("seriesId", seriesId);
-   };
-
-   createPdf = () => {
-      this.closePopup();
-      console.log("Create PDF", this.inputRef.current);
-      this.inputRef.current.click();
-   };
-
-   onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(e);
-      if(e.target.files != null && e.target.files.length > 0) {
-         this.props.createPdf!(e.target.files.item(0) as Blob);
-      }
    };
 
    onSave = () => {
@@ -111,7 +99,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
    render() {
       let contest = this.props.contest;
       let seriesList = this.props.series;
-      if(!(contest && seriesList)) {
+      let locations = this.props.locations;
+      if(!(contest && seriesList && locations)) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
       console.log("contestIssues", this.props.contestIssues);
@@ -129,6 +118,19 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                   <div style={{display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>
                      <TextField label="Name" value={contest.name} onChange={this.onNameChange}/>
                      <TextField style={{marginTop:10}} label="Description" value={contest.description} onChange={this.onDescriptionChange}/>
+                     <FormControl style={{marginTop:10}} >
+                        <InputLabel shrink htmlFor="location-select">Location</InputLabel>
+                        <Select
+                           id="location-select"
+                           value={(contest.locationId == undefined || contest.locationId == null) ? "None" : contest.locationId}
+                           onChange={this.onLocationChange}
+                        >
+                           <MenuItem value="None"><em>None</em></MenuItem>
+                           {locations!.map(location =>
+                              <MenuItem key={location.id} value={location.id}>{location.name}</MenuItem>
+                           )}
+                        </Select>
+                     </FormControl>
                      <FormControl style={{marginTop:10}} >
                         <InputLabel shrink htmlFor="series-select">Series</InputLabel>
                         <Select
@@ -152,25 +154,12 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                </div>
                <Button style={{marginTop:10}} variant="outlined" color="primary" onClick={this.onSave}>{contest.isNew ? 'Add' : 'Save'}</Button>
             </div>
-            <input style={{display:"none"}} type='file' onChange={this.onChange} ref={this.inputRef}/>
-            <Dialog
+            <CreatePdfDialog
                open={this.state.showPopup}
-               disableBackdropClick
-               disableEscapeKeyDown
-               maxWidth="xs"
-               aria-labelledby="confirmation-dialog-title"
-            >
-               <DialogTitle id="confirmation-dialog-title">Create contenders</DialogTitle>
-               <DialogContent>
-                  <DialogContentText>Apa</DialogContentText>
-               </DialogContent>
-               <DialogActions>
-                  <Button onClick={this.closePopup} color="primary">Cancel</Button>
-                  <Button onClick={this.createPdf} color="primary">Add</Button>
-               </DialogActions>
-
-            </Dialog>
-
+               creatingPdf={this.props.creatingPdf}
+               createPdf={this.props.createPdf}
+               onClose={this.closePopup}
+            />
          </Paper>
       );
    }

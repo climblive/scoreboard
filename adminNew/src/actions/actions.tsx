@@ -16,6 +16,7 @@ export const setTitle = createStandardAction('SET_TITLE')<string>();
 export const setLoggingIn = createStandardAction('SET_LOGGING_IN')<boolean>();
 export const setLoggedInUser = createStandardAction('SET_LOGGED_IN_USER')<User>();
 export const logout = createStandardAction('LOGOUT')();
+export const setCreatingPdf = createStandardAction('SET_CREATING_PDF')<boolean>();
 
 
 export const clearContest = createStandardAction('CLEAR_CONTEST')();

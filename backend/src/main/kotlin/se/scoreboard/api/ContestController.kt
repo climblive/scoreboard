@@ -105,6 +105,17 @@ class ContestController @Autowired constructor(
         return ResponseEntity(data, headers, HttpStatus.OK)
     }
 
+    @GetMapping(path = arrayOf("/contest/{id}/pdf"))
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
+    @Transactional
+    fun createPdf(@PathVariable("id") id: Int) : ResponseEntity<ByteArray> {
+        val data = contestService.getPdf(id)
+        val headers = HttpHeaders()
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.PDF.toString())
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contest.pdf")
+        return ResponseEntity(data, headers, HttpStatus.OK)
+    }
+
     private fun getContenderList(contenders: List<Contender>): List<ScoreboardListItemDto> {
         return contenders.map { ScoreboardListItemDto(it.id!!, it.name!!, it.getTotalScore(), it.getQualificationScore()) }
     }

@@ -12,21 +12,31 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
+import se.scoreboard.data.domain.Organizer
+import se.scoreboard.data.domain.User
+import se.scoreboard.data.repo.OrganizerRepository
+import se.scoreboard.data.repo.UserRepository
 import java.net.URL
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 import java.util.*
 import javax.servlet.http.HttpServletRequest
+import javax.transaction.Transactional
 
 
 @Component
-class JwtTokenProvider @Autowired constructor(
+    class JwtTokenProvider @Autowired constructor(
         @Value("\${amazon.cognito.region}")
         private var region: String,
         @Value("\${amazon.cognito.user-pool-id}")
-        private var userPoolId: String) : RSAKeyProvider {
+        private var userPoolId: String,
+        private val userRepository: UserRepository,
+        private val organizerRepository: OrganizerRepository) : RSAKeyProvider {
     private var logger = LoggerFactory.getLogger(JwtTokenProvider::class.java)
 
     companion object {
@@ -61,7 +71,14 @@ class JwtTokenProvider @Autowired constructor(
     }
 
     fun getAuthentication(token: String): Authentication {
-        val userDetails = this.userDetailsService!!.loadUserByUsername(getUsername(token))
+        val username: String = getUsername(token)
+
+        val userDetails = try {
+            this.userDetailsService!!.loadUserByUsername(username)
+        } catch (e: UsernameNotFoundException) {
+            createUser(username)
+        }
+
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
@@ -98,4 +115,16 @@ class JwtTokenProvider @Autowired constructor(
     }
 
     fun isRegistrationCode(token: String) = token.length == REGISTRATION_CODE_LENGTH
+
+    @Transactional
+    private fun createUser(username: String) : UserDetails {
+        var user = User(null, username.capitalize(), username, false)
+        var organizer = Organizer(null, "My Organizer", null)
+        user.organizers.add(organizer)
+
+        organizer = organizerRepository.save(organizer)
+        user = userRepository.save(user)
+
+        return MyUserPrincipal(user, "ROLE_ORGANIZER", listOf(organizer?.id!!))
+    }
 }

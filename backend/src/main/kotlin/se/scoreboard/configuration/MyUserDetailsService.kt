@@ -14,8 +14,6 @@ class MyUserDetailsService : UserDetailsService {
 
     @Autowired
     private val userRepository: UserRepository? = null
-    @Autowired
-    private val contenderRepository: ContenderRepository? = null
 
     override fun loadUserByUsername(username: String): UserDetails {
         val user = userRepository!!.findByUsername(username)
@@ -36,12 +34,6 @@ class MyUserDetailsService : UserDetailsService {
             } else {
                 throw InsufficientAuthenticationException("Orphaned user")
             }
-        }
-
-        val contender = contenderRepository!!.findByRegistrationCode(username)
-
-        if (contender != null) {
-            return MyUserPrincipal(contender)
         }
 
         throw UsernameNotFoundException(username)

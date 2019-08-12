@@ -7,18 +7,17 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.RSAKeyProvider
 import com.google.gson.Gson
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.User
+import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.data.repo.OrganizerRepository
 import se.scoreboard.data.repo.UserRepository
 import java.net.URL
@@ -36,12 +35,15 @@ import javax.transaction.Transactional
         @Value("\${amazon.cognito.user-pool-id}")
         private var userPoolId: String,
         private val userRepository: UserRepository,
-        private val organizerRepository: OrganizerRepository) : RSAKeyProvider {
-    private var logger = LoggerFactory.getLogger(JwtTokenProvider::class.java)
+        private val organizerRepository: OrganizerRepository,
+        private val contenderRepository: ContenderRepository) : RSAKeyProvider {
 
-    companion object {
-        private var REGISTRATION_CODE_LENGTH = 8
+    enum class AuthMethod {
+        BEARER,
+        REGCODE
     }
+
+    data class Authorization(val method: AuthMethod, val data: String)
 
     private lateinit var jwkProvider: UrlJwkProvider
     private lateinit var issuer: String
@@ -70,7 +72,7 @@ import javax.transaction.Transactional
         return jwkProvider.get(keyId).publicKey as RSAPublicKey
     }
 
-    fun getAuthentication(token: String): Authentication {
+    fun getUserAuthentication(token: String): Authentication {
         val username: String = getUsername(token)
 
         val userDetails = try {
@@ -82,30 +84,38 @@ import javax.transaction.Transactional
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
-    fun getUsername(token: String): String {
-        if (isRegistrationCode(token)) {
-            return token
-        }
+    fun getContenderAuthentication(regcode: String): Authentication? {
+        val contender = contenderRepository.findByRegistrationCode(regcode)
 
-        val gson = Gson()
-
-        val payloadString = String(Base64.getDecoder().decode(verifier.verify(token).payload))
-        val payload = gson.fromJson(payloadString, JwtPayload::class.java)
-        return payload.username
-    }
-
-    fun resolveToken(req: HttpServletRequest): String? {
-        val bearerToken = req.getHeader("Authorization")
-        return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            bearerToken.substring(7, bearerToken.length)
+        return if (contender != null) {
+            val principal = MyUserPrincipal(contender)
+            return UsernamePasswordAuthenticationToken(principal, "", principal.authorities)
         } else null
     }
 
-    fun validateToken(token: String): Boolean {
-        if (isRegistrationCode(token)) {
-            return true
+    fun getUsername(token: String): String {
+        val payloadString = String(Base64.getDecoder().decode(verifier.verify(token).payload))
+        val payload = Gson().fromJson(payloadString, JwtPayload::class.java)
+        return payload.username
+    }
+
+    fun resolveAuthorization(req: HttpServletRequest): Authorization? {
+        val header = req.getHeader("Authorization")
+
+        if (header != null) {
+            if (header.startsWith("Bearer ")) {
+                return Authorization(AuthMethod.BEARER, header.substring(7, header.length))
+            } else if (header.startsWith("Regcode ")) {
+                return Authorization(AuthMethod.REGCODE, header.substring(8, header.length))
+            } else {
+                return null
+            }
         }
 
+        return null
+    }
+
+    fun validateToken(token: String): Boolean {
         try {
             verifier.verify(token)
             return true
@@ -113,8 +123,6 @@ import javax.transaction.Transactional
             return false
         }
     }
-
-    fun isRegistrationCode(token: String) = token.length == REGISTRATION_CODE_LENGTH
 
     @Transactional
     private fun createUser(username: String) : UserDetails {

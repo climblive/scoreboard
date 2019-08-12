@@ -1,5 +1,6 @@
 package se.scoreboard.configuration
 
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import java.io.IOException
@@ -14,12 +15,15 @@ class JwtTokenFilter(private val jwtTokenProvider: JwtTokenProvider) : GenericFi
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(req: ServletRequest, res: ServletResponse, filterChain: FilterChain) {
-        val token = jwtTokenProvider.resolveToken(req as HttpServletRequest)
+        val authorization = jwtTokenProvider.resolveAuthorization(req as HttpServletRequest)
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            val auth = jwtTokenProvider.getAuthentication(token)
-            SecurityContextHolder.getContext().authentication = auth
+        val auth: Authentication? = when (authorization?.method) {
+            JwtTokenProvider.AuthMethod.BEARER -> if (jwtTokenProvider.validateToken(authorization.data)) jwtTokenProvider.getUserAuthentication(authorization.data) else null
+            JwtTokenProvider.AuthMethod.REGCODE -> jwtTokenProvider.getContenderAuthentication(authorization.data)
+            null -> null
         }
+
+        auth?.let { SecurityContextHolder.getContext().authentication = it }
 
         filterChain.doFilter(req, res)
     }

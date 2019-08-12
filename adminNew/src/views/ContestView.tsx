@@ -53,7 +53,8 @@ interface Props {
    saveContest?: (onSuccess:(contest:Contest) => void) => any,
    loadColors?: () => void,
    setTitle?: (title: string) => void,
-   createPdf?: (file:Blob) => void
+   createPdf?: () => void
+   createPdfFromTemplate?: (file:Blob) => void
 
    startEditProblem?:(problem:Problem) => void
    cancelEditProblem?:() => void
@@ -129,6 +130,7 @@ class ContestView extends React.Component<Props, State> {
                                     updateContest={this.props.updateContest}
                                     saveContest={this.props.saveContest}
                                     createPdf={this.props.createPdf}
+                                    createPdfFromTemplate={this.props.createPdfFromTemplate}
          />);
       } else if(selectedTab == 1) {
          tab = (<CompClassesComp key="compClasses"
@@ -220,7 +222,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
       createContenders: (nNewContenders:number) => dispatch(asyncActions.createContenders(nNewContenders)),
       exportResults: () => dispatch(asyncActions.exportResults()),
-      createPdf: (file:Blob) => dispatch(asyncActions.generatePdf(file)),
+      createPdf: () => dispatch(asyncActions.createPdf()),
+      createPdfFromTemplate: (file:Blob) => dispatch(asyncActions.createPdfFromTemplate(file)),
       resetContenders: () => dispatch(asyncActions.resetContenders()),
    };
 }

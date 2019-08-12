@@ -22,7 +22,8 @@ interface Props {
    contestIssues:string[],
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => void,
-   createPdf?: (file:Blob) => void
+   createPdf?: () => void
+   createPdfFromTemplate?: (file:Blob) => void
 }
 
 type State = {
@@ -158,6 +159,7 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                open={this.state.showPopup}
                creatingPdf={this.props.creatingPdf}
                createPdf={this.props.createPdf}
+               createPdfFromTemplate={this.props.createPdfFromTemplate}
                onClose={this.closePopup}
             />
          </Paper>

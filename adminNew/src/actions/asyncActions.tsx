@@ -341,7 +341,7 @@ export function exportResults():any {
    }
 }
 
-export function generatePdf(file:Blob):any {
+export function createPdfFromTemplate(file:Blob):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
       let reader = new FileReader();
@@ -349,7 +349,7 @@ export function generatePdf(file:Blob):any {
       reader.onload = (evt:any) => {
          let arrayBuffer = evt.currentTarget.result;
          console.log("ArrayBuffer", arrayBuffer);
-         Api.generatePdf(contestId, arrayBuffer).then(response => {
+         Api.createPdfFromTemplate(contestId, arrayBuffer).then(response => {
             console.log(response);
             dispatch(actions.setCreatingPdf(false));
             saveAs(response, "contest.pdf");
@@ -366,4 +366,17 @@ export function generatePdf(file:Blob):any {
    }
 }
 
+export function createPdf():any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest!.id;
+      dispatch(actions.setCreatingPdf(true));
+      Api.createPdf(contestId).then(response => {
+         dispatch(actions.setCreatingPdf(false));
+         saveAs(response, "contest.pdf");
+      }).catch(error => {
+         dispatch(actions.setCreatingPdf(false));
+         dispatch(actions.setErrorMessage(error))
+      });
+   }
+}
 

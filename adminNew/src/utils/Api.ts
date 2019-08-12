@@ -237,7 +237,19 @@ export class Api {
       return (await this.handleErrors(response)).blob();
    }
 
-   static async generatePdf(contestId: number, arrayBuffer: any) {
+   static async createPdf(contestId: number) {
+      let url = "contest/" + contestId + "/pdf";
+      let response = await fetch(this.getBaseUrl() + url,
+         {
+            method: "GET",
+            headers: {
+               ...Api.getAuthHeader()
+            }
+         });
+      return (await this.handleErrors(response)).blob();
+   }
+
+   static async createPdfFromTemplate(contestId: number, arrayBuffer: any) {
       let url = "contest/" + contestId + "/pdf";
       let response = await fetch(this.getBaseUrl() + url,
          {

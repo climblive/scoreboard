@@ -45,7 +45,7 @@ export class Api {
    }
 
    private static getAuthHeader(activationCode?: string) : any {
-      return activationCode ? {Authorization: "Bearer " + activationCode} : {}
+      return activationCode ? {Authorization: "Regcode " + activationCode} : {}
    }
 
    private static async get(url: string, activationCode?: string) {

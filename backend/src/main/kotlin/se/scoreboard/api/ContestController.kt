@@ -49,8 +49,11 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(pageable)
 
+
+    /**
+     * Let this endpoint be completely open so the scoreboard view can get contest information without any credentials
+     */
     @GetMapping("/contest/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContest(@PathVariable("id") id: Int) = contestService.findById(id)
 

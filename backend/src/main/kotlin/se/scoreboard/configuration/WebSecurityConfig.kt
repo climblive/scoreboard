@@ -39,6 +39,7 @@ class WebSecurityConfig @Autowired constructor(
             .antMatchers("/api/user/login").permitAll()
             .antMatchers("/api/live/websocket").permitAll()
             .antMatchers("/api/contest/*/scoreboard").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/contest/*").permitAll()
             .antMatchers("/*").permitAll()
             .antMatchers("/scoreboard/*").permitAll()
             .antMatchers("/**/*.ico").permitAll()

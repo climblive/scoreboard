@@ -14,7 +14,7 @@ open class Contest (
     override var id: Int? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id", nullable = true)
     open var location: Location? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,7 +22,7 @@ open class Contest (
     open var organizer: Organizer? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "series_id", nullable = false)
+    @JoinColumn(name = "series_id", nullable = true)
     open var series: Series? = null,
 
     @Column(name = "name", nullable = false, length = 64)

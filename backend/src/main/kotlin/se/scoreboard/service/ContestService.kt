@@ -30,9 +30,9 @@ class ContestService @Autowired constructor(
     }
 
     override fun handleNested(entity: Contest, dto: ContestDto) {
-        entity.location = entityManager.getReference(Location::class.java, dto.locationId)
+        entity.location = dto.locationId?.let { entityManager.getReference(Location::class.java, it) }
         entity.organizer = entityManager.getReference(Organizer::class.java, dto.organizerId)
-        entity.series = entityManager.getReference(Series::class.java, dto.seriesId)
+        entity.series = dto.seriesId?.let { entityManager.getReference(Series::class.java, it) }
     }
 
     fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {

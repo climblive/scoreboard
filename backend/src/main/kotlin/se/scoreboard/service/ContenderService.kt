@@ -13,13 +13,16 @@ import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.mapper.ContenderMapper
 import javax.transaction.Transactional
-import kotlin.random.Random
 
 @Service
 class ContenderService @Autowired constructor(
     private var contenderRepository: ContenderRepository,
     private var compClassService: CompClassService) : AbstractDataService<Contender, ContenderDto, Int>(
         contenderRepository) {
+
+    companion object {
+        private val MAX_CONTEST_CONTENDERS = 500
+    }
 
     override lateinit var entityMapper: AbstractMapper<Contender, ContenderDto>
 
@@ -38,7 +41,20 @@ class ContenderService @Autowired constructor(
         entity.compClass = if (dto.compClassId != null) compClassService.fetchEntity(dto.compClassId!!) else null
     }
 
+    override fun create(contender: ContenderDto): ContenderDto {
+        checkMaximumContenderLimit(contender.contestId!!, 1)
+        return super.create(contender)
+    }
+
+    override fun update(id: Int, contender: ContenderDto): ContenderDto {
+        val updated = super.update(id, contender)
+        checkMaximumContenderLimit(updated.contestId!!, 0)
+        return updated
+    }
+
     fun createContenders(contest: Contest, contenderCount: Int) :Array<ContenderDto> {
+        checkMaximumContenderLimit(contest.id!!, contenderCount)
+
         return Array(contenderCount) {
             var contender = Contender()
             contender.contest = contest
@@ -46,6 +62,12 @@ class ContenderService @Autowired constructor(
 
             contender = entityRepository.save(contender)
             entityMapper.convertToDto(contender)
+        }
+    }
+
+    fun checkMaximumContenderLimit(contestId: Int, delta: Int = 0) {
+        if (contenderRepository.countByContestId(contestId) + delta > MAX_CONTEST_CONTENDERS) {
+            throw WebException(HttpStatus.FORBIDDEN, "Contender limit exceeded for the contest")
         }
     }
 }

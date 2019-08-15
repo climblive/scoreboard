@@ -22,4 +22,6 @@ interface ContenderRepository : ScoreboardRepository<Contender, Int> {
     override fun deriveOrganizerIds(@Param("contenderIds") targetIds: List<Int>): List<Int>
 
     fun findByRegistrationCode(registrationCode: String) : Contender?
+
+    fun countByContestId(contestId: Int): Int
 }

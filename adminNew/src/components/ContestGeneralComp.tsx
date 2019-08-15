@@ -95,8 +95,6 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       this.setState(this.state);
    };
 
-   url = "https://clmb.live/scoreboard/1";
-
    render() {
       let contest = this.props.contest;
       let seriesList = this.props.series;
@@ -104,7 +102,7 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       if(!(contest && seriesList && locations)) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
-      console.log("contestIssues", this.props.contestIssues);
+      let scoreboardUrl = "https://clmb.live/scoreboard/" + contest.id;
       return (
          <Paper>
             {this.props.contestIssues.map(issue => <div style={{padding:10, display:"flex", alignItems:"center", fontWeight:"bold", color:"#e49c3b"}} key={issue}><WarningIcon style={{marginRight:10}}/>{issue}</div>)}
@@ -112,7 +110,7 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                {((!contest.isNew) && this.props.contestIssues.length == 0) &&
                   <div style={{marginBottom:10}}>
                       <Button style={{marginRight:10}} variant="outlined" color="primary" onClick={this.startPdfCreate}>Create PDF</Button>
-                      <Button href={this.url} target="_blank" variant="outlined" color="primary">Open scoreboard</Button>
+                      <Button href={scoreboardUrl} target="_blank" variant="outlined" color="primary">Open scoreboard</Button>
                   </div>
                }
                <div style={{display:"flex", flexDirection:"row"}}>

@@ -9,7 +9,9 @@ const getScoreboardContenders = (state: StoreState, props: any) => {
    } else {
       return undefined;
    }
-}
+};
+
+const getContest = (state: StoreState) => state.contest;
 
 const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: number, scoreboardContenders?: ScoreboardContender[]) => {
    if (scoreboardContenders) {
@@ -32,7 +34,7 @@ const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: num
                position: position,
                contenderName: sc.contenderName,
                score: score
-            }
+            };
             return x;
          }
       }).filter(sc => sc) as ScoreboardListItem[];
@@ -45,18 +47,18 @@ const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: num
    } else {
       return undefined;
    }
-}
+};
 
 export const makeGetTotalList = () => {
    return createSelector(
       [getScoreboardContenders],
       (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.totalScore, 0, scoreboardContenders)
    )
-}
+};
 
 export const makeGetFinalistList = () => {
    return createSelector(
-      [getScoreboardContenders],
-      (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.qualifyingScore, 7, scoreboardContenders)
+      [getScoreboardContenders, getContest],
+      (scoreboardContenders, contest) => createList((sc: ScoreboardContender) => sc.qualifyingScore, contest.finalists, scoreboardContenders)
    )
-}
+};

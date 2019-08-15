@@ -3,4 +3,6 @@ export interface Contest {
    name: string;
    rules: string;
    qualifyingProblems: number
+   finalists: number;
+   gracePeriod: number;
 }

@@ -67,8 +67,9 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
 
    render() {
       const scoreboardData = this.props.scoreboardData;
+      const contest = this.props.contest;
 
-      if (scoreboardData) {
+      if (scoreboardData && contest) {
          const currentCompClassId = this.props.currentCompClassId;
          const currentCompClass = scoreboardData.find(sd => sd.compClass.id == currentCompClassId)!.compClass;
 

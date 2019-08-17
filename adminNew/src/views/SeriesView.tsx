@@ -26,7 +26,7 @@ import {getOrganizerSeries} from "../selectors/selector";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
-      width: '100%',
+      margin:10
    },
    table: {
       minWidth: 700,

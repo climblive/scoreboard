@@ -80,7 +80,7 @@ class App extends React.Component<Props> {
                         <div className="mainView">
 
                            {this.props.loggedInUser && <Switch>
-                               <Route path="/" exact component={ContestsView} />
+                               <Route path="/" exact component={WelcomeView} />
                                <Route path="/contests" exact component={ContestsView} />
                                <Route path="/contests/:contestId" component={ContestView} />
                                <Route path="/colors" exact component={ColorsView} />

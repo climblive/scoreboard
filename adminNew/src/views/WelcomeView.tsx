@@ -10,28 +10,62 @@ export interface Props {
 }
 
 const styles = ({ spacing }: Theme) => createStyles({
-   test: {
-      background:'white',
+   gridLine: {
+      display:"flex"
+   },
+   gridImg: {
+      flexBasis:0,
+      flexGrow:1,
+      flexShrink:1,
+      width:"50%"
+   },
+   gridText: {
+      padding:10,
+      flexBasis:0,
+      flexGrow:1,
+      flexShrink:1
+   },
+   paragraph: {
+      marginBottom: 10,
    }
 });
 
 function WelcomeView({ classes }: Props & StyledComponentProps) {
    return (
-      <div style={{maxWidth:350, margin: "0 auto"}}>
-         <div style={{fontSize: 20, fontWeight: "bold", marginTop: 30}}>
-            Welcome to clmb.live - bouldering contests made easy!
-         </div>
-         <div style={{marginTop:10}}>
-            Clmb.live is targeting small boulder contests, where the contenders keep track of their results by themselves.
-         </div>
-         <div style={{marginTop:5}}>
-            Normally this is made with scoreboards on paper, but now you can replace it with a web page instead.
-         </div>
-         <div style={{marginTop:5}}>
-            Easier to get the results right, and you get live results during the competitions. People can even follow the contests remotely!
-         </div >
-         <div style={{marginTop:10}}>
-            To create your own contests - please register above.
+      <div style={{flexBasis:0, flexGrow:1, overflowY:"auto"}}>
+         <div style={{maxWidth:600, margin: "0 auto"}}>
+            <div style={{fontSize: 20, fontWeight: "bold", marginTop: 30, marginBottom:10}}>
+               Welcome to clmb.live - bouldering contests made easy!
+            </div>
+            <div className={classes!.gridLine}>
+               <div className={classes!.gridText}>
+                  <div className={classes!.paragraph}>Clmb.live is targeting small boulder contests, where the contenders keep track of their results by themselves.</div>
+                  <div className={classes!.paragraph}>Normally this is made with scoreboards on paper, but now you can replace or combine it with a web page.</div>
+               </div>
+               <img className={classes!.gridImg} src="/images/contender.jpg"/>
+            </div>
+            <div className={classes!.gridLine}>
+               <img className={classes!.gridImg} src="/images/scoreboard.jpg"/>
+               <div className={classes!.gridText}>
+                  <div className={classes!.paragraph}>You get live results during the contests, with instant updates when contenders reports progress.</div>
+                  <div className={classes!.paragraph}>Easier to follow for spectators, and more exciting for the contenders.</div>
+               </div>
+            </div>
+            <div className={classes!.gridLine}>
+               <div className={classes!.gridText}>
+                  <div className={classes!.paragraph}>Easier to get the results right, and it's available directly when the contest ends.</div>
+                  <div className={classes!.paragraph}>People can even follow contests remotely!</div>
+
+               </div >
+               <img className={classes!.gridImg} src="/images/remote.jpg"/>
+            </div >
+            <div className={classes!.gridLine}>
+               <img className={classes!.gridImg} src="/images/admin.png"/>
+               <div className={classes!.gridText}>
+                  <div className={classes!.paragraph}>Create your own contests easily in a web frontend. You can also create series consisting of several contests.</div>
+                  <div className={classes!.paragraph}>Please sign up above to try it out. It's completely free, and we have no plans to change it.</div>
+               </div>
+            </div >
          </div>
       </div>
    );

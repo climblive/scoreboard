@@ -165,15 +165,17 @@ class ContestView extends React.Component<Props, State> {
                                 resetContenders={this.props.resetContenders}
          />);
       }
-      return [
-         (<Tabs key="tabs" value={selectedTab} onChange={this.selectTab}>
-            <Tab label="General information" />
-            {!isNew && <Tab label="Classes" />}
-            {!isNew && <Tab label="Problems" />}
-            {!isNew && <Tab label="Contenders" />}
-         </Tabs>),
-         tab
-      ]
+      return (
+         <div style={{margin:10, display:"flex", flexDirection: "column", flexGrow:1}}>
+            <Tabs key="tabs" value={selectedTab} onChange={this.selectTab}>
+               <Tab label="General information" />
+               {!isNew && <Tab label="Classes" />}
+               {!isNew && <Tab label="Problems" />}
+               {!isNew && <Tab label="Contenders" />}
+            </Tabs>
+            {tab}
+         </div>
+      )
    }
 }
 

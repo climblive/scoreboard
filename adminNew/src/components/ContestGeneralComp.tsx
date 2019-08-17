@@ -117,7 +117,7 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                   <div style={{display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>
                      <TextField label="Name" value={contest.name} onChange={this.onNameChange}/>
                      <TextField style={{marginTop:10}} label="Description" value={contest.description} onChange={this.onDescriptionChange}/>
-                     <FormControl style={{marginTop:10}} >
+                     {locations.length > 0 && (<FormControl style={{marginTop:10}} >
                         <InputLabel shrink htmlFor="location-select">Location</InputLabel>
                         <Select
                            id="location-select"
@@ -129,8 +129,8 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                               <MenuItem key={location.id} value={location.id}>{location.name}</MenuItem>
                            )}
                         </Select>
-                     </FormControl>
-                     <FormControl style={{marginTop:10}} >
+                     </FormControl>)}
+                     {seriesList.length > 0 && (<FormControl style={{marginTop:10}} >
                         <InputLabel shrink htmlFor="series-select">Series</InputLabel>
                         <Select
                            id="series-select"
@@ -142,7 +142,7 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                               <MenuItem key={series.id} value={series.id}>{series.name}</MenuItem>
                            )}
                         </Select>
-                     </FormControl>
+                     </FormControl>)}
                      <TextField style={{marginTop:10}} label="Number of qualifying problems" value={contest.qualifyingProblems} onChange={this.onQualifyingProblemsChange}/>
                      <TextField style={{marginTop:10}} label="Number of finalists" value={contest.finalists} onChange={this.onFinalistsChange}/>
                      <TextField style={{marginTop:10}} label="Grace period (minutes)" value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>

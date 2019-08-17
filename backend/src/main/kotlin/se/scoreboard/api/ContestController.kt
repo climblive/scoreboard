@@ -20,6 +20,7 @@ import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.ProblemMapper
+import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
 import java.time.OffsetDateTime
@@ -37,18 +38,19 @@ class ContestController @Autowired constructor(
     private lateinit var problemMapper: ProblemMapper
     private lateinit var contenderMapper: ContenderMapper
     private lateinit var compClassMapper: CompClassMapper
+    private lateinit var tickMapper: TickMapper
 
     init {
         problemMapper = Mappers.getMapper(ProblemMapper::class.java)
         contenderMapper = Mappers.getMapper(ContenderMapper::class.java)
         compClassMapper = Mappers.getMapper(CompClassMapper::class.java)
+        tickMapper = Mappers.getMapper(TickMapper::class.java)
     }
 
     @GetMapping("/contest")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(pageable)
-
 
     /**
      * Let this endpoint be completely open so the scoreboard view can get contest information without any credentials
@@ -74,6 +76,12 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContestCompClasses(@PathVariable("id") id: Int) : List<CompClassDto> =
             contestService.fetchEntity(id).compClasses.map { compClass -> compClassMapper.convertToDto(compClass) }
+
+    @GetMapping("/contest/{id}/tick")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @Transactional
+    fun getContestTicks(@PathVariable("id") id: Int) : List<TickDto> =
+            tickRepository.findAllByContestId(id).map { tickMapper.convertToDto(it) }
 
     @PostMapping("/contest")
     @PreAuthorize("hasPermission(#contest, 'create')")

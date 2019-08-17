@@ -33,8 +33,8 @@ const styles = ({ spacing }: Theme) => createStyles({
 function WelcomeView({ classes }: Props & StyledComponentProps) {
    return (
       <div style={{flexBasis:0, flexGrow:1, overflowY:"auto"}}>
-         <div style={{maxWidth:600, margin: "0 auto"}}>
-            <div style={{fontSize: 20, fontWeight: "bold", marginTop: 30, marginBottom:10}}>
+         <div style={{maxWidth:600, margin: "20px auto"}}>
+            <div style={{fontSize: 20, fontWeight: "bold", marginTop: 10, marginBottom:20}}>
                Welcome to clmb.live - bouldering contests made easy!
             </div>
             <div className={classes!.gridLine}>
@@ -60,7 +60,7 @@ function WelcomeView({ classes }: Props & StyledComponentProps) {
                <img className={classes!.gridImg} src="/images/remote.jpg"/>
             </div >
             <div className={classes!.gridLine}>
-               <img className={classes!.gridImg} src="/images/admin.png"/>
+               <img className={classes!.gridImg} src="/images/admin.jpg"/>
                <div className={classes!.gridText}>
                   <div className={classes!.paragraph}>Create your own contests easily in a web frontend. You can also create series consisting of several contests.</div>
                   <div className={classes!.paragraph}>Please sign up above to try it out. It's completely free, and we have no plans to change it.</div>

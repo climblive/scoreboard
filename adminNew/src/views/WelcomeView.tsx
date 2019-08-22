@@ -53,9 +53,8 @@ function WelcomeView({ classes }: Props & StyledComponentProps) {
             </div>
             <div className={classes!.gridLine}>
                <div className={classes!.gridText}>
-                  <div className={classes!.paragraph}>Easier to get the results right, and it's available directly when the contest ends.</div>
+                  <div className={classes!.paragraph}>No calculations required by the contenders, and the results are available directly when the contest ends.</div>
                   <div className={classes!.paragraph}>People can even follow contests remotely!</div>
-
                </div >
                <img className={classes!.gridImg} src="/images/remote.jpg"/>
             </div >

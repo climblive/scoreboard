@@ -61,7 +61,7 @@ function WelcomeView({ classes }: Props & StyledComponentProps) {
             <div className={classes!.gridLine}>
                <img className={classes!.gridImg} src="/images/admin.jpg"/>
                <div className={classes!.gridText}>
-                  <div className={classes!.paragraph}>Create your own contests easily in a web frontend. You can also create series consisting of several contests.</div>
+                  <div className={classes!.paragraph}>Create your own contests easily in a web frontend.</div>
                   <div className={classes!.paragraph}>Please sign up above to try it out. It's completely free, and we have no plans to change it.</div>
                </div>
             </div >

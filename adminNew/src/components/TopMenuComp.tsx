@@ -114,7 +114,7 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
             <AppBar position="static">
                <MuiThemeProvider theme={this.theme}>
                   <Toolbar>
-                     {organizers && <FormControl style={{minWidth:200, marginRight:10}}>
+                     {(organizers && organizers.length > 1) && <FormControl style={{minWidth:200, marginRight:10}}>
                         <InputLabel shrink htmlFor="series-select">Organizer</InputLabel>
                         <Select
                            id="series-select"

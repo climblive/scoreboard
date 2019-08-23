@@ -65,21 +65,23 @@ export class CreatePdfDialog extends React.Component<CreatePdfDialogProps, State
             <input style={{display: "none"}} type='file' onChange={this.onChange} ref={this.inputRef}/>
             <DialogTitle id="confirmation-dialog-title">Create PDF</DialogTitle>
             <DialogContent>
-               <Tabs value={selectedTab} onChange={this.selectTab}>
+               <Tabs value={selectedTab} onChange={this.selectTab} style={{marginBottom:20}}>
                   <Tab label="PDF with codes" />
                   <Tab label="Scoreboard from template" />
                </Tabs>
                {selectedTab == 0 && <DialogContentText>
-                   You can create a pdf with scoreboard and a registration code for all contenders.
-
-                   Select a single page template pdf, and you will get a pdf with one page per contender, with the
-                   registration code added on the top of each page.
+                   Download the PDF, print it, cut it and hand out to the contenders.
                </DialogContentText>}
-               {selectedTab == 0 && <DialogContentText>
-                   You can create a pdf with scoreboard and a registration code for all contenders.
-
-                   Select a single page template pdf, and you will get a pdf with one page per contender, with the
-                   registration code added on the top of each page.
+               {selectedTab == 1 && <DialogContentText>
+                   If you want to use CLMB.live together with a scoreboard on paper,
+                   you can generate scoreboards with a registration code on the top of each scoreboard.
+                   <div style={{marginTop:10}}>This can be a way of just testing CLMB.live on a contest.</div>
+                   <ul>
+                       <li>Create a single page pdf with your scoreboard. Make sure to leave space on top of the page for the regstration code.</li>
+                       <li style={{marginTop:10}}>Upload the PDF file by clicking the button below.</li>
+                       <li style={{marginTop:10}}>CLMB.live generates a new pdf with one page per contender with a registration code on top.</li>
+                       <li style={{marginTop:10}}>Print the new pdf, and hand out to the contenders.</li>
+                   </ul>
                </DialogContentText>}
                {this.props.creatingPdf && <div>
                    <div style={{textAlign: "center", marginTop: 10}}><CircularProgress/></div>
@@ -87,7 +89,7 @@ export class CreatePdfDialog extends React.Component<CreatePdfDialogProps, State
             </DialogContent>
             <DialogActions>
                <Button onClick={this.props.onClose} color="primary">Cancel</Button>
-               {selectedTab == 0 && <Button onClick={this.props.createPdf} color="primary">Create PDF</Button>}
+               {selectedTab == 0 && <Button onClick={this.props.createPdf} color="primary">Download PDF</Button>}
                {selectedTab == 1 && <Button onClick={this.createPdfFromTemplate} color="primary">Select template PDF</Button>}
             </DialogActions>
          </Dialog>

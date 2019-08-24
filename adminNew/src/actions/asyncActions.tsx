@@ -53,6 +53,7 @@ export function loadContest(contestId: number): any {
          reloadProblems(dispatch, contestId);
          reloadCompClasses(dispatch, contestId);
          reloadContenders(dispatch, contestId);
+         reloadTicks(dispatch, contestId);
       }).catch(error => {
          dispatch(actions.setErrorMessage(error));
       });
@@ -380,3 +381,10 @@ export function createPdf():any {
    }
 }
 
+let reloadTicks = (dispatch: Dispatch<any>, contestId: number) => {
+   Api.getTicks(contestId).then(ticks => {
+      dispatch(actions.receiveTicks(ticks));
+   }).catch(error => {
+      dispatch(actions.setErrorMessage(error));
+   });
+};

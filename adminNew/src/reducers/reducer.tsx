@@ -49,7 +49,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             editCompClass:undefined,
             contenders: undefined,
             problems: undefined,
-            editProblem:undefined
+            editProblem:undefined,
+            ticks:undefined
          };
 
       case getType(scoreboardActions.setNewContest):
@@ -278,6 +279,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editOrganizer: newEditOrganizer};
 
       // ********
+
+      case getType(scoreboardActions.receiveTicks):
+         return { ...state, ticks: action.payload };
 
       default:
          console.log("ACTION", action);

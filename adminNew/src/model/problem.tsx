@@ -1,3 +1,5 @@
+import {Tick} from "./tick";
+
 export interface Problem {
    id: number;
    contestId: number;
@@ -6,4 +8,7 @@ export interface Problem {
    points?: number;
    flashBonus?: number;
    text?: string;
+
+   // Internal data:
+   ticks?: Tick[];
 }

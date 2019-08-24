@@ -7,6 +7,7 @@ import {Organizer} from "./organizer";
 import {CompLocation} from "./compLocation";
 import {Series} from "./series";
 import {User} from "./user";
+import {Tick} from "./tick";
 
 export interface StoreState {
    title: string,
@@ -39,6 +40,8 @@ export interface StoreState {
    organizers?: Organizer[],
    organizer?: Organizer
    editOrganizer?:Organizer
+
+   ticks?: Tick[],
 
    errorMessage?: string;
 }

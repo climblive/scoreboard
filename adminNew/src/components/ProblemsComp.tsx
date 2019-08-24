@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Problem} from "../model/problem";
+import {ContenderData} from "../model/contenderData";
 import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {Color} from "../model/color";
@@ -17,11 +18,20 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import {CompClass} from "../model/compClass";
+import moment from 'moment';
 
 interface Props {
    problems?:Problem[],
    colors?:Color[],
    colorMap:Map<number, Color>
+   contenderMap:Map<number, ContenderData>
+   compClassMap:Map<number, CompClass>
    editProblem?: Problem
 
    startEditProblem?:(problem:Problem) => void
@@ -33,7 +43,8 @@ interface Props {
 }
 
 type State = {
-   deleteProblem?:Problem
+   deleteProblem?:Problem,
+   ticksProblem?:Problem
 }
 
 const styles = {
@@ -133,6 +144,16 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       this.props.updateEditProblem!("colorId", parseInt(e.target.value));
    };
 
+   showTicksDialog = (problem:Problem) => {
+      this.state.ticksProblem = problem;
+      this.setState(this.state);
+   };
+
+   hideTicksDialog = () => {
+      this.state.ticksProblem = undefined;
+      this.setState(this.state);
+   };
+
    render() {
       const classes = this.props.classes!!;
       let problems = this.props.problems;
@@ -151,6 +172,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                            <li key={problem.id} style={this.getProblemStyle(problem)}>
                               <div style={{width: 20, fontSize:16}}>{problem.number}</div>
                               <div style={{width:100, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>{this.getColorName(problem)}</div>
+                              {problem.ticks!.length > 0  && <Button style={{color:"inherit"}} onClick={() => this.showTicksDialog(problem)}>{problem.ticks!.length} ticks</Button>}
                               <div style={{textAlign: "right", width:60, fontSize:28, marginRight:10}}>{problem.points}</div>
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Edit" title="Edit" onClick={() => {this.edit(problem);}}>
                                  <EditIcon />
@@ -198,6 +220,34 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                              title={"Delete problem"}
                              message={"Do you wish to delete the selected problem?"}
                              onClose={this.onDeleteConfirmed} />
+         ,
+         <Dialog key={"tickDialog"}
+                 open={this.state.ticksProblem != undefined}>
+            <DialogTitle id="confirmation-dialog-title">Ticks for problem {this.state.ticksProblem && this.state.ticksProblem!.number}</DialogTitle>
+            <div style={{display:"flex", fontWeight: "bold", margin: "0px 24px", borderBottom: "1px solid grey"}}>
+               <div style={{width:300}}>Contender</div>
+               <div style={{width:150}}>Class</div>
+               <div style={{width:150}}>Time</div>
+            </div>
+            <DialogContent>
+               {this.state.ticksProblem && this.state.ticksProblem!.ticks!.map(tick => {
+                  let contender = this.props.contenderMap.get(tick.contenderId);
+                  let compClass = this.props.compClassMap.get(contender!.compClassId!);
+                  return(
+                     <div style={{display:"flex", marginBottom:2}}>
+                        <div style={{width:300}}>{contender!.name}</div>
+                        <div style={{width:150}}>{compClass!.name}</div>
+                        <div style={{width:150}}>{moment(tick.timestamp).format("HH:mm")}</div>
+                     </div>
+                  );
+               }
+               )}
+            </DialogContent>
+            <DialogActions>
+               <Button onClick={this.hideTicksDialog} color="primary">Ok</Button>
+            </DialogActions>
+
+         </Dialog>
       ];
    }
 }

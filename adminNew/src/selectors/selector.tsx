@@ -4,6 +4,8 @@ import {Color} from "../model/color";
 import {CompClass} from "../model/compClass";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
+import {Problem} from "../model/problem";
+import {ContenderData} from "../model/contenderData";
 
 const getColors = (state: StoreState) => state.colors;
 const getCompClasses = (state: StoreState) => state.compClasses;
@@ -13,6 +15,7 @@ const getLocations = (state: StoreState) => state.locations;
 const getSeries = (state: StoreState) => state.series;
 const getProblems = (state: StoreState) => state.problems;
 const getContenders = (state: StoreState) => state.contenders;
+const getTicks = (state: StoreState) => state.ticks;
 
 const getOrganizer = (state: StoreState) => state.organizer;
 
@@ -33,6 +36,17 @@ export const getCompClassMap = createSelector(
       const map = new Map<number, CompClass>();
       if(compClasses) {
          compClasses.forEach(compClass => map.set(compClass.id, compClass));
+      }
+      return map;
+   }
+);
+
+export const getContenderMap = createSelector(
+   [getContenders],
+   (contenders) => {
+      const map = new Map<number, ContenderData>();
+      if(contenders) {
+         contenders.forEach(contender => map.set(contender.id, contender));
       }
       return map;
    }
@@ -85,6 +99,30 @@ export const getOrganizerColors = createSelector(
    [getColors, getOrganizer],
    (colors, organizer) => {
       return colors && organizer ? colors.filter(c => c.organizerId == organizer.id) : undefined;
+   }
+);
+
+export const getProblemsWithTicks = createSelector(
+   [getProblems, getTicks],
+   (problems, ticks) => {
+      let problemsMap = new Map<number, Problem>();
+      let newProblems:Problem[] = [];
+      if(problems) {
+         for (let problem of problems) {
+            let newProblem = {...problem, ticks: []};
+            newProblems.push(newProblem);
+            problemsMap.set(problem.id, newProblem);
+         }
+      }
+      if(ticks) {
+         for (let tick of ticks) {
+            let problem = problemsMap.get(tick.problemId);
+            if(problem) {
+               problem.ticks!.push(tick);
+            }
+         }
+      }
+      return newProblems;
    }
 );
 

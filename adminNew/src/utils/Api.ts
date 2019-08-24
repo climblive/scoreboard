@@ -7,6 +7,7 @@ import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {Series} from "../model/series";
 import {User} from "../model/user";
+import {Tick} from "../model/tick";
 
 export class Api {
 
@@ -262,4 +263,9 @@ export class Api {
          });
       return (await this.handleErrors(response)).blob();
    }
+
+   static getTicks(contestId: number): Promise<Tick[]> {
+      return this.get("contest/" + contestId + "/tick");
+   }
+
 }

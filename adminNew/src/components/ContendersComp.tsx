@@ -19,10 +19,15 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import {ConfirmationDialog} from "./ConfirmationDialog";
 import {CompClass} from "../model/compClass";
+import moment from "moment";
+import {Problem} from "../model/problem";
+import {Color} from "../model/color";
 
 interface Props {
    contenders:ContenderData[],
    compClassMap:Map<number,CompClass>
+   problemMap:Map<number,Problem>
+   colorMap:Map<number,Color>
 
    createContenders?: (nContenders:number) => void,
    exportResults?: () => void
@@ -41,6 +46,7 @@ type State = {
    addContendersErrorMessage?:string
    showResetConfirmationPopup:boolean
    nNewContenders:string
+   dialogContender?:ContenderData
    //deleteCompClass?:CompClass
 }
 
@@ -112,6 +118,16 @@ class ContendersComp extends React.Component<Props, State> {
       }
    };
 
+   showContenderDialog = (contender:ContenderData) => {
+      this.state.dialogContender = contender;
+      this.setState(this.state);
+   };
+
+   hideContenderDialog = () => {
+      this.state.dialogContender = undefined;
+      this.setState(this.state);
+   };
+
    /*deleteCompClass = (compClass:CompClass) => {
       this.state.deleteCompClass = compClass;
       this.setState(this.state);
@@ -165,6 +181,10 @@ class ContendersComp extends React.Component<Props, State> {
                      <TableRow>
                         <TableCell style={{width:"100%"}}>Name</TableCell>
                         <TableCell style={{minWidth:110}}>Competition class</TableCell>
+                        <TableCell style={{minWidth:110}}>Total score</TableCell>
+                        <TableCell style={{minWidth:110}}>Qualifying score</TableCell>
+                        <TableCell style={{minWidth:100}}></TableCell>
+                        <TableCell style={{minWidth:110}}># ticks</TableCell>
                         <TableCell style={{minWidth:110}}>Registration code</TableCell>
                      </TableRow>
                   </TableHead>
@@ -175,9 +195,13 @@ class ContendersComp extends React.Component<Props, State> {
                               <TableRow key={contender.id}
                                         style={{cursor: 'pointer'}}
                                         hover
-                                        onClick={() => console.log("click")}>
+                                        onClick={() => this.showContenderDialog(contender)}>
                                  <TableCell component="th" scope="row">{contender.name}</TableCell>
                                  <TableCell component="th" scope="row">{this.getCompClassName(contender.compClassId)}</TableCell>
+                                 <TableCell component="th" scope="row">{contender.totalScore} ({contender.totalPosition})</TableCell>
+                                 <TableCell component="th" scope="row">{contender.qualifyingScore} ({contender.qualifyingPosition})</TableCell>
+                                 <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
+                                 <TableCell component="th" scope="row">{contender.ticks!.length}</TableCell>
                                  <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>
                               </TableRow>
                            )
@@ -225,9 +249,9 @@ class ContendersComp extends React.Component<Props, State> {
                disableBackdropClick
                disableEscapeKeyDown
                maxWidth="xs"
-               aria-labelledby="confirmation-dialog-title"
+               aria-labelledby="addcontender-dialog-title"
                >
-               <DialogTitle id="confirmation-dialog-title">Create contenders</DialogTitle>
+               <DialogTitle id="addcontender-dialog-title">Create contenders</DialogTitle>
                <DialogContent>
                   <div>Before a contest starts, you have to create activation codes enough for all contenders.</div>
                   <div style={{marginTop:5}}>Currently you have {contenders.length} activation codes.</div>
@@ -245,6 +269,36 @@ class ContendersComp extends React.Component<Props, State> {
                title="Reset all contenders"
                message="Do you really want to reset all contenders? All ticks and data will be lost."
                onClose={this.resetContendersConfirmed}/>
+            <Dialog
+               open={this.state.dialogContender != undefined}
+               aria-labelledby="contender-dialog-title"
+               >
+               <DialogTitle id="contender-dialog-title">{this.state.dialogContender && this.state.dialogContender.name}</DialogTitle>
+               <div style={{display:"flex", fontWeight: "bold", margin: "0px 24px", borderBottom: "1px solid grey"}}>
+                  <div style={{width:200}}>Problem</div>
+                  <div style={{width:100, textAlign:"right"}}>Points</div>
+                  <div style={{width:150, marginLeft:10}}>Time</div>
+               </div>
+               <DialogContent>
+                  {this.state.dialogContender && this.state.dialogContender!.ticks!.map(tick => {
+                     let problem = this.props.problemMap.get(tick.problemId);
+                     let color = this.props.colorMap.get(problem!.colorId!);
+                     return(
+                        <div style={{display:"flex", marginBottom:2}}>
+                           <div style={{width:50}}>{problem!.number}</div>
+                           <div style={{width:150}}>{color!.name}</div>
+                           <div style={{width:100, textAlign:"right"}}>{problem!.points}</div>
+                           <div style={{width:150, marginLeft:10}}>{moment(tick.timestamp).format("HH:mm")}</div>
+                        </div>
+                     );
+                  })}
+               </DialogContent>
+               <DialogActions>
+                  <Button onClick={this.hideContenderDialog} color="primary">Ok</Button>
+               </DialogActions>
+
+            </Dialog>
+
          </Paper>
       );
    }

@@ -16,6 +16,7 @@ const getSeries = (state: StoreState) => state.series;
 const getProblems = (state: StoreState) => state.problems;
 const getContenders = (state: StoreState) => state.contenders;
 const getTicks = (state: StoreState) => state.ticks;
+const getContest = (state: StoreState) => state.contest;
 
 const getOrganizer = (state: StoreState) => state.organizer;
 
@@ -74,6 +75,17 @@ export const getOrganizerMap = createSelector(
    }
 );
 
+export const getProblemMap = createSelector(
+   [getProblems],
+   (problems) => {
+      const map = new Map<number, Problem>();
+      if(problems) {
+         problems.forEach(problem => map.set(problem.id, problem));
+      }
+      return map;
+   }
+);
+
 export const getOrganizerContests = createSelector(
    [getContests, getOrganizer],
    (contests, organizer) => {
@@ -123,6 +135,100 @@ export const getProblemsWithTicks = createSelector(
          }
       }
       return newProblems;
+   }
+);
+
+export const getContendersWithTicks = createSelector(
+   [getContenders, getTicks, getProblems, getContest],
+   (contenders, ticks, problems, contest) => {
+      // Create the problem map:
+      const problemMap = new Map<number, Problem>();
+      if(problems) {
+         problems.forEach(problem => problemMap.set(problem.id, problem));
+      }
+
+      // Create contenders list:
+      let contendersMap = new Map<number, ContenderData>();
+      let contendersPerClass = new Map<number, ContenderData[]>();
+      let newContenders:ContenderData[] = [];
+      if(contenders) {
+         for (let contender of contenders) {
+            let newContender = {...contender, ticks: []};
+            newContenders.push(newContender);
+            contendersMap.set(contender.id, newContender);
+
+            if(contender.compClassId != undefined) {
+               if (!contendersPerClass.has(contender.compClassId!)) {
+                  contendersPerClass.set(contender.compClassId, []);
+               }
+               contendersPerClass.get(contender.compClassId!)!.push(newContender);
+            }
+         }
+      }
+
+      // Place ticks on contenders:
+      if(ticks) {
+         for (let tick of ticks) {
+            let contender = contendersMap.get(tick.contenderId);
+            if(contender) {
+               contender.ticks!.push(tick);
+            }
+         }
+      }
+
+      // Calculate scores on contenders:
+      for (let contender of newContenders) {
+         let pointsList: number[] = [];
+         contender.totalScore = 0;
+         for (let tick of contender.ticks!) {
+            let problem = problemMap.get(tick.problemId);
+            let points = problem!.points!;
+            contender.totalScore += points;
+            pointsList.push(points)
+         }
+         if(pointsList.length) {
+            pointsList.sort((a, b) => b - a);
+            pointsList = pointsList.slice(0, contest!.qualifyingProblems);
+            contender.qualifyingScore = pointsList.reduce((total, num) => total + num);
+         }
+      }
+
+      // Calculate positions:
+      contendersPerClass.forEach((list) => {
+         list.sort((a, b) => b.totalScore! - a.totalScore!);
+         let lastScore = -1;
+         let lastPos = 0;
+         list.forEach((contender, index) => {
+            if(lastScore != contender.totalScore) {
+               lastScore = contender.totalScore!;
+               lastPos = index + 1;
+            }
+            contender.totalPosition = lastPos;
+         });
+
+         list.sort((a, b) => b.qualifyingScore! - a.qualifyingScore!);
+         lastScore = -1;
+         lastPos = 0;
+         let isFinalist = true;
+         list.forEach((contender, index) => {
+            if(lastScore != contender.qualifyingScore) {
+               lastScore = contender.qualifyingScore!;
+               lastPos = index + 1;
+               isFinalist = lastPos <= contest!.finalists  && lastScore > 0;
+            }
+            contender.qualifyingPosition = lastPos;
+            contender.isFinalist = isFinalist;
+         });
+      });
+
+      // Sort the contenders:
+      newContenders.sort((a, b) => {
+         let aName = a.name ? a.name.toLocaleUpperCase() : "ööööööööööö";
+         let bName = b.name ? b.name.toLocaleUpperCase() : "ööööööööööö";
+         return aName.localeCompare(bName);
+      });
+
+      return newContenders;
    }
 );
 

@@ -16,10 +16,10 @@ import ContendersComp from "../components/ContendersComp";
 import {ContenderData} from "../model/contenderData";
 import {
    getColorMap,
-   getCompClassMap, getContenderMap,
+   getCompClassMap, getContenderMap, getContendersWithTicks,
    getContestIssues,
    getOrganizerColors,
-   getOrganizerLocations, getProblemsWithTicks
+   getOrganizerLocations, getProblemMap, getProblemsWithTicks
 } from "../selectors/selector";
 import {Series} from "../model/series";
 import {Organizer} from "../model/organizer";
@@ -38,6 +38,7 @@ interface Props {
    series?:Series[],
    locations?:CompLocation[],
    problems?:Problem[],
+   problemMap: Map<number, Problem>,
    colors?:Color[],
    colorMap: Map<number, Color>,
    compClasses?:CompClass[],
@@ -163,6 +164,8 @@ class ContestView extends React.Component<Props, State> {
          tab = (<ContendersComp key="contenders"
                                 contenders={this.props.contenders!}
                                 compClassMap={this.props.compClassMap}
+                                problemMap={this.props.problemMap}
+                                colorMap={this.props.colorMap}
                                 createContenders={this.props.createContenders}
                                 exportResults={this.props.exportResults}
                                 resetContenders={this.props.resetContenders}
@@ -193,8 +196,9 @@ function mapStateToProps(state: StoreState, props: any): Props {
       compClasses: state.compClasses,
       compClassMap: getCompClassMap(state),
       contestIssues: getContestIssues(state),
-      contenders: state.contenders,
+      contenders: getContendersWithTicks(state),
       contenderMap: getContenderMap(state),
+      problemMap: getProblemMap(state),
       colors: getOrganizerColors(state),
       colorMap: getColorMap(state),
       editProblem: state.editProblem,

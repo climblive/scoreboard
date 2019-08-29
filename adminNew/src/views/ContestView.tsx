@@ -25,6 +25,7 @@ import {Series} from "../model/series";
 import {Organizer} from "../model/organizer";
 import {Redirect} from "react-router";
 import {CompLocation} from "../model/compLocation";
+import {SortBy} from "../constants/sortBy";
 
 interface Props {
    match: {
@@ -45,6 +46,8 @@ interface Props {
    compClassMap:Map<number, CompClass>,
    contenders?:ContenderData[],
    contenderMap:Map<number, ContenderData>
+   contenderSortBy: SortBy,
+   contenderFilterCompClassId?:number,
    editProblem?: Problem
    editCompClass?: CompClass
    contestIssues: string[]
@@ -73,6 +76,8 @@ interface Props {
    updateEditCompClass?: (propName:string, value:any) => void,
 
    createContenders?:(nNewContenders:number) => void,
+   setContenderFilterCompClass?: (contenderFilterCompClass:CompClass) => void,
+   setContenderSortBy?: (contenderSortBy:SortBy) => void
    exportResults?:() => void,
    resetContenders?:() => void,
 }
@@ -163,10 +168,15 @@ class ContestView extends React.Component<Props, State> {
       } else if(selectedTab == 3) {
          tab = (<ContendersComp key="contenders"
                                 contenders={this.props.contenders!}
+                                contenderFilterCompClassId={this.props.contenderFilterCompClassId}
+                                contenderSortBy={this.props.contenderSortBy}
+                                compClasses={this.props.compClasses}
                                 compClassMap={this.props.compClassMap}
                                 problemMap={this.props.problemMap}
                                 colorMap={this.props.colorMap}
                                 createContenders={this.props.createContenders}
+                                setContenderFilterCompClass={this.props.setContenderFilterCompClass}
+                                setContenderSortBy={this.props.setContenderSortBy}
                                 exportResults={this.props.exportResults}
                                 resetContenders={this.props.resetContenders}
          />);
@@ -198,6 +208,8 @@ function mapStateToProps(state: StoreState, props: any): Props {
       contestIssues: getContestIssues(state),
       contenders: getContendersWithTicks(state),
       contenderMap: getContenderMap(state),
+      contenderSortBy: state.contenderSortBy,
+      contenderFilterCompClassId: state.contenderFilterCompClassId,
       problemMap: getProblemMap(state),
       colors: getOrganizerColors(state),
       colorMap: getColorMap(state),
@@ -231,6 +243,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       updateEditCompClass: (propName:string, value:any) => dispatch(actions.updateEditCompClass({propName: propName, value: value})),
 
       createContenders: (nNewContenders:number) => dispatch(asyncActions.createContenders(nNewContenders)),
+      setContenderFilterCompClass: (contenderFilterCompClass:CompClass) => dispatch(actions.setContenderFilterCompClass(contenderFilterCompClass)),
+      setContenderSortBy: (sortBy:SortBy) => dispatch(actions.setContenderSortBy(sortBy)),
       exportResults: () => dispatch(asyncActions.exportResults()),
       createPdf: () => dispatch(asyncActions.createPdf()),
       createPdfFromTemplate: (file:Blob) => dispatch(asyncActions.createPdfFromTemplate(file)),

@@ -1,12 +1,13 @@
 import {StoreState} from '../model/storeState';
 import * as scoreboardActions from '../actions/actions';
-import {ActionType, getType} from 'typesafe-actions';
+import {ActionType, createStandardAction, getType} from 'typesafe-actions';
 import {Color} from "../model/color";
 import {Problem} from "../model/problem";
 import {CompLocation} from "../model/compLocation";
 import {Organizer} from "../model/organizer";
 import {CompClass} from "../model/compClass";
 import {Series} from "../model/series";
+import {SortBy} from "../constants/sortBy";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -19,7 +20,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, loggedInUser: action.payload };
 
       case getType(scoreboardActions.logout):
-         return { title: "", loggingIn: false, creatingPdf:false};
+         return { title: "", loggingIn: false, creatingPdf:false, contenderSortBy:SortBy.BY_NAME};
 
       case getType(scoreboardActions.setCreatingPdf):
          return { ...state, creatingPdf: action.payload };
@@ -282,6 +283,12 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
       case getType(scoreboardActions.receiveTicks):
          return { ...state, ticks: action.payload };
+
+      case getType(scoreboardActions.setContenderFilterCompClass):
+         return { ...state, contenderFilterCompClassId: action.payload ? action.payload.id : undefined };
+
+      case getType(scoreboardActions.setContenderSortBy):
+         return { ...state, contenderSortBy: action.payload };
 
       default:
          console.log("ACTION", action);

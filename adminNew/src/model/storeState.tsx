@@ -8,6 +8,7 @@ import {CompLocation} from "./compLocation";
 import {Series} from "./series";
 import {User} from "./user";
 import {Tick} from "./tick";
+import {SortBy} from "../constants/sortBy";
 
 export interface StoreState {
    title: string,
@@ -27,6 +28,8 @@ export interface StoreState {
    editCompClass?: CompClass;
 
    contenders?: ContenderData[];
+   contenderSortBy: SortBy;
+   contenderFilterCompClassId?:number;
 
    colors?: Color[],
    editColor?: Color;

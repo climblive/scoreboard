@@ -1,5 +1,5 @@
 
-import {action, createAction, createStandardAction} from 'typesafe-actions'
+import {createStandardAction} from 'typesafe-actions'
 import { Problem } from '../model/problem';
 import { Contest } from '../model/contest';
 import {CompClass} from "../model/compClass";
@@ -10,6 +10,7 @@ import {ContenderData} from "../model/contenderData";
 import {Series} from "../model/series";
 import {User} from "../model/user";
 import {Tick} from "../model/tick";
+import {SortBy} from "../constants/sortBy";
 
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
@@ -71,5 +72,7 @@ export const startAddProblem = createStandardAction('START_ADD_PROBLEM')<Problem
 export const updateEditProblem = createStandardAction('UPDATE_EDIT_PROBLEM')<{propName:string, value:any}>();
 
 export const receiveContenders = createStandardAction('RECEIVE_CONTENDERS')<ContenderData[]>();
+export const setContenderFilterCompClass = createStandardAction('SET_CONTENDER_FILTER_COMP_CLASS')<CompClass>();
+export const setContenderSortBy = createStandardAction('SET_CONTENDER_SORT_BY')<SortBy>();
 
 export const receiveTicks = createStandardAction('RECEIVE_TICKS')<Tick[]>();

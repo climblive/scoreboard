@@ -17,6 +17,7 @@ const getProblems = (state: StoreState) => state.problems;
 const getContenders = (state: StoreState) => state.contenders;
 const getTicks = (state: StoreState) => state.ticks;
 const getContest = (state: StoreState) => state.contest;
+const getContenderFilterCompClassId = (state: StoreState) => state.contenderFilterCompClassId;
 
 const getOrganizer = (state: StoreState) => state.organizer;
 
@@ -139,8 +140,8 @@ export const getProblemsWithTicks = createSelector(
 );
 
 export const getContendersWithTicks = createSelector(
-   [getContenders, getTicks, getProblems, getContest],
-   (contenders, ticks, problems, contest) => {
+   [getContenders, getTicks, getProblems, getContest, getContenderFilterCompClassId],
+   (contenders, ticks, problems, contest, contenderFilterCompClassId) => {
       // Create the problem map:
       const problemMap = new Map<number, Problem>();
       if(problems) {
@@ -153,15 +154,17 @@ export const getContendersWithTicks = createSelector(
       let newContenders:ContenderData[] = [];
       if(contenders) {
          for (let contender of contenders) {
-            let newContender = {...contender, ticks: []};
-            newContenders.push(newContender);
-            contendersMap.set(contender.id, newContender);
+            if(contenderFilterCompClassId == undefined || contender.compClassId == contenderFilterCompClassId) {
+               let newContender = {...contender, ticks: []};
+               newContenders.push(newContender);
+               contendersMap.set(contender.id, newContender);
 
-            if(contender.compClassId != undefined) {
-               if (!contendersPerClass.has(contender.compClassId!)) {
-                  contendersPerClass.set(contender.compClassId, []);
+               if (contender.compClassId != undefined) {
+                  if (!contendersPerClass.has(contender.compClassId!)) {
+                     contendersPerClass.set(contender.compClassId, []);
+                  }
+                  contendersPerClass.get(contender.compClassId!)!.push(newContender);
                }
-               contendersPerClass.get(contender.compClassId!)!.push(newContender);
             }
          }
       }

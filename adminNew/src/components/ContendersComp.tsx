@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import {TableCell} from "@material-ui/core";
+import {InputLabel, TableCell} from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
@@ -22,9 +22,16 @@ import {CompClass} from "../model/compClass";
 import moment from "moment";
 import {Problem} from "../model/problem";
 import {Color} from "../model/color";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import {SortBy} from "../constants/sortBy";
 
 interface Props {
    contenders:ContenderData[],
+   contenderSortBy: SortBy;
+   contenderFilterCompClassId?:number;
+   compClasses?:CompClass[],
    compClassMap:Map<number,CompClass>
    problemMap:Map<number,Problem>
    colorMap:Map<number,Color>
@@ -32,6 +39,8 @@ interface Props {
    createContenders?: (nContenders:number) => void,
    exportResults?: () => void
    resetContenders?: () => void
+   setContenderFilterCompClass?: (contenderFilterCompClass?:CompClass) => void,
+   setContenderSortBy?: (contenderSortBy:SortBy) => void
    /*editCompClass?:CompClass,
    startEditCompClass?:(compClass:CompClass) => void
    cancelEditCompClass?:() => void
@@ -128,6 +137,11 @@ class ContendersComp extends React.Component<Props, State> {
       this.setState(this.state);
    };
 
+   onContenderFilterCompClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const filterCompClass = e.target.value == "All" ? undefined : this.props.compClasses!.find(o => o.id == parseInt(e.target.value));
+      this.props.setContenderFilterCompClass!(filterCompClass);
+   };
+
    /*deleteCompClass = (compClass:CompClass) => {
       this.state.deleteCompClass = compClass;
       this.setState(this.state);
@@ -157,6 +171,7 @@ class ContendersComp extends React.Component<Props, State> {
 
    render() {
       let contenders = this.props.contenders;
+      let compClasses = this.props.compClasses;
       //let editCompClass = this.props.editCompClass;
       if(!contenders) {
          return (<CircularProgress/>)
@@ -165,6 +180,20 @@ class ContendersComp extends React.Component<Props, State> {
          <Paper style={{flexGrow:1, display:"flex", flexDirection:"column"}}>
             <div style={{display:"flex", marginTop:14, alignItems:"center"}}>
                <div style={{marginLeft:16, marginRight:"auto"}}>{contenders.length} contenders:</div>
+               {(compClasses && compClasses.length > 0) && <FormControl style={{minWidth:200, marginRight:10}}>
+                   <InputLabel shrink htmlFor="compClass-select">Competition class</InputLabel>
+                   <Select
+                       id="compClass-select"
+                       value={this.props.contenderFilterCompClassId == undefined ? "All" : this.props.contenderFilterCompClassId}
+                       onChange={this.onContenderFilterCompClassChange}
+                   >
+                       <MenuItem value="All"><em>All</em></MenuItem>
+                      {compClasses!.map(compClass =>
+                         <MenuItem key={compClass.id} value={compClass.id}>{compClass.name}</MenuItem>
+                      )}
+                   </Select>
+               </FormControl>}
+
                <IconButton color="inherit" aria-label="Menu" title="Add contenders" onClick={this.startAddContenders}>
                   <AddIcon />
                </IconButton>

@@ -155,7 +155,7 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
             </div>
             <CreatePdfDialog
                open={this.state.showPopup}
-               creatingPdf={this.props.creatingPdf}
+               creatingPdf={this.props.creatingPdf || false}
                createPdf={this.props.createPdf}
                createPdfFromTemplate={this.props.createPdfFromTemplate}
                onClose={this.closePopup}

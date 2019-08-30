@@ -6,6 +6,7 @@ import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {Problem} from "../model/problem";
 import {ContenderData} from "../model/contenderData";
+import {SortBy} from "../constants/sortBy";
 
 const getColors = (state: StoreState) => state.colors;
 const getCompClasses = (state: StoreState) => state.compClasses;
@@ -18,6 +19,7 @@ const getContenders = (state: StoreState) => state.contenders;
 const getTicks = (state: StoreState) => state.ticks;
 const getContest = (state: StoreState) => state.contest;
 const getContenderFilterCompClassId = (state: StoreState) => state.contenderFilterCompClassId;
+const getContenderSortBy = (state: StoreState) => state.contenderSortBy;
 
 const getOrganizer = (state: StoreState) => state.organizer;
 
@@ -140,8 +142,8 @@ export const getProblemsWithTicks = createSelector(
 );
 
 export const getContendersWithTicks = createSelector(
-   [getContenders, getTicks, getProblems, getContest, getContenderFilterCompClassId],
-   (contenders, ticks, problems, contest, contenderFilterCompClassId) => {
+   [getContenders, getTicks, getProblems, getContest, getContenderFilterCompClassId, getContenderSortBy],
+   (contenders, ticks, problems, contest, contenderFilterCompClassId, contenderSortBy) => {
       // Create the problem map:
       const problemMap = new Map<number, Problem>();
       if(problems) {
@@ -225,11 +227,19 @@ export const getContendersWithTicks = createSelector(
       });
 
       // Sort the contenders:
-      newContenders.sort((a, b) => {
-         let aName = a.name ? a.name.toLocaleUpperCase() : "ööööööööööö";
-         let bName = b.name ? b.name.toLocaleUpperCase() : "ööööööööööö";
-         return aName.localeCompare(bName);
-      });
+      if(contenderSortBy == SortBy.BY_NUMBER_OF_TICKS) {
+         newContenders.sort((a, b) => b.ticks!.length - a.ticks!.length);
+      } else if(contenderSortBy == SortBy.BY_TOTAL_POINTS) {
+         newContenders.sort((a, b) => b.totalScore! - a.totalScore!);
+      } else if(contenderSortBy == SortBy.BY_QUALIFYING_POINTS) {
+         newContenders.sort((a, b) => b.qualifyingScore! - a.qualifyingScore!);
+      } else {
+         newContenders.sort((a, b) => {
+            let aName = a.name ? a.name.toLocaleUpperCase() : "ööööööööööö";
+            let bName = b.name ? b.name.toLocaleUpperCase() : "ööööööööööö";
+            return aName.localeCompare(bName);
+         });
+      }
 
       return newContenders;
    }

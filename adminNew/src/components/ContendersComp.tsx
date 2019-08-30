@@ -208,12 +208,12 @@ class ContendersComp extends React.Component<Props, State> {
                <Table>
                   <TableHead>
                      <TableRow>
-                        <TableCell style={{width:"100%"}}>Name</TableCell>
+                        <TableCell style={{width:"100%", cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NAME)}>Name</TableCell>
                         <TableCell style={{minWidth:110}}>Competition class</TableCell>
-                        <TableCell style={{minWidth:110}}>Total score</TableCell>
-                        <TableCell style={{minWidth:110}}>Qualifying score</TableCell>
+                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_TOTAL_POINTS)}>Total score</TableCell>
+                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_QUALIFYING_POINTS)}>Qualifying score</TableCell>
                         <TableCell style={{minWidth:100}}></TableCell>
-                        <TableCell style={{minWidth:110}}># ticks</TableCell>
+                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NUMBER_OF_TICKS)}># ticks</TableCell>
                         <TableCell style={{minWidth:110}}>Registration code</TableCell>
                      </TableRow>
                   </TableHead>

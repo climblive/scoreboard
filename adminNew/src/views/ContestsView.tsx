@@ -80,7 +80,7 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                         <TableCell>Name</TableCell>
                         <TableCell>Description</TableCell>
                         <TableCell>Location</TableCell>
-                        <TableCell>Organizer</TableCell>
+                        {/*<TableCell>Organizer</TableCell>*/}
                         <TableCell>Qualifying problems</TableCell>
                         <TableCell className={"icon-cell"}>
                            <IconButton color="inherit" aria-label="Menu" title="Add contest" onClick={() => this.props.history.push("/contests/new")}>
@@ -99,12 +99,16 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                            <TableCell component="th" scope="row">{contest.name}</TableCell>
                            <TableCell>{contest.description}</TableCell>
                            <TableCell>{this.getLocationName(contest.locationId)}</TableCell>
-                           <TableCell>{this.getOrganizerName(contest.organizerId)}</TableCell>
+                           {/*<TableCell>{this.getOrganizerName(contest.organizerId)}</TableCell>*/}
                            <TableCell colSpan={2}>{contest.qualifyingProblems}</TableCell>
                         </TableRow>
                      ))}
                   </TableBody>
                </Table>
+               {(contests != undefined && contests.length == 0) && <div className={"emptyText"}>
+                   <div style={{fontWeight:"bold"}}>Hi, and welcome to CLMB.live!</div>
+                   <div>Create your first contest by clicking the plus button above.</div>
+               </div>}
             </div>
          </Paper>
       );

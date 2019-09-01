@@ -181,7 +181,7 @@ class ContendersComp extends React.Component<Props, State> {
             <div style={{display:"flex", marginTop:14, alignItems:"center"}}>
                <div style={{marginLeft:16, marginRight:"auto"}}>{contenders.length} contenders:</div>
                {(compClasses && compClasses.length > 0) && <FormControl style={{minWidth:200, marginRight:10}}>
-                   <InputLabel shrink htmlFor="compClass-select">Competition class</InputLabel>
+                   <InputLabel shrink htmlFor="compClass-select">Contest class</InputLabel>
                    <Select
                        id="compClass-select"
                        value={this.props.contenderFilterCompClassId == undefined ? "All" : this.props.contenderFilterCompClassId}
@@ -209,7 +209,7 @@ class ContendersComp extends React.Component<Props, State> {
                   <TableHead>
                      <TableRow>
                         <TableCell style={{width:"100%", cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NAME)}>Name</TableCell>
-                        <TableCell style={{minWidth:110}}>Competition class</TableCell>
+                        <TableCell style={{minWidth:110}}>Class</TableCell>
                         <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_TOTAL_POINTS)}>Total score</TableCell>
                         <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_QUALIFYING_POINTS)}>Qualifying score</TableCell>
                         <TableCell style={{minWidth:100}}></TableCell>
@@ -227,10 +227,10 @@ class ContendersComp extends React.Component<Props, State> {
                                         onClick={() => this.showContenderDialog(contender)}>
                                  <TableCell component="th" scope="row">{contender.name}</TableCell>
                                  <TableCell component="th" scope="row">{this.getCompClassName(contender.compClassId)}</TableCell>
-                                 <TableCell component="th" scope="row">{contender.totalScore} ({contender.totalPosition})</TableCell>
-                                 <TableCell component="th" scope="row">{contender.qualifyingScore} ({contender.qualifyingPosition})</TableCell>
+                                 <TableCell component="th" scope="row">{contender.name ? (contender.totalScore + "(" + contender.totalPosition + ")") : "-"}</TableCell>
+                                 <TableCell component="th" scope="row">{contender.name ? (contender.qualifyingScore + "(" + contender.qualifyingPosition + ")") : "-"}</TableCell>
                                  <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
-                                 <TableCell component="th" scope="row">{contender.ticks!.length}</TableCell>
+                                 <TableCell component="th" scope="row">{contender.name ? contender.ticks!.length : "-"}</TableCell>
                                  <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>
                               </TableRow>
                            )

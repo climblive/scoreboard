@@ -163,10 +163,14 @@ class CompClassesComp extends React.Component<Props, State> {
                   })}
                </TableBody>
             </Table>
-               <ConfirmationDialog open={this.state.deleteCompClass != undefined}
-                                   title={"Delete class"}
-                                   message={"Do you wish to delete the selected class?"}
-                                   onClose={this.onDeleteConfirmed} />
+            {(compClasses != undefined && compClasses.length == 0) && <div className={"emptyText"}>
+               <div>You have no contest classes.</div>
+               <div>Please create at least one contest class by clicking the plus button above.</div>
+            </div>}
+            <ConfirmationDialog open={this.state.deleteCompClass != undefined}
+                                title={"Delete class"}
+                                message={"Do you wish to delete the selected class?"}
+                                onClose={this.onDeleteConfirmed} />
          </Paper>
       );
    }

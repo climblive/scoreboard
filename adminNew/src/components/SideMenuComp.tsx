@@ -19,7 +19,9 @@ const styles = ({ spacing }: Theme) => createStyles({
       backgroundImage:"url('/sideMenuBackground.jpg')",
       backgroundSize: "contain",
       backgroundRepeat: "no-repeat",
-      backgroundPosition: "bottom"
+      backgroundPosition: "bottom",
+      display:"flex",
+      flexDirection:"column"
    },
    menuItem: {
       width:"100%",
@@ -40,13 +42,17 @@ function SideMenuComp({ classes, loggedInUser }: SideMenuCompProps & StyledCompo
                <img style={{width:120, marginTop:20}} src="/clmb_MainLogo_NoShadow.png"/>
           </div>
           {loggedInUser && <div>
-              <Link to="/"><Button className={classes!!.menuItem}><TableChart /><span className={classes!!.menuText}>Start</span></Button></Link>
+              <Link to="/start"><Button className={classes!!.menuItem}><TableChart /><span className={classes!!.menuText}>Start</span></Button></Link>
               <Link to="/contests"><Button className={classes!!.menuItem}><TableChart /><span className={classes!!.menuText}>Contests</span></Button></Link>
               <Link to="/colors"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Colors</span></Button></Link>
               {loggedInUser.admin && <Link to="/locations"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Locations</span></Button></Link>}
               {loggedInUser.admin && <Link to="/organizers"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Organizers</span></Button></Link>}
               {loggedInUser.admin && <Link to="/series"><Button className={classes!!.menuItem}><Palette /><span className={classes!!.menuText}>Series</span></Button></Link>}
           </div>}
+          <div style={{margin:"auto 10px 20px 10px", textAlign:"center"}}>
+             <div>Questions, requests or just want to chat?</div>
+             <div style={{marginTop:5}}>Please <a target={"_NEW"} href={"https://www.facebook.com/CLMB.live"}><u>click here</u></a> to visit us on Facebook</div>
+          </div>
       </div>
    );
 }

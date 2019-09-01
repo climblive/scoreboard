@@ -24,6 +24,15 @@ a {
    padding-bottom:0;
 }
 
+.emptyText {
+   margin-top: 25px;
+   text-align: center;
+}
+
+.emptyText div {
+   margin-top:5px;
+}
+
 .selector {
    border: 1px solid #949494;
    color: #333;

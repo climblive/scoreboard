@@ -93,7 +93,7 @@ class GeneratorService @Autowired constructor(
             Pair("Orange", "#ff9800"),
             Pair("Pink", "#F628A5"),
             Pair("White", "#FAFAFA")
-        ).map { pair -> Color(null, organizer, pair.first, pair.second, null) }
+        ).map { pair -> Color(null, organizer, pair.first, pair.second, null, false) }
 
         return colorRepository.saveAll(colors).toList()
     }

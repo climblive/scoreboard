@@ -3,6 +3,7 @@ package se.scoreboard.security
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import se.scoreboard.configuration.MyUserPrincipal
+import se.scoreboard.dto.ColorDto
 
 data class PermissionEvalation @Autowired constructor(
         val ownershipDeriver: OwnershipDeriver,
@@ -64,6 +65,10 @@ data class PermissionEvalation @Autowired constructor(
 
         fun ownsInnerReferences(): Boolean =
                 check(CheckDepth.INNER_REFERENCES, IdentifierType.ORGANIZER, OwnershipType.UNIQUE)
+
+        if (permission in listOf("CREATE", "UPDATE") && targetType == "Color" && dtos.any { (it as ColorDto).shared }) {
+            return false
+        }
 
         return when (targetType) {
             "User" -> when (permission) {

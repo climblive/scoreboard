@@ -26,5 +26,8 @@ open class Color (
     @Column(name = "rgb_secondary", length = 7, nullable = true)
     open var rgbSecondary: String? = null,
 
+    @Column(name = "shared")
+    open var shared: Boolean? = null,
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
     open var problems: MutableSet<Problem> = HashSet(0)) : Serializable, AbstractEntity<Int>

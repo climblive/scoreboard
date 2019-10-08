@@ -94,9 +94,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
                <div className="showLarge scoreboardListContainer total">{totalList}</div>
                <div className="showSmall scoreboardListContainer total"><ScoreboardTotalListContainer compClass={currentCompClass} /></div>
                <div className="logoContainer">
-                  <img height="70" src="/logos/highSport.gif" />
-                  <img height="70" src="/logos/klatterdomen.jpg" />
-                  <img height="50" src="/logos/edelrid.png" />
+                  <img height="100" src="/clmb_MainLogo_Shadow.png" />
                </div>
             </div>
          );

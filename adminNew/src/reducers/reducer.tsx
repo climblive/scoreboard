@@ -1,6 +1,6 @@
 import {StoreState} from '../model/storeState';
 import * as scoreboardActions from '../actions/actions';
-import {ActionType, createStandardAction, getType} from 'typesafe-actions';
+import {ActionType, getType} from 'typesafe-actions';
 import {Color} from "../model/color";
 import {Problem} from "../model/problem";
 import {CompLocation} from "../model/compLocation";
@@ -178,6 +178,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             organizerId: state.organizer!.id,
             id: -1,
             name: "",
+            shared: false
          };
          newColors2.push(newColor);
          return { ...state, editColor: newColor, colors: newColors2};

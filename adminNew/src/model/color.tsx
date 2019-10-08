@@ -4,4 +4,5 @@ export interface Color {
    name: string;
    rgbPrimary: string;
    rgbSecondary?: string;
+   shared: boolean;
 }

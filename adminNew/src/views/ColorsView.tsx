@@ -30,6 +30,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import {getOrganizerColors} from "../selectors/selector";
+import {Organizer} from "../model/organizer";
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -43,6 +44,7 @@ const styles = ({ spacing }: Theme) => createStyles({
 interface Props  {
    colors?: Color[],
    editColor?:Color,
+   organizer?:Organizer,
 
    loadColors?: () => void,
    setTitle?: (title: string) => void,
@@ -132,7 +134,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
       this.setState(this.state);
    };
 
-   private getColorStyle(color?: string, editable?: boolean) {
+   private static getColorStyle(color?: string, editable?: boolean) {
       let borderColor = "transparent";
       let textColor = "inherit";
       if(color) {
@@ -181,16 +183,17 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                   <TableBody>
                      {colors.map(color => {
                         if(editColor == undefined || color.id != editColor.id) {
+                           let showEdit = color.organizerId == this.props.organizer!.id;
                            return (
                               <TableRow key={color.id}>
                                  <TableCell component="th" scope="row">{color.name}</TableCell>
                                  <TableCell component="th" scope="row">
-                                    <div style={this.getColorStyle(color.rgbPrimary)}>{color.rgbPrimary}</div>
+                                    <div style={ColorsView.getColorStyle(color.rgbPrimary)}>{color.rgbPrimary}</div>
                                  </TableCell>
                                  <TableCell component="th" scope="row">
-                                    <div style={this.getColorStyle(color.rgbSecondary)}>{color.rgbSecondary || "None"}</div>
+                                    <div style={ColorsView.getColorStyle(color.rgbSecondary)}>{color.rgbSecondary || "None"}</div>
                                  </TableCell>
-                                 <TableCell className={"icon-cell"}>
+                                 {showEdit && <TableCell className={"icon-cell"}>
                                     <IconButton color="inherit" aria-label="Menu" title="Edit"
                                                 onClick={() => this.props.startEditColor!(color)}>
                                        <EditIcon/>
@@ -199,7 +202,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                                                 onClick={() => this.deleteColor(color)}>
                                        <DeleteIcon/>
                                     </IconButton>
-                                 </TableCell>
+                                 </TableCell>}
 
                               </TableRow>
                            )
@@ -210,10 +213,10 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                                     <TextField style={{}} value={editColor.name} onChange={this.onNameChange} />
                                  </TableCell>
                                  <TableCell>
-                                    <div style={this.getColorStyle(editColor.rgbPrimary, true)} onClick={this.showPopupPrimary}>{editColor.rgbPrimary}</div>
+                                    <div style={ColorsView.getColorStyle(editColor.rgbPrimary, true)} onClick={this.showPopupPrimary}>{editColor.rgbPrimary}</div>
                                  </TableCell>
                                  <TableCell>
-                                    <div style={this.getColorStyle(editColor.rgbSecondary,true )} onClick={this.showPopupSecondary}>{editColor.rgbSecondary || "None"}</div>
+                                    <div style={ColorsView.getColorStyle(editColor.rgbSecondary,true )} onClick={this.showPopupSecondary}>{editColor.rgbSecondary || "None"}</div>
                                  </TableCell>
                                  <TableCell>
                                     <IconButton color="inherit" aria-label="Menu" title="Save"
@@ -262,6 +265,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
    return {
       colors: getOrganizerColors(state),
       editColor: state.editColor,
+      organizer: state.organizer
    };
 }
 

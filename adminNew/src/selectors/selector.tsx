@@ -113,7 +113,7 @@ export const getOrganizerLocations = createSelector(
 export const getOrganizerColors = createSelector(
    [getColors, getOrganizer],
    (colors, organizer) => {
-      return colors && organizer ? colors.filter(c => c.organizerId == organizer.id) : undefined;
+      return colors && organizer ? colors.filter(c => c.organizerId == organizer.id || c.shared) : undefined;
    }
 );
 

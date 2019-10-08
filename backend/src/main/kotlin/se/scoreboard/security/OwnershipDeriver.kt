@@ -75,7 +75,7 @@ class OwnershipDeriver @Autowired constructor(
             "CompClass" -> deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as CompClassDto).contestId })
             "Contender" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ContenderDto).contestId }), deriveOrganizerIdentifiers("CompClass", dtos.mapNotNull { (it as ContenderDto).compClassId }))
             "Contest" -> flattenNullableLists(dtos.mapNotNull { (it as ContestDto).organizerId }, deriveOrganizerIdentifiers("Location", dtos.mapNotNull { (it as ContestDto).locationId }), deriveOrganizerIdentifiers("Series", dtos.mapNotNull { (it as ContestDto).seriesId }))
-            "Problem" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ProblemDto).contestId }), deriveOrganizerIdentifiers("Color", dtos.mapNotNull { (it as ProblemDto).colorId }))
+            "Problem" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ProblemDto).contestId }))
             "Tick" -> flattenNullableLists(deriveOrganizerIdentifiers("Problem", dtos.mapNotNull { (it as TickDto).problemId }), deriveOrganizerIdentifiers("Contender", dtos.mapNotNull { (it as TickDto).contenderId }))
             "Color" -> dtos.mapNotNull { (it as ColorDto).organizerId }
             "Location" -> dtos.mapNotNull { (it as LocationDto).organizerId }

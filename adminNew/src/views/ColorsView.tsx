@@ -193,16 +193,16 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                                  <TableCell component="th" scope="row">
                                     <div style={ColorsView.getColorStyle(color.rgbSecondary)}>{color.rgbSecondary || "None"}</div>
                                  </TableCell>
-                                 {showEdit && <TableCell className={"icon-cell"}>
-                                    <IconButton color="inherit" aria-label="Menu" title="Edit"
+                                 <TableCell className={"icon-cell"}>
+                                    {showEdit && <IconButton color="inherit" aria-label="Menu" title="Edit"
                                                 onClick={() => this.props.startEditColor!(color)}>
                                        <EditIcon/>
-                                    </IconButton>
-                                    <IconButton color="inherit" aria-label="Menu" title="Delete"
+                                    </IconButton>}
+                                    {showEdit && <IconButton color="inherit" aria-label="Menu" title="Delete"
                                                 onClick={() => this.deleteColor(color)}>
                                        <DeleteIcon/>
-                                    </IconButton>
-                                 </TableCell>}
+                                    </IconButton>}
+                                 </TableCell>
 
                               </TableRow>
                            )

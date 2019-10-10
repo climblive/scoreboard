@@ -249,7 +249,7 @@ export const getContestIssues = createSelector(
    [getProblems, getCompClasses, getContenders],
    (problems, compClasses, contenders) => {
       let issues: string[] = [];
-      if(problems && problems.length < 1) {
+      if(problems && (problems.length == 0  || (problems.length == 1 && problems[0].colorId == undefined))) {
          issues.push("Please add problems")
       }
       if(compClasses && compClasses.length == 0) {

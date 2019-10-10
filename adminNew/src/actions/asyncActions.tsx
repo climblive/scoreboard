@@ -63,8 +63,15 @@ export function loadContest(contestId: number): any {
 export function saveContest(onSuccess:(contest:Contest) => void): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contest = getState().contest;
+      let isNew = contest!.isNew;
       Api.saveContest(contest!).then(contest => {
          dispatch(actions.receiveContest(contest));
+         if(isNew) {
+            dispatch(actions.receiveProblems([]));
+            dispatch(actions.receiveTicks([]));
+            dispatch(actions.receiveCompClasses([]));
+            dispatch(actions.receiveContenders([]));
+         }
          onSuccess(contest);
       }).catch(error => {
          dispatch(actions.setErrorMessage(error));

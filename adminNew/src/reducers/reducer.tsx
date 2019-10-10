@@ -55,18 +55,25 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          };
 
       case getType(scoreboardActions.setNewContest):
-         return { ...state, contest: {
+         return { ...state,
+            contest: {
                id: -1,
                name: "",
                description: "",
                organizerId: state.organizer!.id,
-               locationId: 1,
                qualifyingProblems:10,
                finalists:7,
                gracePeriod: 15,
                rules: "",
                isNew: true
-            }};
+            },
+            compClasses:undefined,
+            editCompClass:undefined,
+            contenders: undefined,
+            problems: undefined,
+            editProblem:undefined,
+            ticks:undefined
+         };
 
       case getType(scoreboardActions.updateContest):
          let newContest = {...state.contest!};

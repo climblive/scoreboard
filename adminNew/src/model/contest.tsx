@@ -4,7 +4,7 @@ export interface Contest {
    name: string;
    description: string;
    organizerId: number;
-   locationId: number;
+   locationId?: number;
    qualifyingProblems: number;
    finalists: number;
    gracePeriod: number;

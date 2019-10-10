@@ -60,9 +60,13 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
       return organizer ? organizer.name : ("Unknown organizer " + id);
    };
 
-   getLocationName = (id: number) => {
-      const location = this.props.locationMap.get(id);
-      return location ? location.name : ("Unknown location " + id);
+   getLocationName = (id?: number) => {
+      if(id) {
+         const location = this.props.locationMap.get(id);
+         return location ? location.name : ("Unknown location " + id);
+      } else {
+         return "";
+      }
    };
 
    render() {

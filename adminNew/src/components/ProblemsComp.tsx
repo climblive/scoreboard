@@ -161,7 +161,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       if(!problems || !this.props.colorMap) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
-      console.log("COLORS: " + this.props.colors);
+      let allowEdit = problems.every(p => p.ticks!.length == 0);
       return [
          <Paper key={"content"} style={{flexGrow:1, display:"flex", flexDirection:"column"}}>
             <div style={{flexBasis:0, overflowY:"auto", flexGrow:1}}>
@@ -174,15 +174,15 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                               <div style={{width:100, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>{this.getColorName(problem)}</div>
                               {problem.ticks!.length > 0  && <Button style={{color:"inherit"}} onClick={() => this.showTicksDialog(problem)}>{problem.ticks!.length} ticks</Button>}
                               <div style={{textAlign: "right", width:60, fontSize:28, marginRight:10}}>{problem.points}</div>
-                              <IconButton className={classes.menuButton} color="inherit" aria-label="Edit" title="Edit" onClick={() => {this.edit(problem);}}>
+                              {allowEdit && <IconButton className={classes.menuButton} color="inherit" aria-label="Edit" title="Edit" onClick={() => {this.edit(problem);}}>
                                  <EditIcon />
-                              </IconButton>
-                              <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" title="Add" onClick={() => {this.add(problem);}}>
+                              </IconButton>}
+                              {allowEdit && <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" title="Add" onClick={() => {this.add(problem);}}>
                                  <AddIcon />
-                              </IconButton>
-                              <IconButton className={classes.menuButton} color="inherit" aria-label="Delete" title="Delete" onClick={() => {this.delete(problem);}}>
+                              </IconButton>}
+                              {allowEdit && <IconButton className={classes.menuButton} color="inherit" aria-label="Delete" title="Delete" onClick={() => {this.delete(problem);}}>
                                  <DeleteIcon />
-                              </IconButton>
+                              </IconButton>}
                            </li>
                         )
                      } else {

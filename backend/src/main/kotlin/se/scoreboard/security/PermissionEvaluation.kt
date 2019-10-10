@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import se.scoreboard.configuration.MyUserPrincipal
 import se.scoreboard.dto.ColorDto
 
-data class PermissionEvalation @Autowired constructor(
+data class PermissionEvaluation @Autowired constructor(
         val ownershipDeriver: OwnershipDeriver,
         val role: GrantedAuthority,
         val principal: MyUserPrincipal,

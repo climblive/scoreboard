@@ -64,7 +64,7 @@ class CustomPermissionEvaluator @Autowired constructor(
         val role: GrantedAuthority = auth.authorities.first()
         val principal: MyUserPrincipal = auth.principal as MyUserPrincipal
 
-        val evaluation = PermissionEvalation(ownershipDeriver,
+        val evaluation = PermissionEvaluation(ownershipDeriver,
             role,
             principal,
             targetType.removeSuffix("Dto").capitalize(),

@@ -24,5 +24,5 @@ fun CompClass.allowedToAlterTick() : Boolean {
 
 private fun CompClass.timeEndWithGracePeriod() : OffsetDateTime {
     val gracePeriod: Int = contest?.gracePeriod ?: 0
-    return timeEnd!!.plusSeconds(gracePeriod.toLong())
+    return timeEnd!!.plusMinutes(gracePeriod.toLong())
 }

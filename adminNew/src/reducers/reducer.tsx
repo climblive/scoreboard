@@ -141,7 +141,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          };
          for(let p of state.problems!) {
             newProblems.push(p);
-            if (p == problem) {
+            if (p.id == problem.id) {
                newProblem.number = p.number + 1;
                newProblems.push(newProblem);
             }

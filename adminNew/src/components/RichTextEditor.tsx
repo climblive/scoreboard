@@ -35,8 +35,16 @@ class RichTextEditor extends React.Component<Props, State> {
    }
 
    componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-      if(this.state.lastHtml !== nextProps.value) {
-         const blocksFromHTML = convertFromHTML(nextProps.value || "");
+      this.updateValue(nextProps.value, false);
+   }
+
+   componentDidMount() {
+      this.updateValue(this.props.value, true);
+   }
+
+   updateValue = (newValue: string, forceUpdate:boolean) => {
+      if(this.state.lastHtml !== newValue || forceUpdate) {
+         const blocksFromHTML = convertFromHTML(newValue || "");
          if (blocksFromHTML.contentBlocks.length) {
             const state = ContentState.createFromBlockArray(
                blocksFromHTML.contentBlocks,
@@ -48,10 +56,7 @@ class RichTextEditor extends React.Component<Props, State> {
          }
       }
       this.setState(this.state);
-   }
-
-   componentDidMount() {
-   }
+   };
 
    onEditorChange = (editorState:EditorState) => {
       this.state.editorState = editorState;

@@ -24,7 +24,7 @@ function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
    if (sortBy === SortBy.BY_POINTS) {
       newProblems = newProblems.sort((a, b) => a.points - b.points);
    } else {
-      newProblems = newProblems.sort((a, b) => a.id - b.id);
+      newProblems = newProblems.sort((a, b) => a.number - b.number);
    }
    return newProblems;
 }

@@ -10,8 +10,9 @@
    max-width: 370px;
 }
 
-.scoreboardList:NOT(:last-child) {
-   border-right: 1px solid #DDD;
+.separator {
+   width:1px;
+   background:#DDD;
 }
 
 .scoreboardList .scoreboardListContenders {

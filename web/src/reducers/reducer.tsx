@@ -40,9 +40,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.clearErrorMessage):
          return { ...state, errorMessage: undefined};
 
-      case getType(scoreboardActions.sortProblems):
-         let newProblems2: Problem[] = getSortedProblems(state.problems, action.payload);
-         return { ...state, problems: newProblems2, problemsSortedBy: action.payload };
+      case getType(scoreboardActions.sortProblems): {
+         let newProblems: Problem[] = getSortedProblems(state.problems, action.payload);
+         return {...state, problems: newProblems, problemsSortedBy: action.payload};
+      }
 
       case getType(scoreboardActions.receiveContenderData):
          let contenderData:ContenderData = action.payload;
@@ -60,8 +61,17 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveScoreboardData):
          return { ...state, scoreboardData: action.payload, currentCompClassId: action.payload[0].compClass.id};
 
-      case getType(scoreboardActions.setCurrentCompClassId):
-         return { ...state, currentCompClassId: action.payload};
+      case getType(scoreboardActions.setCurrentCompClassId): {
+         // Reset all animation classes:
+         let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
+         let compClassIndex = state.scoreboardData.findIndex(list => list.compClass.id === action.payload);
+         let oldScoreboardList = state.scoreboardData[compClassIndex];
+         let newContenders = oldScoreboardList.contenders.map(c => {
+            return {...c, totalAnimationClass: undefined, finalistAnimationClass: undefined};
+         });
+         newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
+         return {...state, currentCompClassId: action.payload, scoreboardData: newScoreboardData};
+      }
 
       case getType(scoreboardActions.receiveContest):
          return { ...state, contest: action.payload };
@@ -82,32 +92,35 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          action.payload.forEach(color => colors.set(color.id, color));
          return { ...state, colors: colors };
 
-      case getType(scoreboardActions.createTick):
-         let newTicks1 = [...state.ticks, action.payload];
-         return { ...state, ticks: newTicks1, problemIdBeingUpdated: undefined};
+      case getType(scoreboardActions.createTick): {
+         let newTicks = [...state.ticks, action.payload];
+         return {...state, ticks: newTicks, problemIdBeingUpdated: undefined};
+      }
 
-      case getType(scoreboardActions.updateTick):
-         let newTicks2 = state.ticks.filter(tick => tick.id !== action.payload.id);
-         newTicks2.push(action.payload);
-         return { ...state, ticks: newTicks2, problemIdBeingUpdated: undefined};
+      case getType(scoreboardActions.updateTick): {
+         let newTicks = state.ticks.filter(tick => tick.id !== action.payload.id);
+         newTicks.push(action.payload);
+         return { ...state, ticks: newTicks, problemIdBeingUpdated: undefined};
+      }
 
-      case getType(scoreboardActions.deleteTick):
-         let newTicks3 = state.ticks.filter(tick => tick.id !== action.payload.id);
-         return { ...state, ticks: newTicks3, problemIdBeingUpdated: undefined};
+      case getType(scoreboardActions.deleteTick): {
+         let newTicks = state.ticks.filter(tick => tick.id !== action.payload.id);
+         return {...state, ticks: newTicks, problemIdBeingUpdated: undefined};
+      }
 
-      case getType(scoreboardActions.receiveScoreboardItem):
+      case getType(scoreboardActions.receiveScoreboardItem): {
          let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
          let compClassIndex = newScoreboardData.findIndex(list => list.compClass.id === action.payload.compClassId);
          let oldScoreboardList = state.scoreboardData[compClassIndex];
          let oldContenders = oldScoreboardList.contenders;
          let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
 
-         if(contendersIndex === -1) {
+         if (contendersIndex === -1) {
             // The contender wasn't found in this class.
             // To be sure, remove it from the other classes:
             newScoreboardData = newScoreboardData.map(contenderList => {
                let index = contenderList.contenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
-               if(index !== -1) {
+               if (index !== -1) {
                   let filteredList = contenderList.contenders.filter(contender => action.payload.item.contenderId !== contender.contenderId);
                   return {...contenderList, contenders: filteredList}
                } else {
@@ -118,11 +131,30 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
          // Create the new contenders list and put everything together again:
          let newContenders = [...oldContenders];
-         let oldAnimationClass = contendersIndex === -1 ? "" : newContenders[contendersIndex].animationClass;
-         newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = action.payload.item;
-         action.payload.item.animationClass = oldAnimationClass === "highlight" ? "highlight2" : "highlight";
-         newScoreboardData[compClassIndex] = { ...oldScoreboardList, contenders: newContenders};
-         return { ...state, scoreboardData: newScoreboardData };
+
+         let totalAnimationClass = "";
+         let finalistAnimationClass = "";
+         let newItem = action.payload.item;
+         if (contendersIndex !== -1) {
+            let prevContender = newContenders[contendersIndex];
+            totalAnimationClass = prevContender.totalAnimationClass!;
+            finalistAnimationClass = prevContender.finalistAnimationClass!;
+            if (prevContender.totalScore !== newItem.totalScore) {
+               totalAnimationClass = prevContender.totalAnimationClass === "highlight" ? "highlight2" : "highlight";
+            }
+            if (prevContender.qualifyingScore !== newItem.qualifyingScore) {
+               finalistAnimationClass = prevContender.finalistAnimationClass === "highlight" ? "highlight2" : "highlight";
+            }
+         } else {
+            totalAnimationClass = "highlight";
+            finalistAnimationClass = "highlight";
+         }
+         newItem.totalAnimationClass = totalAnimationClass;
+         newItem.finalistAnimationClass = finalistAnimationClass;
+         newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
+         newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
+         return {...state, scoreboardData: newScoreboardData};
+      }
 
       case getType(scoreboardActions.updateScoreboardTimer):
          let now: number = new Date().getTime() / 1000;

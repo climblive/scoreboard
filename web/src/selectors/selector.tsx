@@ -15,11 +15,13 @@ const getContest = (state: StoreState) => state.contest;
 
 const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: number, scoreboardContenders?: ScoreboardContender[]) => {
    if (scoreboardContenders) {
-      scoreboardContenders = scoreboardContenders.sort((a, b) => getScore(b) - getScore(a));
       let position = 0;
       let lastScore = -1;
       let maxFulfilled = false;
-      let listItems = scoreboardContenders.map((sc, index) => {
+      let listItems = scoreboardContenders.sort((a, b) => {
+         let scoreDiff = getScore(b) - getScore(a);
+         return scoreDiff == 0 ? b.contenderId - a.contenderId : scoreDiff;
+      }).map((sc, index) => {
          let score = getScore(sc);
          if(score != lastScore) {
             lastScore = score;
@@ -34,11 +36,15 @@ const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: num
                position: position,
                contenderName: sc.contenderName,
                score: score,
-               animationClass: sc.animationClass
+               finalistAnimationClass: sc.finalistAnimationClass,
+               totalAnimationClass: sc.totalAnimationClass,
+               uiPosition: index
             };
             return x;
          }
       }).filter(sc => sc) as ScoreboardListItem[];
+
+      listItems = listItems.sort((a, b) => b.contenderId - a.contenderId);
 
       if(maxCount) {
          // Remove contenders without score:

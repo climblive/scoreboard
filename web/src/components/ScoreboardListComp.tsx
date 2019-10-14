@@ -8,6 +8,7 @@ export interface ScoreboardListCompProps {
    compClass: CompClass
    totalList?: ScoreboardListItem[];
    isPaging: boolean;
+   animationClassName: string;
    pagingCounter: number;
 }
 
@@ -36,7 +37,6 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
          let height = this.containerRef.current.clientHeight - 10;
          let nToShow = Math.floor(height / this.ITEM_HEIGHT);
          let marginBottom = height - this.ITEM_HEIGHT * nToShow;
-         console.log("marginBotom: " + marginBottom + " nToShow " + nToShow + " height:" + height);
          if(nToShow !== this.state.nToShow || marginBottom !== this.state.marginBottom) {
             this.state.nToShow = nToShow;
             this.state.marginBottom = marginBottom;
@@ -77,14 +77,11 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
 
       //console.log("render " + this.props.totalList!.length + " state " + this.props.pagingCounter, this.state);
 
-      for(let i = 0; i < this.props.totalList!.length; i++) {
-         this.props.totalList![i].top = i * this.ITEM_HEIGHT;
-      }
-
       let listClass = this.props.isPaging ? "scoreboardListContenders scoreboardListContendersPaging" : "scoreboardListContenders";
-      let totalList = [...this.props.totalList!].sort((a, b) => a.contenderId - b.contenderId);
-      let list = totalList.map(contender =>
-         <div key={contender.contenderId} className={'contenderRow ' + contender.animationClass} style={{position:"absolute",top:contender.top, transition:"top 1s ease 1s"}}>
+      let list = this.props.totalList!.map(contender =>
+         <div key={contender.contenderId}
+              className={'contenderRow ' + contender[this.props.animationClassName]}
+              style={{position:"absolute",top:contender.uiPosition! * this.ITEM_HEIGHT, transition:"top 1s ease 1s"}}>
             <div className='position'>{contender.position}</div>
             <div className="name">{contender.contenderName}</div>
             <div className='score'>{contender.score}</div>

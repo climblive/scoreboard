@@ -4,17 +4,18 @@ import { ScoreboardListComp, ScoreboardListCompProps } from '../components/Score
 import { makeGetTotalList } from '../selectors/selector';
 
 const makeMapStateToProps = () => {
-   const getTotalList = makeGetTotalList()
+   const getTotalList = makeGetTotalList();
    const mapStateToProps = (state: StoreState, props: any): ScoreboardListCompProps => {
       return {
          compClass: props.compClass,
          totalList: getTotalList(state, props),
          isPaging: props.isPaging,
-         pagingCounter: state.pagingCounter
+         pagingCounter: state.pagingCounter,
+         animationClassName: "totalAnimationClass"
       };
-   }
+   };
    return mapStateToProps;
-}
+};
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {

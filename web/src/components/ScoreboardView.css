@@ -1,17 +1,13 @@
 .scoreboardView {
    background: white;
    flex-grow: 1;
-}
-
-@media screen and (min-width: 900px) {
-   .scoreboardView {
-      display: flex;
-      flex-direction: column;
-   }
+   display: flex;
+   flex-direction: column;
 }
 
 .scoreboardListContainer {
    display:flex;
+   flex-shrink:0;
 }
 
 .scoreboardListContainer.total {
@@ -23,6 +19,7 @@
    padding:20px 20px 5px 20px;
    margin: 0 20px 10px 20px;
    border-bottom: 1px solid #DDD;
+   flex-shrink:0;
 }
 
 .logoContainer {
@@ -30,6 +27,7 @@
    align-items: center;
    padding-bottom: 5px;
    padding-top:20px;
+   flex-shrink:0;
 }
 
 .logoContainer img {

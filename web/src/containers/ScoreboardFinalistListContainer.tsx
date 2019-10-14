@@ -4,17 +4,18 @@ import { ScoreboardListComp, ScoreboardListCompProps } from '../components/Score
 import { makeGetFinalistList } from '../selectors/selector';
 
 const makeMapStateToProps = () => {
-   const getFinalistList = makeGetFinalistList()
+   const getFinalistList = makeGetFinalistList();
    const mapStateToProps = (state: StoreState, props: any): ScoreboardListCompProps => {
       return {
          compClass: props.compClass,
          totalList: getFinalistList(state, props),
          isPaging: props.isPaging,
-         pagingCounter: state.pagingCounter
+         pagingCounter: state.pagingCounter,
+         animationClassName: "finalistAnimationClass"
       };
-   }
+   };
    return mapStateToProps;
-}
+};
 
 export function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {

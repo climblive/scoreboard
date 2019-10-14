@@ -5,6 +5,7 @@ export class ScoreboardListItem {
    contenderName: string;
    score: number;
 
-   top?: number;
-   animationClass?:string;
+   uiPosition?: number;
+   finalistAnimationClass?:string;
+   totalAnimationClass?:string;
 }

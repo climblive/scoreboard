@@ -60,9 +60,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
       }, 1000)
 
 
-      if(true) {
-         setTimeout(this.fakeScore);
-      }
+      //setTimeout(this.fakeScore);
    }
 
    fakeScore = () => {

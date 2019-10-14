@@ -34,19 +34,23 @@
 
 @keyframes splash {
    from {
-      text-shadow: 0px 0px 6px #e40a0b;
+      text-shadow: 0px 0px 6px white;
+      color:white;
    }
    to {
-      text-shadow: 0px 0px 0px white;
+      text-shadow: 0px 0px 0px black;
+      color:#E0E0E0;
    }
 }
 
 @keyframes splash2 {
    from {
-      text-shadow: 0px 0px 6px #e40a0b;
+      text-shadow: 0px 0px 6px white;
+      color:white;
    }
    to {
-      text-shadow: 0px 0px 0px white;
+      text-shadow: 0px 0px 0px black;
+      color:#E0E0E0;
    }
 }
 
@@ -64,11 +68,11 @@
    border-radius: 5px;
    width:10px;
    height:10px;
-   background: lightgray;
+   background: #555;
 }
 
 .scoreboardList .scoreboardListPaging .paging.current {
-   background: grey;
+   background: white;
 }
 
 .scoreboardList .scoreboardListPaging .paging:last-child {
@@ -84,7 +88,7 @@
 .contenderRow {
    display:flex;
    width:100%;
-   background: white;
+   background: black;
 }
 
 .compClassHeader .compClass {

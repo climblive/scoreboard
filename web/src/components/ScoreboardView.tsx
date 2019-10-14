@@ -58,7 +58,29 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
       this.intervalId = window.setInterval(() => { 
          this.props.updateScoreboardTimer!();
       }, 1000)
+
+
+      if(false) {
+         setTimeout(this.fakeScore);
+      }
    }
+
+   fakeScore = () => {
+      if(this.props.scoreboardData) {
+         let scoreboardData = this.props.scoreboardData[0];
+         let contender =  scoreboardData.contenders[Math.floor(Math.random() * scoreboardData.contenders.length)];
+         this.props.receiveScoreboardItem!({
+            compClassId: scoreboardData.compClass.id,
+            item: {
+               contenderId: contender.contenderId,
+               contenderName: contender.contenderName,
+               totalScore: contender.totalScore + 50,
+               qualifyingScore: contender.qualifyingScore + 10
+            }
+         });
+      }
+      setTimeout(this.fakeScore, 500);
+   };
 
    componentWillUnmount() { 
       this.client.deactivate();

@@ -4,4 +4,6 @@ export class ScoreboardContender {
    contenderName: string;
    totalScore: number;
    qualifyingScore: number;
+
+   animationClass?:string;
 }

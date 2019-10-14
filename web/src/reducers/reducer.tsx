@@ -118,7 +118,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
          // Create the new contenders list and put everything together again:
          let newContenders = [...oldContenders];
+         let oldAnimationClass = contendersIndex === -1 ? "" : newContenders[contendersIndex].animationClass;
          newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = action.payload.item;
+         action.payload.item.animationClass = oldAnimationClass === "highlight" ? "highlight2" : "highlight";
          newScoreboardData[compClassIndex] = { ...oldScoreboardList, contenders: newContenders};
          return { ...state, scoreboardData: newScoreboardData };
 

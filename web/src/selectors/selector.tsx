@@ -33,7 +33,8 @@ const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: num
                contenderId: sc.contenderId,
                position: position,
                contenderName: sc.contenderName,
-               score: score
+               score: score,
+               animationClass: sc.animationClass
             };
             return x;
          }

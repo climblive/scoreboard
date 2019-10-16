@@ -195,6 +195,8 @@ export const getContendersWithTicks = createSelector(
             pointsList.sort((a, b) => b - a);
             pointsList = pointsList.slice(0, contest!.qualifyingProblems);
             contender.qualifyingScore = pointsList.reduce((total, num) => total + num);
+         } else {
+            contender.qualifyingScore = 0;
          }
       }
 

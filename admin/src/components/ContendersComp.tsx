@@ -10,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import SaveIcon from '@material-ui/icons/SaveAlt';
 import ClearIcon from '@material-ui/icons/Clear';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import {ContenderData} from "../model/contenderData";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -38,6 +39,7 @@ interface Props {
 
    createContenders?: (nContenders:number) => void,
    exportResults?: () => void
+   reloadContenders?: () => void
    resetContenders?: () => void
    setContenderFilterCompClass?: (contenderFilterCompClass?:CompClass) => void,
    setContenderSortBy?: (contenderSortBy:SortBy) => void
@@ -194,6 +196,9 @@ class ContendersComp extends React.Component<Props, State> {
                    </Select>
                </FormControl>}
 
+               <IconButton color="inherit" aria-label="Menu" title="Reload contenders" onClick={this.props.reloadContenders}>
+                  <RefreshIcon />
+               </IconButton>
                <IconButton color="inherit" aria-label="Menu" title="Add contenders" onClick={this.startAddContenders}>
                   <AddIcon />
                </IconButton>
@@ -227,8 +232,14 @@ class ContendersComp extends React.Component<Props, State> {
                                         onClick={() => this.showContenderDialog(contender)}>
                                  <TableCell component="th" scope="row">{contender.name}</TableCell>
                                  <TableCell component="th" scope="row">{this.getCompClassName(contender.compClassId)}</TableCell>
-                                 <TableCell component="th" scope="row">{contender.name ? (contender.totalScore + "(" + contender.totalPosition + ")") : "-"}</TableCell>
-                                 <TableCell component="th" scope="row">{contender.name ? (contender.qualifyingScore + "(" + contender.qualifyingPosition + ")") : "-"}</TableCell>
+                                 <TableCell component="th" scope="row">
+                                    <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.totalScore : "-"}</div>
+                                    <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.totalPosition + ")") : ""}</div>
+                                 </TableCell>
+                                 <TableCell component="th" scope="row">
+                                    <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.qualifyingScore : "-"}</div>
+                                    <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.qualifyingPosition + ")") : ""}</div>
+                                 </TableCell>
                                  <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
                                  <TableCell component="th" scope="row">{contender.name ? contender.ticks!.length : "-"}</TableCell>
                                  <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>

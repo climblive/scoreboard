@@ -52,7 +52,7 @@ export function loadContest(contestId: number): any {
          dispatch(actions.receiveContest(contest));
          reloadProblems(dispatch, contestId);
          reloadCompClasses(dispatch, contestId);
-         reloadContenders(dispatch, contestId);
+         reloadContendersForContest(dispatch, contestId);
          reloadTicks(dispatch, contestId);
       }).catch(error => {
          dispatch(actions.setErrorMessage(error));
@@ -311,7 +311,7 @@ export function deleteCompClass(compClass:CompClass): any {
    }
 }
 
-let reloadContenders = (dispatch: Dispatch<any>, contestId: number) => {
+let reloadContendersForContest = (dispatch: Dispatch<any>, contestId: number) => {
    Api.getContenders(contestId).then(contenders => {
       dispatch(actions.receiveContenders(contenders));
    }).catch(error => {
@@ -323,8 +323,16 @@ export function createContenders(nNewContenders:number):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
       Api.createContenders(contestId, nNewContenders).then(() => {
-         reloadContenders(dispatch, contestId);
+         reloadContendersForContest(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
+   }
+}
+
+export function reloadContenders():any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest!.id;
+      dispatch(actions.receiveContenders([]));
+      reloadContendersForContest(dispatch, contestId);
    }
 }
 
@@ -332,7 +340,7 @@ export function resetContenders():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
       Api.resetContenders(contestId).then(() => {
-         reloadContenders(dispatch, contestId);
+         reloadContendersForContest(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }

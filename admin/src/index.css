@@ -5,7 +5,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     font-size:14px;
     height:100%;
     background: #56565a;
@@ -39,6 +39,7 @@ button:focus {
 .textfield-inherited input {
     text-align: right;
     padding-bottom:0;
+    padding-top: 0;
 }
 
 .textfield-inherited .MuiInput-underline:before {

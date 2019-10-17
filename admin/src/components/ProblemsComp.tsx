@@ -140,6 +140,11 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
       this.props.updateEditProblem!("points", parseInt(e.target.value) || 0);
    };
 
+   onFlashBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let flashBonus = parseInt(e.target.value) || 0
+      this.props.updateEditProblem!("flashBonus", flashBonus == 0 ? undefined : flashBonus);
+   };
+
    onColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       this.props.updateEditProblem!("colorId", parseInt(e.target.value));
    };
@@ -173,7 +178,14 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                               <div style={{width: 20, fontSize:16}}>{problem.number}</div>
                               <div style={{width:100, textAlign: "left", marginLeft:15, marginRight:"auto", fontSize:16}}>{this.getColorName(problem)}</div>
                               {problem.ticks!.length > 0  && <Button style={{color:"inherit"}} onClick={() => this.showTicksDialog(problem)}>{problem.ticks!.length} ticks</Button>}
-                              <div style={{textAlign: "right", width:60, fontSize:28, marginRight:10}}>{problem.points}</div>
+                              <div style={{display:"flex", flexDirection:"column", marginRight:15}}>
+                                 <div style={{fontSize:10, textAlign:"right"}}>Points</div>
+                                 <div style={{textAlign: "right", width:60, fontSize:28, height:33.25}}>{problem.points}</div>
+                              </div>
+                              <div style={{display:"flex", flexDirection:"column", width:60, marginRight:15}}>
+                                 {(problem.flashBonus != undefined) && <div style={{fontSize:10, textAlign:"right"}}>Flash bonus</div>}
+                                 <div style={{textAlign: "right", fontSize:28, height:33.25}}>{problem.flashBonus}</div>
+                              </div>
                               {allowEdit && <IconButton className={classes.menuButton} color="inherit" aria-label="Edit" title="Edit" onClick={() => {this.edit(problem);}}>
                                  <EditIcon />
                               </IconButton>}
@@ -200,7 +212,21 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                                     )}
                                  </Select>
                               </FormControl>
-                              <TextField className="textfield-inherited" style={{textAlign: "right", width:60, fontSize:28, marginRight:10, color:"inherit"}} value={editProblem.points == undefined ? "" : editProblem.points} onChange={this.onPointsChange} />
+                              <div style={{display:"flex", flexDirection:"column", marginRight:15}}>
+                                 <div style={{fontSize:10, textAlign:"right"}}>Points</div>
+                                 <TextField className="textfield-inherited"
+                                            style={{textAlign: "right", width:60, fontSize:28, paddingTop:0, color:"inherit"}}
+                                            value={editProblem.points == undefined ? "" : editProblem.points}
+                                            onChange={this.onPointsChange} />
+                              </div>
+                              <div style={{display:"flex", flexDirection:"column", marginRight:15}}>
+                                 <div style={{fontSize:10, textAlign:"right"}}>Flash bonus</div>
+                                 <TextField className="textfield-inherited"
+                                            style={{textAlign: "right", width:60, fontSize:28, paddingTop:0, color:"inherit"}}
+                                            value={editProblem.flashBonus == undefined ? "" : editProblem.flashBonus}
+                                            onChange={this.onFlashBonusChange} />
+                              </div>
+                              <div style={{width:48}}></div>
                               <IconButton className={classes.menuButton} color="inherit" aria-label="Ok" title="Ok" onClick={this.editOk}>
                                  <CheckIcon />
                               </IconButton>

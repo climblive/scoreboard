@@ -67,6 +67,10 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         entity.id = null
         handleNested(entity, dto)
 
+        if (!verify(entity)) {
+            throw WebException(HttpStatus.CONFLICT, null)
+        }
+
         entity = entityRepository.save(entity)
         return entityMapper.convertToDto(entity)
     }
@@ -76,6 +80,13 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         var entity = entityMapper.convertToEntity(dto)
         entity.id = id
         handleNested(entity, dto)
+
+        if (!verify(entity)) {
+            throw WebException(HttpStatus.CONFLICT, null)
+        }
+
+        var old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
+        onChange(old, entity)
 
         entity = entityRepository.save(entity)
         return entityMapper.convertToDto(entity)
@@ -98,6 +109,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         return entityRepository.findAllById(ids)
     }
 
-    open protected fun handleNested(entity: EntityType, dto: DtoType) {
+    protected open fun handleNested(entity: EntityType, dto: DtoType) {
+    }
+
+    protected open fun verify(entity: EntityType) : Boolean = true
+
+    protected open fun onChange(old: EntityType, new: EntityType) {
     }
 }

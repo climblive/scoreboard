@@ -16,16 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `color`
---
-
-LOCK TABLES `color` WRITE;
-/*!40000 ALTER TABLE `color` DISABLE KEYS */;
-INSERT INTO `color` VALUES (1,'Röd','#FE2525',NULL),(2,'Grön','#13D341',NULL),(3,'Blå','#1098EB',NULL),(4,'Lila','#E410EB',NULL),(5,'Gul','#FAF31A',NULL),(6,'Svart','#050505',NULL),(7,'Orange','#F0820E',NULL),(8,'Rosa','#F628A5',NULL),(9,'Vit','#FAFAFA',NULL),(10,'Candy','#e91e63','#03a9f4');
-/*!40000 ALTER TABLE `color` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `comp_class`
 --
 
@@ -72,6 +62,16 @@ INSERT INTO `organizer` VALUES (1,'Klätterpyramiden AB','klätterpyramiden.se')
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `color`
+--
+
+LOCK TABLES `color` WRITE;
+/*!40000 ALTER TABLE `color` DISABLE KEYS */;
+INSERT INTO `color` VALUES (1,1,'Röd','#FE2525',NULL,1),(2,1,'Grön','#13D341',NULL,1),(3,1,'Blå','#1098EB',NULL,1),(4,1,'Lila','#E410EB',NULL,1),(5,1,'Gul','#FAF31A',NULL,1),(6,1,'Svart','#050505',NULL,1),(7,1,'Orange','#F0820E',NULL,1),(8,1,'Rosa','#F628A5',NULL,1),(9,1,'Vit','#FAFAFA',NULL,1),(10,1,'Candy','#e91e63','#03a9f4',1);
+/*!40000 ALTER TABLE `color` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `problem`
 --
 
@@ -95,7 +95,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'John Doe','john.doe@example.org','$2a$04$6dBvJainYES6bNSxfisDNu/D6z6rdPIciSRqppFq.F122XFZRDfyG',1);
+INSERT INTO `user` VALUES (1,'Admin','admin',1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

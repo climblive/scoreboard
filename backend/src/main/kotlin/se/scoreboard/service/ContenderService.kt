@@ -12,6 +12,7 @@ import se.scoreboard.dto.ContenderDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.mapper.ContenderMapper
+import java.time.OffsetDateTime
 import javax.transaction.Transactional
 
 @Service
@@ -39,6 +40,12 @@ class ContenderService @Autowired constructor(
     override fun handleNested(entity: Contender, dto: ContenderDto) {
         entity.contest = entityManager.getReference(Contest::class.java, dto.contestId)
         entity.compClass = if (dto.compClassId != null) compClassService.fetchEntity(dto.compClassId!!) else null
+    }
+
+    override fun onChange(old: Contender, new: Contender) {
+        if (new.name != null && new.compClass != null && old.entered == null) {
+            new.entered = OffsetDateTime.now()
+        }
     }
 
     override fun create(contender: ContenderDto): ContenderDto {

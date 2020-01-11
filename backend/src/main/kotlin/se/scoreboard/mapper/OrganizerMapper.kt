@@ -7,8 +7,8 @@ import org.mapstruct.Mappings
 import se.scoreboard.data.domain.Organizer
 import se.scoreboard.dto.OrganizerDto
 
-@Mapper
-interface OrganizerMapper : AbstractMapper<Organizer, OrganizerDto> {
+@Mapper(componentModel = "spring")
+abstract class OrganizerMapper : AbstractMapper<Organizer, OrganizerDto> {
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
             Mapping(target = "users", ignore = true),
@@ -17,5 +17,5 @@ interface OrganizerMapper : AbstractMapper<Organizer, OrganizerDto> {
             Mapping(target = "locations", ignore = true),
             Mapping(target = "series", ignore = true)
     )
-    override fun convertToEntity(source: OrganizerDto): Organizer
+    abstract override fun convertToEntity(source: OrganizerDto): Organizer
 }

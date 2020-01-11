@@ -7,16 +7,16 @@ import org.mapstruct.Mappings
 import se.scoreboard.data.domain.Color
 import se.scoreboard.dto.ColorDto
 
-@Mapper
-interface ColorMapper : AbstractMapper<Color, ColorDto> {
+@Mapper(componentModel = "spring")
+abstract class ColorMapper : AbstractMapper<Color, ColorDto> {
     @Mappings(
             Mapping(source = "organizer.id", target = "organizerId")
     )
-    override fun convertToDto(source: Color): ColorDto
+    abstract override fun convertToDto(source: Color): ColorDto
 
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
             Mapping(target = "problems", ignore = true)
     )
-    override fun convertToEntity(source: ColorDto): Color
+    abstract override fun convertToEntity(source: ColorDto): Color
 }

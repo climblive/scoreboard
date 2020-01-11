@@ -6,11 +6,11 @@ import org.mapstruct.Mappings
 import se.scoreboard.data.domain.Tick
 import se.scoreboard.dto.TickDto
 
-@Mapper
-interface TickMapper : AbstractMapper<Tick, TickDto> {
+@Mapper(componentModel = "spring")
+abstract class TickMapper : AbstractMapper<Tick, TickDto> {
     @Mappings(
         Mapping(source = "contender.id", target = "contenderId"),
         Mapping(source = "problem.id", target = "problemId")
     )
-    override fun convertToDto(source: Tick): TickDto
+    abstract override fun convertToDto(source: Tick): TickDto
 }

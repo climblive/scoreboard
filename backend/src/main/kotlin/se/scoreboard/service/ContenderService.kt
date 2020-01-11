@@ -1,6 +1,5 @@
 package se.scoreboard.service
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -11,24 +10,18 @@ import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
-import se.scoreboard.mapper.ContenderMapper
 import java.time.OffsetDateTime
 import javax.transaction.Transactional
 
 @Service
 class ContenderService @Autowired constructor(
     private var contenderRepository: ContenderRepository,
-    private var compClassService: CompClassService) : AbstractDataService<Contender, ContenderDto, Int>(
+    private var compClassService: CompClassService,
+    override var entityMapper: AbstractMapper<Contender, ContenderDto>) : AbstractDataService<Contender, ContenderDto, Int>(
         contenderRepository) {
 
     companion object {
         private val MAX_CONTEST_CONTENDERS = 500
-    }
-
-    override lateinit var entityMapper: AbstractMapper<Contender, ContenderDto>
-
-    init {
-        entityMapper = Mappers.getMapper(ContenderMapper::class.java)
     }
 
     @Transactional

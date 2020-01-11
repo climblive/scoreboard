@@ -1,6 +1,5 @@
 package se.scoreboard.api
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -25,13 +24,8 @@ import javax.transaction.Transactional
 class ContenderController @Autowired constructor(
         val contenderService: ContenderService,
         val compClassService: CompClassService,
-        val broadcastService: BroadcastService) {
-
-    private lateinit var tickMapper: TickMapper
-
-    init {
-        tickMapper = Mappers.getMapper(TickMapper::class.java)
-    }
+        val broadcastService: BroadcastService,
+        private var tickMapper: TickMapper) {
 
     @GetMapping("/contender")
     @PostAuthorize("hasPermission(returnObject, 'read')")

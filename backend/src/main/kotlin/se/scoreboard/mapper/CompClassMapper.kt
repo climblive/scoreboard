@@ -7,16 +7,16 @@ import org.mapstruct.Mappings
 import se.scoreboard.data.domain.CompClass
 import se.scoreboard.dto.CompClassDto
 
-@Mapper
-interface CompClassMapper : AbstractMapper<CompClass, CompClassDto> {
+@Mapper(componentModel = "spring")
+abstract class CompClassMapper : AbstractMapper<CompClass, CompClassDto> {
     @Mappings(
         Mapping(source = "contest.id", target = "contestId")
     )
-    override fun convertToDto(source: CompClass): CompClassDto
+    abstract override fun convertToDto(source: CompClass): CompClassDto
 
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
         Mapping(target = "contenders", ignore = true)
     )
-    override fun convertToEntity(source: CompClassDto): CompClass
+    abstract override fun convertToEntity(source: CompClassDto): CompClass
 }

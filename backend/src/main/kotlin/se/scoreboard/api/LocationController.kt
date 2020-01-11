@@ -1,6 +1,5 @@
 package se.scoreboard.api
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
@@ -16,13 +15,8 @@ import javax.transaction.Transactional
 @CrossOrigin
 @RequestMapping("/api")
 class LocationController @Autowired constructor(
-        val locationService: LocationService) {
-
-    private lateinit var contestMapper: ContestMapper
-
-    init {
-        contestMapper = Mappers.getMapper(ContestMapper::class.java)
-    }
+        val locationService: LocationService,
+        private var contestMapper: ContestMapper) {
 
     @GetMapping("/location")
     @PostAuthorize("hasPermission(returnObject, 'read')")

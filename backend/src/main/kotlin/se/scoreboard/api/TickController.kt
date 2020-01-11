@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.extension.*
+import se.scoreboard.data.domain.extension.allowedToAlterTick
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.service.BroadcastService

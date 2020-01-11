@@ -1,6 +1,5 @@
 package se.scoreboard.api
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
@@ -16,13 +15,8 @@ import javax.transaction.Transactional
 @CrossOrigin
 @RequestMapping("/api")
 class ProblemController @Autowired constructor(
-        val problemService: ProblemService) {
-
-    private lateinit var tickMapper: TickMapper
-
-    init {
-        tickMapper = Mappers.getMapper(TickMapper::class.java)
-    }
+        val problemService: ProblemService,
+        private var tickMapper: TickMapper) {
 
     @GetMapping("/problem")
     @PostAuthorize("hasPermission(returnObject, 'read')")

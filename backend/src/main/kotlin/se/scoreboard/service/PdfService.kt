@@ -1,19 +1,19 @@
 package se.scoreboard.service
 
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.client.j2se.MatrixToImageWriter
+import com.google.zxing.qrcode.QRCodeWriter
+import org.apache.pdfbox.cos.COSDictionary
+import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.font.PDType1Font
-import org.apache.pdfbox.pdmodel.PDPage
-import org.apache.pdfbox.cos.COSName
-import org.apache.pdfbox.cos.COSDictionary
-import com.google.zxing.client.j2se.MatrixToImageWriter
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.qrcode.QRCodeWriter
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -21,7 +21,8 @@ import javax.imageio.ImageIO
 
 
 @Service
-class PdfService @Autowired constructor(@Value("\${site.url}") val siteUrl: String) {
+class PdfService @Autowired constructor(
+        @Value("\${site.url}") val siteUrl: String) {
 
     val qrCodeWriter = QRCodeWriter()
 

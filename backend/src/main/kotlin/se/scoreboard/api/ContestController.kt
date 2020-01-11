@@ -1,7 +1,6 @@
 package se.scoreboard.api
 
 import com.google.common.net.MediaType
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpHeaders
@@ -33,19 +32,11 @@ class ContestController @Autowired constructor(
         private val contestService: ContestService,
         private val contenderService: ContenderService,
         private val tickRepository: TickRepository,
-        private val contenderRepository: ContenderRepository) {
-
-    private lateinit var problemMapper: ProblemMapper
-    private lateinit var contenderMapper: ContenderMapper
-    private lateinit var compClassMapper: CompClassMapper
-    private lateinit var tickMapper: TickMapper
-
-    init {
-        problemMapper = Mappers.getMapper(ProblemMapper::class.java)
-        contenderMapper = Mappers.getMapper(ContenderMapper::class.java)
-        compClassMapper = Mappers.getMapper(CompClassMapper::class.java)
-        tickMapper = Mappers.getMapper(TickMapper::class.java)
-    }
+        private val contenderRepository: ContenderRepository,
+        private var problemMapper: ProblemMapper,
+        private var contenderMapper: ContenderMapper,
+        private var compClassMapper: CompClassMapper,
+        private var tickMapper: TickMapper) {
 
     @GetMapping("/contest")
     @PostAuthorize("hasPermission(returnObject, 'read')")

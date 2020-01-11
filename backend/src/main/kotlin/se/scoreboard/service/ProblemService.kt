@@ -1,6 +1,5 @@
 package se.scoreboard.service
 
-import org.mapstruct.factory.Mappers
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -12,23 +11,17 @@ import se.scoreboard.data.repo.ContestRepository
 import se.scoreboard.data.repo.ProblemRepository
 import se.scoreboard.dto.ProblemDto
 import se.scoreboard.mapper.AbstractMapper
-import se.scoreboard.mapper.ProblemMapper
 import javax.transaction.Transactional
 
 @Service
 class ProblemService @Autowired constructor(
     private val problemRepository: ProblemRepository,
-    private val contestRepository: ContestRepository) : AbstractDataService<Problem, ProblemDto, Int>(
+    private val contestRepository: ContestRepository,
+    override var entityMapper: AbstractMapper<Problem, ProblemDto>) : AbstractDataService<Problem, ProblemDto, Int>(
         problemRepository) {
-
-    override lateinit var entityMapper: AbstractMapper<Problem, ProblemDto>
 
     companion object {
         var logger = LoggerFactory.getLogger(ProblemService::class.java)
-    }
-
-    init {
-        entityMapper = Mappers.getMapper(ProblemMapper::class.java)
     }
 
     private enum class ProblemAdjustmentAction {

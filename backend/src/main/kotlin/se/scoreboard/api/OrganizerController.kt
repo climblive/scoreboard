@@ -1,6 +1,5 @@
 package se.scoreboard.api
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
@@ -15,21 +14,12 @@ import javax.transaction.Transactional
 @CrossOrigin
 @RequestMapping("/api")
 class OrganizerController @Autowired constructor(
-        val organizerService: OrganizerService) {
-
-    private lateinit var contestMapper: ContestMapper
-    private lateinit var colorMapper: ColorMapper
-    private lateinit var locationMapper: LocationMapper
-    private lateinit var seriesMapper: SeriesMapper
-    private lateinit var userMapper: UserMapper
-
-    init {
-        contestMapper = Mappers.getMapper(ContestMapper::class.java)
-        colorMapper = Mappers.getMapper(ColorMapper::class.java)
-        locationMapper = Mappers.getMapper(LocationMapper::class.java)
-        seriesMapper = Mappers.getMapper(SeriesMapper::class.java)
-        userMapper = Mappers.getMapper(UserMapper::class.java)
-    }
+        val organizerService: OrganizerService,
+        private var contestMapper: ContestMapper,
+        private var colorMapper: ColorMapper,
+        private var locationMapper: LocationMapper,
+        private var seriesMapper: SeriesMapper,
+        private var userMapper: UserMapper) {
 
     @GetMapping("/organizer")
     @PostAuthorize("hasPermission(returnObject, 'read')")

@@ -1,6 +1,5 @@
 package se.scoreboard.api
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
@@ -16,13 +15,8 @@ import javax.transaction.Transactional
 @CrossOrigin
 @RequestMapping("/api")
 class CompClassController @Autowired constructor(
-        val compClassService: CompClassService) {
-
-    private lateinit var contenderMapper: ContenderMapper
-
-    init {
-        contenderMapper = Mappers.getMapper(ContenderMapper::class.java)
-    }
+        val compClassService: CompClassService,
+        private var contenderMapper: ContenderMapper) {
 
     @GetMapping("/compClass")
     @PostAuthorize("hasPermission(returnObject, 'read')")

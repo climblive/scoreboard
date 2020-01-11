@@ -1,18 +1,13 @@
 package se.scoreboard.api
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContestDto
-import se.scoreboard.dto.ProblemDto
 import se.scoreboard.dto.SeriesDto
-import se.scoreboard.mapper.CompClassMapper
-import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.ContestMapper
-import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.service.SeriesService
 import javax.transaction.Transactional
 
@@ -20,13 +15,8 @@ import javax.transaction.Transactional
 @CrossOrigin
 @RequestMapping("/api")
 class SeriesController @Autowired constructor(
-        private val seriesService: SeriesService) {
-
-    private lateinit var contestMapper: ContestMapper
-
-    init {
-        contestMapper = Mappers.getMapper(ContestMapper::class.java)
-    }
+        private val seriesService: SeriesService,
+        private var contestMapper: ContestMapper) {
 
     @GetMapping("/series")
     @PostAuthorize("hasPermission(returnObject, 'read')")

@@ -1,18 +1,17 @@
 package se.scoreboard.api
 
-import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.OrganizerDto
 import se.scoreboard.dto.UserDto
-import se.scoreboard.mapper.OrganizerMapper
-import se.scoreboard.service.UserService
-import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PreAuthorize
 import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
+import se.scoreboard.mapper.OrganizerMapper
+import se.scoreboard.service.UserService
 import javax.transaction.Transactional
 
 
@@ -20,13 +19,8 @@ import javax.transaction.Transactional
 @CrossOrigin
 @RequestMapping("/api")
 class UserController @Autowired constructor(
-        val userService: UserService) {
-
-    private lateinit var organizerMapper: OrganizerMapper
-
-    init {
-        organizerMapper = Mappers.getMapper(OrganizerMapper::class.java)
-    }
+        val userService: UserService,
+        private var organizerMapper: OrganizerMapper) {
 
     @GetMapping("/user")
     @PostAuthorize("hasPermission(returnObject, 'read')")

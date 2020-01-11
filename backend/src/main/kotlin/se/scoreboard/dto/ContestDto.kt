@@ -10,7 +10,8 @@ data class ContestDto (
     var qualifyingProblems: Int,
     var finalists: Int,
     var rules: String?,
-    var gracePeriod: Int?) {
+    var gracePeriod: Int?,
+    var scoreboardUrl: String?) {
 
-    constructor() : this(null, null, null, null, null, null, Int.MAX_VALUE, Int.MAX_VALUE, null, null)
+    constructor() : this(null, null, null, null, null, null, Int.MAX_VALUE, Int.MAX_VALUE, null, null, null)
 }

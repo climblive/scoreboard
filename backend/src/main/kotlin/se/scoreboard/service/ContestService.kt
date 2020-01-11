@@ -3,31 +3,27 @@ package se.scoreboard.service
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
-import org.mapstruct.factory.Mappers
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import se.scoreboard.data.domain.*
+import se.scoreboard.data.domain.Contest
+import se.scoreboard.data.domain.Location
+import se.scoreboard.data.domain.Organizer
+import se.scoreboard.data.domain.Series
 import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.ContestRepository
 import se.scoreboard.dto.ContestDto
 import se.scoreboard.mapper.AbstractMapper
-import se.scoreboard.mapper.ContestMapper
 import java.io.ByteArrayOutputStream
 
 @Service
 class ContestService @Autowired constructor(
         contestRepository: ContestRepository,
-        val pdfService: PdfService) : AbstractDataService<Contest, ContestDto, Int>(
+        val pdfService: PdfService,
+        override var entityMapper: AbstractMapper<Contest, ContestDto>) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
 
     var logger = LoggerFactory.getLogger(ContestService::class.java)
-
-    override lateinit var entityMapper: AbstractMapper<Contest, ContestDto>
-
-    init {
-        entityMapper = Mappers.getMapper(ContestMapper::class.java)
-    }
 
     override fun handleNested(entity: Contest, dto: ContestDto) {
         entity.location = dto.locationId?.let { entityManager.getReference(Location::class.java, it) }

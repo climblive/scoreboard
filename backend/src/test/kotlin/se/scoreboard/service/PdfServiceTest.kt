@@ -12,8 +12,7 @@ internal class PdfServiceTest {
         // Get the logo:
         PdfService::class.java.getResourceAsStream("/test1.pdf").use {
             val testPdf = it.readBytes()
-            val data = pdfService.createPdf(testPdf, listOf("DASDFGadasdasdRWFMS", "ERFMasdasdasdasdSF"))
-            //File("hej.pdf").writeBytes(data!!)
+            pdfService.createPdf(testPdf, listOf("DASDFGadasdasdRWFMS", "ERFMasdasdasdasdSF"))
         }
     }
 

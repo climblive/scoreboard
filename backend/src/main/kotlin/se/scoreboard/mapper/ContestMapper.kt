@@ -1,20 +1,22 @@
 package se.scoreboard.mapper
 
-import org.mapstruct.InheritInverseConfiguration
-import org.mapstruct.Mapper
-import org.mapstruct.Mapping
-import org.mapstruct.Mappings
+import org.mapstruct.*
+import org.springframework.beans.factory.annotation.Value
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.dto.ContestDto
 
-@Mapper
-interface ContestMapper : AbstractMapper<Contest, ContestDto> {
+@Mapper(componentModel = "spring")
+abstract class ContestMapper : AbstractMapper<Contest, ContestDto> {
+    @Value("\${site.url}")
+    lateinit var siteUrl: String
+
     @Mappings(
         Mapping(source = "location.id", target = "locationId"),
         Mapping(source = "organizer.id", target = "organizerId"),
-        Mapping(source = "series.id", target = "seriesId")
+        Mapping(source = "series.id", target = "seriesId"),
+        Mapping(target = "scoreboardUrl", ignore = true)
     )
-    override fun convertToDto(source: Contest): ContestDto
+    abstract override fun convertToDto(source: Contest): ContestDto
 
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
@@ -22,5 +24,10 @@ interface ContestMapper : AbstractMapper<Contest, ContestDto> {
             Mapping(target = "contenders", ignore = true),
             Mapping(target = "problems", ignore = true)
     )
-    override fun convertToEntity(source: ContestDto): Contest
+    abstract override fun convertToEntity(source: ContestDto): Contest
+
+    @AfterMapping
+    fun afterMapping(@MappingTarget target: ContestDto) {
+        target.scoreboardUrl = "${siteUrl}/scoreboard/${target.id}"
+    }
 }

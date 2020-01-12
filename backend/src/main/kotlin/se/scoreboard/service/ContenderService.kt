@@ -11,6 +11,7 @@ import se.scoreboard.dto.ContenderDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import javax.transaction.Transactional
 
 @Service
@@ -22,6 +23,14 @@ class ContenderService @Autowired constructor(
 
     companion object {
         private val MAX_CONTEST_CONTENDERS = 500
+    }
+
+    init {
+        addConstraints(ContenderDto::contestId.name, ContenderDto::contestId, AttributeConstraintType.IMMUTABLE)
+        addConstraints(ContenderDto::registrationCode.name, ContenderDto::registrationCode, AttributeConstraintType.IMMUTABLE)
+        addConstraints(ContenderDto::name.name, ContenderDto::name, AttributeConstraintType.NON_ERASABLE)
+        addConstraints(ContenderDto::compClassId.name, ContenderDto::compClassId, AttributeConstraintType.NON_ERASABLE)
+        addConstraints(ContenderDto::entered.name, { contender: ContenderDto? -> contender?.entered?.withOffsetSameInstant(ZoneOffset.UTC) }, AttributeConstraintType.IMMUTABLE)
     }
 
     @Transactional

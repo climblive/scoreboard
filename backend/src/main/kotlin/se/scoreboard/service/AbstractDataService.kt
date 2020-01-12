@@ -27,6 +27,25 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     @PersistenceContext
     protected lateinit var entityManager: EntityManager
 
+    enum class AttributeConstraintType {
+        NON_NULLABLE,
+        NON_ERASABLE,
+        IMMUTABLE
+    }
+
+    private data class AttributeConstraint<DtoType>(
+            val propertyName: String,
+            val getter: (DtoType) -> Any?,
+            val type: AttributeConstraintType)
+
+    private var constraints: MutableList<AttributeConstraint<DtoType>> = mutableListOf()
+
+    fun addConstraints(propertyName: String, getter: (DtoType) -> Any?, vararg types: AttributeConstraintType) {
+        for (type in types) {
+            constraints.add(AttributeConstraint(propertyName, getter, type))
+        }
+    }
+
     @Transactional
     open fun findAll() : List<DtoType> {
         return search(PageRequest.of(0, 1000)).body
@@ -67,6 +86,8 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         entity.id = null
         handleNested(entity, dto)
 
+        checkConstraints(null, dto)
+
         if (!verify(entity)) {
             throw WebException(HttpStatus.CONFLICT, null)
         }
@@ -81,11 +102,14 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         entity.id = id
         handleNested(entity, dto)
 
+        val old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
+
+        checkConstraints(entityMapper.convertToDto(old), dto)
+
         if (!verify(entity)) {
             throw WebException(HttpStatus.CONFLICT, null)
         }
 
-        var old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
         onChange(old, entity)
 
         entity = entityRepository.save(entity)
@@ -107,6 +131,30 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     @Transactional
     open fun fetchEntities(ids: List<ID>) : Iterable<EntityType> {
         return entityRepository.findAllById(ids)
+    }
+
+    private fun checkConstraints(old: DtoType?, new : DtoType) {
+        constraints.forEach {
+            val propertyName = it.propertyName
+            val getter = it.getter
+            val oldValue: Any? = old?.let { getter(it) }
+            val newValue: Any? = getter(new)
+
+            when (it.type) {
+                AttributeConstraintType.IMMUTABLE ->
+                    if (old != null && oldValue != newValue) {
+                        throw WebException(HttpStatus.CONFLICT, "Cannot alter immutable attribute $propertyName")
+                    }
+                AttributeConstraintType.NON_NULLABLE ->
+                    if (newValue == null) {
+                        throw WebException(HttpStatus.CONFLICT, "No value for non-null attribute $propertyName")
+                    }
+                AttributeConstraintType.NON_ERASABLE ->
+                    if (old != null && oldValue != null && newValue == null) {
+                        throw WebException(HttpStatus.CONFLICT, "Cannot erase value of attribute $propertyName")
+                    }
+            }
+        }
     }
 
     protected open fun handleNested(entity: EntityType, dto: DtoType) {

@@ -11,7 +11,6 @@ import se.scoreboard.data.domain.extension.allowedToAlterContender
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
-import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.CompClassService
@@ -59,17 +58,12 @@ class ContenderController @Autowired constructor(
     @Transactional
     fun updateContender(@PathVariable("id") id: Int,
                         @RequestBody contender : ContenderDto): ContenderDto {
+
+        val updatedContender = contenderService.update(id, contender)
+
         val compClass = compClassService.fetchEntity(contender.compClassId!!)
         checkTimeAllowed(compClass)
 
-        var principal = getUserPrincipal()
-        if (principal?.authorities?.any { it.authority == "ROLE_CONTENDER" } ?: false) {
-            if (contender.registrationCode != principal?.username) {
-                throw WebException(HttpStatus.FORBIDDEN, "Cannot change registration code")
-            }
-        }
-
-        val updatedContender = contenderService.update(id, contender)
         broadcastService.broadcast(contenderService.fetchEntity(id))
         return updatedContender
     }

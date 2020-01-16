@@ -163,6 +163,7 @@ class ContestController @Autowired constructor(
             contender.compClass = null
             contender.name = null
             contender.entered = null
+            contender.disqualified = false
             tickRepository.deleteAll(contender.ticks)
             contender
         })

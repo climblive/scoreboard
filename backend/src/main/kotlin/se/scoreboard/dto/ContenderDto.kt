@@ -8,7 +8,8 @@ data class ContenderDto (
     var contestId: Int? = null,
     var registrationCode: String? = null,
     var name: String? = null,
-    var entered: OffsetDateTime? = null) {
+    var entered: OffsetDateTime? = null,
+    var disqualified: Boolean) {
 
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, false)
 }

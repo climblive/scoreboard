@@ -7,10 +7,18 @@ fun Contender.getPoints(): List<Int> {
 }
 
 fun Contender.getTotalScore(): Int {
-    return getPoints().sum()
+    if (!disqualified) {
+        return getPoints().sum()
+    } else {
+        return 0
+    }
 }
 
 fun Contender.getQualificationScore(): Int {
-    val qualifyingProblems = contest?.qualifyingProblems ?: return 0
-    return getPoints().sorted().takeLast(qualifyingProblems).sum()
+    if (!disqualified) {
+        val qualifyingProblems = contest?.qualifyingProblems ?: return 0
+        return getPoints().sorted().takeLast(qualifyingProblems).sum()
+    } else {
+        return 0
+    }
 }

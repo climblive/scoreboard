@@ -8,7 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.extension.allowedToAlterContender
+import se.scoreboard.data.domain.extension.getQualificationScore
+import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.dto.ContenderDto
+import se.scoreboard.dto.ScoreDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.TickMapper
@@ -46,6 +49,14 @@ class ContenderController @Autowired constructor(
     @Transactional
     fun getContenderTicks(@PathVariable("id") id: Int) : List<TickDto> {
         return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
+    }
+
+    @GetMapping("/contender/{id}/score")
+    @PostAuthorize("hasPermission(#id, 'ContenderDto', 'read')")
+    @Transactional
+    fun getContenderScore(@PathVariable("id") id: Int) : ScoreDto {
+        val contender = contenderService.fetchEntity(id)
+        return ScoreDto(contender.id!!, contender.getQualificationScore(), contender.getTotalScore())
     }
 
     @PostMapping("/contender")

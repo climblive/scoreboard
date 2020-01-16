@@ -26,11 +26,12 @@ class ContenderService @Autowired constructor(
     }
 
     init {
-        addConstraints(ContenderDto::contestId.name, ContenderDto::contestId, AttributeConstraintType.IMMUTABLE)
-        addConstraints(ContenderDto::registrationCode.name, ContenderDto::registrationCode, AttributeConstraintType.IMMUTABLE)
-        addConstraints(ContenderDto::name.name, ContenderDto::name, AttributeConstraintType.NON_ERASABLE)
-        addConstraints(ContenderDto::compClassId.name, ContenderDto::compClassId, AttributeConstraintType.NON_ERASABLE)
-        addConstraints(ContenderDto::entered.name, { contender: ContenderDto? -> contender?.entered?.withOffsetSameInstant(ZoneOffset.UTC) }, AttributeConstraintType.IMMUTABLE)
+        addConstraints(ContenderDto::contestId.name, ContenderDto::contestId, null, AttributeConstraintType.IMMUTABLE)
+        addConstraints(ContenderDto::registrationCode.name, ContenderDto::registrationCode, null, AttributeConstraintType.IMMUTABLE)
+        addConstraints(ContenderDto::name.name, ContenderDto::name, null, AttributeConstraintType.NON_ERASABLE)
+        addConstraints(ContenderDto::compClassId.name, ContenderDto::compClassId, null, AttributeConstraintType.NON_ERASABLE)
+        addConstraints(ContenderDto::entered.name, { contender: ContenderDto? -> contender?.entered?.withOffsetSameInstant(ZoneOffset.UTC) }, null, AttributeConstraintType.IMMUTABLE)
+        addConstraints(ContenderDto::disqualified.name, ContenderDto::disqualified, "ROLE_CONTENDER", AttributeConstraintType.IMMUTABLE)
     }
 
     @Transactional

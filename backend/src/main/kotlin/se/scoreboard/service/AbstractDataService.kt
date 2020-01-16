@@ -36,13 +36,14 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     private data class AttributeConstraint<DtoType>(
             val propertyName: String,
             val getter: (DtoType) -> Any?,
+            val role: String?,
             val type: AttributeConstraintType)
 
     private var constraints: MutableList<AttributeConstraint<DtoType>> = mutableListOf()
 
-    fun addConstraints(propertyName: String, getter: (DtoType) -> Any?, vararg types: AttributeConstraintType) {
+    fun addConstraints(propertyName: String, getter: (DtoType) -> Any?, role: String?, vararg types: AttributeConstraintType) {
         for (type in types) {
-            constraints.add(AttributeConstraint(propertyName, getter, type))
+            constraints.add(AttributeConstraint(propertyName, getter, role, type))
         }
     }
 
@@ -134,11 +135,18 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     private fun checkConstraints(old: DtoType?, new : DtoType) {
+        val principal = getUserPrincipal()?.authorities
+
         constraints.forEach {
             val propertyName = it.propertyName
             val getter = it.getter
             val oldValue: Any? = old?.let { getter(it) }
             val newValue: Any? = getter(new)
+            val role: String? = it.role
+
+            if (role != null && principal?.none { it.authority == role } ?: false) {
+                return
+            }
 
             when (it.type) {
                 AttributeConstraintType.IMMUTABLE ->

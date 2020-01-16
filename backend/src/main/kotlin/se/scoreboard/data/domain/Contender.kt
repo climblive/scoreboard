@@ -33,5 +33,8 @@ open class Contender (
     @Column(name = "entered", length = 26)
     open var entered: OffsetDateTime? = null,
 
+    @Column(name = "disqualified")
+    open var disqualified: Boolean = false,
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contender")
     open var ticks: MutableSet<Tick> = HashSet(0)) : Serializable, AbstractEntity<Int>

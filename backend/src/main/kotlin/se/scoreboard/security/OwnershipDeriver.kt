@@ -11,6 +11,8 @@ class OwnershipDeriver @Autowired constructor(
         val contenderRepository: ContenderRepository,
         val contestRepository: ContestRepository,
         val problemRepository: ProblemRepository,
+        val raffleRepository: RaffleRepository,
+        val raffleWinnerRepository: RaffleWinnerRepository,
         val tickRepository: TickRepository,
         val userRepository: UserRepository,
         val colorRepository: ColorRepository,
@@ -76,6 +78,8 @@ class OwnershipDeriver @Autowired constructor(
             "Contender" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ContenderDto).contestId }), deriveOrganizerIdentifiers("CompClass", dtos.mapNotNull { (it as ContenderDto).compClassId }))
             "Contest" -> flattenNullableLists(dtos.mapNotNull { (it as ContestDto).organizerId }, deriveOrganizerIdentifiers("Location", dtos.mapNotNull { (it as ContestDto).locationId }), deriveOrganizerIdentifiers("Series", dtos.mapNotNull { (it as ContestDto).seriesId }))
             "Problem" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as ProblemDto).contestId }))
+            "Raffle" -> flattenNullableLists(deriveOrganizerIdentifiers("Contest", dtos.mapNotNull { (it as RaffleDto).contestId }))
+            "RaffleWinner" -> flattenNullableLists(deriveOrganizerIdentifiers("Raffle", dtos.mapNotNull { (it as RaffleWinnerDto).raffleId }), deriveOrganizerIdentifiers("Contender", dtos.mapNotNull { (it as RaffleWinnerDto).contenderId }))
             "Tick" -> flattenNullableLists(deriveOrganizerIdentifiers("Problem", dtos.mapNotNull { (it as TickDto).problemId }), deriveOrganizerIdentifiers("Contender", dtos.mapNotNull { (it as TickDto).contenderId }))
             "Color" -> dtos.mapNotNull { (it as ColorDto).organizerId }
             "Location" -> dtos.mapNotNull { (it as LocationDto).organizerId }
@@ -90,6 +94,8 @@ class OwnershipDeriver @Autowired constructor(
             "Contender" -> contenderRepository
             "Contest" -> contestRepository
             "Problem" -> problemRepository
+            "Raffle" -> raffleRepository
+            "RaffleWinner" -> raffleWinnerRepository
             "Tick" -> tickRepository
             "User" -> userRepository
             "Color" -> colorRepository

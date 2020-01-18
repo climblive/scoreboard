@@ -45,8 +45,8 @@ class ContenderService @Autowired constructor(
         entity.compClass = if (dto.compClassId != null) compClassService.fetchEntity(dto.compClassId!!) else null
     }
 
-    override fun onChange(old: Contender, new: Contender) {
-        if (new.name != null && new.compClass != null && old.entered == null) {
+    override fun onChange(old: Contender?, new: Contender) {
+        if (new.name != null && new.compClass != null && old?.entered == null) {
             new.entered = OffsetDateTime.now()
         }
     }

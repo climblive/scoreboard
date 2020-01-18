@@ -45,7 +45,7 @@ class RaffleController @Autowired constructor(
     fun drawWinner(@PathVariable("id") id: Int) : RaffleWinnerDto {
         val raffle = raffleService.fetchEntity(id)
         val winners = raffle.winners.map { winner -> winner.contender?.id }
-        val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> !(contender.id in winners) }
+        val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.entered != null && !(contender.id in winners) }
 
         if (contendersInTheDraw != null && contendersInTheDraw.isNotEmpty()) {
             var winner: RaffleWinnerDto = RaffleWinnerDto(null, id, contendersInTheDraw.random().id!!, OffsetDateTime.now())

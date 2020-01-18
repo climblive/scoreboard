@@ -93,6 +93,8 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
             throw WebException(HttpStatus.CONFLICT, null)
         }
 
+        onChange(null, entity)
+
         entity = entityRepository.save(entity)
         return entityMapper.convertToDto(entity)
     }
@@ -170,6 +172,6 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     protected open fun verify(entity: EntityType) : Boolean = true
 
-    protected open fun onChange(old: EntityType, new: EntityType) {
+    protected open fun onChange(old: EntityType?, new: EntityType) {
     }
 }

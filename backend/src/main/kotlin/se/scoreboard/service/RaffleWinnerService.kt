@@ -12,11 +12,18 @@ import se.scoreboard.mapper.AbstractMapper
 @Service
 class RaffleWinnerService @Autowired constructor(
     private val raffleWinnerRepository: RaffleWinnerRepository,
-    override var entityMapper: AbstractMapper<RaffleWinner, RaffleWinnerDto>) : AbstractDataService<RaffleWinner, RaffleWinnerDto, Int>(
+    override var entityMapper: AbstractMapper<RaffleWinner, RaffleWinnerDto>,
+    val broadcastService: BroadcastService) : AbstractDataService<RaffleWinner, RaffleWinnerDto, Int>(
         raffleWinnerRepository) {
 
     override fun handleNested(entity: RaffleWinner, dto: RaffleWinnerDto) {
         entity.raffle = entityManager.getReference(Raffle::class.java, dto.raffleId)
         entity.contender = entityManager.getReference(Contender::class.java, dto.contenderId)
+    }
+
+    override fun onChange(old: RaffleWinner?, new: RaffleWinner) {
+        if (old == null) {
+            broadcastService.broadcast(new)
+        }
     }
 }

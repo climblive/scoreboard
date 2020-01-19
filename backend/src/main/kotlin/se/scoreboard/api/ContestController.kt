@@ -15,11 +15,9 @@ import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.*
+import se.scoreboard.dto.scoreboard.*
 import se.scoreboard.exception.WebException
-import se.scoreboard.mapper.CompClassMapper
-import se.scoreboard.mapper.ContenderMapper
-import se.scoreboard.mapper.ProblemMapper
-import se.scoreboard.mapper.TickMapper
+import se.scoreboard.mapper.*
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
 import java.time.OffsetDateTime
@@ -36,7 +34,8 @@ class ContestController @Autowired constructor(
         private var problemMapper: ProblemMapper,
         private var contenderMapper: ContenderMapper,
         private var compClassMapper: CompClassMapper,
-        private var tickMapper: TickMapper) {
+        private var tickMapper: TickMapper,
+        private var raffleMapper: RaffleMapper) {
 
     @GetMapping("/contest")
     @PostAuthorize("hasPermission(returnObject, 'read')")
@@ -130,10 +129,20 @@ class ContestController @Autowired constructor(
 
     @GetMapping("/contest/{id}/scoreboard")
     @Transactional
-    fun getScoreboard(@PathVariable("id") id: Int) : List<ScoreboardListDto> {
+    fun getScoreboard(@PathVariable("id") id: Int) : ScoreboardDto {
         val contest = contestService.fetchEntity(id)
         val contenders = contest.contenders
-        return contest.compClasses.sortedBy { it.id }.map{compClass -> ScoreboardListDto(compClassMapper.convertToDto(compClass), getContenderList(contenders.filter{it.compClass == compClass}))}
+        val raffles: List<RaffleWinnerListDto> = contest.raffles.map { raffle ->
+            val winners = raffle.winners
+                    .map { winner -> RaffleWinnerPushItemDto(raffle.id!!, winner.contender?.id!!, winner.contender?.name!!, winner.timestamp!!) }
+                    .sortedBy { winner -> winner.timestamp }
+            RaffleWinnerListDto(raffleMapper.convertToDto(raffle), winners)
+        }
+        val scoreboard = ScoreboardDto(
+                id,
+                raffles,
+                contest.compClasses.sortedBy { it.id }.map { compClass -> ScoreboardListDto(compClassMapper.convertToDto(compClass), getContenderList(contenders.filter { it.compClass == compClass })) })
+        return scoreboard
     }
 
     @PutMapping("/contest/{id}/createContenders")

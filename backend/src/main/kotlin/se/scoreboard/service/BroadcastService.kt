@@ -8,9 +8,9 @@ import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.RaffleWinner
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
+import se.scoreboard.dto.scoreboard.RaffleWinnerPushItemDto
 import se.scoreboard.dto.ScoreboardListItemDto
-import se.scoreboard.dto.ScoreboardPushItemDto
-import java.time.OffsetDateTime
+import se.scoreboard.dto.scoreboard.ScoreboardPushItemDto
 
 @Service
 class BroadcastService @Autowired constructor(private val simpMessagingTemplate : SimpMessagingTemplate) {
@@ -30,9 +30,8 @@ class BroadcastService @Autowired constructor(private val simpMessagingTemplate 
     }
 
     fun broadcast(winner: RaffleWinner) {
-        data class RaffleListItemDto (val contenderId: Int, val contenderName : String, val timestamp: OffsetDateTime)
-
-        val item = RaffleListItemDto(winner.contender?.id!!, winner.contender?.name!!, winner.timestamp!!)
-        simpMessagingTemplate.convertAndSend("/topic/raffle/" + winner.raffle?.id!!, item)
+        val raffleId = winner.raffle?.id!!
+        val item = RaffleWinnerPushItemDto(raffleId, winner.contender?.id!!, winner.contender?.name!!, winner.timestamp!!)
+        simpMessagingTemplate.convertAndSend("/topic/raffle/" + raffleId, item)
     }
 }

@@ -18,7 +18,7 @@ open class RaffleWinner (
     @Access(AccessType.PROPERTY)
     open var raffle: Raffle? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contender_id", nullable = false)
     @Access(AccessType.PROPERTY)
     open var contender: Contender? = null,

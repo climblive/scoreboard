@@ -50,4 +50,7 @@ open class Contest (
     open var contenders: MutableSet<Contender> = HashSet(0),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
-    open var compClasses: MutableSet<CompClass> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var compClasses: MutableSet<CompClass> = HashSet(0),
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
+    open var raffles: MutableSet<Raffle> = HashSet(0)) : Serializable, AbstractEntity<Int>

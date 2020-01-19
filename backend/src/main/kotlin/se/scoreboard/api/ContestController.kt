@@ -13,6 +13,7 @@ import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.ContenderRepository
+import se.scoreboard.data.repo.RaffleRepository
 import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.*
 import se.scoreboard.dto.scoreboard.*
@@ -31,6 +32,7 @@ class ContestController @Autowired constructor(
         private val contenderService: ContenderService,
         private val tickRepository: TickRepository,
         private val contenderRepository: ContenderRepository,
+        private val raffleRepository: RaffleRepository,
         private var problemMapper: ProblemMapper,
         private var contenderMapper: ContenderMapper,
         private var compClassMapper: CompClassMapper,
@@ -72,6 +74,12 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContestTicks(@PathVariable("id") id: Int) : List<TickDto> =
             tickRepository.findAllByContestId(id).map { tickMapper.convertToDto(it) }
+
+    @GetMapping("/contest/{id}/raffle")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @Transactional
+    fun getContestRaffles(@PathVariable("id") id: Int) : List<RaffleDto> =
+            contestService.fetchEntity(id).raffles.map { raffleMapper.convertToDto(it) }
 
     @PostMapping("/contest")
     @PreAuthorize("hasPermission(#contest, 'create')")

@@ -3,7 +3,15 @@ package se.scoreboard.data.domain.extension
 import se.scoreboard.data.domain.Contender
 
 fun Contender.getPoints(): List<Int> {
-    return ticks.map { tick -> tick.problem?.points }.filterNotNull()
+    return ticks.map { tick ->
+        tick.problem?.let {
+            var points = it.points
+            if (tick.isFlash) {
+                points += it.flashBonus ?: 0
+            }
+            points
+        }
+    }.filterNotNull()
 }
 
 fun Contender.getTotalScore(): Int {

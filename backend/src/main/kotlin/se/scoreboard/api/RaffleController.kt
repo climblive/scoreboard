@@ -3,6 +3,7 @@ package se.scoreboard.api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -42,15 +43,14 @@ class RaffleController @Autowired constructor(
     @PostMapping("/raffle/{id}/winner")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun drawWinner(@PathVariable("id") id: Int) : RaffleWinnerDto {
+    fun drawWinner(@PathVariable("id") id: Int) : ResponseEntity<RaffleWinnerDto> {
         val raffle = raffleService.fetchEntity(id)
         val winners = raffle.winners.map { winner -> winner.contender?.id }
         val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.entered != null && !(contender.id in winners) }
 
         if (contendersInTheDraw != null && contendersInTheDraw.isNotEmpty()) {
             var winner: RaffleWinnerDto = RaffleWinnerDto(null, id, contendersInTheDraw.random().id!!, OffsetDateTime.now())
-            winner = raffleWinnerService.create(winner)
-            return winner
+            return raffleWinnerService.create(winner)
         } else {
             throw WebException(HttpStatus.NOT_FOUND, "All winners have been drawn")
         }
@@ -59,7 +59,7 @@ class RaffleController @Autowired constructor(
     @DeleteMapping("/raffle/{id}/winner/{raffleWinnerId}")
     @PreAuthorize("hasPermission(#id, 'RaffleDto', 'read') && hasPermission(#raffleWinnerId, 'RaffleWinnerDto', 'delete')")
     @Transactional
-    fun deleteWinner(@PathVariable("id") id: Int, @PathVariable("raffleWinnerId") raffleWinnerId: Int) : RaffleWinnerDto {
+    fun deleteWinner(@PathVariable("id") id: Int, @PathVariable("raffleWinnerId") raffleWinnerId: Int) : ResponseEntity<RaffleWinnerDto> {
         raffleService.fetchEntity(id)
         return raffleWinnerService.delete(raffleWinnerId)
     }

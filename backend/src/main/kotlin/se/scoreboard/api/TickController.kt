@@ -3,6 +3,7 @@ package se.scoreboard.api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -37,7 +38,7 @@ class TickController @Autowired constructor(
     @PostMapping("/tick")
     @PreAuthorize("hasPermission(#tick, 'create')")
     @Transactional
-    fun createTick(@RequestBody tick : TickDto): TickDto {
+    fun createTick(@RequestBody tick : TickDto): ResponseEntity<TickDto> {
         val contender = contenderService.fetchEntity(tick.contenderId!!)
         checkTimeAllowed(contender)
 
@@ -51,7 +52,7 @@ class TickController @Autowired constructor(
     @Transactional
     fun updateTick(
             @PathVariable("id") id: Int,
-            @RequestBody tick : TickDto): TickDto {
+            @RequestBody tick : TickDto): ResponseEntity<TickDto> {
         val contender = contenderService.fetchEntity(tick.contenderId!!)
         checkTimeAllowed(contender)
 

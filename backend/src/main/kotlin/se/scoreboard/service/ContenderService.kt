@@ -2,6 +2,7 @@ package se.scoreboard.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.createRegistrationCode
 import se.scoreboard.data.domain.Contender
@@ -51,15 +52,16 @@ class ContenderService @Autowired constructor(
         }
     }
 
-    override fun create(contender: ContenderDto): ContenderDto {
+    override fun create(contender: ContenderDto): ResponseEntity<ContenderDto> {
         checkMaximumContenderLimit(contender.contestId!!, 1)
         return super.create(contender)
     }
 
-    override fun update(id: Int, contender: ContenderDto): ContenderDto {
-        val updated = super.update(id, contender)
+    override fun update(id: Int, contender: ContenderDto): ResponseEntity<ContenderDto> {
+        val response = super.update(id, contender)
+        val updated = response.body
         checkMaximumContenderLimit(updated.contestId!!, 0)
-        return updated
+        return response
     }
 
     fun createContenders(contest: Contest, contenderCount: Int) :Array<ContenderDto> {

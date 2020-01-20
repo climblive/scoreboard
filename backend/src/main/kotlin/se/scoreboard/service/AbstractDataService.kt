@@ -48,8 +48,8 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun findAll() : List<DtoType> {
-        return search(PageRequest.of(0, 1000)).body
+    open fun findAll() : ResponseEntity<List<DtoType>> {
+        return search(PageRequest.of(0, 1000))
     }
 
     @Transactional
@@ -78,11 +78,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun findById(id: ID) : DtoType =
-        entityMapper.convertToDto(fetchEntity(id))
+    open fun findById(id: ID) : ResponseEntity<DtoType> =
+        ResponseEntity.ok(entityMapper.convertToDto(fetchEntity(id)))
 
     @Transactional
-    open fun create(dto : DtoType) : DtoType {
+    open fun create(dto : DtoType) : ResponseEntity<DtoType> {
         var entity: EntityType = entityMapper.convertToEntity(dto)
         entity.id = null
         handleNested(entity, dto)
@@ -96,11 +96,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         onChange(null, entity)
 
         entity = entityRepository.save(entity)
-        return entityMapper.convertToDto(entity)
+        return ResponseEntity(entityMapper.convertToDto(entity), HttpStatus.CREATED)
     }
 
     @Transactional
-    open fun update(id: ID, dto : DtoType) : DtoType {
+    open fun update(id: ID, dto : DtoType) : ResponseEntity<DtoType> {
         var entity = entityMapper.convertToEntity(dto)
         entity.id = id
         handleNested(entity, dto)
@@ -116,14 +116,20 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         onChange(old, entity)
 
         entity = entityRepository.save(entity)
-        return entityMapper.convertToDto(entity)
+        return ResponseEntity.ok(entityMapper.convertToDto(entity))
     }
 
     @Transactional
-    open fun delete(id: ID) : DtoType {
+    open fun delete(id: ID) : ResponseEntity<DtoType> {
         var entity = fetchEntity(id)
+
+        beforeDelete(entity)
+
         entityRepository.delete(entity)
-        return entityMapper.convertToDto(entity)
+
+        afterDelete(entity)
+
+        return ResponseEntity.noContent().build()
     }
 
     @Transactional
@@ -173,5 +179,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     protected open fun verify(entity: EntityType) : Boolean = true
 
     protected open fun onChange(old: EntityType?, new: EntityType) {
+    }
+
+    protected open fun beforeDelete(old: EntityType) {
+    }
+
+    protected open fun afterDelete(old: EntityType) {
     }
 }

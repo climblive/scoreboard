@@ -3,6 +3,7 @@ package se.scoreboard.service
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Color
 import se.scoreboard.data.domain.Contest
@@ -31,13 +32,13 @@ class ProblemService @Autowired constructor(
     }
 
     @Transactional
-    override fun create(problem: ProblemDto): ProblemDto {
+    override fun create(problem: ProblemDto): ResponseEntity<ProblemDto> {
         handleRenumbering(problem.contestId, ProblemAdjustmentAction.MAKE_ROOM, problem.number)
         return super.create(problem)
     }
 
     @Transactional
-    override fun update(id: Int, problem: ProblemDto): ProblemDto {
+    override fun update(id: Int, problem: ProblemDto): ResponseEntity<ProblemDto> {
         val old = fetchEntity(id)
         val oldNumber = old.number
         val requestedProblemNumber = problem.number
@@ -57,14 +58,6 @@ class ProblemService @Autowired constructor(
         action?.let { handleRenumbering(problem.contestId, it, requestedProblemNumber) }
 
         return super.update(id, problem)
-    }
-
-    @Transactional
-    override fun delete(id: Int): ProblemDto {
-        val deleted = super.delete(id)
-        entityManager.flush()
-        handleRenumbering(deleted.contestId, ProblemAdjustmentAction.CLOSE_GAP, deleted.number)
-        return deleted
     }
 
     private fun handleRenumbering(contestId: Int?, action: ProblemAdjustmentAction, affectedProblemNumber: Int) {
@@ -100,5 +93,10 @@ class ProblemService @Autowired constructor(
     override fun handleNested(entity: Problem, dto: ProblemDto) {
         entity.color = entityManager.getReference(Color::class.java, dto.colorId)
         entity.contest = entityManager.getReference(Contest::class.java, dto.contestId)
+    }
+
+    override fun afterDelete(old: Problem) {
+        entityManager.flush()
+        handleRenumbering(old.contest?.id, ProblemAdjustmentAction.CLOSE_GAP, old.number)
     }
 }

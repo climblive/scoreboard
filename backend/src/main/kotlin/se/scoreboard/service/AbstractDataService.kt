@@ -85,7 +85,6 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     open fun create(dto : DtoType) : ResponseEntity<DtoType> {
         var entity: EntityType = entityMapper.convertToEntity(dto)
         entity.id = null
-        handleNested(entity, dto)
 
         checkConstraints(null, dto)
 
@@ -103,7 +102,6 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     open fun update(id: ID, dto : DtoType) : ResponseEntity<DtoType> {
         var entity = entityMapper.convertToEntity(dto)
         entity.id = id
-        handleNested(entity, dto)
 
         val old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
 
@@ -171,9 +169,6 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
                     }
             }
         }
-    }
-
-    protected open fun handleNested(entity: EntityType, dto: DtoType) {
     }
 
     protected open fun verify(entity: EntityType) : Boolean = true

@@ -1,14 +1,12 @@
 package se.scoreboard.mapper
 
-import org.mapstruct.InheritInverseConfiguration
-import org.mapstruct.Mapper
-import org.mapstruct.Mapping
-import org.mapstruct.Mappings
+import org.mapstruct.*
+import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.Series
 import se.scoreboard.dto.SeriesDto
 
 @Mapper(componentModel = "spring")
-abstract class SeriesMapper : AbstractMapper<Series, SeriesDto> {
+abstract class SeriesMapper : AbstractMapper<Series, SeriesDto>() {
     @Mappings(
         Mapping(source = "organizer.id", target = "organizerId")
     )
@@ -19,4 +17,9 @@ abstract class SeriesMapper : AbstractMapper<Series, SeriesDto> {
             Mapping(target = "contests", ignore = true)
     )
     abstract override fun convertToEntity(source: SeriesDto): Series
+
+    @AfterMapping
+    fun afterMapping(source: SeriesDto, @MappingTarget target: Series) {
+        target.organizer = entityManager.getReference(Organizer::class.java, source.organizerId)
+    }
 }

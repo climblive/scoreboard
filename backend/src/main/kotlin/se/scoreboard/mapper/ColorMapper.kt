@@ -1,14 +1,12 @@
 package se.scoreboard.mapper
 
-import org.mapstruct.InheritInverseConfiguration
-import org.mapstruct.Mapper
-import org.mapstruct.Mapping
-import org.mapstruct.Mappings
+import org.mapstruct.*
 import se.scoreboard.data.domain.Color
+import se.scoreboard.data.domain.Organizer
 import se.scoreboard.dto.ColorDto
 
 @Mapper(componentModel = "spring")
-abstract class ColorMapper : AbstractMapper<Color, ColorDto> {
+abstract class ColorMapper : AbstractMapper<Color, ColorDto>() {
     @Mappings(
             Mapping(source = "organizer.id", target = "organizerId")
     )
@@ -19,4 +17,9 @@ abstract class ColorMapper : AbstractMapper<Color, ColorDto> {
             Mapping(target = "problems", ignore = true)
     )
     abstract override fun convertToEntity(source: ColorDto): Color
+
+    @AfterMapping
+    fun afterMapping(source: ColorDto, @MappingTarget target: Color) {
+        target.organizer = entityManager.getReference(Organizer::class.java, source.organizerId)
+    }
 }

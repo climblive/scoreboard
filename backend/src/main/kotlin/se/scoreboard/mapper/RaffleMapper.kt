@@ -1,14 +1,12 @@
 package se.scoreboard.mapper
 
-import org.mapstruct.InheritInverseConfiguration
-import org.mapstruct.Mapper
-import org.mapstruct.Mapping
-import org.mapstruct.Mappings
+import org.mapstruct.*
+import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.Raffle
 import se.scoreboard.dto.RaffleDto
 
 @Mapper(componentModel = "spring")
-abstract class RaffleMapper : AbstractMapper<Raffle, RaffleDto> {
+abstract class RaffleMapper : AbstractMapper<Raffle, RaffleDto>() {
     @Mappings(
         Mapping(source = "contest.id", target = "contestId")
     )
@@ -19,4 +17,9 @@ abstract class RaffleMapper : AbstractMapper<Raffle, RaffleDto> {
             Mapping(target = "winners", ignore = true)
     )
     abstract override fun convertToEntity(source: RaffleDto): Raffle
+
+    @AfterMapping
+    fun afterMapping(source: RaffleDto, @MappingTarget target: Raffle) {
+        target.contest = entityManager.getReference(Contest::class.java, source.contestId)
+    }
 }

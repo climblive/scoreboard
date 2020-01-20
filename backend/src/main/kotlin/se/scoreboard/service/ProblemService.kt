@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import se.scoreboard.data.domain.Color
-import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.Problem
 import se.scoreboard.data.repo.ContestRepository
 import se.scoreboard.data.repo.ProblemRepository
@@ -88,11 +86,6 @@ class ProblemService @Autowired constructor(
             it.second.number = it.first
             entityManager.flush()
         }
-    }
-
-    override fun handleNested(entity: Problem, dto: ProblemDto) {
-        entity.color = entityManager.getReference(Color::class.java, dto.colorId)
-        entity.contest = entityManager.getReference(Contest::class.java, dto.contestId)
     }
 
     override fun afterDelete(old: Problem) {

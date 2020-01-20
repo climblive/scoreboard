@@ -3,10 +3,13 @@ package se.scoreboard.mapper
 import org.mapstruct.*
 import org.springframework.beans.factory.annotation.Value
 import se.scoreboard.data.domain.Contest
+import se.scoreboard.data.domain.Location
+import se.scoreboard.data.domain.Organizer
+import se.scoreboard.data.domain.Series
 import se.scoreboard.dto.ContestDto
 
 @Mapper(componentModel = "spring")
-abstract class ContestMapper : AbstractMapper<Contest, ContestDto> {
+abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
     @Value("\${site.url}")
     lateinit var siteUrl: String
 
@@ -29,5 +32,12 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto> {
     @AfterMapping
     fun afterMapping(@MappingTarget target: ContestDto) {
         target.scoreboardUrl = "${siteUrl}/scoreboard/${target.id}"
+    }
+
+    @AfterMapping
+    fun afterMapping(source: ContestDto, @MappingTarget target: Contest) {
+        target.location = source.locationId?.let { entityManager.getReference(Location::class.java, it) }
+        target.organizer = entityManager.getReference(Organizer::class.java, source.organizerId)
+        target.series = source.seriesId?.let { entityManager.getReference(Series::class.java, it) }
     }
 }

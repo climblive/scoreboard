@@ -7,9 +7,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Contest
-import se.scoreboard.data.domain.Location
-import se.scoreboard.data.domain.Organizer
-import se.scoreboard.data.domain.Series
 import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.ContestRepository
 import se.scoreboard.dto.ContestDto
@@ -24,12 +21,6 @@ class ContestService @Autowired constructor(
         contestRepository) {
 
     var logger = LoggerFactory.getLogger(ContestService::class.java)
-
-    override fun handleNested(entity: Contest, dto: ContestDto) {
-        entity.location = dto.locationId?.let { entityManager.getReference(Location::class.java, it) }
-        entity.organizer = entityManager.getReference(Organizer::class.java, dto.organizerId)
-        entity.series = dto.seriesId?.let { entityManager.getReference(Series::class.java, it) }
-    }
 
     fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {
         val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }

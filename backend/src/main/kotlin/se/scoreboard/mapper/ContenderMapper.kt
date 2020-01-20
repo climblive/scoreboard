@@ -1,14 +1,13 @@
 package se.scoreboard.mapper
 
-import org.mapstruct.InheritInverseConfiguration
-import org.mapstruct.Mapper
-import org.mapstruct.Mapping
-import org.mapstruct.Mappings
+import org.mapstruct.*
+import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.Contender
+import se.scoreboard.data.domain.Contest
 import se.scoreboard.dto.ContenderDto
 
 @Mapper(componentModel = "spring")
-abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto> {
+abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
     @Mappings(
         Mapping(source = "contest.id", target = "contestId"),
         Mapping(source = "compClass.id", target = "compClassId")
@@ -20,4 +19,10 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto> {
             Mapping(target = "ticks", ignore = true)
     )
     abstract override fun convertToEntity(source: ContenderDto): Contender
+
+    @AfterMapping
+    fun afterMapping(source: ContenderDto, @MappingTarget target: Contender) {
+        target.contest = entityManager.getReference(Contest::class.java, source.contestId)
+        target.compClass = source.compClassId?.let { entityManager.getReference(CompClass::class.java, it) }
+    }
 }

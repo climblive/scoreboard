@@ -8,7 +8,7 @@ import se.scoreboard.data.domain.Organizer
 import se.scoreboard.dto.OrganizerDto
 
 @Mapper(componentModel = "spring")
-abstract class OrganizerMapper : AbstractMapper<Organizer, OrganizerDto> {
+abstract class OrganizerMapper : AbstractMapper<Organizer, OrganizerDto>() {
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
             Mapping(target = "users", ignore = true),

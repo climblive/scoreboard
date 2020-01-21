@@ -10,6 +10,7 @@ import {Color} from "../model/color";
 import {Series} from "../model/series";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
+import {Raffle} from "../model/raffle";
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -54,6 +55,7 @@ export function loadContest(contestId: number): any {
          reloadCompClasses(dispatch, contestId);
          reloadContendersForContest(dispatch, contestId);
          reloadTicks(dispatch, contestId);
+         reloadRaffles(dispatch, contestId);
       }).catch(error => {
          dispatch(actions.setErrorMessage(error));
       });
@@ -71,6 +73,7 @@ export function saveContest(onSuccess:(contest:Contest) => void): any {
             dispatch(actions.receiveTicks([]));
             dispatch(actions.receiveCompClasses([]));
             dispatch(actions.receiveContenders([]));
+            dispatch(actions.receiveRaffles([]));
          }
          onSuccess(contest);
       }).catch(error => {
@@ -403,3 +406,47 @@ let reloadTicks = (dispatch: Dispatch<any>, contestId: number) => {
       dispatch(actions.setErrorMessage(error));
    });
 };
+
+let reloadRaffles = (dispatch: Dispatch<any>, contestId: number) => {
+   Api.getRaffles(contestId).then(raffles => {
+      dispatch(actions.receiveRaffles(raffles));
+   }).catch(error => {
+      dispatch(actions.setErrorMessage(error));
+   });
+};
+
+export function createRaffle():any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest!.id;
+      let newRaffle: Raffle = {
+         id: -1,
+         contestId: contestId
+      };
+      Api.saveRaffle(newRaffle).then(() => {
+         reloadRaffles(dispatch, contestId);
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+   }
+}
+
+export function drawWinner(raffle:Raffle):any {
+   return (dispatch: Dispatch<any>) => {
+      Api.drawWinner(raffle).then(() => {
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+   }
+}
+
+export function deleteRaffle(raffle:Raffle):any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      let contestId = getState().contest!.id;
+      Api.deleteRaffle(raffle).then(() => {
+         reloadRaffles(dispatch, contestId);
+      }).catch(error => {
+         dispatch(actions.setErrorMessage(error));
+      });
+   }
+}
+

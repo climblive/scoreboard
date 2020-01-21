@@ -9,6 +9,7 @@ import {Series} from "./series";
 import {User} from "./user";
 import {Tick} from "./tick";
 import {SortBy} from "../constants/sortBy";
+import {Raffle} from "./raffle";
 
 export interface StoreState {
    title: string,
@@ -30,6 +31,8 @@ export interface StoreState {
    contenders?: ContenderData[];
    contenderSortBy: SortBy;
    contenderFilterCompClassId?:number;
+
+   raffles?: Raffle[],
 
    colors?: Color[],
    editColor?: Color;

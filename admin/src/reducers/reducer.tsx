@@ -298,6 +298,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.setContenderSortBy):
          return { ...state, contenderSortBy: action.payload };
 
+      case getType(scoreboardActions.receiveRaffles):
+         return { ...state, raffles: action.payload };
+
       default:
          console.log("ACTION", action);
          return state;

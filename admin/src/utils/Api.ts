@@ -8,6 +8,7 @@ import {CompLocation} from "../model/compLocation";
 import {Series} from "../model/series";
 import {User} from "../model/user";
 import {Tick} from "../model/tick";
+import {Raffle} from "../model/raffle";
 
 export class Api {
 
@@ -148,6 +149,26 @@ export class Api {
 
    static getContenders(contestId: number): Promise<ContenderData[]> {
       return this.get("contest/" + contestId + "/contender");
+   }
+
+   static getRaffles(contestId: number): Promise<Raffle[]> {
+      return this.get("contest/" + contestId + "/raffle");
+   }
+
+   static saveRaffle(raffle:Raffle): Promise<Raffle> {
+      if(raffle.id == -1) {
+         return this.post("raffle", raffle);
+      } else {
+         return this.put("raffle/" + raffle.id, raffle);
+      }
+   }
+
+   static drawWinner(raffle:Raffle): Promise<Raffle> {
+      return this.post("raffle/" + raffle.id + "/winner", {});
+   }
+
+   static deleteRaffle(raffle:Raffle): Promise<any> {
+      return this.delete("raffle/" + raffle.id);
    }
 
    static getColors(): Promise<Color[]> {

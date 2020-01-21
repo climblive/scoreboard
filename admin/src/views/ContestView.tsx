@@ -26,6 +26,8 @@ import {Organizer} from "../model/organizer";
 import {Redirect} from "react-router";
 import {CompLocation} from "../model/compLocation";
 import {SortBy} from "../constants/sortBy";
+import RafflesComp from "../components/RafflesComp";
+import {Raffle} from "../model/raffle";
 
 interface Props {
    match: {
@@ -51,6 +53,7 @@ interface Props {
    editProblem?: Problem
    editCompClass?: CompClass
    contestIssues: string[]
+   raffles?:Raffle[]
 
    loadContest?: (contestId: number) => void,
    setNewContest?: () => void,
@@ -81,6 +84,10 @@ interface Props {
    setContenderSortBy?: (contenderSortBy:SortBy) => void
    exportResults?:() => void,
    resetContenders?:() => void,
+
+   createRaffle?:() => void,
+   drawWinner?:(raffle:Raffle) => void,
+   deleteRaffle?:(raffle:Raffle) => void
 }
 
 type State = {
@@ -182,6 +189,14 @@ class ContestView extends React.Component<Props, State> {
                                 exportResults={this.props.exportResults}
                                 resetContenders={this.props.resetContenders}
          />);
+      } else if(selectedTab == 4) {
+         tab = (<RafflesComp key="raffles"
+                             raffles={this.props.raffles!}
+
+                             createRaffle={this.props.createRaffle}
+                             drawWinner={this.props.drawWinner}
+                             deleteRaffle={this.props.deleteRaffle}
+         />);
       }
       return (
          <div style={{margin:10, display:"flex", flexDirection: "column", flexGrow:1}}>
@@ -190,6 +205,7 @@ class ContestView extends React.Component<Props, State> {
                {!isNew && <Tab label="Classes" />}
                {!isNew && <Tab label="Problems" />}
                {!isNew && <Tab label="Contenders" />}
+               {!isNew && <Tab label="Raffles" />}
             </Tabs>
             {tab}
          </div>
@@ -217,6 +233,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
       colorMap: getColorMap(state),
       editProblem: state.editProblem,
       editCompClass: state.editCompClass,
+      raffles: state.raffles,
       match: props.match
    };
 }
@@ -252,6 +269,10 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       createPdf: () => dispatch(asyncActions.createPdf()),
       createPdfFromTemplate: (file:Blob) => dispatch(asyncActions.createPdfFromTemplate(file)),
       resetContenders: () => dispatch(asyncActions.resetContenders()),
+
+      createRaffle: () => dispatch(asyncActions.createRaffle()),
+      drawWinner: (raffle:Raffle) => dispatch(asyncActions.drawWinner(raffle)),
+      deleteRaffle: (raffle:Raffle) => dispatch(asyncActions.deleteRaffle(raffle))
    };
 }
 

@@ -9,6 +9,7 @@ import {Series} from "../model/series";
 import {User} from "../model/user";
 import {Tick} from "../model/tick";
 import {Raffle} from "../model/raffle";
+import {RaffleWinner} from "../model/raffleWinner";
 
 export class Api {
 
@@ -153,6 +154,10 @@ export class Api {
 
    static getRaffles(contestId: number): Promise<Raffle[]> {
       return this.get("contest/" + contestId + "/raffle");
+   }
+
+   static getRaffleWinners(raffle: Raffle): Promise<RaffleWinner[]> {
+      return this.get("raffle/" + raffle.id + "/winner");
    }
 
    static saveRaffle(raffle:Raffle): Promise<Raffle> {

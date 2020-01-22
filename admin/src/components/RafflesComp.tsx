@@ -12,9 +12,11 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import {ConfirmationDialog} from "./ConfirmationDialog";
 import {Raffle} from "../model/raffle";
+import {ContenderData} from "../model/contenderData";
 
 interface Props {
-   raffles:Raffle[],
+   raffles:Raffle[]
+   contenderMap:Map<number, ContenderData>
 
    createRaffle?: () => void
    drawWinner?: (raffle:Raffle) => void
@@ -77,6 +79,7 @@ class RafflesComp extends React.Component<Props, State> {
                      return (
                         <TableRow key={raffle.id}>
                            <TableCell component="th" scope="row">{raffle.id}</TableCell>
+                           <TableCell component="th" scope="row">{JSON.stringify(raffle)}</TableCell>
                            <TableCell className={"icon-cell"}>
                               <IconButton color="inherit" aria-label="Menu" title="Edit"
                                           onClick={() => this.props.drawWinner!(raffle)}>

@@ -301,6 +301,16 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveRaffles):
          return { ...state, raffles: action.payload };
 
+      case getType(scoreboardActions.receiveRaffleWinners):
+         const newRaffles = [...state.raffles!];
+         const index = newRaffles.findIndex(r => r.id == action.payload.raffle.id);
+         if(index != -1) {
+            const newRaffle = {...newRaffles[index]};
+            newRaffle.winners = action.payload.winners;
+            newRaffles[index] = newRaffle;
+         }
+         return { ...state, raffles: newRaffles };
+
       default:
          console.log("ACTION", action);
          return state;

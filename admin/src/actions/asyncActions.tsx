@@ -410,6 +410,11 @@ let reloadTicks = (dispatch: Dispatch<any>, contestId: number) => {
 let reloadRaffles = (dispatch: Dispatch<any>, contestId: number) => {
    Api.getRaffles(contestId).then(raffles => {
       dispatch(actions.receiveRaffles(raffles));
+      for(let raffle of raffles) {
+         Api.getRaffleWinners(raffle).then(winners => {
+            dispatch(actions.receiveRaffleWinners({raffle: raffle, winners: winners}))
+         });
+      }
    }).catch(error => {
       dispatch(actions.setErrorMessage(error));
    });
@@ -420,7 +425,8 @@ export function createRaffle():any {
       let contestId = getState().contest!.id;
       let newRaffle: Raffle = {
          id: -1,
-         contestId: contestId
+         contestId: contestId,
+         winners: undefined
       };
       Api.saveRaffle(newRaffle).then(() => {
          reloadRaffles(dispatch, contestId);

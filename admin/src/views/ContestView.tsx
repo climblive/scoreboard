@@ -192,6 +192,7 @@ class ContestView extends React.Component<Props, State> {
       } else if(selectedTab == 4) {
          tab = (<RafflesComp key="raffles"
                              raffles={this.props.raffles!}
+                             contenderMap={this.props.contenderMap}
 
                              createRaffle={this.props.createRaffle}
                              drawWinner={this.props.drawWinner}

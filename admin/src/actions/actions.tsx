@@ -12,6 +12,7 @@ import {User} from "../model/user";
 import {Tick} from "../model/tick";
 import {SortBy} from "../constants/sortBy";
 import {Raffle} from "../model/raffle";
+import {RaffleWinner} from "../model/raffleWinner";
 
 export const setErrorMessage = createStandardAction('SET_ERROR_MESSAGE')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
@@ -73,6 +74,7 @@ export const startAddProblem = createStandardAction('START_ADD_PROBLEM')<Problem
 export const updateEditProblem = createStandardAction('UPDATE_EDIT_PROBLEM')<{propName:string, value:any}>();
 
 export const receiveRaffles = createStandardAction('RECEIVE_RAFFLES')<Raffle[]>();
+export const receiveRaffleWinners = createStandardAction('RECEIVE_RAFFLE_WINNERS')<{raffle:Raffle, winners:RaffleWinner[]}>();
 
 export const receiveContenders = createStandardAction('RECEIVE_CONTENDERS')<ContenderData[]>();
 export const setContenderFilterCompClass = createStandardAction('SET_CONTENDER_FILTER_COMP_CLASS')<CompClass>();

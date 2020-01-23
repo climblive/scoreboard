@@ -50,6 +50,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             editCompClass:undefined,
             contenders: undefined,
             problems: undefined,
+            raffles: undefined,
             editProblem:undefined,
             ticks:undefined
          };
@@ -71,6 +72,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             editCompClass:undefined,
             contenders: undefined,
             problems: undefined,
+            raffles: undefined,
             editProblem:undefined,
             ticks:undefined
          };
@@ -306,10 +308,20 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          const index = newRaffles.findIndex(r => r.id == action.payload.raffle.id);
          if(index != -1) {
             const newRaffle = {...newRaffles[index]};
-            newRaffle.winners = action.payload.winners;
+            newRaffle.winners = action.payload.winners.reverse();
             newRaffles[index] = newRaffle;
          }
          return { ...state, raffles: newRaffles };
+
+      case getType(scoreboardActions.receiveRaffleWinner):
+         const newRaffles2 = [...state.raffles!];
+         const index2 = newRaffles2.findIndex(r => r.id == action.payload.raffleId);
+         if(index2 != -1) {
+            const newRaffle2 = {...newRaffles2[index2]};
+            newRaffle2.winners = [action.payload, ...newRaffle2.winners!];
+            newRaffles2[index2] = newRaffle2;
+         }
+         return { ...state, raffles: newRaffles2 };
 
       default:
          console.log("ACTION", action);

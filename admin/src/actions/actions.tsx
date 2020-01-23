@@ -75,6 +75,7 @@ export const updateEditProblem = createStandardAction('UPDATE_EDIT_PROBLEM')<{pr
 
 export const receiveRaffles = createStandardAction('RECEIVE_RAFFLES')<Raffle[]>();
 export const receiveRaffleWinners = createStandardAction('RECEIVE_RAFFLE_WINNERS')<{raffle:Raffle, winners:RaffleWinner[]}>();
+export const receiveRaffleWinner = createStandardAction('RECEIVE_RAFFLE_WINNER')<RaffleWinner>();
 
 export const receiveContenders = createStandardAction('RECEIVE_CONTENDERS')<ContenderData[]>();
 export const setContenderFilterCompClass = createStandardAction('SET_CONTENDER_FILTER_COMP_CLASS')<CompClass>();

@@ -438,7 +438,8 @@ export function createRaffle():any {
 
 export function drawWinner(raffle:Raffle):any {
    return (dispatch: Dispatch<any>) => {
-      Api.drawWinner(raffle).then(() => {
+      Api.drawWinner(raffle).then((winner) => {
+         dispatch(actions.receiveRaffleWinner(winner))
       }).catch(error => {
          dispatch(actions.setErrorMessage(error));
       });

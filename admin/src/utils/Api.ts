@@ -168,7 +168,7 @@ export class Api {
       }
    }
 
-   static drawWinner(raffle:Raffle): Promise<Raffle> {
+   static drawWinner(raffle:Raffle): Promise<RaffleWinner> {
       return this.post("raffle/" + raffle.id + "/winner", {});
    }
 

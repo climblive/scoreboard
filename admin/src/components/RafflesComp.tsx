@@ -9,7 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
-import EditIcon from '@material-ui/icons/Edit';
+import PlayIcon from '@material-ui/icons/PlayArrow';
 import {ConfirmationDialog} from "./ConfirmationDialog";
 import {Raffle} from "../model/raffle";
 import {ContenderData} from "../model/contenderData";
@@ -40,6 +40,11 @@ class RafflesComp extends React.Component<Props, State> {
    componentDidMount() {
    }
 
+   getContenderName = (contenderId:number) => {
+      let contender = this.props.contenderMap.get(contenderId);
+      return contender ? contender.name : ("Unknown contender with id " + contenderId);
+   };
+
    deleteRaffle = (raffle:Raffle) => {
       this.state.deleteRaffle = raffle;
       this.setState(this.state);
@@ -63,10 +68,8 @@ class RafflesComp extends React.Component<Props, State> {
             <Table>
                <TableHead>
                   <TableRow>
-                     <TableCell style={{minWidth:120}}>Name</TableCell>
-                     <TableCell style={{width:"100%"}}>Description</TableCell>
-                     <TableCell style={{minWidth:130}}>Start time</TableCell>
-                     <TableCell style={{minWidth:130}}>End time</TableCell>
+                     <TableCell style={{minWidth:120}}>Id</TableCell>
+                     <TableCell style={{width:"100%"}}>Winners</TableCell>
                      <TableCell className={"icon-cell"} style={{minWidth:96}}>
                         <IconButton color="inherit" aria-label="Menu" title="Create raffle" onClick={this.props.createRaffle}>
                            <AddIcon />
@@ -79,11 +82,19 @@ class RafflesComp extends React.Component<Props, State> {
                      return (
                         <TableRow key={raffle.id}>
                            <TableCell component="th" scope="row">{raffle.id}</TableCell>
-                           <TableCell component="th" scope="row">{JSON.stringify(raffle)}</TableCell>
+                           <TableCell component="th" scope="row">
+                              {
+                                 (raffle.winners! || []).map(winner => {
+                                    return(
+                                       <div className="raffleWinner" key={winner.id}>{this.getContenderName(winner.contenderId)}</div>
+                                    )
+                                 })
+                              }
+                           </TableCell>
                            <TableCell className={"icon-cell"}>
-                              <IconButton color="inherit" aria-label="Menu" title="Edit"
+                              <IconButton color="inherit" aria-label="Menu" title="Draw winner"
                                           onClick={() => this.props.drawWinner!(raffle)}>
-                                 <EditIcon/>
+                                 <PlayIcon/>
                               </IconButton>
                               <IconButton color="inherit" aria-label="Menu" title="Delete"
                                           onClick={() => this.deleteRaffle(raffle)}>

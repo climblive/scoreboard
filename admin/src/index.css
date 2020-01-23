@@ -62,3 +62,7 @@ div.DraftEditor-root {
 .editor-action:active {
     background:lightgrey;
 }
+
+.raffleWinner:first-child {
+    font-size:20px;
+}

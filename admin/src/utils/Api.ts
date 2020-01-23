@@ -16,11 +16,11 @@ export class Api {
    static oldCredentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=";
    static credentials?:string;
 
-   static readonly url = "https://clmb.live";
+   static readonly url = "https://api.clmb.live";
    //static const url = "http://localhost:8080";
 
    private static getBaseUrl(): string {
-      return Api.url + "/api/";
+      return Api.url + "/";
    }
 
    private static async handleErrors(data: Response): Promise<Response> {

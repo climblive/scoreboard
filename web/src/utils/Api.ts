@@ -11,20 +11,8 @@ export class Api {
    private static useLocalhost = false;
 
    static getLiveUrl(): any {
-      let url: string = "";
-      if (window.location.hostname === "localhost") {
-         url = Api.useLocalhost ? "ws://localhost:8080/api": "wss://api.clmb.live";
-      } else {
-         if (window.location.protocol.indexOf("https") === 0) {
-            url = "wss"
-         } else { 
-            url = "ws"
-         }
-         url += "://" + window.location.hostname
-      }
-      url += "/live/websocket";
-      return url;
-   } 
+      return (Api.useLocalhost ? "ws://localhost:8080/api": "wss://api.clmb.live") + "/live/websocket";
+   }
 
    private static getBaseUrl(): string {
       return Api.useLocalhost ? "http://localhost:8080/api/" : "https://api.clmb.live/"

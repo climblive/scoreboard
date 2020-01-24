@@ -2,6 +2,10 @@ package se.scoreboard.data.domain.extension
 
 import se.scoreboard.data.domain.Contender
 
+fun Contender.isRegistered(): Boolean {
+    return name != null && compClass != null
+}
+
 fun Contender.getPoints(): List<Int> {
     return ticks.map { tick ->
         tick.problem?.let {

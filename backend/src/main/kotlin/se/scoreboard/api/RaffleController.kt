@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import se.scoreboard.data.domain.extension.isRegistered
 import se.scoreboard.dto.RaffleDto
 import se.scoreboard.dto.RaffleWinnerDto
 import se.scoreboard.exception.WebException
@@ -46,7 +47,7 @@ class RaffleController @Autowired constructor(
     fun drawWinner(@PathVariable("id") id: Int) : ResponseEntity<RaffleWinnerDto> {
         val raffle = raffleService.fetchEntity(id)
         val winners = raffle.winners.map { winner -> winner.contender?.id }
-        val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.entered != null && !(contender.id in winners) }
+        val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.isRegistered() && !(contender.id in winners) }
 
         if (contendersInTheDraw != null && contendersInTheDraw.isNotEmpty()) {
             var winner: RaffleWinnerDto = RaffleWinnerDto(null, id, contendersInTheDraw.random().id!!, OffsetDateTime.now())

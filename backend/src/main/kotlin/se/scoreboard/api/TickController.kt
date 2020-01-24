@@ -77,7 +77,7 @@ class TickController @Autowired constructor(
     fun checkTimeAllowed(contender: Contender) {
         val compClass = contender.compClass ?: throw WebException(HttpStatus.CONFLICT, "The contender is not registered")
 
-        if (compClass.allowedToAlterTick()) {
+        if (!compClass.allowedToAlterTick()) {
             throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
         }
     }

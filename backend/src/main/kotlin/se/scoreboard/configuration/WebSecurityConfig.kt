@@ -33,7 +33,6 @@ class WebSecurityConfig @Autowired constructor(
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers(HttpMethod.PATCH, "/**").denyAll()
             .antMatchers(HttpMethod.TRACE, "/**").denyAll()
             .antMatchers("/api/user/login").permitAll()
@@ -61,5 +60,7 @@ class WebSecurityConfig @Autowired constructor(
             .anyRequest().authenticated()
             .and()
             .apply(JwtConfigurer(jwtTokenProvider))
+
+        http.cors()
     }
 }

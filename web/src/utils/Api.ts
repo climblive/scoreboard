@@ -1,19 +1,19 @@
 import { ContenderData } from '../model/contenderData';
-import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
 import {Problem} from "../model/problem";
 import {CompClass} from "../model/compClass";
 import {Tick} from "../model/tick";
 import {Color} from "../model/color";
+import {ScoreboardDescription} from "../model/scoreboardDescription";
 
 export class Api {
 
-   private static useLocalhost = true;
+   private static useLocalhost = false;
 
    static getLiveUrl(): any {
       let url: string = "";
       if (window.location.hostname === "localhost") {
-         url = Api.useLocalhost ? "ws://localhost:8080": "wss://clmb.live";
+         url = Api.useLocalhost ? "ws://localhost:8080/api": "wss://api.clmb.live";
       } else {
          if (window.location.protocol.indexOf("https") === 0) {
             url = "wss"
@@ -22,16 +22,12 @@ export class Api {
          }
          url += "://" + window.location.hostname
       }
-      url += "/api/live/websocket";
+      url += "/live/websocket";
       return url;
    } 
 
    private static getBaseUrl(): string {
-      let baseUrl = "/api/";
-      if(window.location.hostname === "localhost") {
-         baseUrl = (Api.useLocalhost ? "http://localhost:8080" : "https://clmb.live") + baseUrl;
-      }
-      return baseUrl;
+      return Api.useLocalhost ? "http://localhost:8080/api/" : "https://api.clmb.live/"
    }
 
    private static async handleErrors(data: Response): Promise<Response> {
@@ -118,7 +114,7 @@ export class Api {
          flash,
          contenderId,
          problemId
-      }
+      };
       return this.post("tick", newTick, activationCode);
    }
 
@@ -142,7 +138,7 @@ export class Api {
       return this.put("contender/" + contenderData.id, contenderData, activationCode);
    }
 
-   static getScoreboard(id:number): Promise<ScoreboardContenderList[]> {
+   static getScoreboard(id:number): Promise<ScoreboardDescription> {
       return this.get("contest/" + id + "/scoreboard");
    }
 }

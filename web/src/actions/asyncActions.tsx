@@ -57,8 +57,8 @@ export function loadContest(contestId:number): any {
 
 export function loadScoreboardData(id: number): any {
    return (dispatch: Dispatch<any>) => {
-      Api.getScoreboard(id).then(scoreboardData => {
-         dispatch(receiveScoreboardData(scoreboardData));
+      Api.getScoreboard(id).then(scoreboardDescription => {
+         dispatch(receiveScoreboardData(scoreboardDescription));
          dispatch(updateScoreboardTimer());
       })
    };

@@ -52,12 +52,12 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             console.log(message, JSON.parse(message.body));
             this.props.receiveScoreboardItem!(JSON.parse(message.body))
          });
-      }
+      };
       
       // Start the timer:
       this.intervalId = window.setInterval(() => { 
          this.props.updateScoreboardTimer!();
-      }, 1000)
+      }, 1000);
 
 
       //setTimeout(this.fakeScore);
@@ -77,7 +77,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             }
          });
       }
-      setTimeout(this.fakeScore, 500);
+      setTimeout(this.fakeScore, 300);
    };
 
    componentWillUnmount() { 
@@ -89,7 +89,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
       let result: any[] = [];
       for(let i = 0; i < list.length; i++) {
          if(i != 0) {
-            result.push(<div className="separator"></div>);
+            result.push(<div key={-1 * i} className="separator"></div>);
          }
          result.push(list[i]);
       }
@@ -105,8 +105,8 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
          const currentCompClass = scoreboardData.find(sd => sd.compClass.id == currentCompClassId)!.compClass;
 
          let headers = scoreboardData.map(scoreboardList => <ScoreboardClassHeaderComp key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />);
-         let finalistList = this.addSeparators(scoreboardData.map(scoreboardList => <ScoreboardFinalistListContainer key={scoreboardList.compClass.name} compClass={scoreboardList.compClass} />));
-         let totalList = this.addSeparators(scoreboardData.map(scoreboardList => <ScoreboardTotalListContainer key={scoreboardList.compClass.name} isPaging={true} compClass={scoreboardList.compClass} />));
+         let finalistList = this.addSeparators(scoreboardData.map(scoreboardList => <ScoreboardFinalistListContainer key={scoreboardList.compClass.id} compClass={scoreboardList.compClass} />));
+         let totalList = this.addSeparators(scoreboardData.map(scoreboardList => <ScoreboardTotalListContainer key={scoreboardList.compClass.id} isPaging={true} compClass={scoreboardList.compClass} />));
 
          return (
             <div className="scoreboardView">

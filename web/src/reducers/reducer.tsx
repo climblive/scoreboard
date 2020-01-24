@@ -59,7 +59,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, contenderData: undefined, contenderNotFound: true};
 
       case getType(scoreboardActions.receiveScoreboardData):
-         return { ...state, scoreboardData: action.payload, currentCompClassId: action.payload[0].compClass.id};
+         return { ...state, scoreboardData: action.payload.scores, currentCompClassId: action.payload.scores[0].compClass.id};
 
       case getType(scoreboardActions.setCurrentCompClassId): {
          // Reset all animation classes:

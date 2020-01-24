@@ -2,20 +2,20 @@
 import { createStandardAction } from 'typesafe-actions'
 import { Problem } from '../model/problem';
 import { ContenderData } from '../model/contenderData';
-import { ScoreboardContenderList } from '../model/scoreboardContenderList';
 import { Contest } from '../model/contest';
 import { ScoreboardPushItem } from '../model/scoreboardPushItem';
 import {SortBy} from "../constants/constants";
 import {CompClass} from "../model/compClass";
 import {Tick} from "../model/tick";
 import {Color} from "../model/color";
+import {ScoreboardDescription} from "../model/scoreboardDescription";
 
 export const startProblemUpdate = createStandardAction('START_PROBLEM_UPDATE')<Problem>();
 export const setProblemStateFailed = createStandardAction('SET_PROBLEM_STATE_FAILED')<string>();
 export const clearErrorMessage = createStandardAction('CLEAR_ERROR_MESSAGE')();
 export const receiveContenderData = createStandardAction('RECEIVE_USER_DATA')<ContenderData>();
 export const receiveContenderNotFound = createStandardAction('RECEIVE_CONTENDER_NOT_FOUND')();
-export const receiveScoreboardData = createStandardAction('RECEIVE_SCOREBOARD_DATA')<ScoreboardContenderList[]>();
+export const receiveScoreboardData = createStandardAction('RECEIVE_SCOREBOARD_DATA')<ScoreboardDescription>();
 export const setCurrentCompClassId = createStandardAction('SET_CURRENT_COMP_CLASS_ID')<number>();
 export const receiveScoreboardItem = createStandardAction('RECEIVE_SCOREBOARD_ITEM')<ScoreboardPushItem>();
 export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();

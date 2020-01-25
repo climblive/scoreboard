@@ -10,6 +10,7 @@ import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
+import java.time.OffsetDateTime
 
 @Service
 class TickService @Autowired constructor(
@@ -27,16 +28,21 @@ class TickService @Autowired constructor(
 
     override fun onCreate(phase: Phase, new: Tick) {
         when (phase) {
-            Phase.BEFORE -> checkTimeAllowed(new.contender!!)
+            Phase.BEFORE -> onAnyChange(new)
             Phase.AFTER -> broadcastService.broadcast(new.contender!!)
         }
     }
 
     override fun onUpdate(phase: Phase, old: Tick, new: Tick) {
         when (phase) {
-            Phase.BEFORE -> checkTimeAllowed(new.contender!!)
+            Phase.BEFORE -> onAnyChange(new)
             Phase.AFTER -> broadcastService.broadcast(new.contender!!)
         }
+    }
+
+    private fun onAnyChange(tick: Tick) {
+        tick.timestamp = OffsetDateTime.now()
+        checkTimeAllowed(tick.contender!!)
     }
 
     override fun onDelete(phase: Phase, old: Tick) {

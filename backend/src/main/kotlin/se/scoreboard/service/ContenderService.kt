@@ -46,7 +46,7 @@ class ContenderService @Autowired constructor(
         when (phase) {
             Phase.BEFORE -> {
                 checkMaximumContenderLimit(new.contest?.id!!, 1)
-                onCreateAndUpdate(phase, null, new)
+                beforeCreateAndUpdate(null, new)
             }
             else -> {}
         }
@@ -56,25 +56,20 @@ class ContenderService @Autowired constructor(
         when (phase) {
             Phase.BEFORE -> {
                 new.compClass?.let { checkTimeAllowed(it) }
-                onCreateAndUpdate(phase, old, new)
-            }
-            Phase.AFTER -> {
+
                 if (old.contest?.id != new.contest?.id) {
-                    checkMaximumContenderLimit(new.contest?.id!!, 0)
+                    checkMaximumContenderLimit(new.contest?.id!!, 1)
                 }
 
-                broadcastService.broadcast(new)
+                beforeCreateAndUpdate(old, new)
             }
+            Phase.AFTER -> broadcastService.broadcast(new)
         }
     }
 
-    private fun onCreateAndUpdate(phase: Phase, old: Contender?, new: Contender) {
-        when (phase) {
-            Phase.BEFORE ->
-                if (new.name != null && new.compClass != null && old?.entered == null) {
-                    new.entered = OffsetDateTime.now()
-                }
-            else -> {}
+    private fun beforeCreateAndUpdate(old: Contender?, new: Contender) {
+        if (new.name != null && new.compClass != null && old?.entered == null) {
+            new.entered = OffsetDateTime.now()
         }
     }
 

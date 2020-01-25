@@ -8,6 +8,7 @@ import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.RaffleWinner
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
+import se.scoreboard.data.domain.extension.isRegistered
 import se.scoreboard.dto.ScoreboardListItemDto
 import se.scoreboard.dto.scoreboard.RaffleWinnerPushItemDto
 import se.scoreboard.dto.scoreboard.ScoreboardPushItemDto
@@ -20,6 +21,10 @@ class BroadcastService @Autowired constructor(private val simpMessagingTemplate 
     }
 
     fun broadcast(contender: Contender) {
+        if (!contender.isRegistered()) {
+            return
+        }
+
         val scoreboardListItemDTO = ScoreboardListItemDto(
                 contender.id!!,
                 contender.name!!,

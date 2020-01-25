@@ -114,7 +114,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         }
 
         onUpdate(Phase.BEFORE, old, entity)
-        entity = entityRepository.save(entity)
+        entityRepository.save(entity)
         entityManager.flush()
         onUpdate(Phase.AFTER, old, entity)
 

@@ -31,8 +31,6 @@ class ContestController @Autowired constructor(
         private val contestService: ContestService,
         private val contenderService: ContenderService,
         private val tickRepository: TickRepository,
-        private val contenderRepository: ContenderRepository,
-        private val raffleRepository: RaffleRepository,
         private var problemMapper: ProblemMapper,
         private var contenderMapper: ContenderMapper,
         private var compClassMapper: CompClassMapper,
@@ -44,10 +42,8 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(pageable)
 
-    /**
-     * Let this endpoint be completely open so the scoreboard view can get contest information without any credentials
-     */
     @GetMapping("/contest/{id}")
+    @PreAuthorize("true")
     @Transactional
     fun getContest(@PathVariable("id") id: Int) = contestService.findById(id)
 
@@ -131,27 +127,9 @@ class ContestController @Autowired constructor(
         return ResponseEntity(data, headers, HttpStatus.OK)
     }
 
-    private fun getContenderList(contenders: List<Contender>): List<ScoreboardListItemDto> {
-        return contenders.map { ScoreboardListItemDto(it.id!!, it.name!!, it.getTotalScore(), it.getQualificationScore()) }
-    }
-
     @GetMapping("/contest/{id}/scoreboard")
     @Transactional
-    fun getScoreboard(@PathVariable("id") id: Int) : ScoreboardDto {
-        val contest = contestService.fetchEntity(id)
-        val contenders = contest.contenders
-        val raffles: List<RaffleWinnerListDto> = contest.raffles.map { raffle ->
-            val winners = raffle.winners
-                    .map { winner -> RaffleWinnerPushItemDto(raffle.id!!, winner.contender?.id!!, winner.contender?.name!!, winner.timestamp!!) }
-                    .sortedBy { winner -> winner.timestamp }
-            RaffleWinnerListDto(raffleMapper.convertToDto(raffle), winners)
-        }
-        val scoreboard = ScoreboardDto(
-                id,
-                raffles,
-                contest.compClasses.sortedBy { it.id }.map { compClass -> ScoreboardListDto(compClassMapper.convertToDto(compClass), getContenderList(contenders.filter { it.compClass == compClass })) })
-        return scoreboard
-    }
+    fun getScoreboard(@PathVariable("id") id: Int) = contestService.getScoreboard(id)
 
     @PutMapping("/contest/{id}/createContenders")
     @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
@@ -167,22 +145,5 @@ class ContestController @Autowired constructor(
     @GetMapping("/contest/{id}/resetContenders")
     @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
     @Transactional
-    fun resetContenders(@PathVariable("id") id: Int) {
-        val contest= contestService.fetchEntity(id)
-        val now = OffsetDateTime.now()
-
-        if (now >= contest.compClasses.minBy { it.timeBegin!! }?.timeBegin) {
-            throw WebException(HttpStatus.FORBIDDEN,
-                    "Cannot reset contenders after competition has started")
-        }
-
-        contenderRepository.saveAll(contest.contenders.map { contender ->
-            contender.compClass = null
-            contender.name = null
-            contender.entered = null
-            contender.disqualified = false
-            tickRepository.deleteAll(contender.ticks)
-            contender
-        })
-    }
+    fun resetContenders(@PathVariable("id") id: Int) = contestService.resetContenders(id)
 }

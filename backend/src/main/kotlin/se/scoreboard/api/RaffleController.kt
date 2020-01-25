@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.data.domain.extension.isRegistered
+import se.scoreboard.data.domain.Raffle
 import se.scoreboard.dto.RaffleDto
 import se.scoreboard.dto.RaffleWinnerDto
 import se.scoreboard.exception.WebException
@@ -44,17 +44,9 @@ class RaffleController @Autowired constructor(
     @PostMapping("/raffle/{id}/winner")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun drawWinner(@PathVariable("id") id: Int) : ResponseEntity<RaffleWinnerDto> {
-        val raffle = raffleService.fetchEntity(id)
-        val winners = raffle.winners.map { winner -> winner.contender?.id }
-        val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.isRegistered() && !(contender.id in winners) }
-
-        if (contendersInTheDraw != null && contendersInTheDraw.isNotEmpty()) {
-            var winner: RaffleWinnerDto = RaffleWinnerDto(null, id, contendersInTheDraw.random().id!!, OffsetDateTime.now())
-            return raffleWinnerService.create(winner)
-        } else {
-            throw WebException(HttpStatus.NOT_FOUND, "All winners have been drawn")
-        }
+    fun drawWinner(@PathVariable("id") id: Int): ResponseEntity<RaffleWinnerDto> {
+        val winner = raffleService.drawWinner(id)
+        return ResponseEntity(winnerMapper.convertToDto(winner), HttpStatus.CREATED)
     }
 
     @DeleteMapping("/raffle/{id}/winner/{raffleWinnerId}")

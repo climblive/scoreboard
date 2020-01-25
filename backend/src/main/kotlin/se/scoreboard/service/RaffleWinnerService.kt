@@ -14,9 +14,10 @@ class RaffleWinnerService @Autowired constructor(
     val broadcastService: BroadcastService) : AbstractDataService<RaffleWinner, RaffleWinnerDto, Int>(
         raffleWinnerRepository) {
 
-    override fun onChange(old: RaffleWinner?, new: RaffleWinner) {
-        if (old == null) {
-            broadcastService.broadcast(new)
+    override fun onCreate(phase: Phase, new: RaffleWinner) {
+        when (phase) {
+            Phase.AFTER -> broadcastService.broadcast(new)
+            else -> {}
         }
     }
 }

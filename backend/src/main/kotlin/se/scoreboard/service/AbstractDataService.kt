@@ -92,9 +92,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
             throw WebException(HttpStatus.CONFLICT, null)
         }
 
-        onChange(null, entity)
-
+        onCreate(Phase.BEFORE, entity)
         entity = entityRepository.save(entity)
+        entityManager.flush()
+        onCreate(Phase.AFTER, entity)
+
         return ResponseEntity(entityMapper.convertToDto(entity), HttpStatus.CREATED)
     }
 
@@ -111,9 +113,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
             throw WebException(HttpStatus.CONFLICT, null)
         }
 
-        onChange(old, entity)
-
+        onUpdate(Phase.BEFORE, old, entity)
         entity = entityRepository.save(entity)
+        entityManager.flush()
+        onUpdate(Phase.AFTER, old, entity)
+
         return ResponseEntity.ok(entityMapper.convertToDto(entity))
     }
 
@@ -121,23 +125,16 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     open fun delete(id: ID) : ResponseEntity<DtoType> {
         var entity = fetchEntity(id)
 
-        beforeDelete(entity)
-
+        onDelete(Phase.BEFORE, entity)
         entityRepository.delete(entity)
-
-        afterDelete(entity)
+        entityManager.flush()
+        onDelete(Phase.AFTER, entity)
 
         return ResponseEntity.noContent().build()
     }
 
-    @Transactional
     open fun fetchEntity(id: ID) : EntityType {
         return entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
-    }
-
-    @Transactional
-    open fun fetchEntities(ids: List<ID>) : Iterable<EntityType> {
-        return entityRepository.findAllById(ids)
     }
 
     private fun checkConstraints(old: DtoType?, new : DtoType) {
@@ -171,14 +168,19 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         }
     }
 
+    enum class Phase {
+        BEFORE,
+        AFTER
+    }
+
     protected open fun verify(entity: EntityType) : Boolean = true
 
-    protected open fun onChange(old: EntityType?, new: EntityType) {
+    protected open fun onCreate(phase: Phase, new: EntityType) {
     }
 
-    protected open fun beforeDelete(old: EntityType) {
+    protected open fun onUpdate(phase: Phase, old: EntityType, new: EntityType) {
     }
 
-    protected open fun afterDelete(old: EntityType) {
+    protected open fun onDelete(phase: Phase, old: EntityType) {
     }
 }

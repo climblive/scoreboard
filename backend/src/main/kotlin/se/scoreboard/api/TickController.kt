@@ -21,9 +21,7 @@ import javax.transaction.Transactional
 @Transactional
 @RequestMapping("/api")
 class TickController @Autowired constructor(
-        val tickService: TickService,
-        val contenderService: ContenderService,
-        val broadcastService : BroadcastService) {
+        val tickService: TickService) {
 
     @GetMapping("/tick")
     @PostAuthorize("hasPermission(returnObject, 'read')")
@@ -38,47 +36,17 @@ class TickController @Autowired constructor(
     @PostMapping("/tick")
     @PreAuthorize("hasPermission(#tick, 'create')")
     @Transactional
-    fun createTick(@RequestBody tick : TickDto): ResponseEntity<TickDto> {
-        val contender = contenderService.fetchEntity(tick.contenderId!!)
-        checkTimeAllowed(contender)
-
-        val newTick = tickService.create(tick)
-        broadcastService.broadcast(contender)
-        return newTick
-    }
+    fun createTick(@RequestBody tick : TickDto) = tickService.create(tick)
 
     @PutMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'TickDto', 'update') && hasPermission(#tick, 'update')")
     @Transactional
     fun updateTick(
             @PathVariable("id") id: Int,
-            @RequestBody tick : TickDto): ResponseEntity<TickDto> {
-        val contender = contenderService.fetchEntity(tick.contenderId!!)
-        checkTimeAllowed(contender)
-
-        val updatedTick = tickService.update(id, tick)
-        broadcastService.broadcast(contender)
-        return updatedTick
-    }
+            @RequestBody tick : TickDto) = tickService.update(id, tick)
 
     @DeleteMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'TickDto', 'delete')")
     @Transactional
-    fun deleteTick(@PathVariable("id") id: Int) {
-        var tick = tickService.fetchEntity(id)
-        val contender = tick.contender!!
-        checkTimeAllowed(contender)
-
-        tickService.delete(id)
-        contender.ticks.remove(tick)
-        broadcastService.broadcast(contender)
-    }
-
-    fun checkTimeAllowed(contender: Contender) {
-        val compClass = contender.compClass ?: throw WebException(HttpStatus.CONFLICT, "The contender is not registered")
-
-        if (!compClass.allowedToAlterTick()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
-        }
-    }
+    fun deleteTick(@PathVariable("id") id: Int) = tickService.delete(id)
 }

@@ -26,8 +26,6 @@ import javax.transaction.Transactional
 @RequestMapping("/api")
 class ContenderController @Autowired constructor(
         val contenderService: ContenderService,
-        val compClassService: CompClassService,
-        val broadcastService: BroadcastService,
         private var tickMapper: TickMapper) {
 
     @GetMapping("/contender")
@@ -69,25 +67,10 @@ class ContenderController @Autowired constructor(
     @PreAuthorize("hasPermission(#id, 'ContenderDto', 'update') && hasPermission(#contender, 'update')")
     @Transactional
     fun updateContender(@PathVariable("id") id: Int,
-                        @RequestBody contender : ContenderDto): ResponseEntity<ContenderDto> {
-
-        val updatedContender = contenderService.update(id, contender)
-
-        val compClass = compClassService.fetchEntity(contender.compClassId!!)
-        checkTimeAllowed(compClass)
-
-        broadcastService.broadcast(contenderService.fetchEntity(id))
-        return updatedContender
-    }
+                        @RequestBody contender : ContenderDto) = contenderService.update(id, contender)
 
     @DeleteMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'ContenderDto', 'delete')")
     @Transactional
     fun deleteContender(@PathVariable("id") id: Int) = contenderService.delete(id)
-
-    fun checkTimeAllowed(compClass: CompClass) {
-        if (!compClass.allowedToAlterContender()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
-        }
-    }
 }

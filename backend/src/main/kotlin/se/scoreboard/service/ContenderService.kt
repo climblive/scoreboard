@@ -2,11 +2,12 @@ package se.scoreboard.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.createRegistrationCode
+import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
+import se.scoreboard.data.domain.extension.allowedToAlterContender
 import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.exception.WebException
@@ -18,7 +19,7 @@ import javax.transaction.Transactional
 @Service
 class ContenderService @Autowired constructor(
     private var contenderRepository: ContenderRepository,
-    private var compClassService: CompClassService,
+    private val broadcastService: BroadcastService,
     override var entityMapper: AbstractMapper<Contender, ContenderDto>) : AbstractDataService<Contender, ContenderDto, Int>(
         contenderRepository) {
 
@@ -41,22 +42,40 @@ class ContenderService @Autowired constructor(
         return entityMapper.convertToDto(contender)
     }
 
-    override fun onChange(old: Contender?, new: Contender) {
-        if (new.name != null && new.compClass != null && old?.entered == null) {
-            new.entered = OffsetDateTime.now()
+    override fun onCreate(phase: Phase, new: Contender) {
+        when (phase) {
+            Phase.BEFORE -> {
+                checkMaximumContenderLimit(new.contest?.id!!, 1)
+                onCreateAndUpdate(phase, null, new)
+            }
+            else -> {}
         }
     }
 
-    override fun create(contender: ContenderDto): ResponseEntity<ContenderDto> {
-        checkMaximumContenderLimit(contender.contestId!!, 1)
-        return super.create(contender)
+    override fun onUpdate(phase: Phase, old: Contender, new: Contender) {
+        when (phase) {
+            Phase.BEFORE -> {
+                new.compClass?.let { checkTimeAllowed(it) }
+                onCreateAndUpdate(phase, old, new)
+            }
+            Phase.AFTER -> {
+                if (old.contest?.id != new.contest?.id) {
+                    checkMaximumContenderLimit(new.contest?.id!!, 0)
+                }
+
+                broadcastService.broadcast(new)
+            }
+        }
     }
 
-    override fun update(id: Int, contender: ContenderDto): ResponseEntity<ContenderDto> {
-        val response = super.update(id, contender)
-        val updated = response.body
-        checkMaximumContenderLimit(updated.contestId!!, 0)
-        return response
+    private fun onCreateAndUpdate(phase: Phase, old: Contender?, new: Contender) {
+        when (phase) {
+            Phase.BEFORE ->
+                if (new.name != null && new.compClass != null && old?.entered == null) {
+                    new.entered = OffsetDateTime.now()
+                }
+            else -> {}
+        }
     }
 
     fun createContenders(contest: Contest, contenderCount: Int) :Array<ContenderDto> {
@@ -72,9 +91,15 @@ class ContenderService @Autowired constructor(
         }
     }
 
-    fun checkMaximumContenderLimit(contestId: Int, delta: Int = 0) {
+    private fun checkMaximumContenderLimit(contestId: Int, delta: Int = 0) {
         if (contenderRepository.countByContestId(contestId) + delta > MAX_CONTEST_CONTENDERS) {
             throw WebException(HttpStatus.FORBIDDEN, "Contender limit exceeded for the contest")
+        }
+    }
+
+    private fun checkTimeAllowed(compClass: CompClass) {
+        if (!compClass.allowedToAlterContender()) {
+            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
         }
     }
 }

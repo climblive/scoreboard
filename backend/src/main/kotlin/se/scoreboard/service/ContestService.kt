@@ -5,22 +5,35 @@ import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
+import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
+import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.data.repo.ContestRepository
-import se.scoreboard.dto.ContestDto
+import se.scoreboard.data.repo.TickRepository
+import se.scoreboard.dto.*
+import se.scoreboard.dto.scoreboard.RaffleWinnerPushItemDto
+import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.mapper.CompClassMapper
+import se.scoreboard.mapper.RaffleMapper
 import java.io.ByteArrayOutputStream
+import java.time.OffsetDateTime
 
 @Service
 class ContestService @Autowired constructor(
         contestRepository: ContestRepository,
+        private val contenderRepository: ContenderRepository,
+        private val tickRepository: TickRepository,
         val pdfService: PdfService,
+        private var raffleMapper: RaffleMapper,
+        private var compClassMapper: CompClassMapper,
         override var entityMapper: AbstractMapper<Contest, ContestDto>) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
-
-    var logger = LoggerFactory.getLogger(ContestService::class.java)
 
     fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {
         val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }
@@ -69,5 +82,54 @@ class ContestService @Autowired constructor(
         baos.close()
         workbook.close()
         return data
+    }
+
+    private fun getContenderList(contenders: List<Contender>): List<ScoreboardListItemDto> {
+        return contenders.map { ScoreboardListItemDto(it.id!!, it.name!!, it.getTotalScore(), it.getQualificationScore()) }
+    }
+
+    fun getScoreboard(id: Int) : ResponseEntity<ScoreboardDto> {
+        val contest = fetchEntity(id)
+        val contenders = contest.contenders
+        val raffles: List<RaffleWinnerListDto> = contest.raffles.map { raffle ->
+            val winners = raffle.winners
+                    .map { winner -> RaffleWinnerPushItemDto(
+                            raffle.id!!,
+                            winner.contender?.id!!,
+                            winner.contender?.name!!,
+                            winner.timestamp!!) }
+                    .sortedBy { winner -> winner.timestamp }
+            RaffleWinnerListDto(raffleMapper.convertToDto(raffle), winners)
+        }
+        val scoreboard = ScoreboardDto(
+                id,
+                raffles,
+                contest.compClasses
+                        .sortedBy { it.id }
+                        .map { compClass -> ScoreboardListDto(
+                                compClassMapper.convertToDto(compClass),
+                                getContenderList(contenders.filter { it.compClass == compClass }))
+                        })
+
+        return ResponseEntity.ok(scoreboard)
+    }
+
+    fun resetContenders(id: Int) {
+        val contest = fetchEntity(id)
+        val now = OffsetDateTime.now()
+
+        if (now >= contest.compClasses.minBy { it.timeBegin!! }?.timeBegin) {
+            throw WebException(HttpStatus.FORBIDDEN,
+                    "Cannot reset contenders after competition has started")
+        }
+
+        contenderRepository.saveAll(contest.contenders.map { contender ->
+            contender.compClass = null
+            contender.name = null
+            contender.entered = null
+            contender.disqualified = false
+            tickRepository.deleteAll(contender.ticks)
+            contender
+        })
     }
 }

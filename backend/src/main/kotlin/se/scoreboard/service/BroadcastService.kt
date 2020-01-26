@@ -53,7 +53,6 @@ class BroadcastService @Autowired constructor(private val simpMessagingTemplate 
 
     private fun send(contestId: Int, path: String, item: Any) {
         val topic = "/topic/contest/$contestId$path"
-        logger.info("Broadcasting {} to {}", item, topic)
         simpMessagingTemplate.convertAndSend(topic, item)
     }
 }

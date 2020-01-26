@@ -20,5 +20,5 @@ open class Raffle (
     @Column(name = "active", nullable = false)
     open var isActive: Boolean = false,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "raffle")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "raffle", cascade = [ CascadeType.ALL ])
     open var winners: MutableSet<RaffleWinner> = HashSet(0)) : Serializable, AbstractEntity<Int>

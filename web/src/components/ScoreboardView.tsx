@@ -48,9 +48,17 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
       this.client.activate();
       this.client.onConnect = () => {
          this.props.loadScoreboardData!(contestId);
-         this.client.subscribe("/topic/scoreboard/" + contestId, (message) => {
+         this.client.subscribe("/topic/scoreboard/" + contestId + "/scoreboard", (message) => {
             console.log(message, JSON.parse(message.body));
             this.props.receiveScoreboardItem!(JSON.parse(message.body))
+         });
+         this.client.subscribe("/topic/scoreboard/" + contestId + "/raffle", (message) => {
+            console.log(message, JSON.parse(message.body));
+            //this.props.receiveRaffleItem!(JSON.parse(message.body))
+         });
+         this.client.subscribe("/topic/scoreboard/" + contestId + "/raffle/winner", (message) => {
+            console.log(message, JSON.parse(message.body));
+            //this.props.receiveRaffleWinner!(JSON.parse(message.body))
          });
       };
       

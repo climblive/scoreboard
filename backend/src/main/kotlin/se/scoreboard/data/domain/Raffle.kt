@@ -17,5 +17,8 @@ open class Raffle (
     @JoinColumn(name = "contest_id", nullable = false)
     open var contest: Contest? = null,
 
+    @Column(name = "active", nullable = false)
+    open var isActive: Boolean = false,
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "raffle")
     open var winners: MutableSet<RaffleWinner> = HashSet(0)) : Serializable, AbstractEntity<Int>

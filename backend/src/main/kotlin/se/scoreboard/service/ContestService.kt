@@ -91,9 +91,9 @@ class ContestService @Autowired constructor(
     fun getScoreboard(id: Int) : ResponseEntity<ScoreboardDto> {
         val contest = fetchEntity(id)
         val contenders = contest.contenders
-        val raffles: List<RaffleWinnerListDto> = contest.raffles.map { raffle ->
-            val winners = raffle.winners
-                    .map { winner -> RaffleWinnerPushItemDto(
+        val raffle: RaffleWinnerListDto? = contest.raffles.firstOrNull { it.isActive }?.let { raffle ->
+            val winners = raffle.winners.
+                    map { winner -> RaffleWinnerPushItemDto(
                             raffle.id!!,
                             winner.contender?.id!!,
                             winner.contender?.name!!,
@@ -103,7 +103,7 @@ class ContestService @Autowired constructor(
         }
         val scoreboard = ScoreboardDto(
                 id,
-                raffles,
+                raffle,
                 contest.compClasses
                         .sortedBy { it.id }
                         .map { compClass -> ScoreboardListDto(

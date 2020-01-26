@@ -20,8 +20,48 @@ import java.time.OffsetDateTime
 class RaffleService @Autowired constructor(
     raffleRepository: RaffleRepository,
     private val raffleWinnerRepository: RaffleWinnerRepository,
+    private val broadcastService: BroadcastService,
     override var entityMapper: AbstractMapper<Raffle, RaffleDto>) : AbstractDataService<Raffle, RaffleDto, Int>(
         raffleRepository) {
+
+    override fun onCreate(phase: Phase, new: Raffle) {
+        when (phase) {
+            Phase.AFTER -> onAnyChange(new)
+            else -> {}
+        }
+    }
+
+    override fun onUpdate(phase: Phase, old: Raffle, new: Raffle) {
+        when (phase) {
+            Phase.AFTER -> onAnyChange(new)
+            else -> {}
+        }
+    }
+
+    override fun onDelete(phase: Phase, old: Raffle) {
+        when (phase) {
+            Phase.AFTER -> {
+                old.isActive = false
+                onAnyChange(old)
+            }
+            else -> {}
+        }
+    }
+
+    private fun onAnyChange(raffle: Raffle) {
+        if (raffle.isActive) {
+            val otherRaffles = raffle.contest?.raffles?.filter { it.id != raffle.id }
+
+            otherRaffles?.forEach { otherRaffle ->
+                if (otherRaffle.isActive) {
+                    otherRaffle.isActive = false
+                    broadcastService.broadcast(otherRaffle)
+                }
+            }
+        }
+
+        broadcastService.broadcast(raffle)
+    }
 
     fun drawWinner(raffleId: Int): RaffleWinner {
         val raffle = fetchEntity(raffleId)

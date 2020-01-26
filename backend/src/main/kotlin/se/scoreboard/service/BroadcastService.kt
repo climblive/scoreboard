@@ -42,7 +42,7 @@ class BroadcastService @Autowired constructor(private val simpMessagingTemplate 
         val raffleId = winner.raffle?.id!!
         val contestId = winner.raffle?.contest?.id!!
         val item = RaffleWinnerPushItemDto(raffleId, winner.contender?.id!!, winner.contender?.name!!, winner.timestamp!!)
-        send(contestId, "/raffle/$raffleId", item)
+        send(contestId, "/raffle/winner", item)
     }
 
     fun broadcast(raffle: Raffle) {

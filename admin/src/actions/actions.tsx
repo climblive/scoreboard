@@ -74,6 +74,7 @@ export const startAddProblem = createStandardAction('START_ADD_PROBLEM')<Problem
 export const updateEditProblem = createStandardAction('UPDATE_EDIT_PROBLEM')<{propName:string, value:any}>();
 
 export const receiveRaffles = createStandardAction('RECEIVE_RAFFLES')<Raffle[]>();
+export const clearRaffles = createStandardAction('CLEAR_RAFFLES')();
 export const receiveRaffleWinners = createStandardAction('RECEIVE_RAFFLE_WINNERS')<{raffle:Raffle, winners:RaffleWinner[]}>();
 export const receiveRaffleWinner = createStandardAction('RECEIVE_RAFFLE_WINNER')<RaffleWinner>();
 

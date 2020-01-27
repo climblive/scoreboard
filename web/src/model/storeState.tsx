@@ -6,6 +6,7 @@ import {Problem} from "./problem";
 import {CompClass} from "./compClass";
 import {Tick} from "./tick";
 import {Color} from "./color";
+import {RaffleWinner} from "./raffleWinner";
 
 export interface StoreState {
    contenderData?: ContenderData;
@@ -23,5 +24,5 @@ export interface StoreState {
    // Scoreboard state:
    scoreboardData: ScoreboardContenderList[];
    currentCompClassId: number
-
+   raffleWinners?: RaffleWinner[];
 }

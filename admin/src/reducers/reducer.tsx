@@ -303,6 +303,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.receiveRaffles):
          return { ...state, raffles: action.payload };
 
+      case getType(scoreboardActions.clearRaffles):
+         return { ...state, raffles: undefined };
+
       case getType(scoreboardActions.receiveRaffleWinners):
          const newRaffles = [...state.raffles!];
          const index = newRaffles.findIndex(r => r.id == action.payload.raffle.id);

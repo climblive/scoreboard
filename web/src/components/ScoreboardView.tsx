@@ -14,14 +14,18 @@ import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
 import {Contest} from "../model/contest";
 import {RouteComponentProps, withRouter} from "react-router";
+import {RaffleWinner} from "../model/raffleWinner";
+import {RafflePushItem} from "../model/rafflePushItem";
 
 export interface Props {
    scoreboardData: ScoreboardContenderList[];
+   raffleWinners?: RaffleWinner[];
    currentCompClassId: number;
    contest: Contest;
    loadScoreboardData?: (id:number) => void;
    loadContest?: (id:number) => void;
    receiveScoreboardItem?: (scoreboardPushItem: ScoreboardPushItem) => void;
+   deactivateRaffle?: () => void;
    updateScoreboardTimer?: () => void;
    setCurrentCompClassId?: (compClassId:number) => void;
 }
@@ -48,15 +52,20 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
       this.client.activate();
       this.client.onConnect = () => {
          this.props.loadScoreboardData!(contestId);
-         this.client.subscribe("/topic/scoreboard/" + contestId + "/scoreboard", (message) => {
+         console.log("subscribe " + contestId);
+         this.client.subscribe("/topic/contest/" + contestId + "/scoreboard", (message) => {
             console.log(message, JSON.parse(message.body));
             this.props.receiveScoreboardItem!(JSON.parse(message.body))
          });
-         this.client.subscribe("/topic/scoreboard/" + contestId + "/raffle", (message) => {
-            console.log(message, JSON.parse(message.body));
-            //this.props.receiveRaffleItem!(JSON.parse(message.body))
+         this.client.subscribe("/topic/contest/" + contestId + "/raffle", (message) => {
+            let rafflePushItem = JSON.parse(message.body) as RafflePushItem;
+            if(rafflePushItem.active) {
+               this.props.loadScoreboardData!(contestId);
+            } else {
+               this.props.deactivateRaffle!();
+            }
          });
-         this.client.subscribe("/topic/scoreboard/" + contestId + "/raffle/winner", (message) => {
+         this.client.subscribe("/topic/contest/" + contestId + "/raffle/winner", (message) => {
             console.log(message, JSON.parse(message.body));
             //this.props.receiveRaffleWinner!(JSON.parse(message.body))
          });
@@ -118,6 +127,13 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
 
          return (
             <div className="scoreboardView">
+
+               {this.props.raffleWinners &&
+                  <div className="winnerContainer">{ this.props.raffleWinners!.map(winner =>
+                     <div className="winner" key={winner.contenderId}>{winner.contenderName}</div>
+                  )}</div>
+               }
+
                <div style={{margin:20}} className="showSmall headerRow">
                   { scoreboardData.map(scoreboardList =>
                      <div key={scoreboardList.compClass.id}
@@ -154,6 +170,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
 function mapStateToProps(state: StoreState, props: any): Props {
    return {
       scoreboardData: state.scoreboardData,
+      raffleWinners: state.raffleWinners,
       contest: state.contest,
       currentCompClassId: state.currentCompClassId
    };
@@ -165,7 +182,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       loadContest: (contestId:number) => dispatch(asyncActions.loadContest(contestId)),
       receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem)),
       updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
-      setCurrentCompClassId: (compClassId:number) => dispatch(actions.setCurrentCompClassId(compClassId))
+      setCurrentCompClassId: (compClassId:number) => dispatch(actions.setCurrentCompClassId(compClassId)),
+      deactivateRaffle: () => dispatch(actions.deactivateRaffle())
    };
 }
 

@@ -87,6 +87,8 @@ interface Props {
 
    createRaffle?:() => void,
    drawWinner?:(raffle:Raffle) => void,
+   activateRaffle?:(raffle:Raffle) => void,
+   deactivateRaffle?:(raffle:Raffle) => void,
    deleteRaffle?:(raffle:Raffle) => void
 }
 
@@ -196,6 +198,8 @@ class ContestView extends React.Component<Props, State> {
 
                              createRaffle={this.props.createRaffle}
                              drawWinner={this.props.drawWinner}
+                             activateRaffle={this.props.activateRaffle}
+                             deactivateRaffle={this.props.deactivateRaffle}
                              deleteRaffle={this.props.deleteRaffle}
          />);
       }
@@ -273,6 +277,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
       createRaffle: () => dispatch(asyncActions.createRaffle()),
       drawWinner: (raffle:Raffle) => dispatch(asyncActions.drawWinner(raffle)),
+      activateRaffle: (raffle:Raffle) => dispatch(asyncActions.activateRaffle(raffle)),
+      deactivateRaffle: (raffle:Raffle) => dispatch(asyncActions.deactivateRaffle(raffle)),
       deleteRaffle: (raffle:Raffle) => dispatch(asyncActions.deleteRaffle(raffle))
    };
 }

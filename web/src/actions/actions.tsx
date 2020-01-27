@@ -28,3 +28,4 @@ export const sortProblems = createStandardAction('SORT_PROBLEMS')<SortBy>();
 export const createTick = createStandardAction('CREATE_TICK')<Tick>();
 export const updateTick = createStandardAction('UPDATE_TICK')<Tick>();
 export const deleteTick = createStandardAction('DELETE_TICK')<Tick>();
+export const deactivateRaffle = createStandardAction('DEACTIVATE_RAFFLE')();

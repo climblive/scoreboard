@@ -59,7 +59,11 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, contenderData: undefined, contenderNotFound: true};
 
       case getType(scoreboardActions.receiveScoreboardData):
-         return { ...state, scoreboardData: action.payload.scores, currentCompClassId: action.payload.scores[0].compClass.id};
+         return { ...state,
+            scoreboardData: action.payload.scores,
+            currentCompClassId: action.payload.scores[0].compClass.id,
+            raffleWinners: action.payload.raffle ? action.payload.raffle.winners.reverse() : undefined
+         };
 
       case getType(scoreboardActions.setCurrentCompClassId): {
          // Reset all animation classes:
@@ -71,6 +75,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          });
          newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
          return {...state, currentCompClassId: action.payload, scoreboardData: newScoreboardData};
+      }
+
+      case getType(scoreboardActions.deactivateRaffle): {
+         return{...state, raffleWinners: undefined};
       }
 
       case getType(scoreboardActions.receiveContest):

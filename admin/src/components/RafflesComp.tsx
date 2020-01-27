@@ -8,6 +8,7 @@ import TableBody from "@material-ui/core/TableBody";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
+import StopIcon from '@material-ui/icons/Stop';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import {ConfirmationDialog} from "./ConfirmationDialog";
@@ -20,6 +21,8 @@ interface Props {
 
    createRaffle?: () => void
    drawWinner?: (raffle:Raffle) => void
+   activateRaffle?: (raffle:Raffle) => void
+   deactivateRaffle?: (raffle:Raffle) => void
    deleteRaffle?:(raffle:Raffle) => void
 }
 
@@ -70,7 +73,7 @@ class RafflesComp extends React.Component<Props, State> {
                   <TableRow>
                      <TableCell style={{minWidth:120}}>Id</TableCell>
                      <TableCell style={{width:"100%"}}>Winners</TableCell>
-                     <TableCell className={"icon-cell"} style={{minWidth:96}}>
+                     <TableCell className={"icon-cell"} style={{minWidth:146}}>
                         <IconButton color="inherit" aria-label="Menu" title="Create raffle" onClick={this.props.createRaffle}>
                            <AddIcon />
                         </IconButton>
@@ -80,7 +83,7 @@ class RafflesComp extends React.Component<Props, State> {
                <TableBody>
                   {raffles.map(raffle => {
                      return (
-                        <TableRow key={raffle.id}>
+                        <TableRow key={raffle.id} style={{verticalAlign:"top"}}>
                            <TableCell component="th" scope="row">{raffle.id}</TableCell>
                            <TableCell component="th" scope="row">
                               {
@@ -92,10 +95,18 @@ class RafflesComp extends React.Component<Props, State> {
                               }
                            </TableCell>
                            <TableCell className={"icon-cell"}>
-                              <IconButton color="inherit" aria-label="Menu" title="Draw winner"
-                                          onClick={() => this.props.drawWinner!(raffle)}>
-                                 <PlayIcon/>
-                              </IconButton>
+                              {raffle.active && <IconButton color="inherit" aria-label="Menu" title="Draw winner"
+                                                              onClick={() => this.props.drawWinner!(raffle)}>
+                                  <PlayIcon/>
+                              </IconButton>}
+                              {raffle.active && <IconButton color="inherit" aria-label="Menu" title="Deactivate raffle"
+                                                              onClick={() => this.props.deactivateRaffle!(raffle)}>
+                                  <StopIcon/>
+                              </IconButton>}
+                              {!raffle.active && <IconButton color="inherit" aria-label="Menu" title="Activate raffle"
+                                                              onClick={() => this.props.activateRaffle!(raffle)}>
+                                  <PlayIcon/>
+                              </IconButton>}
                               <IconButton color="inherit" aria-label="Menu" title="Delete"
                                           onClick={() => this.deleteRaffle(raffle)}>
                                  <DeleteIcon/>

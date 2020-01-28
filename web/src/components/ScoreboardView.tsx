@@ -130,9 +130,13 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             <div className="scoreboardView">
 
                {this.props.raffleWinners &&
-                  <div className="winnerContainer">{ this.props.raffleWinners!.map(winner =>
-                     <div className="winner" key={winner.contenderId}>{winner.contenderName}</div>
-                  )}</div>
+                  <div className="winnerOuterContainer">
+                      <div className="winnerInnerContainer">
+                        { this.props.raffleWinners!.map(winner =>
+                           <div className="winner" style={{top:winner.top}} key={winner.contenderId}>{winner.contenderName}</div>
+                        )}
+                      </div>
+                  </div>
                }
 
                <div style={{margin:20}} className="showSmall headerRow">

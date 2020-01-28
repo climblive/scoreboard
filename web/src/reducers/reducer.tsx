@@ -6,6 +6,7 @@ import {Color} from "../model/color";
 import {Problem} from "../model/problem";
 import {SortBy} from "../constants/constants";
 import {ContenderData} from "../model/contenderData";
+import {RaffleWinner} from "../model/raffleWinner";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -27,6 +28,17 @@ function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
       newProblems = newProblems.sort((a, b) => a.number - b.number);
    }
    return newProblems;
+}
+
+function formatRaffleWinners(winners:RaffleWinner[]) {
+   winners.forEach((winner, index) => {
+      winner.top = index * 28;
+      if(index > 0) {
+         winner.top += 37;
+      }
+   });
+   winners.splice(6);
+   return winners;
 }
 
 export const reducer = (state: StoreState, action: ScoreboardActions) => {
@@ -62,7 +74,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state,
             scoreboardData: action.payload.scores,
             currentCompClassId: action.payload.scores[0].compClass.id,
-            raffleWinners: action.payload.raffle ? action.payload.raffle.winners.reverse() : undefined
+            raffleWinners: action.payload.raffle ? formatRaffleWinners(action.payload.raffle.winners.reverse()) : undefined
          };
 
       case getType(scoreboardActions.setCurrentCompClassId): {
@@ -82,7 +94,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       }
 
       case getType(scoreboardActions.receiveRaffleWinner): {
-         return{...state, raffleWinners: [action.payload, ...state.raffleWinners!]};
+         return{...state, raffleWinners: formatRaffleWinners([action.payload, ...state.raffleWinners!])};
       }
 
       case getType(scoreboardActions.receiveContest):

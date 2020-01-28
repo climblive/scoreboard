@@ -44,25 +44,40 @@
    margin-right:auto;
 }
 
-.winnerContainer {
+.winnerOuterContainer {
    position:absolute;
+   display:flex;
+   flex-direction: column;
    background:#000000d6;
    z-index: 100;
    top:0;
    left:0;
    right:0;
    bottom:115px;
+}
+
+.winnerInnerContainer {
+   position:relative;
    text-align: center;
-   padding-top:100px;
+   height:300px;
+   margin: auto 0;
 }
 
 .winner {
-   font-size: 18px;
+   font-size: 20px;
    color:#9a9a9a;
+   position: absolute;
+   left: 0;
+   right: 0;
+   transition:font-size 1s ease, opacity 1s ease, top 1s ease;
 }
 
 .winner:first-child {
    font-size: 50px;
    color:#E0E0E0;
    margin-bottom:20px;
+}
+
+.winner:nth-child(6) {
+   opacity: 0;
 }

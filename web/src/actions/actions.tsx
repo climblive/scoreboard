@@ -9,6 +9,7 @@ import {CompClass} from "../model/compClass";
 import {Tick} from "../model/tick";
 import {Color} from "../model/color";
 import {ScoreboardDescription} from "../model/scoreboardDescription";
+import {RaffleWinner} from "../model/raffleWinner";
 
 export const startProblemUpdate = createStandardAction('START_PROBLEM_UPDATE')<Problem>();
 export const setProblemStateFailed = createStandardAction('SET_PROBLEM_STATE_FAILED')<string>();
@@ -29,3 +30,4 @@ export const createTick = createStandardAction('CREATE_TICK')<Tick>();
 export const updateTick = createStandardAction('UPDATE_TICK')<Tick>();
 export const deleteTick = createStandardAction('DELETE_TICK')<Tick>();
 export const deactivateRaffle = createStandardAction('DEACTIVATE_RAFFLE')();
+export const receiveRaffleWinner = createStandardAction('RECEIVE_RAFFLE_WINNER')<RaffleWinner>();

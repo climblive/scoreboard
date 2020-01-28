@@ -26,6 +26,7 @@ export interface Props {
    loadContest?: (id:number) => void;
    receiveScoreboardItem?: (scoreboardPushItem: ScoreboardPushItem) => void;
    deactivateRaffle?: () => void;
+   receiveRaffleWinner?: (raffleWinner: RaffleWinner) => void;
    updateScoreboardTimer?: () => void;
    setCurrentCompClassId?: (compClassId:number) => void;
 }
@@ -67,7 +68,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
          });
          this.client.subscribe("/topic/contest/" + contestId + "/raffle/winner", (message) => {
             console.log(message, JSON.parse(message.body));
-            //this.props.receiveRaffleWinner!(JSON.parse(message.body))
+            this.props.receiveRaffleWinner!(JSON.parse(message.body) as RaffleWinner)
          });
       };
       
@@ -183,7 +184,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem)),
       updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
       setCurrentCompClassId: (compClassId:number) => dispatch(actions.setCurrentCompClassId(compClassId)),
-      deactivateRaffle: () => dispatch(actions.deactivateRaffle())
+      deactivateRaffle: () => dispatch(actions.deactivateRaffle()),
+      receiveRaffleWinner: (raffleWinner: RaffleWinner) => dispatch(actions.receiveRaffleWinner(raffleWinner))
    };
 }
 

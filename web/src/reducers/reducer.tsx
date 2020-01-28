@@ -81,6 +81,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return{...state, raffleWinners: undefined};
       }
 
+      case getType(scoreboardActions.receiveRaffleWinner): {
+         return{...state, raffleWinners: [action.payload, ...state.raffleWinners!]};
+      }
+
       case getType(scoreboardActions.receiveContest):
          return { ...state, contest: action.payload };
 

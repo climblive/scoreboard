@@ -69,13 +69,16 @@ class RaffleService @Autowired constructor(
         val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.isRegistered() && !(contender.id in winners) }
 
         contendersInTheDraw?.takeIf { it.isNotEmpty() }?.let { draw ->
-            val winner: RaffleWinner = RaffleWinner(
+            var winner: RaffleWinner = RaffleWinner(
                     null,
                     entityManager.getReference(Raffle::class.java, raffleId),
                     entityManager.getReference(Contender::class.java, draw.random().id!!),
                     OffsetDateTime.now())
 
-            return raffleWinnerRepository.save(winner)
+            winner = raffleWinnerRepository.save(winner)
+            entityManager.flush()
+            broadcastService.broadcast(winner)
+            return winner
         } ?: throw WebException(HttpStatus.NOT_FOUND, "All winners have been drawn")
     }
 }

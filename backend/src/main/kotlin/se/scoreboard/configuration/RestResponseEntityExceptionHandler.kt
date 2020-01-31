@@ -1,6 +1,8 @@
 package se.scoreboard.configuration
 
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -31,5 +33,18 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
                     (request as ServletWebRequest).request.requestURI),
                 HttpHeaders(),
                 ex.httpStatus, request)
+    }
+
+    @ExceptionHandler(value = [DataIntegrityViolationException::class])
+    fun handleDataIntegrityViolationException(ex: DataIntegrityViolationException, request: WebRequest): ResponseEntity<Any> {
+        return handleExceptionInternal(
+                ex,
+                WebError(OffsetDateTime.now(),
+                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.CONFLICT.reasonPhrase,
+                        "Data integrity violation",
+                        (request as ServletWebRequest).request.requestURI),
+                HttpHeaders(),
+                HttpStatus.CONFLICT, request)
     }
 }

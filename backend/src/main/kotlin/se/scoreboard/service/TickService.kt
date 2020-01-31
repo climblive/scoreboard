@@ -10,6 +10,7 @@ import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.nowWithoutNanos
 import java.time.OffsetDateTime
 
 @Service
@@ -41,7 +42,7 @@ class TickService @Autowired constructor(
     }
 
     private fun onAnyChange(tick: Tick) {
-        tick.timestamp = OffsetDateTime.now()
+        tick.timestamp = nowWithoutNanos()
         checkTimeAllowed(tick.contender!!)
     }
 

@@ -12,6 +12,7 @@ import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.nowWithoutNanos
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import javax.transaction.Transactional
@@ -69,7 +70,7 @@ class ContenderService @Autowired constructor(
 
     private fun beforeCreateAndUpdate(old: Contender?, new: Contender) {
         if (new.name != null && new.compClass != null && old?.entered == null) {
-            new.entered = OffsetDateTime.now()
+            new.entered = nowWithoutNanos()
         }
     }
 

@@ -3,6 +3,7 @@ package se.scoreboard
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import se.scoreboard.configuration.MyUserPrincipal
+import java.time.OffsetDateTime
 import kotlin.random.Random
 
 fun userHasRole(role: String) : Boolean {
@@ -33,4 +34,6 @@ fun createRegistrationCode(length: Int): String {
 
     return code
 }
+
+fun nowWithoutNanos() = OffsetDateTime.now().withNano(0)
 

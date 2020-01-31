@@ -14,6 +14,7 @@ import se.scoreboard.dto.RaffleDto
 import se.scoreboard.dto.RaffleWinnerDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.nowWithoutNanos
 import java.time.OffsetDateTime
 
 @Service
@@ -73,7 +74,7 @@ class RaffleService @Autowired constructor(
                     null,
                     entityManager.getReference(Raffle::class.java, raffleId),
                     entityManager.getReference(Contender::class.java, draw.random().id!!),
-                    OffsetDateTime.now())
+                    nowWithoutNanos())
 
             winner = raffleWinnerRepository.save(winner)
             entityManager.flush()

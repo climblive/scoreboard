@@ -7,6 +7,7 @@ import se.scoreboard.createRegistrationCode
 import se.scoreboard.data.domain.*
 import se.scoreboard.data.repo.*
 import se.scoreboard.getUserPrincipal
+import se.scoreboard.nowWithoutNanos
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
@@ -67,7 +68,7 @@ class GeneratorService @Autowired constructor(
     private fun createCompClasses(contest: Contest): List<CompClass> {
         val names = listOf("Youth", "Male", "Female")
 
-        var compDay = OffsetDateTime.now()
+        var compDay = nowWithoutNanos()
                 .truncatedTo(ChronoUnit.DAYS)
                 .plusDays(Random.nextInt(0, 100).toLong())
         val start = compDay.plusHours(Random.nextInt(15, 19).toLong())

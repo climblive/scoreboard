@@ -1,5 +1,6 @@
 package se.scoreboard.configuration
 
+import org.hibernate.exception.ConstraintViolationException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -35,8 +36,8 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
                 ex.httpStatus, request)
     }
 
-    @ExceptionHandler(value = [DataIntegrityViolationException::class])
-    fun handleDataIntegrityViolationException(ex: DataIntegrityViolationException, request: WebRequest): ResponseEntity<Any> {
+    @ExceptionHandler(value = [DataIntegrityViolationException::class, ConstraintViolationException::class])
+    fun handleDataIntegrityViolationException(ex: RuntimeException, request: WebRequest): ResponseEntity<Any> {
         return handleExceptionInternal(
                 ex,
                 WebError(OffsetDateTime.now(),

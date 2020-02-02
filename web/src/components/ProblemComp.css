@@ -31,6 +31,11 @@
    width:120px;
 }
 
+.problem .secondRow.expandedLarge {
+   display:flex;
+   width:180px;
+}
+
 .problem .secondRow .selector {
    margin-top:2px;
    margin-bottom:2px;

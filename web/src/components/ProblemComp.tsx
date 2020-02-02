@@ -42,7 +42,15 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
       background = "repeating-linear-gradient(-30deg," + rgbColor + "," + rgbSecondary + " 15px," + rgbColor + " 30px)";
    }
 
-   const secondRowClassName = isExpanded ? "secondRow expanded" : "secondRow";
+   let displayPoints = problem.points;
+   if(problemState == ProblemState.FLASHED && problem.flashBonus) {
+      displayPoints += problem.flashBonus;
+   }
+
+   let secondRowClassName = "secondRow";
+   if(isExpanded) {
+      secondRowClassName += problem.flashBonus ? " expandedLarge" : " expanded";
+   }
    const chromaInst = Chroma(rgbColor);
    const luminance = chromaInst.luminance();
    let borderColor = chromaInst.darken(1).hex();
@@ -66,7 +74,7 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
                <Spinner color={textColor}/>
             </div>}
             {(problemState != ProblemState.NOT_SENT && !isUpdating) && <StatusComp state={problemState!} color={textColor} size={25}/>}
-            <div className="points">{problem.points}</div>
+            <div className="points">{displayPoints}</div>
          </div>
          <div className={secondRowClassName} style={colorStyle}>
             {problem.flashBonus &&

@@ -30,7 +30,7 @@ class StartView extends React.Component<Props, State> {
    }
 
    handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-      this.state.activationCode = event.currentTarget.value.toLocaleUpperCase();
+      this.state.activationCode = event.currentTarget.value;
       this.setState(this.state);
    };
 
@@ -63,7 +63,7 @@ class StartView extends React.Component<Props, State> {
                <img style={{width:200, position:'absolute', top:70, right: 0, marginRight: 'auto',left: 0, marginLeft: 'auto'}} src="clmb_MainLogo_NoShadow.png"/>
                <div className="activationWrapper">
                   <div className="message" style={{marginBottom:10}}>Ange din aktiveringskod</div>
-                  <input autoFocus value={this.state.activationCode} onChange={this.handleActivationCodeChange} onKeyUp={this.handleActivationCodeKeyUp}/>
+                  <input autoFocus style={{textTransform: 'uppercase'}} value={this.state.activationCode} onChange={this.handleActivationCodeChange} onKeyUp={this.handleActivationCodeKeyUp}/>
                   <button className={buttonClass} onClick={this.onSubmit}>Fortsätt</button>
                </div>
                <div style={{background:"rgba(0, 0, 0, 0.6)", textAlign: "center", padding:10, color:"white", borderRadius:7, marginTop:"auto", marginBottom:20, marginLeft:20, marginRight:20}}>

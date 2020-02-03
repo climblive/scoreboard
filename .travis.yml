@@ -1,3 +1,6 @@
+env:
+  - TERM=dumb
+
 script:
   - cd web
   - npm install

@@ -56,7 +56,7 @@ class ContenderService @Autowired constructor(
     override fun onUpdate(phase: Phase, old: Contender, new: Contender) {
         when (phase) {
             Phase.BEFORE -> {
-                new.compClass?.let { checkTimeAllowed(it) }
+                old.compClass?.let { checkTimeAllowed(it) }
 
                 if (old.contest?.id != new.contest?.id) {
                     checkMaximumContenderLimit(new.contest?.id!!, 1)

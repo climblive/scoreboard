@@ -254,6 +254,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                <div style={{width:300}}>Contender</div>
                <div style={{width:150}}>Class</div>
                <div style={{width:150}}>Time</div>
+               <div style={{width:100}}>Flash</div>
             </div>
             <DialogContent>
                {this.state.ticksProblem && this.state.ticksProblem!.ticks!.map(tick => {
@@ -264,6 +265,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                         <div style={{width:300}}>{contender!.name}</div>
                         <div style={{width:150}}>{compClass!.name}</div>
                         <div style={{width:150}}>{moment(tick.timestamp).format("HH:mm")}</div>
+                        <div style={{width:100}}>{tick.flash && "Flash"}</div>
                      </div>
                   );
                }

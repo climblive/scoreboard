@@ -1,0 +1,7 @@
+script:
+  - cd web
+  - npm install
+  - cd ../admin
+  - npm install
+  - cd ../backend
+  - ./gradlew clean bootJar

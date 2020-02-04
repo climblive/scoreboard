@@ -1,6 +1,9 @@
 env:
   - TERM=dumb
 
+notifications:
+  slack: clmblive:5JZCirZpVAPKc3YfnDo3tkaU
+
 script:
   - cd web
   - npm install

@@ -77,7 +77,7 @@ function ProblemComp({ problem, tick, colors, isExpanded, isUpdating, setProblem
             <div className="points">{displayPoints}</div>
          </div>
          <div className={secondRowClassName} style={colorStyle}>
-            {problem.flashBonus &&
+            {problem.flashBonus != undefined && problem.flashBonus > 0 &&
                <div
                   style={selectorStyle}
                   className={problemState == ProblemState.FLASHED ? "selector selected" : "selector"}

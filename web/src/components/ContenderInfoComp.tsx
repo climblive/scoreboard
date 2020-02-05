@@ -15,16 +15,12 @@ export interface Props {
 }
 
 type State = {
-   id: number
    name?: string,
    compClassId?: number,
-   entered?: string
 }
 
 export default class ContenderInfoComp extends React.Component<Props, State> {
    public readonly state: State = {
-      id: this.props.existingUserData.id,
-      entered: this.props.existingUserData.entered,
       name: this.props.existingUserData.name,
       compClassId: this.props.existingUserData.compClassId
    };
@@ -46,9 +42,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
    onSubmit = () => {
       if(this.inputOk()) {
          let contenderData: ContenderData = {
-            id: this.state.id,
-            entered: this.state.entered,
-            registrationCode: this.props.activationCode!,
+            ...this.props.existingUserData,
             name: this.state.name!,
             compClassId: this.state.compClassId!,
             contestId: this.props.contest.id

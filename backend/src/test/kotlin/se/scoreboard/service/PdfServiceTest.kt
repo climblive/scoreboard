@@ -1,6 +1,6 @@
 package se.scoreboard.service
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.File
 
 internal class PdfServiceTest {
@@ -34,6 +34,6 @@ internal class PdfServiceTest {
                 "DASDFGadasdasdMS",
                 "ERFMasdasdasdasdSF"
         ))
-        File("hej.pdf").writeBytes(data!!)
+        File("hej.pdf").writeBytes(data)
     }
 }

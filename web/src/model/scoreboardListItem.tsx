@@ -6,6 +6,6 @@ export class ScoreboardListItem {
    score: number;
 
    uiPosition?: number;
-   finalistAnimationClass?:string;
-   totalAnimationClass?:string;
+   isAnimatingTotal:boolean;
+   isAnimatingFinalist:boolean;
 }

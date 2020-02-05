@@ -90,12 +90,15 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             item: {
                contenderId: contender.contenderId,
                contenderName: contender.contenderName,
-               totalScore: contender.totalScore + 0,
-               qualifyingScore: contender.qualifyingScore + 50
+               totalScore: contender.totalScore + 50,
+               qualifyingScore: contender.qualifyingScore + 50,
+               isAnimatingTotal: false,
+               isAnimatingFinalist: false,
+               lastUpdate: 0
             }
          });
       }
-      setTimeout(this.fakeScore, 300);
+      setTimeout(this.fakeScore, 2000);
    };
 
    componentWillUnmount() { 
@@ -185,7 +188,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
    return {
       loadScoreboardData: (contestId:number) => dispatch(asyncActions.loadScoreboardData(contestId)),
       loadContest: (contestId:number) => dispatch(asyncActions.loadContest(contestId)),
-      receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(actions.receiveScoreboardItem(scoreboardPushItem)),
+      receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(asyncActions.handleScoreboardItem(scoreboardPushItem)),
       updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
       setCurrentCompClassId: (compClassId:number) => dispatch(actions.setCurrentCompClassId(compClassId)),
       deactivateRaffle: () => dispatch(actions.deactivateRaffle()),

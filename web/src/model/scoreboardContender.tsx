@@ -5,6 +5,7 @@ export class ScoreboardContender {
    totalScore: number;
    qualifyingScore: number;
 
-   totalAnimationClass?:string;
-   finalistAnimationClass?:string;
+   isAnimatingTotal:boolean;
+   isAnimatingFinalist:boolean;
+   lastUpdate: number;
 }

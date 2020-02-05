@@ -11,8 +11,8 @@ import {
    receiveContenderNotFound,
    receiveContest,
    receiveProblems,
-   receiveScoreboardData,
-   receiveTicks,
+   receiveScoreboardData, receiveScoreboardItem,
+   receiveTicks, resetScoreboardItemAnimation,
    setProblemStateFailed,
    startProblemUpdate,
    updateScoreboardTimer, updateTick
@@ -20,6 +20,7 @@ import {
 import {StoreState} from '../model/storeState';
 import {ProblemState} from "../model/problemState";
 import {Tick} from "../model/tick";
+import {ScoreboardPushItem} from "../model/scoreboardPushItem";
 
 export function loadUserData(code: string): any {
    return (dispatch: Dispatch<any>) => {
@@ -62,6 +63,15 @@ export function loadScoreboardData(id: number): any {
          dispatch(updateScoreboardTimer());
       })
    };
+}
+
+export function handleScoreboardItem(scoreboardPushItem: ScoreboardPushItem): any {
+   return (dispatch: Dispatch<any>) => {
+      dispatch(receiveScoreboardItem(scoreboardPushItem));
+      setTimeout(() => {
+         dispatch(resetScoreboardItemAnimation(scoreboardPushItem));
+      }, 3000);
+   }
 }
 
 /*export function loadContest(): any {

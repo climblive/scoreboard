@@ -3,13 +3,12 @@ import './ScoreboardListComp.css';
 import { ScoreboardListItem } from '../model/scoreboardListItem';
 import { CompClass } from '../model/compClass';
 import {RefObject} from "react";
-import { throws } from 'assert';
 
 export interface ScoreboardListCompProps {
    compClass: CompClass
    totalList?: ScoreboardListItem[];
    isPaging: boolean;
-   animationClassName: string;
+   animationPropertyName: string;
    pagingCounter: number;
 }
 
@@ -81,7 +80,10 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
       let listClass = this.props.isPaging ? "scoreboardListContenders scoreboardListContendersPaging" : "scoreboardListContenders";
       let list = this.props.totalList!.map(contender =>
          <div key={contender.contenderId}
-              className={'placement-' + contender.position + ' listIndex-all listIndex-'+contender.uiPosition + ' contenderRow ' + contender[this.props.animationClassName]}
+              className={'placement-' + contender.position +
+                         ' listIndex-all listIndex-' + contender.uiPosition +
+                         ' contenderRow' +
+                         (contender[this.props.animationPropertyName] ? " highlight" : "")}
               style={{position:"absolute",top:contender.uiPosition! * this.ITEM_HEIGHT, transition:"top 1s ease 1s"}}>
             <div className='position'>{contender.position}</div>
             <div className="name">{contender.contenderName}</div>

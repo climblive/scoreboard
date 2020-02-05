@@ -19,6 +19,7 @@ export const receiveContenderNotFound = createStandardAction('RECEIVE_CONTENDER_
 export const receiveScoreboardData = createStandardAction('RECEIVE_SCOREBOARD_DATA')<ScoreboardDescription>();
 export const setCurrentCompClassId = createStandardAction('SET_CURRENT_COMP_CLASS_ID')<number>();
 export const receiveScoreboardItem = createStandardAction('RECEIVE_SCOREBOARD_ITEM')<ScoreboardPushItem>();
+export const resetScoreboardItemAnimation = createStandardAction('RESET_SCOREBOARD_ITEM_ANIMATION')<ScoreboardPushItem>();
 export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();
 export const receiveColors = createStandardAction('RECEIVE_COLORS')<Color[]>();
 export const receiveCompClasses = createStandardAction('RECEIVE_COMP_CLASSES')<CompClass[]>();

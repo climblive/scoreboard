@@ -11,7 +11,7 @@ const makeMapStateToProps = () => {
          totalList: getFinalistList(state, props),
          isPaging: props.isPaging,
          pagingCounter: state.pagingCounter,
-         animationClassName: "finalistAnimationClass"
+         animationPropertyName: "isAnimatingFinalist"
       };
    };
    return mapStateToProps;

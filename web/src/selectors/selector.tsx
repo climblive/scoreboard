@@ -36,8 +36,8 @@ const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: num
                position: position,
                contenderName: sc.contenderName,
                score: score,
-               finalistAnimationClass: sc.finalistAnimationClass,
-               totalAnimationClass: sc.totalAnimationClass,
+               isAnimatingTotal: sc.isAnimatingTotal,
+               isAnimatingFinalist: sc.isAnimatingFinalist,
                uiPosition: index
             };
             return x;

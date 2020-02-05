@@ -156,28 +156,41 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          // Create the new contenders list and put everything together again:
          let newContenders = [...oldContenders];
 
-         let totalAnimationClass = "";
-         let finalistAnimationClass = "";
+         let isAnimatingTotal = true;
+         let isAnimatingFinalist = true;
          let newItem = action.payload.item;
          if (contendersIndex !== -1) {
             let prevContender = newContenders[contendersIndex];
-            totalAnimationClass = prevContender.totalAnimationClass!;
-            finalistAnimationClass = prevContender.finalistAnimationClass!;
-            if (prevContender.totalScore !== newItem.totalScore) {
-               totalAnimationClass = prevContender.totalAnimationClass === "highlight" ? "highlight2" : "highlight";
-            }
-            if (prevContender.qualifyingScore !== newItem.qualifyingScore) {
-               finalistAnimationClass = prevContender.finalistAnimationClass === "highlight" ? "highlight2" : "highlight";
-            }
-         } else {
-            totalAnimationClass = "highlight";
-            finalistAnimationClass = "highlight";
+            isAnimatingTotal = prevContender.totalScore !== newItem.totalScore;
+            isAnimatingFinalist = prevContender.qualifyingScore !== newItem.qualifyingScore;
          }
-         newItem.totalAnimationClass = totalAnimationClass;
-         newItem.finalistAnimationClass = finalistAnimationClass;
+         newItem.isAnimatingTotal = isAnimatingTotal;
+         newItem.isAnimatingFinalist = isAnimatingFinalist;
+         newItem.lastUpdate = new Date().getTime();
+         console.log("newItem: ", newItem);
          newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
          newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
          return {...state, scoreboardData: newScoreboardData};
+      }
+
+      case getType(scoreboardActions.resetScoreboardItemAnimation): {
+         let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
+         let compClassIndex = newScoreboardData.findIndex(list => list.compClass.id === action.payload.compClassId);
+         let oldScoreboardList = state.scoreboardData[compClassIndex];
+         let oldContenders = oldScoreboardList.contenders;
+         let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
+         if(contendersIndex != -1) {
+            // Create the new contenders list and put everything together again:
+            let newContenders = [...oldContenders];
+            let newItem = {...newContenders[contendersIndex]};
+            newItem.isAnimatingTotal = false;
+            newItem.isAnimatingFinalist = false;
+            newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
+            newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
+            return {...state, scoreboardData: newScoreboardData};
+         } else {
+            return state;
+         }
       }
 
       case getType(scoreboardActions.updateScoreboardTimer):

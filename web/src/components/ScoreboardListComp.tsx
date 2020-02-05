@@ -3,6 +3,7 @@ import './ScoreboardListComp.css';
 import { ScoreboardListItem } from '../model/scoreboardListItem';
 import { CompClass } from '../model/compClass';
 import {RefObject} from "react";
+import { throws } from 'assert';
 
 export interface ScoreboardListCompProps {
    compClass: CompClass
@@ -80,7 +81,7 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
       let listClass = this.props.isPaging ? "scoreboardListContenders scoreboardListContendersPaging" : "scoreboardListContenders";
       let list = this.props.totalList!.map(contender =>
          <div key={contender.contenderId}
-              className={'contenderRow ' + contender[this.props.animationClassName]}
+              className={'placement-' + contender.position + ' listIndex-all listIndex-'+contender.uiPosition + ' contenderRow ' + contender[this.props.animationClassName]}
               style={{position:"absolute",top:contender.uiPosition! * this.ITEM_HEIGHT, transition:"top 1s ease 1s"}}>
             <div className='position'>{contender.position}</div>
             <div className="name">{contender.contenderName}</div>
@@ -93,10 +94,10 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
          let className = i == currentPage ? "paging current" : "paging";
          pagerItems.push(<div key={i} className={className}></div>)
       }
-
+      
       return (
-         <div className="scoreboardList" ref={this.containerRef}>
-            <div className={listClass}  style={{overflow: 'hidden', marginBottom: this.state.marginBottom, transition: "minHeight 0.5s ease", minHeight:this.props.isPaging ? undefined : totalHeight}}>
+         <div className={'listRowIndex-' + ' scoreboardList'}  ref={this.containerRef}>
+            <div className={listClass + ' compClass-' + this.props.compClass.name}  style={{overflow: 'hidden', marginBottom: this.state.marginBottom, transition: "minHeight 0.5s ease", minHeight:this.props.isPaging ? undefined : totalHeight}}>
                <div style={{height: totalHeight, position:"relative", transform: "translateY(" + containerTop + "px)", transition:"top 1s ease 1s,transform 0.5s ease" }}>
                   {list}
                </div>

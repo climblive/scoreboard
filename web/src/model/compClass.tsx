@@ -8,4 +8,5 @@ export interface CompClass {
    inProgress: boolean;
    statusString?: string;
    time?: string;
+   scoreboardIndex?: number;
 }

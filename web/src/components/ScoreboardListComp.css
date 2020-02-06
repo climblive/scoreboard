@@ -53,35 +53,10 @@
    }
 }
 
-@keyframes splash2 {
-   0% {
-      /*text-shadow: 0px 0px 6px white;*/
-      /*color:white;*/
-      color: black;
-      background-color: white;
-   }
-   90% {
-      /*text-shadow: 0px 0px 0px black;*/
-      /*color:#E0E0E0;*/
-      color: black;
-      background-color:white;
-   }
-   100% {
-      text-shadow: 0px 0px 0px black;
-      /*color:#E0E0E0;*/
-      color: inherit;
-      background-color:inherit;
-   }
-}
-
 .highlight {
    animation: splash 5s normal forwards ease-in-out;
+   z-index: 10;
 }
-
-.highlight2 {
-   animation: splash2 1s normal forwards ease-in-out;
-}
-.undefined{background-color: purple;}
 
 .scoreboardList .scoreboardListPaging .paging {
    margin-left: 2px;
@@ -135,7 +110,7 @@
    margin-top: 1px;
    font-size: 24px;
    color: #f42d2d;
-   animation: blinker 1.5s infinite;
+   /*animation: blinker 1.5s infinite;*/
    font-family: monospace;
 }
 
@@ -159,57 +134,57 @@
 
 
 
-.compClass-Female {color: #ff66ff; font-weight: bolder;}
-.compClass-Female .listIndex-all {color:#ff66ff}
-.compClass-Female .listIndex-0 {color:#ffffff; font-weight: 900;}
-.compClass-Female .listIndex-1 {color:#ffe6ff; font-weight: 800;}
-.compClass-Female .listIndex-2 {color:#ffccff; font-weight: 700;}
-.compClass-Female .listIndex-3 {color:#ffb3ff;}
-.compClass-Female .listIndex-4 {color:#ff99ff;}
-.compClass-Female .listIndex-5 {color:#ff80ff;}
-.compClass-Female .listIndex-6 {color:#ff66ff;}
-.compClass-Female .placement-1 {background-color: #b300b3 !important; color: #ffffff;}
+.compClass-0 {color: #6699ff; font-weight: bolder;}
+.compClass-0 .listIndex-all {color:#6699ff;}
+.compClass-0 .listIndex-0 {color:#ffffff; font-weight: 900;}
+.compClass-0 .listIndex-1 {color:#e6eeff; font-weight: 800;}
+.compClass-0 .listIndex-2 {color:#ccddff; font-weight: 700;}
+.compClass-0 .listIndex-3 {color:#b3ccff;}
+.compClass-0 .listIndex-4 {color:#99bbff;}
+.compClass-0 .listIndex-5 {color:#80aaff;}
+.compClass-0 .listIndex-6 {color:#6699ff;}
+.compClass-0 .placement-1 {background-color: #003cb3 !important; color: #ffffff;}
 
-.compClass-Male {color: #6699ff; font-weight: bolder;}
-.compClass-Male .listIndex-all {color:#6699ff;}
-.compClass-Male .listIndex-0 {color:#ffffff; font-weight: 900;}
-.compClass-Male .listIndex-1 {color:#e6eeff; font-weight: 800;}
-.compClass-Male .listIndex-2 {color:#ccddff; font-weight: 700;}
-.compClass-Male .listIndex-3 {color:#b3ccff;}
-.compClass-Male .listIndex-4 {color:#99bbff;}
-.compClass-Male .listIndex-5 {color:#80aaff;}
-.compClass-Male .listIndex-6 {color:#6699ff;}
-.compClass-Male .placement-1 {background-color: #003cb3 !important; color: #ffffff;}
+.compClass-1 {color: #ff66ff; font-weight: bolder;}
+.compClass-1 .listIndex-all {color:#ff66ff}
+.compClass-1 .listIndex-0 {color:#ffffff; font-weight: 900;}
+.compClass-1 .listIndex-1 {color:#ffe6ff; font-weight: 800;}
+.compClass-1 .listIndex-2 {color:#ffccff; font-weight: 700;}
+.compClass-1 .listIndex-3 {color:#ffb3ff;}
+.compClass-1 .listIndex-4 {color:#ff99ff;}
+.compClass-1 .listIndex-5 {color:#ff80ff;}
+.compClass-1 .listIndex-6 {color:#ff66ff;}
+.compClass-1 .placement-1 {background-color: #b300b3 !important; color: #ffffff;}
 
-.compClass-Youth {color: #66ff66; font-weight: bolder;}
-.compClass-Youth .listIndex-all {color:#66ff66;}
-.compClass-Youth .listIndex-0 {color:#ffffff; font-weight: 900;} 
-.compClass-Youth .listIndex-1 {color:#e6ffe6; font-weight: 800;}
-.compClass-Youth .listIndex-2 {color:#ccffcc; font-weight: 700;}
-.compClass-Youth .listIndex-3 {color:#b3ffb3;}
-.compClass-Youth .listIndex-4 {color:#99ff99;}
-.compClass-Youth .listIndex-5 {color:#80ff80;}
-.compClass-Youth .listIndex-6 {color:#66ff66;}
-.compClass-Youth .placement-1 {background-color: #009900 !important; color: #ffffff;}
+.compClass-2 {color: #66ff66; font-weight: bolder;}
+.compClass-2 .listIndex-all {color:#66ff66;}
+.compClass-2 .listIndex-0 {color:#ffffff; font-weight: 900;}
+.compClass-2 .listIndex-1 {color:#e6ffe6; font-weight: 800;}
+.compClass-2 .listIndex-2 {color:#ccffcc; font-weight: 700;}
+.compClass-2 .listIndex-3 {color:#b3ffb3;}
+.compClass-2 .listIndex-4 {color:#99ff99;}
+.compClass-2 .listIndex-5 {color:#80ff80;}
+.compClass-2 .listIndex-6 {color:#66ff66;}
+.compClass-2 .placement-1 {background-color: #009900 !important; color: #ffffff;}
 
-.compClass-Oldies {color: #ffcc66; font-weight: bolder;}
-.compClass-Oldies .listIndex-all {color:#ffcc66;}
-.compClass-Oldies .listIndex-0 {color: #ffffff; font-weight: 900;} 
-.compClass-Oldies .listIndex-1 {color: #fff7e6; font-weight: 800;}
-.compClass-Oldies .listIndex-2 {color: #ffeecc; font-weight: 700;}
-.compClass-Oldies .listIndex-3 {color: #ffe6b3;}
-.compClass-Oldies .listIndex-4 {color: #ffdd99;}
-.compClass-Oldies .listIndex-5 {color: #ffd480;}
-.compClass-Oldies .listIndex-6 {color: #ffcc66;}
-.compClass-Oldies .placement-1 {background-color: #996600  !important; color: #ffffff;}
+.compClass-3 {color: #ffcc66; font-weight: bolder;}
+.compClass-3 .listIndex-all {color:#ffcc66;}
+.compClass-3 .listIndex-0 {color: #ffffff; font-weight: 900;}
+.compClass-3 .listIndex-1 {color: #fff7e6; font-weight: 800;}
+.compClass-3 .listIndex-2 {color: #ffeecc; font-weight: 700;}
+.compClass-3 .listIndex-3 {color: #ffe6b3;}
+.compClass-3 .listIndex-4 {color: #ffdd99;}
+.compClass-3 .listIndex-5 {color: #ffd480;}
+.compClass-3 .listIndex-6 {color: #ffcc66;}
+.compClass-3 .placement-1 {background-color: #996600  !important; color: #ffffff;}
 
-.compClass-Loosers {color: #66ffff; font-weight: bolder;}
-.compClass-Loosers .listIndex-all {color:#66ffff;}
-.compClass-Loosers .listIndex-0 {color: #ffffff; font-weight: 900;} 
-.compClass-Loosers .listIndex-1 {color: #e6ffff; font-weight: 800;}
-.compClass-Loosers .listIndex-2 {color: #ccffff; font-weight: 700;}
-.compClass-Loosers .listIndex-3 {color: #b3ffff;}
-.compClass-Loosers .listIndex-4 {color: #99ffff;}
-.compClass-Loosers .listIndex-5 {color: #80ffff;}
-.compClass-Loosers .listIndex-6 {color: #66ffff;}
-.compClass-Loosers .placement-1 {background-color: #009999  !important; color: #ffffff;}
+.compClass-4 {color: #66ffff; font-weight: bolder;}
+.compClass-4 .listIndex-all {color:#66ffff;}
+.compClass-4 .listIndex-0 {color: #ffffff; font-weight: 900;}
+.compClass-4 .listIndex-1 {color: #e6ffff; font-weight: 800;}
+.compClass-4 .listIndex-2 {color: #ccffff; font-weight: 700;}
+.compClass-4 .listIndex-3 {color: #b3ffff;}
+.compClass-4 .listIndex-4 {color: #99ffff;}
+.compClass-4 .listIndex-5 {color: #80ffff;}
+.compClass-4 .listIndex-6 {color: #66ffff;}
+.compClass-4 .placement-1 {background-color: #009999  !important; color: #ffffff;}

@@ -71,6 +71,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, contenderData: undefined, contenderNotFound: true};
 
       case getType(scoreboardActions.receiveScoreboardData):
+         let scoreboardContenderLists: ScoreboardContenderList[] = action.payload.scores;
+         for(let i = 0; i < scoreboardContenderLists.length; i++) {
+            scoreboardContenderLists[i].compClass.scoreboardIndex = i;
+         }
          return { ...state,
             scoreboardData: action.payload.scores,
             currentCompClassId: action.payload.scores[0].compClass.id,
@@ -167,7 +171,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          newItem.isAnimatingTotal = isAnimatingTotal;
          newItem.isAnimatingFinalist = isAnimatingFinalist;
          newItem.lastUpdate = new Date().getTime();
-         console.log("newItem: ", newItem);
          newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
          newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
          return {...state, scoreboardData: newScoreboardData};

@@ -99,7 +99,7 @@ export class ScoreboardListComp extends React.Component<ScoreboardListCompProps,
       
       return (
          <div className={'listRowIndex-' + ' scoreboardList'}  ref={this.containerRef}>
-            <div className={listClass + ' compClass-' + this.props.compClass.name}  style={{overflow: 'hidden', marginBottom: this.state.marginBottom, transition: "minHeight 0.5s ease", minHeight:this.props.isPaging ? undefined : totalHeight}}>
+            <div className={listClass + ' compClass-' + this.props.compClass.scoreboardIndex}  style={{overflow: 'hidden', marginBottom: this.state.marginBottom, transition: "minHeight 0.5s ease", minHeight:this.props.isPaging ? undefined : totalHeight}}>
                <div style={{height: totalHeight, position:"relative", transform: "translateY(" + containerTop + "px)", transition:"top 1s ease 1s,transform 0.5s ease" }}>
                   {list}
                </div>

@@ -11,4 +11,24 @@ import se.scoreboard.mapper.AbstractMapper
 class CompClassService @Autowired constructor(
     compClassRepository: CompClassRepository,
     override var entityMapper: AbstractMapper<CompClass, CompClassDto>) : AbstractDataService<CompClass, CompClassDto, Int>(
-        compClassRepository)
+        compClassRepository) {
+
+    override fun onCreate(phase: Phase, new: CompClass) {
+        when (phase) {
+            Phase.BEFORE -> clearSeconds(new)
+            else -> {}
+        }
+    }
+
+    override fun onUpdate(phase: Phase, old: CompClass, new: CompClass) {
+        when (phase) {
+            Phase.BEFORE -> clearSeconds(new)
+            else -> {}
+        }
+    }
+
+    private fun clearSeconds(compClass: CompClass) {
+        compClass.timeBegin = compClass.timeBegin?.withSecond(0)?.withNano(0)
+        compClass.timeEnd = compClass.timeEnd?.withSecond(0)?.withNano(0)
+    }
+}

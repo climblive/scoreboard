@@ -26,6 +26,7 @@
 
 .scoreboardList .scoreboardListPaging {
    display:flex;
+   padding: 5px;
 }
 
 .scoreboardList .scoreboardListPaging .paging:first-child {
@@ -60,13 +61,13 @@
    margin-left: 2px;
    margin-right: 2px;
    border-radius: 5px;
-   width:10px;
-   height:10px;
+   width:5px;
+   height:5px;
    background: #555;
 }
 
 .scoreboardList .scoreboardListPaging .paging.current {
-   background: white;
+   background: rgb(184, 184, 184);
 }
 
 .scoreboardList .scoreboardListPaging .paging:last-child {
@@ -93,7 +94,7 @@
 
 .compClassHeader .status {
    color: #888;
-   font-size: 21px;
+   font-size: 18px;
    margin-top: 15px;
 }
 

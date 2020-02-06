@@ -27,6 +27,9 @@
 
 .logoContainer {
    display:flex;
+   /* temp code to hide container*/
+   display: none;
+   /**/
    align-items: center;
    padding-bottom: 5px;
    padding-top:20px;

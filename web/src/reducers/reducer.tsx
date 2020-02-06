@@ -20,6 +20,15 @@ function getDurationString(sec: number): string {
    return "" + min + ":" + (sec > 9 ? "" : "0") + sec;
 }
 
+function getCountdownString(sec: number): string {
+   sec = Math.round(sec);
+   let min = Math.floor(sec / 60);
+   sec -= min * 60;
+   let hours = Math.floor(min / 60);
+   min -= hours * 60;
+   return hours + ":"+ (min > 9 ? "" : "0") + min + ":" + (sec > 9 ? "" : "0") + sec;
+}
+
 function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
    let newProblems: Problem[] = [...problems];
    if (sortBy === SortBy.BY_POINTS) {
@@ -222,7 +231,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
                   newCompClass.time = undefined;
                } else {
                   newCompClass.statusString = "Slutar om";
-                  newCompClass.time = getDurationString(endTime - now);
+                  newCompClass.time = getCountdownString(endTime - now);
                   newCompClass.inProgress = true;
                }
                return {...scl, compClass: newCompClass}

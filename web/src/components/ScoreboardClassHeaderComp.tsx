@@ -10,8 +10,8 @@ export function ScoreboardClassHeaderComp({ compClass }: ScoreboardClassHeaderCo
    return (
       <div className="compClassHeader">
          <div className={'compClass-' + compClass.name + " showLarge compClass"}>{compClass.name}</div>
-         <div className="status">{compClass.statusString}</div>
-         <div className="time">{compClass.time}</div>
+         {!compClass.inProgress && <div className="status">{compClass.statusString}</div>}
+         <div className={compClass.inProgress ? 'time active' : 'time'}>{compClass.time}</div>
       </div>
    );
 }

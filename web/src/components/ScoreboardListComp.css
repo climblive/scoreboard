@@ -34,27 +34,25 @@
 
 @keyframes splash {
    0% {
-      /*text-shadow: 0px 0px 6px white;*/
-      /*color:white;*/
-      color: black;
+      color:inherit;
+      background-color:inherit;
+   }
+   10% {
+      color: #888;
       background-color:white;
    }
-   90% {
-      /*text-shadow: 0px 0px 0px black;*/
-      /*color:#E0E0E0;*/
-      color: black;
+   90%{
+      color: #888;
       background-color:white;
    }
-   100% {
-      /*text-shadow: 0px 0px 0px black;*/
-      /*color:#E0E0E0;*/
-      color: inherit;
-      background-color:transparent;
+   100%{
+      color:inherit;
+      background-color:inherit;
    }
 }
 
 .highlight {
-   animation: splash 5s normal forwards ease-in-out;
+   animation: splash 3s normal forwards ease-in-out;
    z-index: 10;
 }
 

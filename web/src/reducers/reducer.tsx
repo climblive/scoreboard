@@ -136,65 +136,67 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return {...state, ticks: newTicks, problemIdBeingUpdated: undefined};
       }
 
-      case getType(scoreboardActions.receiveScoreboardItem): {
-         let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
-         let compClassIndex = newScoreboardData.findIndex(list => list.compClass.id === action.payload.compClassId);
-         let oldScoreboardList = state.scoreboardData[compClassIndex];
-         let oldContenders = oldScoreboardList.contenders;
-         let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
+      case getType(scoreboardActions.receiveScoreboardItem):
+         if(state.scoreboardData) {
+            let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
+            let compClassIndex = newScoreboardData.findIndex(list => list.compClass.id === action.payload.compClassId);
+            let oldScoreboardList = state.scoreboardData[compClassIndex];
+            let oldContenders = oldScoreboardList.contenders;
+            let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
 
-         if (contendersIndex === -1) {
-            // The contender wasn't found in this class.
-            // To be sure, remove it from the other classes:
-            newScoreboardData = newScoreboardData.map(contenderList => {
-               let index = contenderList.contenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
-               if (index !== -1) {
-                  let filteredList = contenderList.contenders.filter(contender => action.payload.item.contenderId !== contender.contenderId);
-                  return {...contenderList, contenders: filteredList}
-               } else {
-                  return contenderList;
-               }
-            })
-         }
+            if (contendersIndex === -1) {
+               // The contender wasn't found in this class.
+               // To be sure, remove it from the other classes:
+               newScoreboardData = newScoreboardData.map(contenderList => {
+                  let index = contenderList.contenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
+                  if (index !== -1) {
+                     let filteredList = contenderList.contenders.filter(contender => action.payload.item.contenderId !== contender.contenderId);
+                     return {...contenderList, contenders: filteredList}
+                  } else {
+                     return contenderList;
+                  }
+               })
+            }
 
-         // Create the new contenders list and put everything together again:
-         let newContenders = [...oldContenders];
-
-         let isAnimatingTotal = true;
-         let isAnimatingFinalist = true;
-         let newItem = action.payload.item;
-         if (contendersIndex !== -1) {
-            let prevContender = newContenders[contendersIndex];
-            isAnimatingTotal = prevContender.totalScore !== newItem.totalScore;
-            isAnimatingFinalist = prevContender.qualifyingScore !== newItem.qualifyingScore;
-         }
-         newItem.isAnimatingTotal = isAnimatingTotal;
-         newItem.isAnimatingFinalist = isAnimatingFinalist;
-         newItem.lastUpdate = new Date().getTime();
-         newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
-         newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
-         return {...state, scoreboardData: newScoreboardData};
-      }
-
-      case getType(scoreboardActions.resetScoreboardItemAnimation): {
-         let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
-         let compClassIndex = newScoreboardData.findIndex(list => list.compClass.id === action.payload.compClassId);
-         let oldScoreboardList = state.scoreboardData[compClassIndex];
-         let oldContenders = oldScoreboardList.contenders;
-         let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
-         if(contendersIndex != -1) {
             // Create the new contenders list and put everything together again:
             let newContenders = [...oldContenders];
-            let newItem = {...newContenders[contendersIndex]};
-            newItem.isAnimatingTotal = false;
-            newItem.isAnimatingFinalist = false;
+
+            let isAnimatingTotal = true;
+            let isAnimatingFinalist = true;
+            let newItem = action.payload.item;
+            if (contendersIndex !== -1) {
+               let prevContender = newContenders[contendersIndex];
+               isAnimatingTotal = prevContender.totalScore !== newItem.totalScore;
+               isAnimatingFinalist = prevContender.qualifyingScore !== newItem.qualifyingScore;
+            }
+            newItem.isAnimatingTotal = isAnimatingTotal;
+            newItem.isAnimatingFinalist = isAnimatingFinalist;
+            newItem.lastUpdate = new Date().getTime();
             newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
             newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
             return {...state, scoreboardData: newScoreboardData};
-         } else {
-            return state;
          }
-      }
+
+      case getType(scoreboardActions.resetScoreboardItemAnimation):
+         if(state.scoreboardData) {
+            let newScoreboardData: ScoreboardContenderList[] = [...state.scoreboardData];
+            let compClassIndex = newScoreboardData.findIndex(list => list.compClass.id === action.payload.compClassId);
+            let oldScoreboardList = state.scoreboardData[compClassIndex];
+            let oldContenders = oldScoreboardList.contenders;
+            let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
+            if(contendersIndex != -1) {
+               // Create the new contenders list and put everything together again:
+               let newContenders = [...oldContenders];
+               let newItem = {...newContenders[contendersIndex]};
+               newItem.isAnimatingTotal = false;
+               newItem.isAnimatingFinalist = false;
+               newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
+               newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
+               return {...state, scoreboardData: newScoreboardData};
+            } else {
+               return state;
+            }
+         }
 
       case getType(scoreboardActions.updateScoreboardTimer):
          let now: number = new Date().getTime() / 1000;

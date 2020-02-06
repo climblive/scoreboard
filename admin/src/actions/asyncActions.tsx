@@ -427,7 +427,7 @@ export function createRaffle():any {
          id: -1,
          contestId: contestId,
          winners: undefined,
-         active:false
+         isActive:false
       };
       Api.saveRaffle(newRaffle).then(() => {
          reloadRaffles(dispatch, contestId);
@@ -440,7 +440,7 @@ export function createRaffle():any {
 export function activateRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
-      raffle.active = true;
+      raffle.isActive = true;
       raffle.winners = undefined;
       dispatch(actions.clearRaffles());
       Api.saveRaffle(raffle).then(() => {
@@ -454,7 +454,7 @@ export function activateRaffle(raffle:Raffle):any {
 export function deactivateRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
-      raffle.active = false;
+      raffle.isActive = false;
       raffle.winners = undefined;
       dispatch(actions.clearRaffles());
       Api.saveRaffle(raffle).then(() => {

@@ -64,7 +64,7 @@
 }
 
 .winner {
-   font-size: 20px;
+   font-size: 40px;
    color:#9a9a9a;
    position: absolute;
    left: 0;
@@ -73,7 +73,7 @@
 }
 
 .winner:first-child {
-   font-size: 50px;
+   font-size: 60px;
    color:#E0E0E0;
    margin-bottom:20px;
 }

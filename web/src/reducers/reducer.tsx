@@ -32,9 +32,9 @@ function getSortedProblems(problems: Problem[], sortBy:SortBy): Problem[] {
 
 function formatRaffleWinners(winners:RaffleWinner[]) {
    winners.forEach((winner, index) => {
-      winner.top = index * 28;
+      winner.top = index * 50;
       if(index > 0) {
-         winner.top += 37;
+         winner.top += 40;
       }
    });
    winners.splice(6);
@@ -78,7 +78,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state,
             scoreboardData: action.payload.scores,
             currentCompClassId: action.payload.scores[0].compClass.id,
-            raffleWinners: action.payload.raffle ? formatRaffleWinners(action.payload.raffle.winners.reverse()) : undefined
+            raffleWinners: action.payload.raffle ? formatRaffleWinners(action.payload.raffle.winners.reverse()) : undefined,
+            raffleId : action.payload.raffle ? action.payload.raffle.raffle.id : undefined
          };
 
       case getType(scoreboardActions.setCurrentCompClassId): {
@@ -94,7 +95,11 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       }
 
       case getType(scoreboardActions.deactivateRaffle): {
-         return{...state, raffleWinners: undefined};
+         if(action.payload.raffleId == state.raffleId) {
+            return {...state, raffleWinners: undefined, raffleId: undefined};
+         } else {
+            return state;
+         }
       }
 
       case getType(scoreboardActions.receiveRaffleWinner): {
@@ -176,6 +181,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
             return {...state, scoreboardData: newScoreboardData};
          }
+         return state;
 
       case getType(scoreboardActions.resetScoreboardItemAnimation):
          if(state.scoreboardData) {
@@ -184,7 +190,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             let oldScoreboardList = state.scoreboardData[compClassIndex];
             let oldContenders = oldScoreboardList.contenders;
             let contendersIndex = oldContenders.findIndex(contender => action.payload.item.contenderId === contender.contenderId);
-            if(contendersIndex != -1) {
+            if (contendersIndex != -1) {
                // Create the new contenders list and put everything together again:
                let newContenders = [...oldContenders];
                let newItem = {...newContenders[contendersIndex]};
@@ -193,10 +199,9 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
                newContenders[contendersIndex === -1 ? newContenders.length : contendersIndex] = newItem;
                newScoreboardData[compClassIndex] = {...oldScoreboardList, contenders: newContenders};
                return {...state, scoreboardData: newScoreboardData};
-            } else {
-               return state;
             }
          }
+         return state;
 
       case getType(scoreboardActions.updateScoreboardTimer):
          let now: number = new Date().getTime() / 1000;

@@ -25,4 +25,5 @@ export interface StoreState {
    scoreboardData: ScoreboardContenderList[];
    currentCompClassId: number
    raffleWinners?: RaffleWinner[];
+   raffleId?: number;
 }

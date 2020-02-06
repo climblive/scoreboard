@@ -25,7 +25,7 @@ export interface Props {
    loadScoreboardData?: (id:number) => void;
    loadContest?: (id:number) => void;
    receiveScoreboardItem?: (scoreboardPushItem: ScoreboardPushItem) => void;
-   deactivateRaffle?: () => void;
+   deactivateRaffle?: (rafflePushItem: RafflePushItem) => void;
    receiveRaffleWinner?: (raffleWinner: RaffleWinner) => void;
    updateScoreboardTimer?: () => void;
    setCurrentCompClassId?: (compClassId:number) => void;
@@ -63,7 +63,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             if(rafflePushItem.active) {
                this.props.loadScoreboardData!(contestId);
             } else {
-               this.props.deactivateRaffle!();
+               this.props.deactivateRaffle!(rafflePushItem);
             }
          });
          this.client.subscribe("/topic/contest/" + contestId + "/raffle/winner", (message) => {
@@ -191,7 +191,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) => dispatch(asyncActions.handleScoreboardItem(scoreboardPushItem)),
       updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
       setCurrentCompClassId: (compClassId:number) => dispatch(actions.setCurrentCompClassId(compClassId)),
-      deactivateRaffle: () => dispatch(actions.deactivateRaffle()),
+      deactivateRaffle: (rafflePushItem: RafflePushItem) => dispatch(actions.deactivateRaffle(rafflePushItem)),
       receiveRaffleWinner: (raffleWinner: RaffleWinner) => dispatch(actions.receiveRaffleWinner(raffleWinner))
    };
 }

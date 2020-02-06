@@ -6,5 +6,8 @@ export class ScoreboardDescription {
    scores:ScoreboardContenderList[];
    raffle?: {
       winners: RaffleWinner[];
+      raffle: {
+         id: number;
+      }
    }
 }

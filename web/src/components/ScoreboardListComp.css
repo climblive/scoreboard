@@ -11,8 +11,8 @@
 }
 
 .separator {
-   width:1px;
-   background:#DDD;
+      width: 2px;
+      background: black;
 }
 
 .scoreboardList .scoreboardListContenders {
@@ -95,7 +95,8 @@
 
 .compClassHeader .status {
    color: #888;
-   font-size: 12px;
+   font-size: 21px;
+   margin-top: 15px;
 }
 
 @-webkit-keyframes blinker {

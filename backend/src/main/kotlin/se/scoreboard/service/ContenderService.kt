@@ -63,6 +63,7 @@ class ContenderService @Autowired constructor(
                 }
 
                 beforeCreateAndUpdate(old, new)
+                new.ticks = old.ticks
             }
             Phase.AFTER -> broadcastService.broadcast(new)
         }

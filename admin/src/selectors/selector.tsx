@@ -188,7 +188,7 @@ export const getContendersWithTicks = createSelector(
          for (let tick of contender.ticks!) {
             let problem = problemMap.get(tick.problemId);
             let points = problem!.points!;
-            if(tick.flash && problem!.flashBonus) {
+            if(tick.isFlash && problem!.flashBonus) {
                points += problem!.flashBonus;
             }
             contender.totalScore += points;

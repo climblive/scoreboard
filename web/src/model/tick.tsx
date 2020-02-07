@@ -1,6 +1,6 @@
 export interface Tick {
    id?: number;
-   flash: boolean;
+   isFlash: boolean;
    contenderId: number;
    problemId: number;
    timestamp?: string;

@@ -97,9 +97,9 @@ export class Api {
       return this.get("contender/" + contenderId + "/tick", activationCode);
    }
 
-   static createTick(problemId: number, contenderId: number, flash: boolean, activationCode: string): Promise<Tick> {
+   static createTick(problemId: number, contenderId: number, isFlash: boolean, activationCode: string): Promise<Tick> {
       const newTick:Tick = {
-         flash,
+         isFlash,
          contenderId,
          problemId
       };

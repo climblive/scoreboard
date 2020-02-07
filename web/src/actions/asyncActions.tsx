@@ -92,7 +92,7 @@ export function saveUserData(contenderData: ContenderData): any {
 
 export function setProblemStateAndSave(problem: Problem, problemState: ProblemState, tick?:Tick): any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      const oldState = !tick ? ProblemState.NOT_SENT : tick.flash ? ProblemState.FLASHED : ProblemState.SENT;
+      const oldState = !tick ? ProblemState.NOT_SENT : tick.isFlash ? ProblemState.FLASHED : ProblemState.SENT;
       if(oldState != problemState) {
          dispatch(startProblemUpdate(problem));
          const activationCode: string = getState().contenderData!.registrationCode;
@@ -119,7 +119,7 @@ export function setProblemStateAndSave(problem: Problem, problemState: ProblemSt
          } else {
             // Update the tick:
             const newTick:Tick = JSON.parse(JSON.stringify(tick));
-            newTick.flash = problemState == ProblemState.FLASHED;
+            newTick.isFlash = problemState == ProblemState.FLASHED;
             Api.updateTick(newTick, activationCode)
                .then(() => {
                   dispatch(updateTick(newTick))

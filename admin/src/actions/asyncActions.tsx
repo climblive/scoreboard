@@ -335,7 +335,9 @@ export function reloadContenders():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
       dispatch(actions.receiveContenders([]));
+      dispatch(actions.receiveTicks([]));
       reloadContendersForContest(dispatch, contestId);
+      reloadTicks(dispatch, contestId);
    }
 }
 

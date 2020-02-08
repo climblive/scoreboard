@@ -10,4 +10,4 @@ script:
   - cd ../admin
   - npm install
   - cd ../backend
-  - ./gradlew clean bootJar
+  - ./gradlew clean test bootJar

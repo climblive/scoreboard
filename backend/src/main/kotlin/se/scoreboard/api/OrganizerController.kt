@@ -1,5 +1,6 @@
 package se.scoreboard.api
 
+import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
@@ -13,6 +14,7 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
+@Api(tags = ["Organizer"])
 class OrganizerController @Autowired constructor(
         val organizerService: OrganizerService,
         private var contestMapper: ContestMapper,

@@ -1,6 +1,7 @@
 package se.scoreboard.api
 
 import com.google.common.net.MediaType
+import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpHeaders
@@ -27,6 +28,7 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
+@Api(tags = ["Contest"])
 class ContestController @Autowired constructor(
         private val contestService: ContestService,
         private val contenderService: ContenderService,

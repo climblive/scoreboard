@@ -1,5 +1,7 @@
 package se.scoreboard.api
 
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiParam
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PostAuthorize
@@ -12,6 +14,7 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
+@Api(tags = ["Color"])
 class ColorController @Autowired constructor(
         val colorService: ColorService) {
 

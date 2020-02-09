@@ -59,6 +59,7 @@ class GeneratorService @Autowired constructor(
 
         val contest = Contest(null, location, organizer, null, "%s %s".format(location.name, formats.random()),
                 null,
+                true,
                 Random.nextInt(5, 10), Random.nextInt(5, 10),
                 null, 15 * 60)
 
@@ -78,7 +79,7 @@ class GeneratorService @Autowired constructor(
         }
 
         val compClasses = names.map {
-            name -> CompClass(null, contest, contest.id, name, null, start, end) }
+            name -> CompClass(null, contest, contest.id, name, null, null, start, end) }
 
         return compClassRepository.saveAll(compClasses).toList()
     }
@@ -101,7 +102,7 @@ class GeneratorService @Autowired constructor(
 
     private fun createProblems(contest: Contest, colors: List<Color>): List<Problem> {
         val problems = IntRange(1, Random.nextInt(2, 4) * 10).map { num ->
-            Problem(null, colors.random(), contest, num, Random.nextInt(1, 5) * 50, 0)
+            Problem(null, colors.random(), contest, num, null, Random.nextInt(1, 5) * 50, 0)
         }
 
         return problemRepository.saveAll(problems).toList()

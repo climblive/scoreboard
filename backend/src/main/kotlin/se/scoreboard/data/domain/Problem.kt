@@ -24,6 +24,9 @@ open class Problem (
     @Column(name = "number", nullable = false)
     open var number: Int = 0,
 
+    @Column(name = "name", nullable = true, length = 64)
+    open var name: String? = null,
+
     @Column(name = "points", nullable = false)
     open var points: Int = 0,
 

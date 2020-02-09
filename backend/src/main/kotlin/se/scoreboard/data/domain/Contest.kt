@@ -31,6 +31,9 @@ open class Contest (
     @Column(name = "description", length = 65535)
     open var description: String? = null,
 
+    @Column(name = "final_enabled", nullable = false)
+    open var isFinalEnabled: Boolean = false,
+
     @Column(name = "qualifying_problems", nullable = false)
     open var qualifyingProblems: Int = 0,
 

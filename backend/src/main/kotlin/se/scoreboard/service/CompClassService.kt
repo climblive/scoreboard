@@ -8,6 +8,7 @@ import se.scoreboard.data.repo.CompClassRepository
 import se.scoreboard.dto.CompClassDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.validation.RgbColorValidator
 
 @Service
 class CompClassService @Autowired constructor(
@@ -35,6 +36,10 @@ class CompClassService @Autowired constructor(
 
         if (compClass.timeBegin?.isAfter(compClass.timeEnd) == true) {
             throw WebException(HttpStatus.BAD_REQUEST, "Cannot end before it has begun")
+        }
+
+        if (compClass.color?.let { RgbColorValidator.validate(it) } == false) {
+            throw WebException(HttpStatus.BAD_REQUEST, "Invalid color")
         }
     }
 }

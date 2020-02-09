@@ -27,6 +27,9 @@ open class CompClass (
     @Column(name = "description", length = 255)
     open var description: String? = null,
 
+    @Column(name = "color", length = 7, nullable = true)
+    open var color: String? = null,
+
     @Column(name = "time_begin", length = 26, nullable = false)
     open var timeBegin: OffsetDateTime? = null,
 

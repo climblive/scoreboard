@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.util.*
 import javax.sql.DataSource
 
 
@@ -36,6 +37,8 @@ class ControllerTestBase
 
     @BeforeEach
     fun populateOnce() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
         if (isPopulated) {
             return
         }

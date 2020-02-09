@@ -11,3 +11,4 @@ script:
   - npm install
   - cd ../backend
   - ./gradlew clean test bootJar
+  - docker build -t scoreboard .

@@ -4,6 +4,9 @@ env:
 notifications:
   slack: clmblive:5JZCirZpVAPKc3YfnDo3tkaU
 
+services:
+  - docker
+
 script:
   - cd web
   - npm install

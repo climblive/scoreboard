@@ -25,7 +25,8 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
     @Mappings(
             Mapping(target = "compClasses", ignore = true),
             Mapping(target = "contenders", ignore = true),
-            Mapping(target = "problems", ignore = true)
+            Mapping(target = "problems", ignore = true),
+            Mapping(target = "raffles", ignore = true)
     )
     abstract override fun convertToEntity(source: ContestDto): Contest
 

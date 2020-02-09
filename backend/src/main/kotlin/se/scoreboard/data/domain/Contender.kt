@@ -36,5 +36,8 @@ open class Contender (
     @Column(name = "disqualified")
     open var disqualified: Boolean = false,
 
+    @Column(name = "final_placing", nullable = true)
+    open var finalPlacing: Int? = null,
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contender")
     open var ticks: MutableSet<Tick> = HashSet(0)) : Serializable, AbstractEntity<Int>

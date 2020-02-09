@@ -9,7 +9,8 @@ data class ContenderDto (
     var registrationCode: String? = null,
     var name: String? = null,
     var entered: OffsetDateTime? = null,
-    var disqualified: Boolean) {
+    var disqualified: Boolean,
+    var finalPlacing: Int?) {
 
-    constructor() : this(null, null, null, null, null, null, false)
+    constructor() : this(null, null, null, null, null, null, false, null)
 }

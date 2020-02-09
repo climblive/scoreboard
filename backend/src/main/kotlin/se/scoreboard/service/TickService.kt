@@ -3,6 +3,7 @@ package se.scoreboard.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import se.scoreboard.Messages
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Tick
 import se.scoreboard.data.domain.extension.allowedToAlterTick
@@ -20,10 +21,10 @@ class TickService @Autowired constructor(
     override var entityMapper: AbstractMapper<Tick, TickDto>) : AbstractDataService<Tick, TickDto, Int>(tickRepository) {
 
     private fun checkTimeAllowed(contender: Contender) {
-        val compClass = contender.compClass ?: throw WebException(HttpStatus.CONFLICT, "The contender is not registered")
+        val compClass = contender.compClass ?: throw WebException(HttpStatus.CONFLICT, Messages.CONTENDER_NOT_REGISTERED)
 
         if (!compClass.allowedToAlterTick()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
+            throw WebException(HttpStatus.FORBIDDEN, Messages.CONTEST_NOT_IN_PROGRESS)
         }
     }
 

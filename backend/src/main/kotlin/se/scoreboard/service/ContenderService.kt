@@ -3,6 +3,7 @@ package se.scoreboard.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import se.scoreboard.Messages
 import se.scoreboard.createRegistrationCode
 import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.Contender
@@ -90,13 +91,13 @@ class ContenderService @Autowired constructor(
 
     private fun checkMaximumContenderLimit(contestId: Int, delta: Int = 0) {
         if (contenderRepository.countByContestId(contestId) + delta > MAX_CONTEST_CONTENDERS) {
-            throw WebException(HttpStatus.FORBIDDEN, "Contender limit exceeded for the contest")
+            throw WebException(HttpStatus.FORBIDDEN, Messages.CONTENDER_LIMIT_EXCEEDED)
         }
     }
 
     private fun checkTimeAllowed(compClass: CompClass) {
         if (!compClass.allowedToAlterContender()) {
-            throw WebException(HttpStatus.FORBIDDEN, "The competition is not in progress")
+            throw WebException(HttpStatus.FORBIDDEN, Messages.CONTEST_NOT_IN_PROGRESS)
         }
     }
 }

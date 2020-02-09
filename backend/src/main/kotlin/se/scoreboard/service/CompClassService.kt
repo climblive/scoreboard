@@ -3,6 +3,7 @@ package se.scoreboard.service
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import se.scoreboard.Messages
 import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.repo.CompClassRepository
 import se.scoreboard.dto.CompClassDto
@@ -39,7 +40,7 @@ class CompClassService @Autowired constructor(
         }
 
         if (compClass.color?.let { RgbColorValidator.validate(it) } == false) {
-            throw WebException(HttpStatus.BAD_REQUEST, "Invalid color")
+            throw WebException(HttpStatus.BAD_REQUEST, Messages.BAD_COLOR)
         }
     }
 }

@@ -151,10 +151,11 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
                </div>
                <div className="showLarge scoreboardListContainer">{headers}</div>
                <div className="showSmall scoreboardListContainer"><ScoreboardClassHeaderComp compClass={currentCompClass} /></div>
-               <div className="header">Finalister</div>
-               <div className="showLarge scoreboardListContainer">{finalistList}</div>
-               <div className="showSmall scoreboardListContainer"><ScoreboardFinalistListContainer compClass={currentCompClass} /></div>
-               <div className="header">Totalpoäng</div>
+               {contest.finalists > 0 && <div className="header">Finalister</div>}
+               {contest.finalists > 0 && <div className="showLarge scoreboardListContainer">{finalistList}</div>}
+               {contest.finalists > 0 && <div className="showSmall scoreboardListContainer"><ScoreboardFinalistListContainer compClass={currentCompClass} /></div>}
+               {contest.finalists > 0 && <div className="header">Totalpoäng</div>}
+               {contest.finalists == 0 && <div className="header" style={{"marginTop":20}}></div>}
                <div className="showLarge scoreboardListContainer total">{totalList}</div>
                <div className="showSmall scoreboardListContainer total"><ScoreboardTotalListContainer compClass={currentCompClass} /></div>
                <div className="logoContainer">

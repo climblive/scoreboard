@@ -168,9 +168,9 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
                   </div>
                   <div className="pointsRow">
                      <div className="points">{totalPoints}</div>
-                     <div className="pointsDesc total">Totalt</div>
-                     <div className="pointsDesc">{qualifyingProblems} bästa</div>
-                     <div className="points">{tenBest}</div>
+                     <div className="pointsDesc total">{this.props.contest.finalists == 0 ? 'Poäng' : 'Totalt'}</div>
+                     {this.props.contest.finalists > 0 && <div className="pointsDesc">{qualifyingProblems} bästa</div>}
+                     {this.props.contest.finalists > 0 && <div className="points">{tenBest}</div>}
                   </div>
                   <div className="headerRow">
                      <div className={this.props.problemsSortedBy == SortBy.BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_NUMBER)}>Sortera efter nummer</div>

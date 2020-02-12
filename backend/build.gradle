@@ -129,7 +129,7 @@ task deploy {
     doLast {
         ssh.run {
             session(remotes.prod) {
-                put from: "$buildDir/libs/scoreboard-0.1.0.jar", into: '/opt/scoreboard/'
+                put from: "$buildDir/libs/scoreboard-1.1.jar", into: '/opt/scoreboard/'
                 execute 'sudo service scoreboard restart'
             }
         }

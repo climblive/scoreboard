@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
+import se.scoreboard.SlackNotifier
 import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.User
 import se.scoreboard.data.repo.ContenderRepository
@@ -36,7 +37,8 @@ import javax.transaction.Transactional
         private var userPoolId: String,
         private val userRepository: UserRepository,
         private val organizerRepository: OrganizerRepository,
-        private val contenderRepository: ContenderRepository) : RSAKeyProvider {
+        private val contenderRepository: ContenderRepository,
+        private val slackNotifier: SlackNotifier) : RSAKeyProvider {
 
     enum class AuthMethod {
         BEARER,
@@ -132,6 +134,7 @@ import javax.transaction.Transactional
 
         organizer = organizerRepository.save(organizer)
         user = userRepository.save(user)
+        slackNotifier.newUser(user)
 
         return MyUserPrincipal(user, "ROLE_ORGANIZER", listOf(organizer?.id!!))
     }

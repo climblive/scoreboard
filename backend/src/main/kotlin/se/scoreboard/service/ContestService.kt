@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import se.scoreboard.SlackNotifier
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.extension.getQualificationScore
@@ -18,6 +19,7 @@ import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.*
 import se.scoreboard.dto.scoreboard.RaffleWinnerPushItemDto
 import se.scoreboard.exception.WebException
+import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.RaffleMapper
@@ -29,11 +31,19 @@ class ContestService @Autowired constructor(
         contestRepository: ContestRepository,
         private val contenderRepository: ContenderRepository,
         private val tickRepository: TickRepository,
-        val pdfService: PdfService,
+        private val pdfService: PdfService,
+        private val slackNotifier: SlackNotifier,
         private var raffleMapper: RaffleMapper,
         private var compClassMapper: CompClassMapper,
         override var entityMapper: AbstractMapper<Contest, ContestDto>) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
+
+    override fun onCreate(phase: Phase, new: Contest) {
+        when (phase) {
+            Phase.AFTER -> slackNotifier.newContest(new, getUserPrincipal())
+            else -> {}
+        }
+    }
 
     fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {
         val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }

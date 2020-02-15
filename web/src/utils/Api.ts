@@ -11,11 +11,11 @@ export class Api {
    private static useLocalhost = false;
 
    static getLiveUrl(): any {
-      return (Api.useLocalhost ? "ws://localhost:8080/api": "wss://api.clmb.live") + "/live/websocket";
+      return (Api.useLocalhost ? "ws://localhost:8080/api": "wss://api.climblive.app") + "/live/websocket";
    }
 
    private static getBaseUrl(): string {
-      return Api.useLocalhost ? "http://localhost:8080/api/" : "https://api.clmb.live/"
+      return Api.useLocalhost ? "http://localhost:8080/api/" : "https://api.climblive.app/"
    }
 
    private static async handleErrors(data: Response): Promise<Response> {

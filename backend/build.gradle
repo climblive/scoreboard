@@ -33,7 +33,7 @@ plugins {
 
 remotes {
     prod {
-        host = 'clmb.live'
+        host = 'climblive.app'
         user = 'ubuntu'
         identity = file('.ssh/clmb.live.pem')
     }

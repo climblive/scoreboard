@@ -35,7 +35,7 @@ function WelcomeView({ classes }: Props & StyledComponentProps) {
       <div style={{flexBasis:0, flexGrow:1, overflowY:"auto"}}>
          <div style={{maxWidth:600, margin: "20px auto"}}>
             <div style={{fontSize: 20, fontWeight: "bold", marginTop: 10, marginBottom:20}}>
-               Welcome to clmb.live - bouldering contests made easy!
+               Welcome to ClimbLive - bouldering contests made easy!
             </div>
             <div className={classes!.gridLine}>
                <div className={classes!.gridText}>

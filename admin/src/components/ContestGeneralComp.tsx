@@ -102,7 +102,7 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
       if(!(contest && seriesList && locations)) {
          return (<div style={{textAlign: "center", marginTop:10}}><CircularProgress/></div>)
       }
-      let scoreboardUrl = "https://clmb.live/scoreboard/" + contest.id;
+      let scoreboardUrl = "https://climblive.app/scoreboard/" + contest.id;
       return (
          <Paper>
             {this.props.contestIssues.map(issue => <div style={{padding:10, display:"flex", alignItems:"center", fontWeight:"bold", color:"#e49c3b"}} key={issue}><WarningIcon style={{marginRight:10}}/>{issue}</div>)}

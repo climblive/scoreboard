@@ -68,7 +68,7 @@ class StartView extends React.Component<Props, State> {
                </div>
                <div style={{background:"rgba(0, 0, 0, 0.6)", textAlign: "center", padding:10, color:"white", borderRadius:7, marginTop:"auto", marginBottom:20, marginLeft:20, marginRight:20}}>
                   <div>Vill du använda CLMB.live till din egna bouldertävling?</div>
-                  <div style={{marginTop:10}}><a href={"https://admin.clmb.live"}>Klicka här</a> eller besök oss på <a href={"https://www.facebook.com/CLMB.live"}>Facebook</a>!</div>
+                  <div style={{marginTop:10}}><a href={"https://admin.climblive.app"}>Klicka här</a> eller besök oss på <a href={"https://www.facebook.com/CLMB.live"}>Facebook</a>!</div>
                </div>
             </div>
          </div>

@@ -18,7 +18,7 @@ class SlackNotifier {
 
     @Async
     fun newContest(contest: Contest, principal: MyUserPrincipal?) {
-        post(">User *${principal?.username}* created new contest <https://admin.clmb.live/contests/${contest.id}|*${contest.name}*>")
+        post(">User *${principal?.username}* created new contest <https://admin.climblive.app/contests/${contest.id}|*${contest.name}*>")
     }
 
     @Async

@@ -5,7 +5,7 @@ import java.io.File
 
 internal class PdfServiceTest {
 
-    private val pdfService : PdfService = PdfService("https://clmb.live")
+    private val pdfService : PdfService = PdfService("https://climblive.app")
 
     @Test
     fun testStuff() {

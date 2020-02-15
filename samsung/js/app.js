@@ -17,7 +17,7 @@
 /*jshint unused: vars*/
 
 (function() {
-    var XML_ADDRESS = "https://clmb.live/api/contender/sadsadsd",
+    var XML_ADDRESS = "https://api.clmblive.app/contender/sadsadsd",
         XML_METHOD = "GET",
         MSG_ERR_NODATA = "There is no news from tizen.org",
         MSG_ERR_NOTCONNECTED = "Connection aborted. Check your internet connection.",

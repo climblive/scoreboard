@@ -16,8 +16,7 @@ export class Api {
    static oldCredentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=";
    static credentials?:string;
 
-   static readonly url = "https://api.clmb.live";
-   //static const url = "http://localhost:8080";
+   static readonly url = "https://api.climblive.app";
 
    private static getBaseUrl(): string {
       return Api.url + "/";

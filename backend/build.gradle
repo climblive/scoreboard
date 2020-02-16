@@ -171,6 +171,7 @@ task deploy {
         ssh.run {
             session(remotes.prod) {
                 put from: "$buildDir/libs/climblive-${gitVersion()}.jar", into: '/home/travis'
+                execute "mv ~/climblive-${gitVersion()}.jar ~/uploads"
             }
         }
     }

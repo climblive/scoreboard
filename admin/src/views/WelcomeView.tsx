@@ -39,7 +39,7 @@ function WelcomeView({ classes }: Props & StyledComponentProps) {
             </div>
             <div className={classes!.gridLine}>
                <div className={classes!.gridText}>
-                  <div className={classes!.paragraph}>Clmb.live is targeting small boulder contests, where the contenders keep track of their results by themselves.</div>
+                  <div className={classes!.paragraph}>ClimbLive is targeting small boulder contests, where the contenders keep track of their results by themselves.</div>
                   <div className={classes!.paragraph}>Normally this is made with scoreboards on paper, but now you can replace or combine it with a web page.</div>
                </div>
                <img className={classes!.gridImg} src="/images/contender.jpg"/>

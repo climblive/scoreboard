@@ -73,13 +73,13 @@ export class CreatePdfDialog extends React.Component<CreatePdfDialogProps, State
                    Download the PDF, print it, cut it and hand out to the contenders.
                </DialogContentText>}
                {selectedTab == 1 && <DialogContentText>
-                   If you want to use CLMB.live together with a scoreboard on paper,
+                   If you want to use ClimbLive together with a scoreboard on paper,
                    you can generate scoreboards with a registration code on the top of each scoreboard.
-                   <div style={{marginTop:10}}>This can be a way of just testing CLMB.live on a contest.</div>
+                   <div style={{marginTop:10}}>This can be a way of just testing ClimbLive on a contest.</div>
                    <ul>
                        <li>Create a single page pdf with your scoreboard. Make sure to leave space on top of the page for the regstration code.</li>
                        <li style={{marginTop:10}}>Upload the PDF file by clicking the button below.</li>
-                       <li style={{marginTop:10}}>CLMB.live generates a new pdf with one page per contender with a registration code on top.</li>
+                       <li style={{marginTop:10}}>ClimbLive generates a new pdf with one page per contender with a registration code on top.</li>
                        <li style={{marginTop:10}}>Print the new pdf, and hand out to the contenders.</li>
                    </ul>
                </DialogContentText>}

@@ -110,7 +110,7 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                   </TableBody>
                </Table>
                {(contests != undefined && contests.length == 0) && <div className={"emptyText"}>
-                   <div style={{fontWeight:"bold"}}>Hi, and welcome to CLMB.live!</div>
+                   <div style={{fontWeight:"bold"}}>Hi, and welcome to ClimbLive!</div>
                    <div>Create your first contest by clicking the plus button above.</div>
                </div>}
             </div>

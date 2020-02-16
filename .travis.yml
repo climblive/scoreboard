@@ -1,5 +1,8 @@
 env:
+  matrix:
   - TERM=dumb
+  global:
+    secure: bDnADuK4DLJEOkdDc3mY28LSL7zSWv/iBuZcTU+b32xsXijd0Fwnv/nhiN3GnWitBLMGgBr0V98T2rq63Owk27bx5Hu22u8GfNAyk3hxIC/EFgAceew9Z5IIIiAnmmvQQJj0MT32UxbeEEsDv6LTa7dMSz2qoy74JJgNDER7V1cPBKmNJ8BWIWCourSuskOZ18XKxW3iLJ7NBDGAjly60aCRka/YTR8vtZ6+ZpH0OTTU8cvT72FzQ2SAKfP/ZHk6ipViVZpqi0qBtrybcZQcSU3+Y72EQ+lGjH+5zzTTrg1VLcQIPZbNt7+yRM7GSRbGa7TIT6K8dWcSF6cJqBnDVALewebqSGO7XAmZe8EmwrU2dDN3jd5WNooHQ7cH58M9wxekdBMtRVwo8dhv1dI0fAlbKXk6tkpLWKlCYB/d2v07SCnHUvNYoHmS7P6XhzS8LpL9581FZHE8b8fUQeJiYVDJ8CSgU7k4aBmRoOnUXBCAIjW2Eu/bJ8sq9nqwNBqYsraJvhGZ+W1bvvDo3t6GOrnhfMXJM66zHJJWbe0pMm68kLi+C9wE35litplabud2AxiRAnASReXYNopEbs0AlKhmekQO7hCDADu6rlBw1oTDxt97kWWIrP1kJWPss20zeogn6SJvGuu1x4iRyn8VyRYcBK+O9YReCNsyaWKDZHs=
 
 notifications:
   slack: clmblive:5JZCirZpVAPKc3YfnDo3tkaU
@@ -13,6 +16,4 @@ script:
   - cd ../admin
   - npm install
   - cd ../backend
-  - ./gradlew clean test bootJar
-  - cd ..
-  - docker build -t scoreboard .
+  - ./gradlew clean test bootJar deploy

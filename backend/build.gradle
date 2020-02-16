@@ -1,4 +1,5 @@
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
     ext.kotlin_version = '1.3.10' // Required for Kotlin integration
@@ -29,13 +30,29 @@ plugins {
     id 'java'
     id "org.jetbrains.kotlin.kapt" version "1.3.21"
     id 'org.hidetake.ssh' version '2.10.1'
+    id 'com.palantir.git-version' version '0.12.2'
+}
+
+processResources {
+    with copySpec {
+        from 'src/main/resources'
+        include '**/application*.properties'
+        project.properties.findAll().each {
+          prop ->
+            if (prop.value != null) {
+                filter(ReplaceTokens, tokens: [ (prop.key): prop.value])
+            }
+        }
+    }
 }
 
 remotes {
     prod {
-        host = 'climblive.app'
-        user = 'ubuntu'
-        identity = file('.ssh/clmb.live.pem')
+        host = siteDomain
+        user = 'travis'
+        identity = file('.ssh/travis.pem')
+        passphrase = "$System.env.TRAVIS_PRIVATE_KEY_PASSPHRASE"
+        knownHosts = allowAnyHosts
     }
 }
 
@@ -61,16 +78,28 @@ task deleteTmpWeb(type: Delete) {
     delete 'tmpWeb'
 }
 
-task web(type:Exec) {
-    workingDir '../web'
+task web() {
+    doLast {
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(siteDomain\\s*=\\s*).*/\\1\"$siteDomain\";/g", '../web/src/environment.tsx'
+        }
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${gitVersion()}\";/g", '../web/src/environment.tsx'
+        }
+        exec {
+            workingDir '../web'
 
-    if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
-        commandLine 'cmd', '/c', 'npm'
-    } else {
-        commandLine 'npm'
+            if (System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
+                commandLine 'cmd', '/c', 'npm'
+            } else {
+                commandLine 'npm'
+            }
+
+            args 'run', 'build'
+        }
     }
-
-    args 'run', 'build'
 }
 
 task copyWeb(type: Copy) {
@@ -79,16 +108,28 @@ task copyWeb(type: Copy) {
     into 'tmpWeb'
 }
 
-task admin(type:Exec) {
-    workingDir '../admin'
+task admin() {
+    doLast {
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(siteDomain\\s*=\\s*).*/\\1\"$siteDomain\";/g", '../admin/src/environment.tsx'
+        }
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${gitVersion()}\";/g", '../admin/src/environment.tsx'
+        }
+        exec {
+            workingDir '../admin'
 
-    if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
-        commandLine 'cmd', '/c', 'npm'
-    } else {
-        commandLine 'npm'
+            if (System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
+                commandLine 'cmd', '/c', 'npm'
+            } else {
+                commandLine 'npm'
+            }
+
+            args 'run', 'build'
+        }
     }
-
-    args 'run', 'build'
 }
 
 task copyAdmin(type: Copy) {
@@ -105,8 +146,8 @@ bootJar {
     copyAdmin.mustRunAfter deleteTmpWeb
     launchScript()
 
-    baseName = 'scoreboard'
-    version = '1.1'
+    baseName = 'climblive'
+    version = gitVersion()
 
     from('tmpWeb') {
         into 'public'
@@ -129,8 +170,7 @@ task deploy {
     doLast {
         ssh.run {
             session(remotes.prod) {
-                put from: "$buildDir/libs/scoreboard-1.1.jar", into: '/opt/scoreboard/'
-                execute 'sudo service scoreboard restart'
+                put from: "$buildDir/libs/climblive-${gitVersion()}.jar", into: '/home/travis'
             }
         }
     }

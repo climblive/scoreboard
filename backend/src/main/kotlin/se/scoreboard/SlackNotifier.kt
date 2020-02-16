@@ -12,13 +12,15 @@ import se.scoreboard.data.domain.User
 @Service
 class SlackNotifier {
     @Value("\${slack.webhook:}")
-    private lateinit var url: String
+    private lateinit var webhookUrl: String
+    @Value("\${site.url.admin}")
+    lateinit var adminUrl: String
 
     data class Notification(val text: String)
 
     @Async
     fun newContest(contest: Contest, principal: MyUserPrincipal?) {
-        post(">User *${principal?.username}* created new contest <https://admin.climblive.app/contests/${contest.id}|*${contest.name}*>")
+        post(">User *${principal?.username}* created new contest <${adminUrl}/contests/${contest.id}|*${contest.name}*>")
     }
 
     @Async
@@ -27,11 +29,11 @@ class SlackNotifier {
     }
 
     private fun post(message: String) {
-        if (url.isEmpty()) {
+        if (webhookUrl.isEmpty()) {
             return
         }
 
         val restTemplate = RestTemplate()
-        restTemplate.postForEntity(url, Notification(message), String::class.java)
+        restTemplate.postForEntity(webhookUrl, Notification(message), String::class.java)
     }
 }

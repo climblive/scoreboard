@@ -16,7 +16,7 @@ script:
   - cd ../admin
   - npm install
   - cd ../backend
-  - ./gradlew clean test bootJar deploy
+  - ./gradlew clean test bootJar deploy --scan
 
 branches:
   only:

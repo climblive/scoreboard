@@ -1,6 +1,7 @@
 package se.scoreboard.configuration
 
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.info.BuildProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Pageable
@@ -21,8 +22,8 @@ import java.util.*
 @Configuration
 @EnableSwagger2
 class SwaggerConfiguration {
-    @Value("\${platform.version}")
-    private lateinit var version: String
+    @Autowired
+    private lateinit var buildProperties: BuildProperties
 
     @Bean
     fun docket(): Docket {
@@ -44,7 +45,7 @@ class SwaggerConfiguration {
         return ApiInfo(
                 "Scoreboard API",
                 null,
-                version,
+                buildProperties.version,
                 null,
                 null,
                 null,

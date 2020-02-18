@@ -17,3 +17,8 @@ script:
   - npm install
   - cd ../backend
   - ./gradlew clean test bootJar deploy
+
+branches:
+  only:
+  - master
+  - develop

@@ -3,6 +3,6 @@ import {RaffleWinner} from "./raffleWinner";
 export interface Raffle {
    id: number;
    contestId: number;
-   isActive: boolean;
+   active: boolean;
    winners?: RaffleWinner[];
 }

@@ -10,7 +10,7 @@ data class ContestDto (
     var name: String?,
     var description: String?,
     @JsonProperty("finalEnabled")
-    var isFinalEnabled: Boolean,
+    var finalEnabled: Boolean,
     var qualifyingProblems: Int,
     var finalists: Int,
     var rules: String?,

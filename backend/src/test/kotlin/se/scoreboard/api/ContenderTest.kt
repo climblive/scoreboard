@@ -361,7 +361,7 @@ class ContenderTest : ControllerTestBase() {
             tick = post("/api/tick", tick, HttpStatus.CREATED)
 
             tick.problemId = 7
-            tick.isFlash = true
+            tick.flash = true
 
             put<TickDto>("/api/tick/${tick.id}", tick, HttpStatus.OK)
 
@@ -405,7 +405,7 @@ class ContenderTest : ControllerTestBase() {
             assertThat(tick.timestamp).isCloseTo(OffsetDateTime.now(), Assertions.within(1, ChronoUnit.MINUTES))
             assertThat(tick.contenderId).isEqualTo(1)
             assertThat(tick.problemId).isEqualTo(6)
-            assertThat(tick.isFlash).isEqualTo(true)
+            assertThat(tick.flash).isEqualTo(true)
         }
 
         @Test

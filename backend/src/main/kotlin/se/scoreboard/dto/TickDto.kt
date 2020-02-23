@@ -8,8 +8,8 @@ data class TickDto (
     var timestamp: OffsetDateTime?,
     var contenderId: Int?,
     var problemId: Int?,
-    @JsonProperty("isFlash")
-    var isFlash: Boolean = false) {
+    @JsonProperty("flash")
+    var flash: Boolean = false) {
 
     constructor() : this(null, null, null, null, false)
 }

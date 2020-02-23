@@ -6,8 +6,8 @@ data class UserDto (
     var id: Int?,
     var name: String?,
     var username: String?,
-    @JsonProperty("isAdmin")
-    var isAdmin: Boolean) {
+    @JsonProperty("admin")
+    var admin: Boolean) {
 
     constructor() : this(null, null, null, false)
 }

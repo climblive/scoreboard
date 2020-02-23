@@ -7,6 +7,8 @@ data class ContestDto (
     var locationId: Int?,
     var organizerId: Int?,
     var seriesId: Int?,
+    @JsonProperty("protected")
+    var protected: Boolean = false,
     var name: String?,
     var description: String?,
     @JsonProperty("finalEnabled")
@@ -17,5 +19,5 @@ data class ContestDto (
     var gracePeriod: Int?,
     var scoreboardUrl: String?) {
 
-    constructor() : this(null, null, null, null, null, null, false, Int.MAX_VALUE, Int.MAX_VALUE, null, null, null)
+    constructor() : this(null, null, null, null, false, null, null, false, Int.MAX_VALUE, Int.MAX_VALUE, null, null, null)
 }

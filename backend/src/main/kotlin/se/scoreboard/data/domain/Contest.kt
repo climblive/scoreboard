@@ -25,6 +25,9 @@ open class Contest (
     @JoinColumn(name = "series_id", nullable = true)
     open var series: Series? = null,
 
+    @Column(name = "protected", nullable = false)
+    open var isProtected: Boolean = false,
+
     @Column(name = "name", nullable = false, length = 64)
     open var name: String? = null,
 

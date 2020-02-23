@@ -88,10 +88,6 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
         checkConstraints(null, dto)
 
-        if (!verify(entity)) {
-            throw WebException(HttpStatus.CONFLICT, null)
-        }
-
         onCreate(Phase.BEFORE, entity)
         entity = entityRepository.save(entity)
         entityManager.flush()
@@ -106,15 +102,12 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         entity.id = id
 
         val old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
+        entityManager.detach(old)
 
         checkConstraints(entityMapper.convertToDto(old), dto)
 
-        if (!verify(entity)) {
-            throw WebException(HttpStatus.CONFLICT, null)
-        }
-
         onUpdate(Phase.BEFORE, old, entity)
-        entityRepository.save(entity)
+        entity = entityRepository.save(entity)
         entityManager.flush()
         onUpdate(Phase.AFTER, old, entity)
 
@@ -123,7 +116,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     @Transactional
     open fun delete(id: ID) : ResponseEntity<DtoType> {
-        var entity = fetchEntity(id)
+        val entity = fetchEntity(id)
 
         onDelete(Phase.BEFORE, entity)
         entityRepository.delete(entity)
@@ -172,8 +165,6 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         BEFORE,
         AFTER
     }
-
-    protected open fun verify(entity: EntityType) : Boolean = true
 
     protected open fun onCreate(phase: Phase, new: EntityType) {
     }

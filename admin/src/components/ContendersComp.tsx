@@ -325,7 +325,7 @@ class ContendersComp extends React.Component<Props, State> {
                      let problem = this.props.problemMap.get(tick.problemId);
                      let color = this.props.colorMap.get(problem!.colorId!);
                      let points = problem!.points!;
-                     if(tick.isFlash && problem!.flashBonus) {
+                     if(tick.flash && problem!.flashBonus) {
                         points += problem!.flashBonus;
                      }
                      return(
@@ -334,7 +334,7 @@ class ContendersComp extends React.Component<Props, State> {
                            <div style={{width:150}}>{color!.name}</div>
                            <div style={{width:100, textAlign:"right"}}>{points}</div>
                            <div style={{width:150, marginLeft:10}}>{moment(tick.timestamp).format("HH:mm")}</div>
-                           <div style={{width:100, marginLeft:10}}>{tick.isFlash && "Flash"}</div>
+                           <div style={{width:100, marginLeft:10}}>{tick.flash && "Flash"}</div>
                         </div>
                      );
                   })}

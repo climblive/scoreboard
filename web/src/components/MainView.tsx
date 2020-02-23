@@ -136,7 +136,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
          document.title = this.props.contenderData.name;
          const points = this.props.ticks.map(tick => {
             const problem = this.props.problems.find(problem => problem.id == tick.problemId)!;
-            return tick.isFlash ? (problem.points + problem.flashBonus) : problem.points;
+            return tick.flash ? (problem.points + problem.flashBonus) : problem.points;
          }).sort((a, b) => b - a);
          console.log("POINTS:", points);
          let qualifyingProblems = this.props.contest.qualifyingProblems;

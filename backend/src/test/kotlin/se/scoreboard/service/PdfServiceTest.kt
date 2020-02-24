@@ -1,39 +1,31 @@
 package se.scoreboard.service
 
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import se.scoreboard.createRegistrationCode
 import java.io.File
 
 internal class PdfServiceTest {
 
     private val pdfService : PdfService = PdfService("https://mysite.tld")
 
+    @AfterEach
+    internal fun tearDown() {
+        File("out.pdf").delete()
+    }
+
     @Test
-    fun testStuff() {
-        // Get the logo:
+    fun withTemplate() {
         PdfService::class.java.getResourceAsStream("/test1.pdf").use {
             val testPdf = it.readBytes()
-            pdfService.createPdf(testPdf, listOf("DASDFGadasdasdRWFMS", "ERFMasdasdasdasdSF"))
+            val data = pdfService.createPdf(testPdf, (0..10).map { createRegistrationCode(8) })
+            File("out.pdf").writeBytes(data)
         }
     }
 
     @Test
-    fun testWithoutTemplate() {
-        val data = pdfService.createPdf(listOf(
-                "DASDFGaasdasdRWFMS",
-                "DASDFGadsdasdRWFMS",
-                "DASDFGadadasdRWFMS",
-                "SDFGadasdasdRWFMS",
-                "DAFGadasdasdRWFMS",
-                "DASDadasdasdRWFMS",
-                "DASDFGasdasdRWFMS",
-                "DASDFGaddasdRWFMS",
-                "DASDFGadasdasdRWFMS",
-                "DASDFGadassdRWFMS",
-                "DASDFGadasdasdRWFMS",
-                "DASDFGadasdaRWFMS",
-                "DASDFGadasdasdMS",
-                "ERFMasdasdasdasdSF"
-        ))
-        File("hej.pdf").writeBytes(data)
+    fun withoutTemplate() {
+        val data = pdfService.createPdf((0..10).map { createRegistrationCode(8) })
+        File("out.pdf").writeBytes(data)
     }
 }

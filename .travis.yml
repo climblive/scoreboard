@@ -12,11 +12,11 @@ services:
 
 script:
   - cd web
-  - npm install
+  - travis_retry npm install
   - cd ../admin
-  - npm install
+  - travis_retry npm install
   - cd ../backend
-  - ./gradlew clean test bootJar deploy --scan
+  - travis_retry ./gradlew clean test bootJar deploy --scan
 
 branches:
   only:

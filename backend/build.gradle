@@ -204,6 +204,7 @@ dependencies {
     implementation 'com.auth0:jwks-rsa:0.8.2'
     compile 'io.swagger:swagger-annotations:1.6.0'
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    implementation 'org.flywaydb:flyway-core:6.2.4'
 
     kapt "org.mapstruct:mapstruct-processor:$mapstructVersion"
 

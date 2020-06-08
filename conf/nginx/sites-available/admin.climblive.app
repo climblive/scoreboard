@@ -17,8 +17,9 @@ server {
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "Upgrade";
 	}
-	
-	ssl_certificate /etc/letsencrypt/live/climblive.app/fullchain.pem;
+
+	include /etc/nginx/options-ssl.conf;
+	ssl_certificate /etc/letsencrypt/live/climblive.app/fullchain.pem; 
 	ssl_certificate_key /etc/letsencrypt/live/climblive.app/privkey.pem;
 }
 
@@ -27,4 +28,3 @@ server {
 	server_name admin.climblive.app;
 	return 301 https://admin.climblive.app$request_uri;
 }
-

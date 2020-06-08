@@ -18,6 +18,7 @@ server {
 		proxy_set_header Connection "Upgrade";
 	}
 
+	include /etc/nginx/options-ssl.conf;
 	ssl_certificate /etc/letsencrypt/live/climblive.app/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/climblive.app/privkey.pem;
 }

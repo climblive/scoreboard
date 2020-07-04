@@ -18,7 +18,7 @@ export function login(code:string): any {
       Api.setCredentials(code);
       Api.getUser()
          .then(userData => {
-            console.log(userData);
+            localStorage.setItem('credentials', code)
             dispatch(actions.setLoggingIn(false));
             dispatch(actions.setLoggedInUser(userData));
             reloadSeries(dispatch);

@@ -62,6 +62,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
                name: "",
                description: "",
                organizerId: state.organizer!.id,
+               finalEnabled: false,
                qualifyingProblems:10,
                finalists:7,
                gracePeriod: 15,

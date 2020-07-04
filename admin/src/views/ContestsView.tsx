@@ -84,7 +84,6 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                         <TableCell>Name</TableCell>
                         <TableCell>Description</TableCell>
                         <TableCell>Location</TableCell>
-                        {/*<TableCell>Organizer</TableCell>*/}
                         <TableCell>Qualifying problems</TableCell>
                         <TableCell className={"icon-cell"}>
                            <IconButton color="inherit" aria-label="Menu" title="Add contest" onClick={() => this.props.history.push("/contests/new")}>
@@ -103,7 +102,6 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                            <TableCell component="th" scope="row">{contest.name}</TableCell>
                            <TableCell>{contest.description}</TableCell>
                            <TableCell>{this.getLocationName(contest.locationId)}</TableCell>
-                           {/*<TableCell>{this.getOrganizerName(contest.organizerId)}</TableCell>*/}
                            <TableCell colSpan={2}>{contest.qualifyingProblems}</TableCell>
                         </TableRow>
                      ))}

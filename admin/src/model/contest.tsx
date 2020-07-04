@@ -5,6 +5,7 @@ export interface Contest {
    description: string;
    organizerId: number;
    locationId?: number;
+   finalEnabled: boolean;
    qualifyingProblems: number;
    finalists: number;
    gracePeriod: number;

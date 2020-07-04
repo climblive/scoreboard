@@ -14,6 +14,8 @@ import {Series} from "../model/series";
 import {CompLocation} from "../model/compLocation";
 import {CreatePdfDialog} from "./CreatePdfDialog";
 import {Environment} from "../environment";
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 interface Props {
    contest:Contest,
@@ -62,6 +64,10 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
    onGracePeriodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.props.updateContest!("gracePeriod", e.target.value);
    };
+
+   onFinalEnabledChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.updateContest!("finalEnabled", e.target.checked);
+   }
 
    onRulesChange = (rules: string) => {
       this.props.updateContest!("rules", rules);
@@ -144,8 +150,16 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                            )}
                         </Select>
                      </FormControl>)}
-                     <TextField style={{marginTop:10}} label="Number of qualifying problems" value={contest.qualifyingProblems} onChange={this.onQualifyingProblemsChange}/>
-                     <TextField style={{marginTop:10}} label="Number of finalists" value={contest.finalists} onChange={this.onFinalistsChange}/>
+                     <FormControlLabel
+                        control={<Switch checked={contest.finalEnabled} onChange={this.onFinalEnabledChange} />}
+                        label="Enable final?" labelPlacement="end"
+                     />
+                     {contest.finalEnabled &&
+                        <>
+                           <TextField style={{marginTop:10}} label="Number of qualifying problems" value={contest.qualifyingProblems} onChange={this.onQualifyingProblemsChange}/>
+                           <TextField style={{marginTop:10}} label="Number of finalists" value={contest.finalists} onChange={this.onFinalistsChange}/>
+                        </>
+                     }
                      <TextField style={{marginTop:10}} label="Grace period (minutes)" value={contest.gracePeriod} onChange={this.onGracePeriodChange}/>
                   </div>
                   <div style={{marginLeft:10, display:"flex", flexDirection:"column", flexGrow:1, flexBasis:0}}>

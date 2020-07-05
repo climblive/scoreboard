@@ -41,7 +41,6 @@ export class CreatePdfDialog extends React.Component<CreatePdfDialogProps, State
    };
 
    createPdfFromTemplate = () => {
-      console.log("Create PDF", this.inputRef.current);
       this.inputRef.current.click();
    };
 

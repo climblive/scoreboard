@@ -85,14 +85,11 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
    };
 
    getUrl = (command:string) => {
-      console.log(encodeURIComponent(window.location.origin));
-
       let url = "https://clmb.auth.eu-west-1.amazoncognito.com/";
       url += command;
       // Response type token or code
       url += "?response_type=token&client_id=55s3rmvp8t26lmi0898n9d1lfn&redirect_uri=";
       url += encodeURIComponent(window.location.origin);
-      console.log(url);
       return url;
    };
 

@@ -333,7 +333,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, raffles: newRaffles2 };
 
       default:
-         console.log("ACTION", action);
          return state;
    }
 };

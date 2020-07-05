@@ -363,7 +363,6 @@ export function exportResults():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
       let contestId = getState().contest!.id;
       Api.exportContest(contestId).then(response => {
-         console.log(response);
          saveAs(response, "contest.xls");
       }).catch(error => {
          dispatch(actions.setErrorMessage(error))
@@ -378,9 +377,7 @@ export function createPdfFromTemplate(file:Blob):any {
       dispatch(actions.setCreatingPdf(true));
       reader.onload = (evt:any) => {
          let arrayBuffer = evt.currentTarget.result;
-         console.log("ArrayBuffer", arrayBuffer);
          Api.createPdfFromTemplate(contestId, arrayBuffer).then(response => {
-            console.log(response);
             dispatch(actions.setCreatingPdf(false));
             saveAs(response, "contest.pdf");
          }).catch(error => {

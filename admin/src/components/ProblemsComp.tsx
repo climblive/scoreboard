@@ -92,7 +92,6 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
             rgbSecondary = '#' + rgbSecondary;
          }
          background = "repeating-linear-gradient(-30deg," + rgbColor + "," + rgbSecondary + " 15px," + rgbColor + " 30px)";
-         console.log(background);
       }
       return {
          display:"flex",

@@ -27,6 +27,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {SortBy} from "../constants/sortBy";
+import {Environment} from "../environment";
 
 interface Props {
    contenders:ContenderData[],
@@ -43,13 +44,6 @@ interface Props {
    resetContenders?: () => void
    setContenderFilterCompClass?: (contenderFilterCompClass?:CompClass) => void,
    setContenderSortBy?: (contenderSortBy:SortBy) => void
-   /*editCompClass?:CompClass,
-   startEditCompClass?:(compClass:CompClass) => void
-   cancelEditCompClass?:() => void
-   saveEditCompClass?:() => void
-   startAddCompClass?:() => void
-   deleteCompClass?:(compClass:CompClass) => void
-   updateEditCompClass?:(propName:string, propValue:any) => void*/
 }
 
 type State = {
@@ -58,7 +52,6 @@ type State = {
    showResetConfirmationPopup:boolean
    nNewContenders:string
    dialogContender?:ContenderData
-   //deleteCompClass?:CompClass
 }
 
 class ContendersComp extends React.Component<Props, State> {
@@ -144,37 +137,9 @@ class ContendersComp extends React.Component<Props, State> {
       this.props.setContenderFilterCompClass!(filterCompClass);
    };
 
-   /*deleteCompClass = (compClass:CompClass) => {
-      this.state.deleteCompClass = compClass;
-      this.setState(this.state);
-   };
-
-   onDeleteConfirmed = () => {
-      this.props.deleteCompClass!(this.state.deleteCompClass!);
-      this.state.deleteCompClass = undefined;
-      this.setState(this.state)
-   };
-
-   onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.updateEditCompClass!("name", e.target.value);
-   };
-
-   onDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.updateEditCompClass!("description", e.target.value);
-   };
-
-   onTimeBeginChange = (e: any) => {
-      console.log(e);
-   };
-
-   onTimeEndChange = (e: any) => {
-      console.log(e);
-   };*/
-
    render() {
       let contenders = this.props.contenders;
       let compClasses = this.props.compClasses;
-      //let editCompClass = this.props.editCompClass;
       if(!contenders) {
          return (<CircularProgress/>)
       }
@@ -224,7 +189,6 @@ class ContendersComp extends React.Component<Props, State> {
                   </TableHead>
                   <TableBody>
                      {contenders.map(contender => {
-                        //if(editCompClass == undefined || editCompClass.id != compClass.id) {
                            return (
                               <TableRow key={contender.id}
                                         style={{cursor: 'pointer'}}
@@ -242,48 +206,21 @@ class ContendersComp extends React.Component<Props, State> {
                                  </TableCell>
                                  <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
                                  <TableCell component="th" scope="row">{contender.name ? contender.ticks!.length : "-"}</TableCell>
-                                 <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>
-                              </TableRow>
-                           )
-                        /*} else {
-                           return (
-                              <TableRow key={compClass.id}
-                                        style={{cursor: 'pointer'}}
-                                        hover
-                                        onClick={() => console.log("click")}>
                                  <TableCell component="th" scope="row">
-                                    <input style={{}} value={editCompClass.name} placeholder="Name" onChange={this.onNameChange} />
-                                 </TableCell>
-                                 <TableCell>
-                                    <input style={{}} value={editCompClass.description} onChange={this.onDescriptionChange} />
-                                 </TableCell>
-                                 <TableCell>
-                                    <DateTimePicker ampm={false} value={timeBegin} onChange={this.onTimeBeginChange} />
-                                 </TableCell>
-                                 <TableCell>
-                                    <DateTimePicker ampm={false} value={timeEnd} onChange={this.onTimeEndChange} />
-                                 </TableCell>
-                                 <TableCell>
-                                    <IconButton color="inherit" aria-label="Menu" title="Save"
-                                                onClick={this.props.saveEditCompClass!}>
-                                       <CheckIcon/>
-                                    </IconButton>
-                                    <IconButton color="inherit" aria-label="Menu" title="Cancel"
-                                                onClick={this.props.cancelEditCompClass!}>
-                                       <CancelIcon/>
-                                    </IconButton>
+                                    <Button
+                                       href={"https://" + Environment.siteDomain + "/" + contender.registrationCode}
+                                       target="_blank"
+                                       variant="outlined"
+                                       color="primary"
+                                       style={{ maxWidth: '100px', minWidth: '100px' }}
+                                       onClick={(event) => event.stopPropagation()}>{contender.registrationCode}</Button>
                                  </TableCell>
                               </TableRow>
                            )
-                        }*/
                      })}
                   </TableBody>
                </Table>
             </div>
-            {/*<ConfirmationDialog open={this.state.deleteCompClass != undefined}
-                                title={"Delete class"}
-                                message={"Do you wish to delete the selected class?"}
-                                onClose={this.onDeleteConfirmed} />*/}
             <Dialog
                open={this.state.showAddContendersPopup}
                disableBackdropClick

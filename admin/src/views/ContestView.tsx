@@ -59,6 +59,7 @@ interface Props {
    setNewContest?: () => void,
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => any,
+   deleteContest?: (contest: Contest) => void,
    loadColors?: () => void,
    setTitle?: (title: string) => void,
    createPdf?: () => void
@@ -116,7 +117,7 @@ class ContestView extends React.Component<Props, State> {
       this.setState(this.state);
    }
 
-   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+   componentDidUpdate(nextProps: Readonly<Props>, nextContext: any): void {
       let title = "";
       if(this.props.contest) {
          title = this.props.contest.isNew ? "Add contest" : this.props.contest.name;
@@ -146,6 +147,7 @@ class ContestView extends React.Component<Props, State> {
                                     contestIssues={this.props.contestIssues}
                                     updateContest={this.props.updateContest}
                                     saveContest={this.props.saveContest}
+                                    deleteContest={this.props.deleteContest}
                                     createPdf={this.props.createPdf}
                                     createPdfFromTemplate={this.props.createPdfFromTemplate}
          />);
@@ -250,6 +252,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       setNewContest: () => dispatch(actions.setNewContest()),
       updateContest: (propName:string, value:any) => dispatch(actions.updateContest({propName: propName, value: value})),
       saveContest: (onSuccess:(contest:Contest) => void) => dispatch(asyncActions.saveContest(onSuccess)),
+      deleteContest: (contest: Contest) => dispatch(asyncActions.deleteContest(contest)),
       loadColors: () => dispatch(asyncActions.loadColors()),
       setTitle: (title: string) => dispatch(actions.setTitle(title)),
 

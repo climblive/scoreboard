@@ -1,6 +1,7 @@
 export interface Contest {
    id: number;
    seriesId?: number,
+   protected: boolean,
    name: string;
    description: string;
    organizerId: number;

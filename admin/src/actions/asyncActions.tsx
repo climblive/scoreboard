@@ -82,6 +82,15 @@ export function saveContest(onSuccess:(contest:Contest) => void): any {
    }
 }
 
+export function deleteContest(contest: Contest): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      Api.deleteContest(contest).then(() => {
+         dispatch(actions.deleteContest(contest));
+      })
+      .catch(error => {dispatch(actions.setErrorMessage(error))});
+   };
+}
+
 // ************
 
 let reloadColors = (dispatch: Dispatch<any>) => {

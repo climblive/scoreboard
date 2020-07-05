@@ -113,6 +113,10 @@ export class Api {
       }
    }
 
+   static deleteContest(contest: Contest): Promise<any> {
+      return this.delete("/contest/" + contest.id);
+   }
+
    static getProblems(contestId: number): Promise<Problem[]> {
       return this.get("/contest/" + contestId + "/problem");
    }

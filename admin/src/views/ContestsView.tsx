@@ -90,7 +90,6 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                               <AddIcon />
                            </IconButton>
                         </TableCell>
-
                      </TableRow>
                   </TableHead>
                   <TableBody>

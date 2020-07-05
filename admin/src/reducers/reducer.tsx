@@ -60,6 +60,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             contest: {
                id: -1,
                name: "",
+               protected: false,
                description: "",
                organizerId: state.organizer!.id,
                finalEnabled: false,
@@ -83,6 +84,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          newContest[action.payload.propName] = action.payload.value;
          return { ...state, contest: newContest};
 
+      case getType(scoreboardActions.deleteContest):
+         let contests = state.contests?.filter(contest => contest.id != action.payload.id);
+         return { ...state, contest: undefined, contests };
+
       // ********
 
       case getType(scoreboardActions.receiveCompClasses):
@@ -99,7 +104,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editCompClass: undefined, compClasses: newCompClasses1};
 
       case getType(scoreboardActions.startAddCompClass):
-         const newCompClasses = [...state.compClasses!];
+         const newCompClasses: CompClass[] = [...state.compClasses!];
          let newCompClass:CompClass = {
             id: -1,
             contestId: state.contest!.id,
@@ -119,8 +124,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       // ********
 
       case getType(scoreboardActions.receiveProblems):
-         const problems2 = action.payload.sort((a, b) => (a.number || 0) - (b.number || 0));
-         let editProblem = undefined;
+         const problems2: Problem[] = action.payload.sort((a, b) => (a.number || 0) - (b.number || 0));
+         let editProblem: Problem | undefined = undefined;
          if(problems2.length == 0) {
             editProblem = {
                id: -1,
@@ -143,7 +148,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
       case getType(scoreboardActions.startAddProblem):
          const problem = action.payload;
-         const newProblems = [];
+         const newProblems: Problem[] = [];
          let newProblem:Problem = {
             id: -1,
             contestId: state.contest!.id,

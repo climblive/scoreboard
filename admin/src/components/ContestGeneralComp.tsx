@@ -16,6 +16,8 @@ import {CreatePdfDialog} from "./CreatePdfDialog";
 import {Environment} from "../environment";
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import DeleteForeverRoundedIcon from '@material-ui/icons/DeleteForeverRounded';
+import {ConfirmationDialog} from "../components/ConfirmationDialog";
 
 interface Props {
    contest:Contest,
@@ -25,17 +27,20 @@ interface Props {
    contestIssues:string[],
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => void,
+   deleteContest?: (contest:Contest) => void
    createPdf?: () => void
    createPdfFromTemplate?: (file:Blob) => void
 }
 
 type State = {
-   showPopup:boolean
+   showPopup:boolean,
+   requestDelete:boolean,
 }
 
 class ContestGeneralComp extends React.Component<Props & RouteComponentProps, State> {
    public readonly state: State = {
       showPopup:false,
+      requestDelete: false
    };
 
    constructor(props: Props & RouteComponentProps) {
@@ -90,6 +95,19 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
             this.props.history.push("/contests/" + contest.id);
          }
       })
+   };
+
+   onDelete = () => {
+      this.setState({requestDelete: true});
+   };
+
+   onDeleteConfirmed = (result: boolean) => {
+      if (result) {
+         this.props.deleteContest?.(this.props.contest);
+         this.props.history.push("/contests");
+      }
+
+      this.setState({requestDelete: false});
    };
 
    startPdfCreate = () => {
@@ -167,6 +185,17 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                   </div>
                </div>
                <Button style={{marginTop:10}} variant="outlined" color="primary" onClick={this.onSave}>{contest.isNew ? 'Add' : 'Save'}</Button>
+               {!contest.isNew && (
+                  <Button
+                  style={{marginLeft:10, marginTop:10}}
+                  variant="contained"
+                  color="secondary"
+                  disabled={contest.protected}
+                  onClick={this.onDelete}
+                >
+                  {<DeleteForeverRoundedIcon />} Delete
+                </Button>
+               )}
             </div>
             <CreatePdfDialog
                open={this.state.showPopup}
@@ -175,6 +204,10 @@ class ContestGeneralComp extends React.Component<Props & RouteComponentProps, St
                createPdfFromTemplate={this.props.createPdfFromTemplate}
                onClose={this.closePopup}
             />
+            <ConfirmationDialog open={this.state.requestDelete}
+                                title={"Delete contest"}
+                                message={`Do you really wish to delete the contest ${contest.name} together with all its classes, problems, contenders, raffles and results? This action is irreversible and cannot be undone!`}
+                                onClose={this.onDeleteConfirmed} />
          </Paper>
       );
    }

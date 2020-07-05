@@ -29,6 +29,7 @@ export const updateContest = createStandardAction('UPDATE_CONTEST')<{propName:st
 export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[]>();
 export const clearContests = createStandardAction('CLEAR_CONTESTS')();
 export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();
+export const deleteContest = createStandardAction('DELETE_CONTEST')<Contest>();
 
 export const receiveLocations = createStandardAction('RECEIVE_LOCATIONS')<CompLocation[]>();
 export const clearLocations = createStandardAction('CLEAR_LOCATIONS')();

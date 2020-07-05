@@ -17,6 +17,7 @@ export class Api {
    static credentials?:string;
 
    static readonly url = "https://api." + Environment.siteDomain;
+   static readonly defaultPageSize = 1000;
 
    private static getBaseUrl(): string {
       return Api.url;
@@ -97,7 +98,7 @@ export class Api {
    }
 
    static getContests(): Promise<Contest[]> {
-      return this.get("/contest");
+      return this.get(`/contest?size=${this.defaultPageSize}`);
    }
 
    static getContest(contestId: number): Promise<Contest> {
@@ -173,7 +174,7 @@ export class Api {
    }
 
    static getColors(): Promise<Color[]> {
-      return this.get("/color");
+      return this.get(`/color?size=${this.defaultPageSize}`);
    }
 
    static saveColor(color:Color): Promise<Color> {
@@ -189,7 +190,7 @@ export class Api {
    }
 
    static getSeries(): Promise<Series[]> {
-      return this.get("/series");
+      return this.get(`/series?size=${this.defaultPageSize}`);
    }
 
    static saveSeries(series:Series): Promise<Series> {
@@ -205,7 +206,7 @@ export class Api {
    }
 
    static getLocations(): Promise<CompLocation[]> {
-      return this.get("/location");
+      return this.get(`/location?size=${this.defaultPageSize}`);
    }
 
    static saveLocation(location: CompLocation): Promise<CompLocation> {
@@ -225,7 +226,7 @@ export class Api {
    }
 
    static getOrganizers(): Promise<Organizer[]> {
-      return this.get("/organizer");
+      return this.get(`/organizer?size=${this.defaultPageSize}`);
    }
 
    static saveOrganizer(organizer: Organizer): Promise<Organizer> {

@@ -333,7 +333,7 @@ let reloadContendersForContest = (dispatch: Dispatch<any>, contestId: number) =>
 
 export function createContenders(nNewContenders:number):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.createContenders(contestId, nNewContenders).then(() => {
          reloadContendersForContest(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
@@ -342,7 +342,7 @@ export function createContenders(nNewContenders:number):any {
 
 export function reloadContenders():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       dispatch(actions.receiveContenders([]));
       dispatch(actions.receiveTicks([]));
       reloadContendersForContest(dispatch, contestId);
@@ -352,7 +352,7 @@ export function reloadContenders():any {
 
 export function resetContenders():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.resetContenders(contestId).then(() => {
          reloadContendersForContest(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
@@ -361,7 +361,7 @@ export function resetContenders():any {
 
 export function exportResults():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.exportContest(contestId).then(response => {
          saveAs(response, "contest.xls");
       }).catch(error => {
@@ -372,7 +372,7 @@ export function exportResults():any {
 
 export function createPdfFromTemplate(file:Blob):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       let reader = new FileReader();
       dispatch(actions.setCreatingPdf(true));
       reader.onload = (evt:any) => {
@@ -395,7 +395,7 @@ export function createPdfFromTemplate(file:Blob):any {
 
 export function createPdf():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       dispatch(actions.setCreatingPdf(true));
       Api.createPdf(contestId).then(response => {
          dispatch(actions.setCreatingPdf(false));
@@ -430,9 +430,9 @@ let reloadRaffles = (dispatch: Dispatch<any>, contestId: number) => {
 
 export function createRaffle():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       let newRaffle: Raffle = {
-         id: -1,
+         id: undefined,
          contestId: contestId,
          winners: undefined,
          active:false
@@ -447,7 +447,7 @@ export function createRaffle():any {
 
 export function activateRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       raffle.active = true;
       raffle.winners = undefined;
       dispatch(actions.clearRaffles());
@@ -461,7 +461,7 @@ export function activateRaffle(raffle:Raffle):any {
 
 export function deactivateRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       raffle.active = false;
       raffle.winners = undefined;
       dispatch(actions.clearRaffles());
@@ -485,7 +485,7 @@ export function drawWinner(raffle:Raffle):any {
 
 export function deleteRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.deleteRaffle(raffle).then(() => {
          reloadRaffles(dispatch, contestId);
       }).catch(error => {

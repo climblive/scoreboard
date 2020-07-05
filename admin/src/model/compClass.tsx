@@ -1,5 +1,5 @@
 export interface CompClass {
-   id: number;
+   id?: number;
    contestId:number;
    name: string;
    description: string;

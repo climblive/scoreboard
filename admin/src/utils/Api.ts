@@ -122,7 +122,7 @@ export class Api {
    }
 
    static saveProblem(problem:Problem): Promise<Problem> {
-      if(problem.id == -1) {
+      if(problem.id == undefined) {
          return this.post("/problem", problem);
       } else {
          return this.put("/problem/" + problem.id, problem);
@@ -138,7 +138,7 @@ export class Api {
    }
 
    static saveCompClass(compClass:CompClass): Promise<CompClass> {
-      if(compClass.id == -1) {
+      if(compClass.id == undefined) {
          return this.post("/compClass", compClass);
       } else {
          return this.put("/compClass/" + compClass.id, compClass);
@@ -162,7 +162,7 @@ export class Api {
    }
 
    static saveRaffle(raffle:Raffle): Promise<Raffle> {
-      if(raffle.id == -1) {
+      if(raffle.id == undefined) {
          return this.post("/raffle", raffle);
       } else {
          return this.put("/raffle/" + raffle.id, raffle);
@@ -182,7 +182,7 @@ export class Api {
    }
 
    static saveColor(color:Color): Promise<Color> {
-      if(color.id == -1) {
+      if(color.id == undefined) {
          return this.post("/color", color);
       } else {
          return this.put("/color/" + color.id, color);
@@ -198,7 +198,7 @@ export class Api {
    }
 
    static saveSeries(series:Series): Promise<Series> {
-      if(series.id == -1) {
+      if(series.id == undefined) {
          return this.post("/series", series);
       } else {
          return this.put("/series/" + series.id, series);
@@ -214,7 +214,7 @@ export class Api {
    }
 
    static saveLocation(location: CompLocation): Promise<CompLocation> {
-      if(location.id == -1) {
+      if(location.id == undefined) {
          return this.post("/location", location);
       } else {
          return this.put("/location/" + location.id, location);
@@ -234,7 +234,7 @@ export class Api {
    }
 
    static saveOrganizer(organizer: Organizer): Promise<Organizer> {
-      if(organizer.id == -1) {
+      if(organizer.id == undefined) {
          return this.post("/organizer", organizer);
       } else {
          return this.put("/organizer/" + organizer.id, organizer);

@@ -28,7 +28,7 @@ export const getColorMap = createSelector(
    (colors) => {
       const colorMap = new Map<number, Color>();
       if(colors) {
-         colors.forEach(color => colorMap.set(color.id, color));
+         colors.filter(color => color.id != undefined).forEach(color => colorMap.set(color.id!, color));
       }
       return colorMap;
    }
@@ -39,7 +39,7 @@ export const getCompClassMap = createSelector(
    (compClasses) => {
       const map = new Map<number, CompClass>();
       if(compClasses) {
-         compClasses.forEach(compClass => map.set(compClass.id, compClass));
+         compClasses.filter(compClass => compClass.id != undefined).forEach(compClass => map.set(compClass.id!, compClass));
       }
       return map;
    }
@@ -61,7 +61,7 @@ export const getLocationMap = createSelector(
    (locations) => {
       const map = new Map<number, CompLocation>();
       if(locations) {
-         locations.forEach(location => map.set(location.id, location));
+         locations.filter(location => location.id != undefined).forEach(location => map.set(location.id!, location));
       }
       return map;
    }
@@ -72,7 +72,7 @@ export const getOrganizerMap = createSelector(
    (organizers) => {
       const map = new Map<number, Organizer>();
       if(organizers) {
-         organizers.forEach(organizer => map.set(organizer.id, organizer));
+         organizers.filter(organizer => organizer.id != undefined).forEach(organizer => map.set(organizer.id!, organizer));
       }
       return map;
    }
@@ -83,7 +83,7 @@ export const getProblemMap = createSelector(
    (problems) => {
       const map = new Map<number, Problem>();
       if(problems) {
-         problems.forEach(problem => map.set(problem.id, problem));
+         problems.filter(problem => problem.id != undefined).forEach(problem => map.set(problem.id!, problem));
       }
       return map;
    }
@@ -120,7 +120,7 @@ export const getOrganizerColors = createSelector(
 export const getProblemsWithTicks = createSelector(
    [getProblems, getTicks],
    (problems, ticks) => {
-      let problemsMap = new Map<number, Problem>();
+      let problemsMap = new Map<number | undefined, Problem>();
       let newProblems:Problem[] = [];
       if(problems) {
          for (let problem of problems) {
@@ -145,7 +145,7 @@ export const getContendersWithTicks = createSelector(
    [getContenders, getTicks, getProblems, getContest, getContenderFilterCompClassId, getContenderSortBy],
    (contenders, ticks, problems, contest, contenderFilterCompClassId, contenderSortBy) => {
       // Create the problem map:
-      const problemMap = new Map<number, Problem>();
+      const problemMap = new Map<number | undefined, Problem>();
       if(problems) {
          problems.forEach(problem => problemMap.set(problem.id, problem));
       }

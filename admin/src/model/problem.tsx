@@ -1,9 +1,9 @@
 import {Tick} from "./tick";
 
 export interface Problem {
-   id: number;
+   id?: number;
    contestId: number;
-   number: number;
+   number?: number;
    colorId?: number;
    points?: number;
    flashBonus?: number;

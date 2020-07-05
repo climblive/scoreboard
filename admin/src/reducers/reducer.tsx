@@ -58,11 +58,11 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.setNewContest):
          return { ...state,
             contest: {
-               id: -1,
+               id: undefined,
                name: "",
                protected: false,
                description: "",
-               organizerId: state.organizer!.id,
+               organizerId: state.organizer?.id!,
                finalEnabled: false,
                qualifyingProblems:10,
                finalists:7,
@@ -91,7 +91,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       // ********
 
       case getType(scoreboardActions.receiveCompClasses):
-         return { ...state, compClasses: action.payload.sort((a, b) => a.id - b.id) };
+         return { ...state, compClasses: action.payload.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)) };
 
       case getType(scoreboardActions.clearCompClasses):
          return { ...state, compClasses: undefined, editCompClass: undefined };
@@ -100,14 +100,14 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editCompClass: action.payload};
 
       case getType(scoreboardActions.cancelEditCompClass):
-         const newCompClasses1 = state.compClasses!.filter(p2 => p2.id != -1);
+         const newCompClasses1 = state.compClasses!.filter(p2 => p2.id != undefined);
          return { ...state, editCompClass: undefined, compClasses: newCompClasses1};
 
       case getType(scoreboardActions.startAddCompClass):
          const newCompClasses: CompClass[] = [...state.compClasses!];
          let newCompClass:CompClass = {
-            id: -1,
-            contestId: state.contest!.id,
+            id: undefined,
+            contestId: state.contest?.id!,
             name: "",
             description: "",
             timeBegin: new Date().toISOString(),
@@ -128,8 +128,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          let editProblem: Problem | undefined = undefined;
          if(problems2.length == 0) {
             editProblem = {
-               id: -1,
-               contestId: state.contest!.id,
+               id: undefined,
+               contestId: state.contest?.id!,
                number: 1
             };
             problems2.push(editProblem);
@@ -143,21 +143,21 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editProblem: action.payload};
 
       case getType(scoreboardActions.cancelEditProblem):
-         const newProblems1 = state.problems!.filter(p1 => p1.id != -1);
+         const newProblems1 = state.problems!.filter(p1 => p1.id != undefined);
          return { ...state, editProblem: undefined, problems: newProblems1};
 
       case getType(scoreboardActions.startAddProblem):
          const problem = action.payload;
          const newProblems: Problem[] = [];
          let newProblem:Problem = {
-            id: -1,
-            contestId: state.contest!.id,
-            number: -1
+            id: undefined,
+            contestId: state.contest?.id!,
+            number: undefined
          };
          for(let p of state.problems!) {
             newProblems.push(p);
             if (p.id == problem.id) {
-               newProblem.number = p.number + 1;
+               newProblem.number = (p.number ?? 0) + 1;
                newProblems.push(newProblem);
             }
          }
@@ -183,15 +183,15 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editColor: action.payload};
 
       case getType(scoreboardActions.cancelEditColor):
-         const newColors = state.colors!.filter(p2 => p2.id != -1);
+         const newColors = state.colors!.filter(p2 => p2.id != undefined);
          return { ...state, editColor: undefined, colors: newColors};
 
       case getType(scoreboardActions.startAddColor):
          const newColors2 = [...state.colors!];
          let newColor:Color = {
             rgbPrimary:"#000000",
-            organizerId: state.organizer!.id,
-            id: -1,
+            organizerId: state.organizer?.id!,
+            id: undefined,
             name: "",
             shared: false
          };
@@ -215,15 +215,15 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editSeries: action.payload};
 
       case getType(scoreboardActions.cancelEditSeries):
-         const newSeriesList = state.series!.filter(p2 => p2.id != -1);
+         const newSeriesList = state.series!.filter(p2 => p2.id != undefined);
          return { ...state, editSeries: undefined, series: newSeriesList};
 
       case getType(scoreboardActions.startAddSeries):
          const newSeriesList2 = [...state.series!];
          let newSeries:Series = {
-            id: -1,
+            id: undefined,
             name: "",
-            organizerId: state.organizer!.id
+            organizerId: state.organizer?.id!
          };
          newSeriesList2.push(newSeries);
          return { ...state, editSeries: newSeries, series: newSeriesList2};
@@ -245,14 +245,14 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editLocation: action.payload};
 
       case getType(scoreboardActions.cancelEditLocation):
-         const newLocations = state.locations!.filter(p2 => p2.id != -1);
+         const newLocations = state.locations!.filter(p2 => p2.id != undefined);
          return { ...state, editLocation: undefined, locations: newLocations};
 
       case getType(scoreboardActions.startAddLocation):
          const newLocations2 = [...state.locations!];
          let newLocation2:CompLocation = {
-            id: -1,
-            organizerId: state.organizer!.id,
+            id: undefined,
+            organizerId: state.organizer?.id!,
             name: "",
          };
          newLocations2.push(newLocation2);
@@ -278,13 +278,13 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
          return { ...state, editOrganizer: action.payload};
 
       case getType(scoreboardActions.cancelEditOrganizer):
-         const newOrganizerList = state.organizers!.filter(p2 => p2.id != -1);
+         const newOrganizerList = state.organizers!.filter(p2 => p2.id != undefined);
          return { ...state, editOrganizer: undefined, organizers: newOrganizerList};
 
       case getType(scoreboardActions.startAddOrganizer):
          const newOrganizerList2 = [...state.organizers!];
          let newOrganizer:Organizer = {
-            id: -1,
+            id: undefined,
             name: "",
          };
          newOrganizerList2.push(newOrganizer);

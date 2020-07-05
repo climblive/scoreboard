@@ -1,5 +1,5 @@
 export interface RaffleWinner {
-   id: number;
+   id?: number;
    raffleId: number;
    contenderId: number;
 }

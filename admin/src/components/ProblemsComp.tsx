@@ -66,14 +66,13 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
    }
 
    getColorName = (problem:Problem) => {
-      let color = this.props.colorMap.get(problem.colorId ? problem.colorId : -1);
-      return color ? color.name : "UNDEFINED";
+      return problem.colorId ? this.props.colorMap.get(problem.colorId)?.name : "UNDEFINED";
    };
 
    getProblemStyle = (problem:Problem) => {
-      let color = this.props.colorMap.get(problem.colorId ? problem.colorId : -1)!;
+      let color = problem.colorId ? this.props.colorMap.get(problem.colorId) : undefined;
       if(!color) {
-         color = {id: -1, organizerId: -1, name: "None", rgbPrimary: "888", shared:false};
+         color = {id: undefined, organizerId: 0, name: "None", rgbPrimary: "888", shared:false};
       }
       let rgbColor = color.rgbPrimary;
       if(rgbColor.charAt(0) !== '#') {

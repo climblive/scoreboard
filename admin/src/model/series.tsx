@@ -1,5 +1,5 @@
 export interface Series {
-   id: number;
+   id?: number;
    name: string;
    organizerId: number;
 }

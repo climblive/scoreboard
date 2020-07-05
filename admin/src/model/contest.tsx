@@ -1,5 +1,5 @@
 export interface Contest {
-   id: number;
+   id?: number;
    seriesId?: number,
    protected: boolean,
    name: string;

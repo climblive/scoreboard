@@ -14,7 +14,6 @@ import {Environment} from "../environment";
 
 export class Api {
 
-   static oldCredentials?:string = "YWRtaW46bm90aW1lZm9yY2xpbWJpbmc=";
    static credentials?:string;
 
    static readonly url = "https://api." + Environment.siteDomain;
@@ -28,7 +27,6 @@ export class Api {
          let errorBody = await data.json();
          console.error(errorBody);
          throw errorBody.message;
-         //throw Error("Failed: " + data.statusText);
       }
       return data;
    }
@@ -37,8 +35,6 @@ export class Api {
       let authHeaders:any = {};
       if(this.credentials) {
          authHeaders.Authorization = "Bearer " + this.credentials;
-      } else if(this.oldCredentials) {
-         authHeaders.Authorization = "Basic " + this.oldCredentials;
       }
       return authHeaders;
    }

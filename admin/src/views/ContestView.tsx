@@ -177,6 +177,7 @@ class ContestView extends React.Component<Props, State> {
          />);
       } else if(selectedTab == 3) {
          tab = (<ContendersComp key="contenders"
+                                contest={this.props.contest!}
                                 contenders={this.props.contenders!}
                                 contenderFilterCompClassId={this.props.contenderFilterCompClassId}
                                 contenderSortBy={this.props.contenderSortBy}

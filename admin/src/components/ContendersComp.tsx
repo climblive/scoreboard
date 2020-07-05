@@ -20,6 +20,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import {ConfirmationDialog} from "./ConfirmationDialog";
 import {CompClass} from "../model/compClass";
+import {Contest} from "../model/contest";
 import moment from "moment";
 import {Problem} from "../model/problem";
 import {Color} from "../model/color";
@@ -30,6 +31,7 @@ import {SortBy} from "../constants/sortBy";
 import {Environment} from "../environment";
 
 interface Props {
+   contest:Contest,
    contenders:ContenderData[],
    contenderSortBy: SortBy;
    contenderFilterCompClassId?:number;
@@ -181,9 +183,13 @@ class ContendersComp extends React.Component<Props, State> {
                         <TableCell style={{width:"100%", cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NAME)}>Name</TableCell>
                         <TableCell style={{minWidth:110}}>Class</TableCell>
                         <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_TOTAL_POINTS)}>Total score</TableCell>
-                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_QUALIFYING_POINTS)}>Qualifying score</TableCell>
-                        <TableCell style={{minWidth:100}}></TableCell>
-                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NUMBER_OF_TICKS)}># ticks</TableCell>
+                        {this.props.contest.finalEnabled && (
+                           <>
+                              <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_QUALIFYING_POINTS)}>Qualifying score</TableCell>
+                              <TableCell style={{minWidth:100}}></TableCell>
+                           </>
+                        )}
+                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NUMBER_OF_TICKS)}># Ticks</TableCell>
                         <TableCell style={{minWidth:110}}>Registration code</TableCell>
                      </TableRow>
                   </TableHead>
@@ -200,11 +206,15 @@ class ContendersComp extends React.Component<Props, State> {
                                     <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.totalScore : "-"}</div>
                                     <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.totalPosition + ")") : ""}</div>
                                  </TableCell>
-                                 <TableCell component="th" scope="row">
-                                    <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.qualifyingScore : "-"}</div>
-                                    <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.qualifyingPosition + ")") : ""}</div>
-                                 </TableCell>
-                                 <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
+                                 {this.props.contest.finalEnabled && (
+                                    <>
+                                       <TableCell component="th" scope="row">
+                                          <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.qualifyingScore : "-"}</div>
+                                          <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.qualifyingPosition + ")") : ""}</div>
+                                       </TableCell>
+                                       <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
+                                    </>
+                                 )}
                                  <TableCell component="th" scope="row">{contender.name ? contender.ticks!.length : "-"}</TableCell>
                                  <TableCell component="th" scope="row">
                                     <Button

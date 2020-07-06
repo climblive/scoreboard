@@ -1,3 +1,8 @@
 package se.scoreboard.dto.scoreboard
 
-data class RafflePushItemDto (val raffleId: Int, val active: Boolean)
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class RafflePushItemDto (
+    val raffleId: Int,
+    @JsonProperty("active")
+    val active: Boolean)

@@ -1,5 +1,5 @@
 export interface CompLocation {
-   id: number;
+   id?: number;
    name: string;
    organizerId: number;
    latitude?: number;

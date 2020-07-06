@@ -8,32 +8,70 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import se.scoreboard.SlackNotifier
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
-import se.scoreboard.data.repo.ContenderRepository
-import se.scoreboard.data.repo.ContestRepository
-import se.scoreboard.data.repo.TickRepository
+import se.scoreboard.data.repo.*
 import se.scoreboard.dto.*
 import se.scoreboard.dto.scoreboard.RaffleWinnerPushItemDto
 import se.scoreboard.exception.WebException
+import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.RaffleMapper
 import java.io.ByteArrayOutputStream
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @Service
 class ContestService @Autowired constructor(
         contestRepository: ContestRepository,
         private val contenderRepository: ContenderRepository,
         private val tickRepository: TickRepository,
-        val pdfService: PdfService,
+        private val raffleRepository: RaffleRepository,
+        private val raffleWinnerRepository: RaffleWinnerRepository,
+        private val compClassRepository: CompClassRepository,
+        private val problemRepository: ProblemRepository,
+        private val pdfService: PdfService,
+        private val slackNotifier: SlackNotifier,
         private var raffleMapper: RaffleMapper,
         private var compClassMapper: CompClassMapper,
         override var entityMapper: AbstractMapper<Contest, ContestDto>) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
+
+    init {
+        addConstraints(ContestDto::protected.name, ContestDto::protected, "ROLE_ORGANIZER", AttributeConstraintType.IMMUTABLE)
+    }
+
+    override fun onCreate(phase: Phase, new: Contest) {
+        when (phase) {
+            Phase.AFTER -> slackNotifier.newContest(new, getUserPrincipal())
+            else -> {}
+        }
+    }
+
+    override fun onDelete(phase: Phase, old: Contest) {
+        when (phase) {
+            Phase.BEFORE -> {
+                if (old.isProtected) {
+                    throw WebException(HttpStatus.CONFLICT, "Cannot delete protected contest")
+                }
+
+                old.raffles.forEach { raffleWinnerRepository.deleteAll(it.winners) }
+                raffleRepository.deleteAll(old.raffles)
+
+                old.contenders.forEach { tickRepository.deleteAll(it.ticks) }
+                contenderRepository.deleteAll(old.contenders)
+
+                compClassRepository.deleteAll(old.compClasses)
+
+                problemRepository.deleteAll(old.problems)
+            }
+            else -> {}
+        }
+    }
 
     fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {
         val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }

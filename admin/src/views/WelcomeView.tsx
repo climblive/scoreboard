@@ -35,11 +35,11 @@ function WelcomeView({ classes }: Props & StyledComponentProps) {
       <div style={{flexBasis:0, flexGrow:1, overflowY:"auto"}}>
          <div style={{maxWidth:600, margin: "20px auto"}}>
             <div style={{fontSize: 20, fontWeight: "bold", marginTop: 10, marginBottom:20}}>
-               Welcome to clmb.live - bouldering contests made easy!
+               Welcome to ClimbLive - bouldering contests made easy!
             </div>
             <div className={classes!.gridLine}>
                <div className={classes!.gridText}>
-                  <div className={classes!.paragraph}>Clmb.live is targeting small boulder contests, where the contenders keep track of their results by themselves.</div>
+                  <div className={classes!.paragraph}>ClimbLive is targeting small boulder contests, where the contenders keep track of their results by themselves.</div>
                   <div className={classes!.paragraph}>Normally this is made with scoreboards on paper, but now you can replace or combine it with a web page.</div>
                </div>
                <img className={classes!.gridImg} src="/images/contender.jpg"/>

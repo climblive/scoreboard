@@ -95,15 +95,15 @@ class RafflesComp extends React.Component<Props, State> {
                               }
                            </TableCell>
                            <TableCell className={"icon-cell"}>
-                              {raffle.isActive && <IconButton color="inherit" aria-label="Menu" title="Draw winner"
+                              {raffle.active && <IconButton color="inherit" aria-label="Menu" title="Draw winner"
                                                               onClick={() => this.props.drawWinner!(raffle)}>
                                   <PlayIcon/>
                               </IconButton>}
-                              {raffle.isActive && <IconButton color="inherit" aria-label="Menu" title="Deactivate raffle"
+                              {raffle.active && <IconButton color="inherit" aria-label="Menu" title="Deactivate raffle"
                                                               onClick={() => this.props.deactivateRaffle!(raffle)}>
                                   <StopIcon/>
                               </IconButton>}
-                              {!raffle.isActive && <IconButton color="inherit" aria-label="Menu" title="Activate raffle"
+                              {!raffle.active && <IconButton color="inherit" aria-label="Menu" title="Activate raffle"
                                                               onClick={() => this.props.activateRaffle!(raffle)}>
                                   <PlayIcon/>
                               </IconButton>}

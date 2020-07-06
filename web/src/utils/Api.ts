@@ -5,17 +5,18 @@ import {CompClass} from "../model/compClass";
 import {Tick} from "../model/tick";
 import {Color} from "../model/color";
 import {ScoreboardDescription} from "../model/scoreboardDescription";
+import {Environment} from "../environment";
 
 export class Api {
 
    private static useLocalhost = false;
 
    static getLiveUrl(): any {
-      return (Api.useLocalhost ? "ws://localhost:8080/api": "wss://api.clmb.live") + "/live/websocket";
+      return (Api.useLocalhost ? "ws://localhost:8080/api": "wss://api." + Environment.siteDomain) + "/live/websocket";
    }
 
    private static getBaseUrl(): string {
-      return Api.useLocalhost ? "http://localhost:8080/api/" : "https://api.clmb.live/"
+      return Api.useLocalhost ? "http://localhost:8080/api" : "https://api." + Environment.siteDomain
    }
 
    private static async handleErrors(data: Response): Promise<Response> {
@@ -82,51 +83,51 @@ export class Api {
    }
 
    static getContest(contestId: number, activationCode?: string): Promise<Contest> {
-      return this.get("contest/" + contestId, activationCode);
+      return this.get("/contest/" + contestId, activationCode);
    }
 
    static getProblems(contestId: number, activationCode: string): Promise<Problem[]> {
-      return this.get("contest/" + contestId + "/problem", activationCode);
+      return this.get("/contest/" + contestId + "/problem", activationCode);
    }
 
    static getCompClasses(contestId: number, activationCode: string): Promise<CompClass[]> {
-      return this.get("contest/" + contestId + "/compClass", activationCode);
+      return this.get("/contest/" + contestId + "/compClass", activationCode);
    }
 
    static getTicks(contenderId: number, activationCode: string): Promise<Tick[]> {
-      return this.get("contender/" + contenderId + "/tick", activationCode);
+      return this.get("/contender/" + contenderId + "/tick", activationCode);
    }
 
-   static createTick(problemId: number, contenderId: number, isFlash: boolean, activationCode: string): Promise<Tick> {
+   static createTick(problemId: number, contenderId: number, flash: boolean, activationCode: string): Promise<Tick> {
       const newTick:Tick = {
-         isFlash,
+         flash,
          contenderId,
          problemId
       };
-      return this.post("tick", newTick, activationCode);
+      return this.post("/tick", newTick, activationCode);
    }
 
    static updateTick(tick: Tick, activationCode: string): Promise<any> {
-      return this.put("tick/" + tick.id, tick, activationCode);
+      return this.put("/tick/" + tick.id, tick, activationCode);
    }
 
    static deleteTick(tick: Tick, activationCode: string): Promise<any> {
-      return this.delete("tick/" + tick.id, activationCode);
+      return this.delete("/tick/" + tick.id, activationCode);
    }
 
    static getColors(activationCode: string): Promise<Color[]> {
-      return this.get("color", activationCode);
+      return this.get("/color", activationCode);
    }
 
    static getContender(code: string): Promise<ContenderData> {
-      return this.get("contender/findByCode?code=" + code, code);
+      return this.get("/contender/findByCode?code=" + code, code);
    }
  
    static setContender(contenderData : ContenderData, activationCode: string): Promise<ContenderData> {
-      return this.put("contender/" + contenderData.id, contenderData, activationCode);
+      return this.put("/contender/" + contenderData.id, contenderData, activationCode);
    }
 
    static getScoreboard(id:number): Promise<ScoreboardDescription> {
-      return this.get("contest/" + id + "/scoreboard");
+      return this.get("/contest/" + id + "/scoreboard");
    }
 }

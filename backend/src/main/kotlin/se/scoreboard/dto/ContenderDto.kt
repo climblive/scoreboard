@@ -1,5 +1,6 @@
 package se.scoreboard.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.OffsetDateTime
 
 data class ContenderDto (
@@ -9,7 +10,9 @@ data class ContenderDto (
     var registrationCode: String? = null,
     var name: String? = null,
     var entered: OffsetDateTime? = null,
-    var disqualified: Boolean) {
+    @JsonProperty("disqualified")
+    var disqualified: Boolean,
+    var finalPlacing: Int?) {
 
-    constructor() : this(null, null, null, null, null, null, false)
+    constructor() : this(null, null, null, null, null, null, false, null)
 }

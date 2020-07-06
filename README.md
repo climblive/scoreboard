@@ -1,6 +1,12 @@
-[![Build Status](https://travis-ci.com/clmb-live/scoreboard.svg?branch=master)](https://travis-ci.com/clmb-live/scoreboard)
+[![Build Status](https://travis-ci.com/climblive/scoreboard.svg?branch=develop)](https://travis-ci.com/climblive/scoreboard)
 
-Scoreboard
+ClimbLive™
 ==========
 
-Clmb.live is an online scoring system for bouldering competitions where the contenders keep track of their results by themselves using a mobile web app.
+ClimbLive is an online scoring system for bouldering competitions where the contenders keep track of their results by
+themselves using a mobile web app.
+
+## Get Started
+
+ClimbLive is both easy and free to use. If you are an organizer of a climbing event and would like to
+get started, please visit [admin.climblive.app](https://admin.climblive.app) to sign-up and set up your first contest.

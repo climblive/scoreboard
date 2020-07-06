@@ -29,6 +29,7 @@ export const updateContest = createStandardAction('UPDATE_CONTEST')<{propName:st
 export const receiveContests = createStandardAction('RECEIVE_CONTESTS')<Contest[]>();
 export const clearContests = createStandardAction('CLEAR_CONTESTS')();
 export const receiveContest = createStandardAction('RECEIVE_CONTEST')<Contest>();
+export const deleteContest = createStandardAction('DELETE_CONTEST')<Contest>();
 
 export const receiveLocations = createStandardAction('RECEIVE_LOCATIONS')<CompLocation[]>();
 export const clearLocations = createStandardAction('CLEAR_LOCATIONS')();
@@ -81,5 +82,6 @@ export const receiveRaffleWinner = createStandardAction('RECEIVE_RAFFLE_WINNER')
 export const receiveContenders = createStandardAction('RECEIVE_CONTENDERS')<ContenderData[]>();
 export const setContenderFilterCompClass = createStandardAction('SET_CONTENDER_FILTER_COMP_CLASS')<CompClass>();
 export const setContenderSortBy = createStandardAction('SET_CONTENDER_SORT_BY')<SortBy>();
+export const updateContender = createStandardAction('UPDATE_CONTENDER')<ContenderData>();
 
 export const receiveTicks = createStandardAction('RECEIVE_TICKS')<Tick[]>();

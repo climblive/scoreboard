@@ -6,6 +6,7 @@ export class ContenderData {
    name?: string;
    id: number;
    entered?: string;
+   disqualified: boolean;
    compClassId?: number;
 
    // Internal data:

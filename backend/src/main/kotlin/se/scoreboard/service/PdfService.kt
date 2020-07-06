@@ -22,7 +22,7 @@ import javax.imageio.ImageIO
 
 @Service
 class PdfService @Autowired constructor(
-        @Value("\${site.url}") val siteUrl: String) {
+        @Value("\${site.url.web}") val webUrl: String) {
 
     val qrCodeWriter = QRCodeWriter()
 
@@ -112,12 +112,12 @@ class PdfService @Autowired constructor(
         cs.beginText()
         cs.newLineAtOffset(boxX + logoW + m * 3, boxY + m * 3 + 20)
         cs.setFont( PDType1Font.HELVETICA, 10f )
-        cs.showText("Din aktiveringskod på " + siteUrl + ":")
+        cs.showText("Din aktiveringskod på " + webUrl + ":")
         cs.endText()
 
         cs.drawImage(logo, boxX + m, boxY + m, logoW, logoH)
 
-        val qrCode = LosslessFactory.createFromImage(document, getQRCode("$siteUrl/$code", 400))
+        val qrCode = LosslessFactory.createFromImage(document, getQRCode("$webUrl/$code", 400))
         cs.drawImage(qrCode, boxX + boxW - qrSize - qrM, boxY + qrM, qrSize, qrSize)
 
         cs.close()

@@ -1,11 +1,13 @@
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
-    ext.kotlin_version = '1.3.10' // Required for Kotlin integration
-    ext.spring_boot_version = '2.2.4.RELEASE'
-
-    ext.password= project.hasProperty('password') ? project.getProperty('password') : 'default'
-    ext.username = project.hasProperty('username') ? project.getProperty('username') : 'default'
+    ext {
+        kotlinVersion = '1.3.61'
+        springBootVersion = '2.2.4.RELEASE'
+        mapstructVersion = "1.3.1.Final"
+        junitVersion = "5.4.2"
+    }
 
     repositories {
         maven {
@@ -13,64 +15,87 @@ buildscript {
         }
         mavenCentral()
     }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Required for Kotlin integration
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version" // See https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlin_version"
-        classpath "com.bmuschko:gradle-cargo-plugin:2.2.3"
-        classpath "gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0"
-    }
 }
 
 plugins {
     id 'java'
-    id "org.jetbrains.kotlin.kapt" version "1.3.21"
+    id "org.jetbrains.kotlin.kapt" version "1.3.61"
     id 'org.hidetake.ssh' version '2.10.1'
+    id 'com.palantir.git-version' version '0.12.2'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id "org.jetbrains.kotlin.jvm" version "1.3.61"
+    id "org.jetbrains.kotlin.plugin.spring" version "1.3.61"
+    id 'org.jetbrains.kotlin.plugin.jpa' version "1.3.61"
+    id "org.jetbrains.kotlin.plugin.noarg" version "1.3.61"
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id "com.gradle.build-scan" version "1.16"
+}
+
+group = 'app.climblive'
+version = gitVersion()
+
+repositories {
+    jcenter()
+}
+
+springBoot {
+    buildInfo()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+processResources {
+    with copySpec {
+        from 'src/main/resources'
+        include '**/application*.properties'
+        project.properties.findAll().each {
+          prop ->
+            if (prop.value != null) {
+                filter(ReplaceTokens, tokens: [ (prop.key): prop.value])
+            }
+        }
+    }
 }
 
 remotes {
     prod {
-        host = 'clmb.live'
-        user = 'ubuntu'
-        identity = file('.ssh/clmb.live.pem')
+        host = siteDomain
+        user = 'travis'
+        identity = file('.ssh/travis.pem')
+        passphrase = "$System.env.TRAVIS_PRIVATE_KEY_PASSPHRASE"
+        knownHosts = allowAnyHosts
     }
 }
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-
-sourceSets {
-    main.java.srcDirs += "build/generated/source/apt/main"
-}
-
-apply plugin: 'kotlin' // Required for Kotlin integration
-apply plugin: "kotlin-spring" // https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
-apply plugin: 'kotlin-jpa'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'war'
-apply plugin: 'com.bmuschko.cargo'
-apply plugin: 'com.palantir.docker'
-apply plugin: "kotlin-noarg"
-
-group = 'jespersolver'
 
 task deleteTmpWeb(type: Delete) {
     delete 'tmpWeb'
 }
 
-task web(type:Exec) {
-    workingDir '../web'
+task web() {
+    doLast {
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(siteDomain\\s*=\\s*).*/\\1\"$siteDomain\";/g", '../web/src/environment.tsx'
+        }
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${gitVersion()}\";/g", '../web/src/environment.tsx'
+        }
+        exec {
+            workingDir '../web'
 
-    if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
-        commandLine 'cmd', '/c', 'npm'
-    } else {
-        commandLine 'npm'
+            if (System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
+                commandLine 'cmd', '/c', 'npm'
+            } else {
+                commandLine 'npm'
+            }
+
+            args 'run', 'build'
+        }
     }
-
-    args 'run', 'build'
 }
 
 task copyWeb(type: Copy) {
@@ -79,16 +104,28 @@ task copyWeb(type: Copy) {
     into 'tmpWeb'
 }
 
-task admin(type:Exec) {
-    workingDir '../admin'
+task admin() {
+    doLast {
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(siteDomain\\s*=\\s*).*/\\1\"$siteDomain\";/g", '../admin/src/environment.tsx'
+        }
+        exec {
+            commandLine 'sed'
+            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${gitVersion()}\";/g", '../admin/src/environment.tsx'
+        }
+        exec {
+            workingDir '../admin'
 
-    if(System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
-        commandLine 'cmd', '/c', 'npm'
-    } else {
-        commandLine 'npm'
+            if (System.out.println(Os.isFamily(Os.FAMILY_WINDOWS))) {
+                commandLine 'cmd', '/c', 'npm'
+            } else {
+                commandLine 'npm'
+            }
+
+            args 'run', 'build'
+        }
     }
-
-    args 'run', 'build'
 }
 
 task copyAdmin(type: Copy) {
@@ -105,8 +142,8 @@ bootJar {
     copyAdmin.mustRunAfter deleteTmpWeb
     launchScript()
 
-    baseName = 'scoreboard'
-    version = '0.1.0'
+    baseName = 'climblive'
+    version = gitVersion()
 
     from('tmpWeb') {
         into 'public'
@@ -119,62 +156,20 @@ task unpack(type: Copy) {
     into("build/dependency")
 }
 
-docker {
-    name "${group}/${bootJar.baseName}"
-    copySpec.from(tasks.unpack.outputs).into("dependency")
-    buildArgs(['DEPENDENCY': "dependency"])
-}
-
 task deploy {
     doLast {
         ssh.run {
             session(remotes.prod) {
-                put from: "$buildDir/libs/scoreboard-0.1.0.jar", into: '/opt/scoreboard/'
-                execute 'sudo service scoreboard restart'
+                put from: "$buildDir/libs/climblive-${gitVersion()}.jar", into: '/home/travis'
+                execute "mv ~/climblive-${gitVersion()}.jar ~/uploads"
             }
         }
     }
 }
 
-war {
-    dependsOn deleteTmpWeb
-    dependsOn copyWeb
-    dependsOn copyAdmin
-    copyWeb.mustRunAfter deleteTmpWeb
-    copyAdmin.mustRunAfter deleteTmpWeb
-
-    enabled = true
-    webAppDirName = 'tmpWeb'
-    
-    webInf { from 'src/webInf' }
-}
-
-cargo {
-
-    containerId = 'tomcat7x'
-    port=9099
-
-    deployable {
-        context = 'mixnmatch'
-    }
-
-    remote {
-        hostname = 'localhost'
-    }
-
-    remote.username = username
-    remote.password = password
-
-    System.out.println("Deploying with username " + remote.username + " and password " + remote.password)
-}
-
-repositories {
-    jcenter()
-}
-
-ext {
-    mapstructVersion = "1.3.1.Final"
-    junitVersion = "5.4.2"
+buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
 }
 
 test {
@@ -190,7 +185,7 @@ configurations {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Required for Kotlin integration
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-websocket"
@@ -207,8 +202,11 @@ dependencies {
     implementation 'com.google.zxing:javase:3.3.0'
     implementation 'com.auth0:java-jwt:3.8.1'
     implementation 'com.auth0:jwks-rsa:0.8.2'
-    
-    implementation 'com.github.kittinunf.fuel:fuel:2.1.0'
+    compile 'io.swagger:swagger-annotations:1.6.0'
+    implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    implementation 'org.flywaydb:flyway-core:6.2.4'
+
+    kapt "org.mapstruct:mapstruct-processor:$mapstructVersion"
 
     runtimeOnly "mysql:mysql-connector-java"
 
@@ -217,11 +215,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-
     testImplementation "org.hibernate:hibernate-testing:5.3.7.Final"
     testImplementation "com.h2database:h2:1.4.196"
     testCompile "org.assertj:assertj-core:3.11.1"
-
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    kapt "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }

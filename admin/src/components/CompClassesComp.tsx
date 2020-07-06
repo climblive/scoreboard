@@ -129,12 +129,10 @@ class CompClassesComp extends React.Component<Props, State> {
                         )
                      } else {
                         let timeBegin = Date.parse(editCompClass!.timeBegin);
-                        let timeEnd = Date.parse(editCompClass.timeEnd); //= new Date();
+                        let timeEnd = Date.parse(editCompClass.timeEnd);
                         return (
                            <TableRow key={compClass.id}
-                                     style={{cursor: 'pointer'}}
-                                     hover
-                                     onClick={() => console.log("click")}>
+                                     style={{cursor: 'pointer'}}>
                               <TableCell component="th" scope="row">
                                  <TextField style={{}} value={editCompClass.name} onChange={this.onNameChange} />
                               </TableCell>

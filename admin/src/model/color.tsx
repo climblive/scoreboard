@@ -1,5 +1,5 @@
 export interface Color {
-   id: number;
+   id?: number;
    organizerId: number;
    name: string;
    rgbPrimary: string;

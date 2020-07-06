@@ -17,7 +17,7 @@ var api = function() {
 	
 	var getContender = function(code, onSuccess) {
 		console.log("Hej!");
-		get("https://clmb.live/api/contender/" + code, onSuccess)
+		get("https://api.climblive.app/contender/" + code, onSuccess)
 	};
 	
 	return {

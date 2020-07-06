@@ -10,8 +10,8 @@ import se.scoreboard.dto.ContestDto
 
 @Mapper(componentModel = "spring")
 abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
-    @Value("\${site.url}")
-    lateinit var siteUrl: String
+    @Value("\${site.url.web}")
+    lateinit var webUrl: String
 
     @Mappings(
         Mapping(source = "location.id", target = "locationId"),
@@ -25,13 +25,14 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
     @Mappings(
             Mapping(target = "compClasses", ignore = true),
             Mapping(target = "contenders", ignore = true),
-            Mapping(target = "problems", ignore = true)
+            Mapping(target = "problems", ignore = true),
+            Mapping(target = "raffles", ignore = true)
     )
     abstract override fun convertToEntity(source: ContestDto): Contest
 
     @AfterMapping
     fun afterMapping(@MappingTarget target: ContestDto) {
-        target.scoreboardUrl = "${siteUrl}/scoreboard/${target.id}"
+        target.scoreboardUrl = "${webUrl}/scoreboard/${target.id}"
     }
 
     @AfterMapping

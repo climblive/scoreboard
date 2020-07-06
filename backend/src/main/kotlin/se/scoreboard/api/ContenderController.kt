@@ -1,5 +1,6 @@
 package se.scoreboard.api
 
+import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -24,6 +25,7 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
+@Api(tags = ["Contender"])
 class ContenderController @Autowired constructor(
         val contenderService: ContenderService,
         private var tickMapper: TickMapper) {

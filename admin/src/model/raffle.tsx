@@ -1,8 +1,8 @@
 import {RaffleWinner} from "./raffleWinner";
 
 export interface Raffle {
-   id: number;
+   id?: number;
    contestId: number;
-   isActive: boolean;
+   active: boolean;
    winners?: RaffleWinner[];
 }

@@ -62,18 +62,20 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
    });
 
    componentDidMount() {
-      console.log(this.props);
-      /*let query = qs.parse(this.props.location.search, {
-         ignoreQueryPrefix: true
-      });*/
       let query = qs.parse(this.props.location.hash, {
          ignoreQueryPrefix: true
       });
-      const accessToken = query.access_token;
-      if(accessToken) {
-         console.log("accessToken " + accessToken);
-         this.props.login!(accessToken);
+      let credentials = query.access_token;
+
+      if (credentials) {
+         this.props.login!(credentials);
          this.props.history.push("/");
+      } else {
+         credentials = localStorage.getItem('credentials');
+
+         if (credentials != null) {
+            this.props.login!(credentials);
+         }
       }
    }
 
@@ -83,14 +85,11 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
    };
 
    getUrl = (command:string) => {
-      console.log(encodeURIComponent(window.location.origin));
-
       let url = "https://clmb.auth.eu-west-1.amazoncognito.com/";
       url += command;
       // Response type token or code
       url += "?response_type=token&client_id=55s3rmvp8t26lmi0898n9d1lfn&redirect_uri=";
       url += encodeURIComponent(window.location.origin);
-      console.log(url);
       return url;
    };
 
@@ -101,6 +100,11 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
    signup = () => {
       window.location.href = this.getUrl("signup");
    };
+
+   logout = () => {
+      localStorage.removeItem('credentials');
+      this.props.logout!();
+   }
 
    render() {
       const title = this.props.title;
@@ -136,7 +140,7 @@ class TopMenuComp extends React.Component<TopMenuCompProps & RouteComponentProps
                      </div>}
                      {loggedInUser && <div>
                         <span style={{marginRight:10}}>{loggedInUser.name}</span>
-                        <Button color="inherit" onClick={this.props.logout!}>Logout</Button>
+                        <Button color="inherit" onClick={this.logout}>Logout</Button>
                      </div>}
                   </Toolbar>
                </MuiThemeProvider>

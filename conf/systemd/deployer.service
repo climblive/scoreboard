@@ -1,0 +1,10 @@
+[Unit]
+Description=Deployer
+After=syslog.target
+
+[Service]
+User=root
+ExecStart=/root/deployer.sh
+
+[Install]
+WantedBy=multi-user.target

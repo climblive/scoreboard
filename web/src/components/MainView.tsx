@@ -136,7 +136,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
          document.title = this.props.contenderData.name;
          const points = this.props.ticks.map(tick => {
             const problem = this.props.problems.find(problem => problem.id == tick.problemId)!;
-            return tick.isFlash ? (problem.points + problem.flashBonus) : problem.points;
+            return tick.flash ? (problem.points + problem.flashBonus) : problem.points;
          }).sort((a, b) => b - a);
          console.log("POINTS:", points);
          let qualifyingProblems = this.props.contest.qualifyingProblems;
@@ -168,9 +168,9 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
                   </div>
                   <div className="pointsRow">
                      <div className="points">{totalPoints}</div>
-                     <div className="pointsDesc total">Totalt</div>
-                     <div className="pointsDesc">{qualifyingProblems} bästa</div>
-                     <div className="points">{tenBest}</div>
+                     <div className="pointsDesc total">{this.props.contest.finalists == 0 ? 'Poäng' : 'Totalt'}</div>
+                     {this.props.contest.finalists > 0 && <div className="pointsDesc">{qualifyingProblems} bästa</div>}
+                     {this.props.contest.finalists > 0 && <div className="points">{tenBest}</div>}
                   </div>
                   <div className="headerRow">
                      <div className={this.props.problemsSortedBy == SortBy.BY_NUMBER ? "selector selected" : "selector"} onClick={() => this.props.sortProblems!(SortBy.BY_NUMBER)}>Sortera efter nummer</div>

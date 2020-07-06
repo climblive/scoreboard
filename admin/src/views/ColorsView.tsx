@@ -14,6 +14,7 @@ import {connect, Dispatch} from "react-redux";
 import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
 import {Color} from "../model/color";
+import {User} from "../model/user";
 import * as Chroma from 'chroma-js';
 import {ChromePicker} from 'react-color';
 import Dialog from "@material-ui/core/Dialog";
@@ -29,6 +30,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
+import PeopleIcon from '@material-ui/icons/People';
 import {getOrganizerColors} from "../selectors/selector";
 import {Organizer} from "../model/organizer";
 
@@ -45,6 +47,7 @@ interface Props  {
    colors?: Color[],
    editColor?:Color,
    organizer?:Organizer,
+   loggedInUser?:User,
 
    loadColors?: () => void,
    setTitle?: (title: string) => void,
@@ -157,6 +160,10 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
       };
    }
 
+   isEditable = (color:Color) => {
+      return color.shared && !this.props.loggedInUser!.admin;
+   }
+
    render() {
       let colors = this.props.colors;
       let classes = this.props.classes!!;
@@ -173,6 +180,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                         <TableCell style={{width:"100%"}}>Name</TableCell>
                         <TableCell style={{minWidth:110}}>Primary color</TableCell>
                         <TableCell style={{minWidth:110}}>Secondary color</TableCell>
+                        <TableCell>Shared</TableCell>
                         <TableCell className={"icon-cell"} style={{minWidth:96}}>
                            <IconButton color="inherit" aria-label="Menu" title="Add color" onClick={this.props.startAddColor}>
                               <AddIcon />
@@ -193,12 +201,13 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                                  <TableCell component="th" scope="row">
                                     <div style={ColorsView.getColorStyle(color.rgbSecondary)}>{color.rgbSecondary || "None"}</div>
                                  </TableCell>
+                                 <TableCell component="th" scope="row">{color.shared && <PeopleIcon />}</TableCell>
                                  <TableCell className={"icon-cell"}>
-                                    {showEdit && <IconButton color="inherit" aria-label="Menu" title="Edit"
+                                    {showEdit && <IconButton color="inherit" aria-label="Menu" title="Edit" disabled={this.isEditable(color)}
                                                 onClick={() => this.props.startEditColor!(color)}>
                                        <EditIcon/>
                                     </IconButton>}
-                                    {showEdit && <IconButton color="inherit" aria-label="Menu" title="Delete"
+                                    {showEdit && <IconButton color="inherit" aria-label="Menu" title="Delete" disabled={this.isEditable(color)}
                                                 onClick={() => this.deleteColor(color)}>
                                        <DeleteIcon/>
                                     </IconButton>}
@@ -218,6 +227,7 @@ class ColorsView extends React.Component<Props & RouteComponentProps & StyledCom
                                  <TableCell>
                                     <div style={ColorsView.getColorStyle(editColor.rgbSecondary,true )} onClick={this.showPopupSecondary}>{editColor.rgbSecondary || "None"}</div>
                                  </TableCell>
+                                 <TableCell component="th" scope="row">{color.shared && <PeopleIcon />}</TableCell>
                                  <TableCell>
                                     <IconButton color="inherit" aria-label="Menu" title="Save"
                                        onClick={this.props.saveEditColor!}>
@@ -265,7 +275,8 @@ function mapStateToProps(state: StoreState, props: any): Props {
    return {
       colors: getOrganizerColors(state),
       editColor: state.editColor,
-      organizer: state.organizer
+      organizer: state.organizer,
+      loggedInUser: state.loggedInUser
    };
 }
 

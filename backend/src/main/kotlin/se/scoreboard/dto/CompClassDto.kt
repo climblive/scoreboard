@@ -7,8 +7,9 @@ data class CompClassDto (
     var contestId: Int?,
     var name: String?,
     var description: String?,
+    var color: String?,
     var timeBegin: OffsetDateTime?,
     var timeEnd: OffsetDateTime?) {
 
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null)
 }

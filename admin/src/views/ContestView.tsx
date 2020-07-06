@@ -59,6 +59,7 @@ interface Props {
    setNewContest?: () => void,
    updateContest?: (propName:string, value:any) => void,
    saveContest?: (onSuccess:(contest:Contest) => void) => any,
+   deleteContest?: (contest: Contest) => void,
    loadColors?: () => void,
    setTitle?: (title: string) => void,
    createPdf?: () => void
@@ -84,6 +85,7 @@ interface Props {
    setContenderSortBy?: (contenderSortBy:SortBy) => void
    exportResults?:() => void,
    resetContenders?:() => void,
+   updateContender?: (contender: ContenderData) => void,
 
    createRaffle?:() => void,
    drawWinner?:(raffle:Raffle) => void,
@@ -116,7 +118,7 @@ class ContestView extends React.Component<Props, State> {
       this.setState(this.state);
    }
 
-   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+   componentDidUpdate(nextProps: Readonly<Props>, nextContext: any): void {
       let title = "";
       if(this.props.contest) {
          title = this.props.contest.isNew ? "Add contest" : this.props.contest.name;
@@ -146,6 +148,7 @@ class ContestView extends React.Component<Props, State> {
                                     contestIssues={this.props.contestIssues}
                                     updateContest={this.props.updateContest}
                                     saveContest={this.props.saveContest}
+                                    deleteContest={this.props.deleteContest}
                                     createPdf={this.props.createPdf}
                                     createPdfFromTemplate={this.props.createPdfFromTemplate}
          />);
@@ -177,6 +180,7 @@ class ContestView extends React.Component<Props, State> {
          />);
       } else if(selectedTab == 3) {
          tab = (<ContendersComp key="contenders"
+                                contest={this.props.contest!}
                                 contenders={this.props.contenders!}
                                 contenderFilterCompClassId={this.props.contenderFilterCompClassId}
                                 contenderSortBy={this.props.contenderSortBy}
@@ -190,6 +194,7 @@ class ContestView extends React.Component<Props, State> {
                                 setContenderSortBy={this.props.setContenderSortBy}
                                 exportResults={this.props.exportResults}
                                 resetContenders={this.props.resetContenders}
+                                updateContender={this.props.updateContender}
          />);
       } else if(selectedTab == 4) {
          tab = (<RafflesComp key="raffles"
@@ -249,6 +254,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       setNewContest: () => dispatch(actions.setNewContest()),
       updateContest: (propName:string, value:any) => dispatch(actions.updateContest({propName: propName, value: value})),
       saveContest: (onSuccess:(contest:Contest) => void) => dispatch(asyncActions.saveContest(onSuccess)),
+      deleteContest: (contest: Contest) => dispatch(asyncActions.deleteContest(contest)),
       loadColors: () => dispatch(asyncActions.loadColors()),
       setTitle: (title: string) => dispatch(actions.setTitle(title)),
 
@@ -274,6 +280,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       createPdf: () => dispatch(asyncActions.createPdf()),
       createPdfFromTemplate: (file:Blob) => dispatch(asyncActions.createPdfFromTemplate(file)),
       resetContenders: () => dispatch(asyncActions.resetContenders()),
+      updateContender: (contender: ContenderData) => dispatch(asyncActions.updateContender(contender)),
 
       createRaffle: () => dispatch(asyncActions.createRaffle()),
       drawWinner: (raffle:Raffle) => dispatch(asyncActions.drawWinner(raffle)),

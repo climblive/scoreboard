@@ -1,0 +1,11 @@
+[Unit]
+Description=ClimbLive
+After=syslog.target
+
+[Service]
+User=climblive
+ExecStart=/usr/bin/java -jar /opt/climblive/climblive.jar --spring.config.additional-location=file:/etc/climblive/
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

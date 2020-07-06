@@ -66,14 +66,13 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
    }
 
    getColorName = (problem:Problem) => {
-      let color = this.props.colorMap.get(problem.colorId ? problem.colorId : -1);
-      return color ? color.name : "UNDEFINED";
+      return problem.colorId ? this.props.colorMap.get(problem.colorId)?.name : "UNDEFINED";
    };
 
    getProblemStyle = (problem:Problem) => {
-      let color = this.props.colorMap.get(problem.colorId ? problem.colorId : -1)!;
+      let color = problem.colorId ? this.props.colorMap.get(problem.colorId) : undefined;
       if(!color) {
-         color = {id: -1, organizerId: -1, name: "None", rgbPrimary: "888", shared:false};
+         color = {id: undefined, organizerId: 0, name: "None", rgbPrimary: "888", shared:false};
       }
       let rgbColor = color.rgbPrimary;
       if(rgbColor.charAt(0) !== '#') {
@@ -92,7 +91,6 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
             rgbSecondary = '#' + rgbSecondary;
          }
          background = "repeating-linear-gradient(-30deg," + rgbColor + "," + rgbSecondary + " 15px," + rgbColor + " 30px)";
-         console.log(background);
       }
       return {
          display:"flex",
@@ -265,7 +263,7 @@ class ProblemsComp extends React.Component<Props & StyledComponentProps, State> 
                         <div style={{width:300}}>{contender!.name}</div>
                         <div style={{width:150}}>{compClass!.name}</div>
                         <div style={{width:150}}>{moment(tick.timestamp).format("HH:mm")}</div>
-                        <div style={{width:100}}>{tick.isFlash && "Flash"}</div>
+                        <div style={{width:100}}>{tick.flash && "Flash"}</div>
                      </div>
                   );
                }

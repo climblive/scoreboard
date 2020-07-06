@@ -6,7 +6,7 @@ import MomentUtils from '@date-io/moment';
 import SideMenuComp from "./components/SideMenuComp";
 import TopMenuComp from "./components/TopMenuComp";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import IconButton from "@material-ui/core/IconButton";
 import {Snackbar} from "@material-ui/core";
 import {Close} from "@material-ui/icons";

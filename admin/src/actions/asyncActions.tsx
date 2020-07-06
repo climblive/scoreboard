@@ -11,6 +11,7 @@ import {Series} from "../model/series";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {Raffle} from "../model/raffle";
+import {ContenderData} from 'src/model/contenderData';
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -18,7 +19,7 @@ export function login(code:string): any {
       Api.setCredentials(code);
       Api.getUser()
          .then(userData => {
-            console.log(userData);
+            localStorage.setItem('credentials', code)
             dispatch(actions.setLoggingIn(false));
             dispatch(actions.setLoggedInUser(userData));
             reloadSeries(dispatch);
@@ -80,6 +81,15 @@ export function saveContest(onSuccess:(contest:Contest) => void): any {
          dispatch(actions.setErrorMessage(error));
       });
    }
+}
+
+export function deleteContest(contest: Contest): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      Api.deleteContest(contest).then(() => {
+         dispatch(actions.deleteContest(contest));
+      })
+      .catch(error => {dispatch(actions.setErrorMessage(error))});
+   };
 }
 
 // ************
@@ -324,7 +334,7 @@ let reloadContendersForContest = (dispatch: Dispatch<any>, contestId: number) =>
 
 export function createContenders(nNewContenders:number):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.createContenders(contestId, nNewContenders).then(() => {
          reloadContendersForContest(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
@@ -333,7 +343,7 @@ export function createContenders(nNewContenders:number):any {
 
 export function reloadContenders():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       dispatch(actions.receiveContenders([]));
       dispatch(actions.receiveTicks([]));
       reloadContendersForContest(dispatch, contestId);
@@ -343,18 +353,25 @@ export function reloadContenders():any {
 
 export function resetContenders():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.resetContenders(contestId).then(() => {
          reloadContendersForContest(dispatch, contestId);
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }
 
+export function updateContender(contender: ContenderData): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      Api.saveContender(contender).then(() => {
+         dispatch(actions.updateContender(contender));
+      }).catch(error => {dispatch(actions.setErrorMessage(error))});
+   }
+}
+
 export function exportResults():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.exportContest(contestId).then(response => {
-         console.log(response);
          saveAs(response, "contest.xls");
       }).catch(error => {
          dispatch(actions.setErrorMessage(error))
@@ -364,14 +381,12 @@ export function exportResults():any {
 
 export function createPdfFromTemplate(file:Blob):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       let reader = new FileReader();
       dispatch(actions.setCreatingPdf(true));
       reader.onload = (evt:any) => {
          let arrayBuffer = evt.currentTarget.result;
-         console.log("ArrayBuffer", arrayBuffer);
          Api.createPdfFromTemplate(contestId, arrayBuffer).then(response => {
-            console.log(response);
             dispatch(actions.setCreatingPdf(false));
             saveAs(response, "contest.pdf");
          }).catch(error => {
@@ -389,7 +404,7 @@ export function createPdfFromTemplate(file:Blob):any {
 
 export function createPdf():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       dispatch(actions.setCreatingPdf(true));
       Api.createPdf(contestId).then(response => {
          dispatch(actions.setCreatingPdf(false));
@@ -424,12 +439,12 @@ let reloadRaffles = (dispatch: Dispatch<any>, contestId: number) => {
 
 export function createRaffle():any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       let newRaffle: Raffle = {
-         id: -1,
+         id: undefined,
          contestId: contestId,
          winners: undefined,
-         isActive:false
+         active:false
       };
       Api.saveRaffle(newRaffle).then(() => {
          reloadRaffles(dispatch, contestId);
@@ -441,8 +456,8 @@ export function createRaffle():any {
 
 export function activateRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
-      raffle.isActive = true;
+      let contestId = getState().contest?.id!;
+      raffle.active = true;
       raffle.winners = undefined;
       dispatch(actions.clearRaffles());
       Api.saveRaffle(raffle).then(() => {
@@ -455,8 +470,8 @@ export function activateRaffle(raffle:Raffle):any {
 
 export function deactivateRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
-      raffle.isActive = false;
+      let contestId = getState().contest?.id!;
+      raffle.active = false;
       raffle.winners = undefined;
       dispatch(actions.clearRaffles());
       Api.saveRaffle(raffle).then(() => {
@@ -479,7 +494,7 @@ export function drawWinner(raffle:Raffle):any {
 
 export function deleteRaffle(raffle:Raffle):any {
    return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest!.id;
+      let contestId = getState().contest?.id!;
       Api.deleteRaffle(raffle).then(() => {
          reloadRaffles(dispatch, contestId);
       }).catch(error => {

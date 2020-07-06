@@ -20,6 +20,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import {ConfirmationDialog} from "./ConfirmationDialog";
 import {CompClass} from "../model/compClass";
+import {Contest} from "../model/contest";
 import moment from "moment";
 import {Problem} from "../model/problem";
 import {Color} from "../model/color";
@@ -27,8 +28,14 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {SortBy} from "../constants/sortBy";
+import {Environment} from "../environment";
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import Tooltip from '@material-ui/core/Tooltip';
+import {Api} from '../utils/Api';
 
 interface Props {
+   contest:Contest,
    contenders:ContenderData[],
    contenderSortBy: SortBy;
    contenderFilterCompClassId?:number;
@@ -42,14 +49,8 @@ interface Props {
    reloadContenders?: () => void
    resetContenders?: () => void
    setContenderFilterCompClass?: (contenderFilterCompClass?:CompClass) => void,
-   setContenderSortBy?: (contenderSortBy:SortBy) => void
-   /*editCompClass?:CompClass,
-   startEditCompClass?:(compClass:CompClass) => void
-   cancelEditCompClass?:() => void
-   saveEditCompClass?:() => void
-   startAddCompClass?:() => void
-   deleteCompClass?:(compClass:CompClass) => void
-   updateEditCompClass?:(propName:string, propValue:any) => void*/
+   setContenderSortBy?: (contenderSortBy:SortBy) => void,
+   updateContender?: (contender: ContenderData) => void
 }
 
 type State = {
@@ -58,7 +59,6 @@ type State = {
    showResetConfirmationPopup:boolean
    nNewContenders:string
    dialogContender?:ContenderData
-   //deleteCompClass?:CompClass
 }
 
 class ContendersComp extends React.Component<Props, State> {
@@ -95,7 +95,7 @@ class ContendersComp extends React.Component<Props, State> {
       this.setState(this.state);
    };
 
-   onNNewContendersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   onNewContendersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.state.nNewContenders = e.target.value;
       this.setState(this.state);
    };
@@ -144,37 +144,19 @@ class ContendersComp extends React.Component<Props, State> {
       this.props.setContenderFilterCompClass!(filterCompClass);
    };
 
-   /*deleteCompClass = (compClass:CompClass) => {
-      this.state.deleteCompClass = compClass;
-      this.setState(this.state);
-   };
+   onDisqualify = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, contender: ContenderData) => {
+      e.stopPropagation();
+      this.props.updateContender?.({...contender, disqualified: true});
+   }
 
-   onDeleteConfirmed = () => {
-      this.props.deleteCompClass!(this.state.deleteCompClass!);
-      this.state.deleteCompClass = undefined;
-      this.setState(this.state)
-   };
-
-   onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.updateEditCompClass!("name", e.target.value);
-   };
-
-   onDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.updateEditCompClass!("description", e.target.value);
-   };
-
-   onTimeBeginChange = (e: any) => {
-      console.log(e);
-   };
-
-   onTimeEndChange = (e: any) => {
-      console.log(e);
-   };*/
+   onReenter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, contender: ContenderData) => {
+      e.stopPropagation();
+      this.props.updateContender?.({...contender, disqualified: false});
+   }
 
    render() {
       let contenders = this.props.contenders;
       let compClasses = this.props.compClasses;
-      //let editCompClass = this.props.editCompClass;
       if(!contenders) {
          return (<CircularProgress/>)
       }
@@ -216,74 +198,80 @@ class ContendersComp extends React.Component<Props, State> {
                         <TableCell style={{width:"100%", cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NAME)}>Name</TableCell>
                         <TableCell style={{minWidth:110}}>Class</TableCell>
                         <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_TOTAL_POINTS)}>Total score</TableCell>
-                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_QUALIFYING_POINTS)}>Qualifying score</TableCell>
-                        <TableCell style={{minWidth:100}}></TableCell>
-                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NUMBER_OF_TICKS)}># ticks</TableCell>
+                        {this.props.contest.finalEnabled && (
+                           <>
+                              <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_QUALIFYING_POINTS)}>Qualifying score</TableCell>
+                              <TableCell style={{minWidth:100}}></TableCell>
+                           </>
+                        )}
+                        <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NUMBER_OF_TICKS)}># Ticks</TableCell>
                         <TableCell style={{minWidth:110}}>Registration code</TableCell>
+                        <TableCell />
                      </TableRow>
                   </TableHead>
                   <TableBody>
                      {contenders.map(contender => {
-                        //if(editCompClass == undefined || editCompClass.id != compClass.id) {
                            return (
                               <TableRow key={contender.id}
                                         style={{cursor: 'pointer'}}
                                         hover
-                                        onClick={() => this.showContenderDialog(contender)}>
-                                 <TableCell component="th" scope="row">{contender.name}</TableCell>
+                                        onClick={() => {
+                                           if (!contender.disqualified) {
+                                              this.showContenderDialog(contender)
+                                           }}}>
+                                 <TableCell style={contender.disqualified ? { textDecoration: "line-through" } : {}} component="th" scope="row">
+                                    {contender.name}
+                                 </TableCell>
                                  <TableCell component="th" scope="row">{this.getCompClassName(contender.compClassId)}</TableCell>
                                  <TableCell component="th" scope="row">
                                     <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.totalScore : "-"}</div>
                                     <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.totalPosition + ")") : ""}</div>
                                  </TableCell>
-                                 <TableCell component="th" scope="row">
-                                    <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.qualifyingScore : "-"}</div>
-                                    <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.qualifyingPosition + ")") : ""}</div>
-                                 </TableCell>
-                                 <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
+                                 {this.props.contest.finalEnabled && (
+                                    <>
+                                       <TableCell component="th" scope="row">
+                                          <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.qualifyingScore : "-"}</div>
+                                          <div style={{display: "inline-block"}}>{contender.name ? ("(" + contender.qualifyingPosition + ")") : ""}</div>
+                                       </TableCell>
+                                       <TableCell component="th" scope="row">{contender.isFinalist ? "finalist" : ""}</TableCell>
+                                    </>
+                                 )}
                                  <TableCell component="th" scope="row">{contender.name ? contender.ticks!.length : "-"}</TableCell>
-                                 <TableCell component="th" scope="row">{contender.registrationCode}</TableCell>
-                              </TableRow>
-                           )
-                        /*} else {
-                           return (
-                              <TableRow key={compClass.id}
-                                        style={{cursor: 'pointer'}}
-                                        hover
-                                        onClick={() => console.log("click")}>
                                  <TableCell component="th" scope="row">
-                                    <input style={{}} value={editCompClass.name} placeholder="Name" onChange={this.onNameChange} />
+                                    <Button
+                                       href={"https://" + Environment.siteDomain + "/" + contender.registrationCode}
+                                       target="_blank"
+                                       variant="outlined"
+                                       color="primary"
+                                       disabled={contender.disqualified}
+                                       style={{ maxWidth: '100px', minWidth: '100px' }}
+                                       onClick={(event) => event.stopPropagation()}>{contender.registrationCode}</Button>
                                  </TableCell>
-                                 <TableCell>
-                                    <input style={{}} value={editCompClass.description} onChange={this.onDescriptionChange} />
-                                 </TableCell>
-                                 <TableCell>
-                                    <DateTimePicker ampm={false} value={timeBegin} onChange={this.onTimeBeginChange} />
-                                 </TableCell>
-                                 <TableCell>
-                                    <DateTimePicker ampm={false} value={timeEnd} onChange={this.onTimeEndChange} />
-                                 </TableCell>
-                                 <TableCell>
-                                    <IconButton color="inherit" aria-label="Menu" title="Save"
-                                                onClick={this.props.saveEditCompClass!}>
-                                       <CheckIcon/>
-                                    </IconButton>
-                                    <IconButton color="inherit" aria-label="Menu" title="Cancel"
-                                                onClick={this.props.cancelEditCompClass!}>
-                                       <CancelIcon/>
-                                    </IconButton>
+                                 <TableCell component="th" scope="row">
+                                    {contender.disqualified ? (
+                                    <Tooltip title="Reenter" placement="top-start">
+                                       <Button
+                                          variant="outlined"
+                                          color="primary"
+                                          onClick={event => this.onReenter(event, contender)}>{<ThumbUpIcon />}
+                                       </Button>
+                                    </Tooltip>)
+                                    : (
+                                    <Tooltip title="Disqualify" placement="top-start">
+                                       <Button
+                                          variant="contained"
+                                          color="secondary"
+                                          onClick={event => this.onDisqualify(event, contender)}>{<ThumbDownIcon />}
+                                       </Button>
+                                    </Tooltip>
+                                    )}
                                  </TableCell>
                               </TableRow>
                            )
-                        }*/
                      })}
                   </TableBody>
                </Table>
             </div>
-            {/*<ConfirmationDialog open={this.state.deleteCompClass != undefined}
-                                title={"Delete class"}
-                                message={"Do you wish to delete the selected class?"}
-                                onClose={this.onDeleteConfirmed} />*/}
             <Dialog
                open={this.state.showAddContendersPopup}
                disableBackdropClick
@@ -296,7 +284,7 @@ class ContendersComp extends React.Component<Props, State> {
                   <div>Before a contest starts, you have to create activation codes enough for all contenders.</div>
                   <div style={{marginTop:5}}>Currently you have {contenders.length} activation codes.</div>
                   <div style={{marginTop:5, marginBottom:20}}>You can create a maximum of {this.MAX_CONTENDER_COUNT} activation codes per contest.</div>
-                  <TextField style={{width:250}}label="Number of contenders to create" value={this.state.nNewContenders} onChange={this.onNNewContendersChange}/>
+                  <TextField style={{width:250}}label="Number of contenders to create" value={this.state.nNewContenders} onChange={this.onNewContendersChange}/>
                   {this.state.addContendersErrorMessage && <div style={{marginTop:5,color:"red",fontWeight:"bold"}}>{this.state.addContendersErrorMessage}</div>}
                </DialogContent>
                <DialogActions>
@@ -325,7 +313,7 @@ class ContendersComp extends React.Component<Props, State> {
                      let problem = this.props.problemMap.get(tick.problemId);
                      let color = this.props.colorMap.get(problem!.colorId!);
                      let points = problem!.points!;
-                     if(tick.isFlash && problem!.flashBonus) {
+                     if(tick.flash && problem!.flashBonus) {
                         points += problem!.flashBonus;
                      }
                      return(
@@ -334,7 +322,7 @@ class ContendersComp extends React.Component<Props, State> {
                            <div style={{width:150}}>{color!.name}</div>
                            <div style={{width:100, textAlign:"right"}}>{points}</div>
                            <div style={{width:150, marginLeft:10}}>{moment(tick.timestamp).format("HH:mm")}</div>
-                           <div style={{width:100, marginLeft:10}}>{tick.isFlash && "Flash"}</div>
+                           <div style={{width:100, marginLeft:10}}>{tick.flash && "Flash"}</div>
                         </div>
                      );
                   })}

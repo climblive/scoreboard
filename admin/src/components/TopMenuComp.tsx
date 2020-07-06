@@ -12,7 +12,7 @@ import {Organizer} from "../model/organizer";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 export interface TopMenuCompProps {

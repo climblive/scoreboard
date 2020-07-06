@@ -80,8 +80,6 @@ export class ScoreboardListComp extends React.Component<
       containerTop = -this.ITEM_HEIGHT * currentPage * this.state.nToShow;
     }
 
-    //console.log("render " + this.props.totalList!.length + " state " + this.props.pagingCounter, this.state);
-
     let listClass = this.props.isPaging
       ? "scoreboardListContenders scoreboardListContendersPaging"
       : "scoreboardListContenders";

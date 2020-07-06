@@ -296,7 +296,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
     case getType(scoreboardActions.updateScoreboardTimer):
       let now: number = new Date().getTime() / 1000;
-      //console.log("UPDATE_SCOREBOARD_TIMER " + now);
       if (state.scoreboardData) {
         let newScoreboardData2: ScoreboardContenderList[] = state.scoreboardData.map(
           (scl) => {
@@ -305,7 +304,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
             const startTime = Date.parse(newCompClass.timeBegin) / 1000;
             const endTime = Date.parse(newCompClass.timeEnd) / 1000;
 
-            //console.log("startTime: " + startTime, newCompClass.timeBegin);
             if (startTime > now) {
               newCompClass.statusString =
                 "Startar om " + getDurationString(startTime - now);

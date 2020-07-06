@@ -82,14 +82,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
     ));
 
     let buttons;
-    /*if(this.props.isProfile) {
-         buttons = (
-             <div className="buttonRow">
-                <button className={submitButtonClass} onClick={this.onSubmit}>Ok</button>
-                <button onClick={this.props.onFinished}>Avbryt</button>
-             </div>
-         )
-      } else {*/
     submitButtonClass += " large";
     buttons = (
       <div>
@@ -98,7 +90,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
         </button>
       </div>
     );
-    //}
 
     return (
       <div style={{ paddingTop: 20 }}>

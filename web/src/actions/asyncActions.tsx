@@ -89,14 +89,6 @@ export function handleScoreboardItem(
   };
 }
 
-/*export function loadContest(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      Api.getContest(0).then(contest => {
-         dispatch(receiveContest(contest));
-      })
-   };
-}*/
-
 export function saveUserData(contenderData: ContenderData): any {
   return (dispatch: Dispatch<any>) => {
     let promise: Promise<ContenderData> = Api.setContender(

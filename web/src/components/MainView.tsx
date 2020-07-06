@@ -121,11 +121,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
         </div>
       );
     } else if (!this.props.contenderData.name) {
-      let openRulesModal = () => {
-        /*console.log("openModal");
-            this.state.rulesModalIsOpen = true;
-            this.setState(this.state);*/
-      };
+      let openRulesModal = () => {};
       return (
         <div className="maxWidth">
           <div className="view mainView">

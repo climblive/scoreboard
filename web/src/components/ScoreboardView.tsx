@@ -42,9 +42,6 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
 
     this.client = new Client({
       brokerURL: Api.getLiveUrl(),
-      /*debug: function (str) {
-            console.log("DEBUG: " + str);
-         },*/
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
@@ -86,8 +83,6 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
     this.intervalId = window.setInterval(() => {
       this.props.updateScoreboardTimer!();
     }, 1000);
-
-    //setTimeout(this.fakeScore);
   }
 
   fakeScore = () => {

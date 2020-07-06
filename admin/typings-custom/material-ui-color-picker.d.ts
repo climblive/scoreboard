@@ -1,1 +1,1 @@
-declare module 'material-ui-color-picker'
+declare module "material-ui-color-picker";

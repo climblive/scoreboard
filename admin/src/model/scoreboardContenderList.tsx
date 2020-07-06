@@ -1,7 +1,7 @@
-import { ScoreboardContender } from './scoreboardContender';
-import { CompClass } from './compClass';
+import { ScoreboardContender } from "./scoreboardContender";
+import { CompClass } from "./compClass";
 
-export class ScoreboardContenderList { 
-   compClass: CompClass;
-   contenders: ScoreboardContender[];
+export class ScoreboardContenderList {
+  compClass: CompClass;
+  contenders: ScoreboardContender[];
 }

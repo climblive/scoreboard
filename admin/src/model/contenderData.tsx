@@ -1,19 +1,19 @@
-import {Tick} from "./tick";
+import { Tick } from "./tick";
 
 export class ContenderData {
-   registrationCode: string;
-   contestId: number;
-   name?: string;
-   id: number;
-   entered?: string;
-   disqualified: boolean;
-   compClassId?: number;
+  registrationCode: string;
+  contestId: number;
+  name?: string;
+  id: number;
+  entered?: string;
+  disqualified: boolean;
+  compClassId?: number;
 
-   // Internal data:
-   ticks?: Tick[];
-   totalScore?: number;
-   totalPosition?: number;
-   qualifyingScore?: number;
-   qualifyingPosition?: number;
-   isFinalist?: boolean;
+  // Internal data:
+  ticks?: Tick[];
+  totalScore?: number;
+  totalPosition?: number;
+  qualifyingScore?: number;
+  qualifyingPosition?: number;
+  isFinalist?: boolean;
 }

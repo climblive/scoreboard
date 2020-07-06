@@ -1,53 +1,53 @@
-import { ContenderData } from './contenderData';
-import { Contest } from './contest';
-import {Problem} from "./problem";
-import {CompClass} from "./compClass";
-import {Color} from "./color";
-import {Organizer} from "./organizer";
-import {CompLocation} from "./compLocation";
-import {Series} from "./series";
-import {User} from "./user";
-import {Tick} from "./tick";
-import {SortBy} from "../constants/sortBy";
-import {Raffle} from "./raffle";
+import { ContenderData } from "./contenderData";
+import { Contest } from "./contest";
+import { Problem } from "./problem";
+import { CompClass } from "./compClass";
+import { Color } from "./color";
+import { Organizer } from "./organizer";
+import { CompLocation } from "./compLocation";
+import { Series } from "./series";
+import { User } from "./user";
+import { Tick } from "./tick";
+import { SortBy } from "../constants/sortBy";
+import { Raffle } from "./raffle";
 
 export interface StoreState {
-   title: string,
+  title: string;
 
-   loggingIn: boolean,
-   loggedInUser?: User
+  loggingIn: boolean;
+  loggedInUser?: User;
 
-   contests?: Contest[],
-   contest?: Contest;
-   creatingPdf: boolean;
+  contests?: Contest[];
+  contest?: Contest;
+  creatingPdf: boolean;
 
-   problems?: Problem[];
-   editProblem?: Problem;
-   problemIdBeingUpdated?: number;
+  problems?: Problem[];
+  editProblem?: Problem;
+  problemIdBeingUpdated?: number;
 
-   compClasses?: CompClass[];
-   editCompClass?: CompClass;
+  compClasses?: CompClass[];
+  editCompClass?: CompClass;
 
-   contenders?: ContenderData[];
-   contenderSortBy: SortBy;
-   contenderFilterCompClassId?:number;
+  contenders?: ContenderData[];
+  contenderSortBy: SortBy;
+  contenderFilterCompClassId?: number;
 
-   raffles?: Raffle[],
+  raffles?: Raffle[];
 
-   colors?: Color[],
-   editColor?: Color;
+  colors?: Color[];
+  editColor?: Color;
 
-   series?: Series[],
-   editSeries?: Series;
+  series?: Series[];
+  editSeries?: Series;
 
-   locations?: CompLocation[],
-   editLocation?: CompLocation,
+  locations?: CompLocation[];
+  editLocation?: CompLocation;
 
-   organizers?: Organizer[],
-   organizer?: Organizer
-   editOrganizer?:Organizer
+  organizers?: Organizer[];
+  organizer?: Organizer;
+  editOrganizer?: Organizer;
 
-   ticks?: Tick[],
+  ticks?: Tick[];
 
-   errorMessage?: string;
+  errorMessage?: string;
 }

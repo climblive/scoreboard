@@ -5,6 +5,7 @@ import {Button, StyledComponentProps, Theme} from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {User} from "../model/user";
+import { Environment } from 'src/environment';
 
 export interface SideMenuCompProps {
    loggedInUser?: User
@@ -52,6 +53,7 @@ function SideMenuComp({ classes, loggedInUser }: SideMenuCompProps & StyledCompo
           <div style={{margin:"auto 10px 20px 10px", textAlign:"center"}}>
              <div>Questions, requests or just want to chat?</div>
              <div style={{marginTop:5}}>Please <a target={"_NEW"} href={"https://www.facebook.com/CLMB.live"}><u>click here</u></a> to visit us on Facebook</div>
+             <div><pre>Build {Environment.projectVersion}</pre></div>
           </div>
       </div>
    );

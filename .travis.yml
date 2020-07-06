@@ -12,11 +12,9 @@ services:
 
 jobs:
   include:
-    - stage: prebuild
-      script: sed -i -E "s/(siteDomain\s*=\s*).*/\1climblive.app/" backend/gradle.properties 
-      if: branch =~ /^\d+\.\d+$/
     - stage: build
       script:
+        - if [[ "$TRAVIS_BRANCH" =~ ^[0-9]+\.[0-9]+$ ]]; then sed -i -E "s/(siteDomain\s*=\s*).*/\1climblive.app/" backend/gradle.properties; fi
         - cd web
         - travis_retry npm install
         - cd ../admin

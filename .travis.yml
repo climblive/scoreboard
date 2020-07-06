@@ -14,7 +14,7 @@ jobs:
   include:
     - stage: prebuild
       script: sed -i -E "s/(siteDomain\s*=\s*).*/\1climblive.app/" backend/gradle.properties 
-      if: branch = /^\d+\.\d+$/
+      if: branch =~ /^\d+\.\d+$/
     - stage: build
       script:
         - cd web

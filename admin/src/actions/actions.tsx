@@ -82,5 +82,6 @@ export const receiveRaffleWinner = createStandardAction('RECEIVE_RAFFLE_WINNER')
 export const receiveContenders = createStandardAction('RECEIVE_CONTENDERS')<ContenderData[]>();
 export const setContenderFilterCompClass = createStandardAction('SET_CONTENDER_FILTER_COMP_CLASS')<CompClass>();
 export const setContenderSortBy = createStandardAction('SET_CONTENDER_SORT_BY')<SortBy>();
+export const updateContender = createStandardAction('UPDATE_CONTENDER')<ContenderData>();
 
 export const receiveTicks = createStandardAction('RECEIVE_TICKS')<Tick[]>();

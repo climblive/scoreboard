@@ -11,6 +11,7 @@ import {Series} from "../model/series";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
 import {Raffle} from "../model/raffle";
+import {ContenderData} from 'src/model/contenderData';
 
 export function login(code:string): any {
    return (dispatch: Dispatch<any>) => {
@@ -355,6 +356,14 @@ export function resetContenders():any {
       let contestId = getState().contest?.id!;
       Api.resetContenders(contestId).then(() => {
          reloadContendersForContest(dispatch, contestId);
+      }).catch(error => {dispatch(actions.setErrorMessage(error))});
+   }
+}
+
+export function updateContender(contender: ContenderData): any {
+   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+      Api.saveContender(contender).then(() => {
+         dispatch(actions.updateContender(contender));
       }).catch(error => {dispatch(actions.setErrorMessage(error))});
    }
 }

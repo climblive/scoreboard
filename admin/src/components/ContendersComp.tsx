@@ -29,6 +29,10 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {SortBy} from "../constants/sortBy";
 import {Environment} from "../environment";
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import Tooltip from '@material-ui/core/Tooltip';
+import {Api} from '../utils/Api';
 
 interface Props {
    contest:Contest,
@@ -45,7 +49,8 @@ interface Props {
    reloadContenders?: () => void
    resetContenders?: () => void
    setContenderFilterCompClass?: (contenderFilterCompClass?:CompClass) => void,
-   setContenderSortBy?: (contenderSortBy:SortBy) => void
+   setContenderSortBy?: (contenderSortBy:SortBy) => void,
+   updateContender?: (contender: ContenderData) => void
 }
 
 type State = {
@@ -90,7 +95,7 @@ class ContendersComp extends React.Component<Props, State> {
       this.setState(this.state);
    };
 
-   onNNewContendersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   onNewContendersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.state.nNewContenders = e.target.value;
       this.setState(this.state);
    };
@@ -138,6 +143,16 @@ class ContendersComp extends React.Component<Props, State> {
       const filterCompClass = e.target.value == "All" ? undefined : this.props.compClasses!.find(o => o.id == parseInt(e.target.value));
       this.props.setContenderFilterCompClass!(filterCompClass);
    };
+
+   onDisqualify = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, contender: ContenderData) => {
+      e.stopPropagation();
+      this.props.updateContender?.({...contender, disqualified: true});
+   }
+
+   onReenter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, contender: ContenderData) => {
+      e.stopPropagation();
+      this.props.updateContender?.({...contender, disqualified: false});
+   }
 
    render() {
       let contenders = this.props.contenders;
@@ -191,6 +206,7 @@ class ContendersComp extends React.Component<Props, State> {
                         )}
                         <TableCell style={{minWidth:110, cursor:"pointer"}} onClick={() => this.props.setContenderSortBy!(SortBy.BY_NUMBER_OF_TICKS)}># Ticks</TableCell>
                         <TableCell style={{minWidth:110}}>Registration code</TableCell>
+                        <TableCell />
                      </TableRow>
                   </TableHead>
                   <TableBody>
@@ -199,8 +215,13 @@ class ContendersComp extends React.Component<Props, State> {
                               <TableRow key={contender.id}
                                         style={{cursor: 'pointer'}}
                                         hover
-                                        onClick={() => this.showContenderDialog(contender)}>
-                                 <TableCell component="th" scope="row">{contender.name}</TableCell>
+                                        onClick={() => {
+                                           if (!contender.disqualified) {
+                                              this.showContenderDialog(contender)
+                                           }}}>
+                                 <TableCell style={contender.disqualified ? { textDecoration: "line-through" } : {}} component="th" scope="row">
+                                    {contender.name}
+                                 </TableCell>
                                  <TableCell component="th" scope="row">{this.getCompClassName(contender.compClassId)}</TableCell>
                                  <TableCell component="th" scope="row">
                                     <div style={{width:37, display: "inline-block"}}>{contender.name ? contender.totalScore : "-"}</div>
@@ -222,8 +243,28 @@ class ContendersComp extends React.Component<Props, State> {
                                        target="_blank"
                                        variant="outlined"
                                        color="primary"
+                                       disabled={contender.disqualified}
                                        style={{ maxWidth: '100px', minWidth: '100px' }}
                                        onClick={(event) => event.stopPropagation()}>{contender.registrationCode}</Button>
+                                 </TableCell>
+                                 <TableCell component="th" scope="row">
+                                    {contender.disqualified ? (
+                                    <Tooltip title="Reenter" placement="top-start">
+                                       <Button
+                                          variant="outlined"
+                                          color="primary"
+                                          onClick={event => this.onReenter(event, contender)}>{<ThumbUpIcon />}
+                                       </Button>
+                                    </Tooltip>)
+                                    : (
+                                    <Tooltip title="Disqualify" placement="top-start">
+                                       <Button
+                                          variant="contained"
+                                          color="secondary"
+                                          onClick={event => this.onDisqualify(event, contender)}>{<ThumbDownIcon />}
+                                       </Button>
+                                    </Tooltip>
+                                    )}
                                  </TableCell>
                               </TableRow>
                            )
@@ -243,7 +284,7 @@ class ContendersComp extends React.Component<Props, State> {
                   <div>Before a contest starts, you have to create activation codes enough for all contenders.</div>
                   <div style={{marginTop:5}}>Currently you have {contenders.length} activation codes.</div>
                   <div style={{marginTop:5, marginBottom:20}}>You can create a maximum of {this.MAX_CONTENDER_COUNT} activation codes per contest.</div>
-                  <TextField style={{width:250}}label="Number of contenders to create" value={this.state.nNewContenders} onChange={this.onNNewContendersChange}/>
+                  <TextField style={{width:250}}label="Number of contenders to create" value={this.state.nNewContenders} onChange={this.onNewContendersChange}/>
                   {this.state.addContendersErrorMessage && <div style={{marginTop:5,color:"red",fontWeight:"bold"}}>{this.state.addContendersErrorMessage}</div>}
                </DialogContent>
                <DialogActions>

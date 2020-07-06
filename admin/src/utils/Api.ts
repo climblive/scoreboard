@@ -241,6 +241,10 @@ export class Api {
       }
    }
 
+   static saveContender(contender: ContenderData): Promise<ContenderData> {
+      return this.put("/contender/" + contender.id, contender);
+   }
+
    static setContender(contenderData : ContenderData): Promise<ContenderData> {
       return this.put("/contender/" + contenderData.id, contenderData);
    }

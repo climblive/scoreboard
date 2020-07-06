@@ -85,6 +85,7 @@ interface Props {
    setContenderSortBy?: (contenderSortBy:SortBy) => void
    exportResults?:() => void,
    resetContenders?:() => void,
+   updateContender?: (contender: ContenderData) => void,
 
    createRaffle?:() => void,
    drawWinner?:(raffle:Raffle) => void,
@@ -193,6 +194,7 @@ class ContestView extends React.Component<Props, State> {
                                 setContenderSortBy={this.props.setContenderSortBy}
                                 exportResults={this.props.exportResults}
                                 resetContenders={this.props.resetContenders}
+                                updateContender={this.props.updateContender}
          />);
       } else if(selectedTab == 4) {
          tab = (<RafflesComp key="raffles"
@@ -278,6 +280,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
       createPdf: () => dispatch(asyncActions.createPdf()),
       createPdfFromTemplate: (file:Blob) => dispatch(asyncActions.createPdfFromTemplate(file)),
       resetContenders: () => dispatch(asyncActions.resetContenders()),
+      updateContender: (contender: ContenderData) => dispatch(asyncActions.updateContender(contender)),
 
       createRaffle: () => dispatch(asyncActions.createRaffle()),
       drawWinner: (raffle:Raffle) => dispatch(asyncActions.drawWinner(raffle)),

@@ -306,6 +306,15 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       case getType(scoreboardActions.setContenderSortBy):
          return { ...state, contenderSortBy: action.payload };
 
+      case getType(scoreboardActions.updateContender):
+         return { ...state, contenders: state.contenders?.map(contender => {
+            if (contender.id == action.payload.id) {
+               return action.payload;
+            } else {
+               return contender;
+            }
+         })};
+
       case getType(scoreboardActions.receiveRaffles):
          return { ...state, raffles: action.payload };
 

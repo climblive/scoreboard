@@ -1,4 +1,4 @@
 export class RafflePushItem {
-   raffleId: number;
-   active: boolean;
+  raffleId: number;
+  active: boolean;
 }

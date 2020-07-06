@@ -1,6 +1,6 @@
-import { ScoreboardContender } from './scoreboardContender';
+import { ScoreboardContender } from "./scoreboardContender";
 
 export class ScoreboardPushItem {
-   compClassId: number
-   item: ScoreboardContender
+  compClassId: number;
+  item: ScoreboardContender;
 }

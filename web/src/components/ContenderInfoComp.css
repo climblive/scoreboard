@@ -1,23 +1,23 @@
 .compClassContainer {
-   display:flex;
-   width: 100%;
+  display: flex;
+  width: 100%;
 }
 
 .buttonRow {
-   width: 100%;
-   display: flex;
+  width: 100%;
+  display: flex;
 }
 
 .buttonRow button {
-   flex-basis: 0;
-   flex-grow:1;
+  flex-basis: 0;
+  flex-grow: 1;
 }
 
-.buttonRow button:NOT(:LAST-CHILD) {
-   margin-right:10px;
+.buttonRow button:not(:last-child) {
+  margin-right: 10px;
 }
 
 .compClassDescription {
-   font-size: 10px;
-   font-style: italic;
+  font-size: 10px;
+  font-style: italic;
 }

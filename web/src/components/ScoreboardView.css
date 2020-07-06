@@ -1,87 +1,87 @@
 .scoreboardView {
-   background: black;
-   color: #E0E0E0;
-   flex-grow: 1;
-   display: flex;
-   flex-direction: column;
-   position: relative;
+  background: black;
+  color: #e0e0e0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .scoreboardListContainer {
-   display:flex;
-   flex-shrink:0;
+  display: flex;
+  flex-shrink: 0;
 }
 
 .scoreboardListContainer.total {
-   flex-grow: 1;
+  flex-grow: 1;
 }
 
 .header {
-   text-align: left;
-   padding:20px 10px 4px 10px;
-   margin: 0 20px 10px 20px;
-   border-bottom: 2px solid #888;
-   flex-shrink:0;
-   font-weight: bold;
+  text-align: left;
+  padding: 20px 10px 4px 10px;
+  margin: 0 20px 10px 20px;
+  border-bottom: 2px solid #888;
+  flex-shrink: 0;
+  font-weight: bold;
 }
 
 .logoContainer {
-   display:flex;
-   /* temp code to hide container*/
-   display: none;
-   /**/
-   align-items: center;
-   padding-bottom: 5px;
-   padding-top:20px;
-   flex-shrink:0;
+  display: flex;
+  /* temp code to hide container*/
+  display: none;
+  /**/
+  align-items: center;
+  padding-bottom: 5px;
+  padding-top: 20px;
+  flex-shrink: 0;
 }
 
 .logoContainer img {
-   margin: 0 30px;
+  margin: 0 30px;
 }
 
 .logoContainer img:first-child {
-   margin-left:auto;
+  margin-left: auto;
 }
 
 .logoContainer img:last-child {
-   margin-right:auto;
+  margin-right: auto;
 }
 
 .winnerOuterContainer {
-   position:absolute;
-   display:flex;
-   flex-direction: column;
-   background:#000000d6;
-   z-index: 100;
-   top:0;
-   left:0;
-   right:0;
-   bottom:115px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: #000000d6;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 115px;
 }
 
 .winnerInnerContainer {
-   position:relative;
-   text-align: center;
-   height:300px;
-   margin: auto 0;
+  position: relative;
+  text-align: center;
+  height: 300px;
+  margin: auto 0;
 }
 
 .winner {
-   font-size: 40px;
-   color:#9a9a9a;
-   position: absolute;
-   left: 0;
-   right: 0;
-   transition:font-size 1s ease, opacity 1s ease, top 1s ease;
+  font-size: 40px;
+  color: #9a9a9a;
+  position: absolute;
+  left: 0;
+  right: 0;
+  transition: font-size 1s ease, opacity 1s ease, top 1s ease;
 }
 
 .winner:first-child {
-   font-size: 60px;
-   color:#E0E0E0;
-   margin-bottom:20px;
+  font-size: 60px;
+  color: #e0e0e0;
+  margin-bottom: 20px;
 }
 
 .winner:nth-child(6) {
-   opacity: 0;
+  opacity: 0;
 }

@@ -16,9 +16,10 @@ import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/AddCircleOutline';
-import {getLocationMap, getOrganizerContests, getOrganizerMap} from "../selectors/selector";
+import {getLocationMap, getOrganizerContests, getOrganizerMap, getSeriesMap} from "../selectors/selector";
 import {Organizer} from "../model/organizer";
 import {CompLocation} from "../model/compLocation";
+import {Series} from 'src/model/series';
 
 const styles = ({ spacing }: Theme) => createStyles({
    root: {
@@ -33,6 +34,7 @@ interface Props  {
    contests?: Contest[],
    organizerMap: Map<number, Organizer>
    locationMap: Map<number, CompLocation>
+   seriesMap: Map<number, Series>
    loadContests?: () => void,
    setTitle?: (title: string) => void,
 }
@@ -56,16 +58,22 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
    }
 
    getOrganizerName = (id: number) => {
-      const organizer = this.props.organizerMap.get(id);
-      return organizer ? organizer.name : ("Unknown organizer " + id);
+      return this.props.organizerMap.get(id)?.name;
    };
 
    getLocationName = (id?: number) => {
-      if(id) {
-         const location = this.props.locationMap.get(id);
-         return location ? location.name : ("Unknown location " + id);
+      if (id) {
+         return this.props.locationMap.get(id)?.name;
       } else {
-         return "";
+         return undefined;
+      }
+   };
+
+   getSeriesName = (id?: number) => {
+      if (id) {
+         return this.props.seriesMap.get(id)?.name;
+      } else {
+         return undefined;
       }
    };
 
@@ -82,8 +90,8 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                   <TableHead>
                      <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell>Description</TableCell>
                         <TableCell>Location</TableCell>
+                        <TableCell>Series</TableCell>
                         <TableCell>Qualifying problems</TableCell>
                         <TableCell className={"icon-cell"}>
                            <IconButton color="inherit" aria-label="Menu" title="Add contest" onClick={() => this.props.history.push("/contests/new")}>
@@ -99,8 +107,8 @@ class ContestsView extends React.Component<Props & RouteComponentProps & StyledC
                                   hover
                                   onClick={() => this.props.history.push("/contests/" + contest.id)}>
                            <TableCell component="th" scope="row">{contest.name}</TableCell>
-                           <TableCell>{contest.description}</TableCell>
                            <TableCell>{this.getLocationName(contest.locationId)}</TableCell>
+                           <TableCell>{this.getSeriesName(contest.seriesId)}</TableCell>
                            <TableCell colSpan={2}>{contest.qualifyingProblems}</TableCell>
                         </TableRow>
                      ))}
@@ -120,7 +128,8 @@ function mapStateToProps(state: StoreState, props: any): Props {
    return {
       contests: getOrganizerContests(state),
       organizerMap: getOrganizerMap(state),
-      locationMap: getLocationMap(state)
+      locationMap: getLocationMap(state),
+      seriesMap: getSeriesMap(state)
    };
 }
 

@@ -7,6 +7,7 @@ import {CompLocation} from "../model/compLocation";
 import {Problem} from "../model/problem";
 import {ContenderData} from "../model/contenderData";
 import {SortBy} from "../constants/sortBy";
+import {Series} from 'src/model/series';
 
 const getColors = (state: StoreState) => state.colors;
 const getCompClasses = (state: StoreState) => state.compClasses;
@@ -73,6 +74,17 @@ export const getOrganizerMap = createSelector(
       const map = new Map<number, Organizer>();
       if(organizers) {
          organizers.filter(organizer => organizer.id != undefined).forEach(organizer => map.set(organizer.id!, organizer));
+      }
+      return map;
+   }
+);
+
+export const getSeriesMap = createSelector(
+   [getSeries],
+   (series) => {
+      const map = new Map<number, Series>();
+      if (series) {
+         series.filter(s => s.id != undefined).forEach(s => map.set(s.id!, s));
       }
       return map;
    }
@@ -266,64 +278,3 @@ export const getContestIssues = createSelector(
       return issues;
    }
 );
-
-
-
-
-/*const getScoreboardContenders = (state: StoreState, props: any) => {
-   if (state.scoreboardData) {
-      return state.scoreboardData.find(list => list.compClass.name == props.compClass.name)!.contenders;
-   } else {
-      return undefined;
-   }
-}
-
-const createList = (getScore: (sc: ScoreboardContender) => number, maxCount: number, scoreboardContenders?: ScoreboardContender[]) => {
-   if (scoreboardContenders) {
-      scoreboardContenders = scoreboardContenders.sort((a, b) => getScore(b) - getScore(a));
-      let position = 0;
-      let lastScore = -1;
-      let maxFulfilled = false;
-      let listItems = scoreboardContenders.map((sc, index) => {
-         let score = getScore(sc);
-         if(score != lastScore) {
-            lastScore = score;
-            position = index + 1;
-            maxFulfilled = maxCount != 0 && index >= maxCount;
-         }
-         if(maxFulfilled) {
-            return undefined;
-         } else {
-            let x: ScoreboardListItem = {
-               contenderId: sc.contenderId,
-               position: position,
-               contenderName: sc.contenderName,
-               score: score
-            }
-            return x;
-         }
-      }).filter(sc => sc) as ScoreboardListItem[];
-
-      if(maxCount) {
-         // Remove contenders without score:
-         listItems = listItems.filter(l => l.score);
-      }
-      return listItems;
-   } else {
-      return undefined;
-   }
-}
-
-export const makeGetTotalList = () => {
-   return createSelector(
-      [getScoreboardContenders],
-      (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.totalScore, 0, scoreboardContenders)
-   )
-}
-
-export const makeGetFinalistList = () => {
-   return createSelector(
-      [getScoreboardContenders],
-      (scoreboardContenders) => createList((sc: ScoreboardContender) => sc.qualifyingScore, 7, scoreboardContenders)
-   )
-}*/

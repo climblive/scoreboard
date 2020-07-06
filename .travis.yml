@@ -10,13 +10,19 @@ notifications:
 services:
   - docker
 
-script:
-  - cd web
-  - travis_retry npm install
-  - cd ../admin
-  - travis_retry npm install
-  - cd ../backend
-  - travis_retry ./gradlew clean test bootJar deploy --scan
+jobs:
+  include:
+    - stage: prebuild
+      script: sed -i -E "s/(siteDomain\s*=\s*).*/\1climblive.app/" backend/gradle.properties 
+      if: branch = /^\d+\.\d+$/
+    - stage: build
+      script:
+        - cd web
+        - travis_retry npm install
+        - cd ../admin
+        - travis_retry npm install
+        - cd ../backend
+        - travis_retry ./gradlew clean test bootJar deploy --scan
 
 branches:
   only:

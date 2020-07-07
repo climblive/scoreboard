@@ -39,26 +39,6 @@ export function login(code: string): any {
   };
 }
 
-function pickOrganizer(organizers: Organizer[]): Organizer {
-  let organizer: Organizer | undefined;
-
-  let previousOrganizerId = parseInt(
-    localStorage.getItem("organizerId") ?? "",
-    10
-  );
-
-  if (previousOrganizerId != null) {
-    organizer = organizers.find((o) => o.id === previousOrganizerId);
-  }
-
-  if (organizer == null) {
-    organizer = organizers[0];
-    localStorage.setItem("organizerId", organizer.id!.toString());
-  }
-
-  return organizer;
-}
-
 export function changeOrganizer(organizer: Organizer): any {
   return (dispatch: Dispatch<any>) => {
     Api.setOrganizerId(organizer.id);
@@ -67,13 +47,6 @@ export function changeOrganizer(organizer: Organizer): any {
     loadEverything(dispatch);
   };
 }
-
-let loadEverything = (dispatch: Dispatch<any>) => {
-  reloadLocations(dispatch);
-  reloadSeries(dispatch);
-  reloadColors(dispatch);
-  loadContests()(dispatch);
-};
 
 export function loadContests(): any {
   return (dispatch: Dispatch<any>) => {
@@ -94,11 +67,11 @@ export function loadContest(contestId: number): any {
     Api.getContest(contestId)
       .then((contest) => {
         dispatch(actions.receiveContest(contest));
-        reloadProblems(dispatch, contestId);
-        reloadCompClasses(dispatch, contestId);
-        reloadContendersForContest(dispatch, contestId);
-        reloadTicks(dispatch, contestId);
-        reloadRaffles(dispatch, contestId);
+        loadProblems(contestId)(dispatch);
+        loadCompClasses(contestId)(dispatch);
+        loadContendersForContest(contestId)(dispatch);
+        loadTicks(contestId)(dispatch);
+        loadRaffles(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -142,20 +115,16 @@ export function deleteContest(contest: Contest): any {
 
 // ************
 
-let reloadColors = (dispatch: Dispatch<any>) => {
-  Api.getColors()
-    .then((colors) => {
-      dispatch(actions.receiveColors(colors));
-    })
-    .catch((error) => {
-      dispatch(actions.receiveColors([]));
-      dispatch(actions.setErrorMessage(error));
-    });
-};
-
 export function loadColors(): any {
   return (dispatch: Dispatch<any>) => {
-    reloadColors(dispatch);
+    Api.getColors()
+      .then((colors) => {
+        dispatch(actions.receiveColors(colors));
+      })
+      .catch((error) => {
+        dispatch(actions.receiveColors([]));
+        dispatch(actions.setErrorMessage(error));
+      });
   };
 }
 
@@ -164,9 +133,8 @@ export function saveEditColor(): any {
     let color = getState().editColor!;
     Api.saveColor(color)
       .then((color) => {
-        // Reload the list of comp classes:
         dispatch(actions.cancelEditColor());
-        reloadColors(dispatch);
+        loadColors()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -179,7 +147,7 @@ export function deleteColor(color: Color): any {
     Api.deleteColor(color)
       .then(() => {
         dispatch(actions.cancelEditColor());
-        reloadColors(dispatch);
+        loadColors()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -189,20 +157,16 @@ export function deleteColor(color: Color): any {
 
 // ************
 
-let reloadSeries = (dispatch: Dispatch<any>) => {
-  Api.getSeries()
-    .then((series) => {
-      dispatch(actions.receiveSeries(series));
-    })
-    .catch((error) => {
-      dispatch(actions.receiveSeries([]));
-      dispatch(actions.setErrorMessage(error));
-    });
-};
-
 export function loadSeries(): any {
   return (dispatch: Dispatch<any>) => {
-    reloadSeries(dispatch);
+    Api.getSeries()
+      .then((series) => {
+        dispatch(actions.receiveSeries(series));
+      })
+      .catch((error) => {
+        dispatch(actions.receiveSeries([]));
+        dispatch(actions.setErrorMessage(error));
+      });
   };
 }
 
@@ -211,9 +175,8 @@ export function saveEditSeries(): any {
     let series = getState().editSeries!;
     Api.saveSeries(series)
       .then((serie) => {
-        // Reload the list of comp classes:
         dispatch(actions.cancelEditSeries());
-        reloadSeries(dispatch);
+        loadSeries()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -226,7 +189,7 @@ export function deleteSeries(series: Series): any {
     Api.deleteSeries(series)
       .then(() => {
         dispatch(actions.cancelEditSeries());
-        reloadColors(dispatch);
+        loadColors()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -236,20 +199,16 @@ export function deleteSeries(series: Series): any {
 
 // ************
 
-let reloadLocations = (dispatch: Dispatch<any>) => {
-  Api.getLocations()
-    .then((locations) => {
-      dispatch(actions.receiveLocations(locations));
-    })
-    .catch((error) => {
-      dispatch(actions.receiveLocations([]));
-      dispatch(actions.setErrorMessage(error));
-    });
-};
-
 export function loadLocations(): any {
   return (dispatch: Dispatch<any>) => {
-    reloadLocations(dispatch);
+    Api.getLocations()
+      .then((locations) => {
+        dispatch(actions.receiveLocations(locations));
+      })
+      .catch((error) => {
+        dispatch(actions.receiveLocations([]));
+        dispatch(actions.setErrorMessage(error));
+      });
   };
 }
 
@@ -258,9 +217,8 @@ export function saveEditLocation(): any {
     let location = getState().editLocation!;
     Api.saveLocation(location)
       .then((location) => {
-        // Reload the list of comp classes:
         dispatch(actions.cancelEditLocation());
-        reloadLocations(dispatch);
+        loadLocations()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -273,7 +231,7 @@ export function deleteLocation(location: CompLocation): any {
     Api.deleteLocation(location)
       .then(() => {
         dispatch(actions.cancelEditLocation());
-        reloadColors(dispatch);
+        loadLocations()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -283,19 +241,15 @@ export function deleteLocation(location: CompLocation): any {
 
 // ************
 
-let reloadOrganizers = (dispatch: Dispatch<any>) => {
-  Api.getOrganizers()
-    .then((organizers) => {
-      dispatch(actions.receiveOrganizers(organizers));
-    })
-    .catch((error) => {
-      dispatch(actions.setErrorMessage(error));
-    });
-};
-
 export function loadOrganizers(): any {
   return (dispatch: Dispatch<any>) => {
-    reloadOrganizers(dispatch);
+    Api.getOrganizers()
+      .then((organizers) => {
+        dispatch(actions.receiveOrganizers(organizers));
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+      });
   };
 }
 
@@ -304,9 +258,8 @@ export function saveEditOrganizer(): any {
     let organizer = getState().editOrganizer!;
     Api.saveOrganizer(organizer)
       .then((organizer) => {
-        // Reload the list of comp classes:
         dispatch(actions.cancelEditOrganizer());
-        reloadOrganizers(dispatch);
+        loadOrganizers()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -319,7 +272,7 @@ export function deleteOrganizer(organizer: Organizer): any {
     Api.deleteOrganizer(organizer)
       .then(() => {
         dispatch(actions.cancelEditOrganizer());
-        reloadColors(dispatch);
+        loadOrganizers()(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -329,25 +282,25 @@ export function deleteOrganizer(organizer: Organizer): any {
 
 // ************
 
-let reloadProblems = (dispatch: Dispatch<any>, contestId: number) => {
-  Api.getProblems(contestId)
-    .then((problems) => {
-      dispatch(actions.receiveProblems(problems));
-    })
-    .catch((error) => {
-      dispatch(actions.setErrorMessage(error));
-    });
-};
+export function loadProblems(contestId: number): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.getProblems(contestId)
+      .then((problems) => {
+        dispatch(actions.receiveProblems(problems));
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+      });
+  };
+}
 
 export function saveEditProblem(): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    // TODO: Implement
     let problem = getState().editProblem!;
     Api.saveProblem(problem)
       .then((problem) => {
-        // Reload the list of problems:
         dispatch(actions.cancelEditProblem());
-        reloadProblems(dispatch, problem.contestId);
+        loadProblems(problem.contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -360,7 +313,7 @@ export function deleteProblem(problem: Problem): any {
     Api.deleteProblem(problem)
       .then(() => {
         dispatch(actions.cancelEditProblem());
-        reloadProblems(dispatch, problem.contestId);
+        loadProblems(problem.contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -368,24 +321,25 @@ export function deleteProblem(problem: Problem): any {
   };
 }
 
-let reloadCompClasses = (dispatch: Dispatch<any>, contestId: number) => {
-  Api.getCompClasses(contestId)
-    .then((compClasses) => {
-      dispatch(actions.receiveCompClasses(compClasses));
-    })
-    .catch((error) => {
-      dispatch(actions.setErrorMessage(error));
-    });
-};
+export function loadCompClasses(contestId: number): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.getCompClasses(contestId)
+      .then((compClasses) => {
+        dispatch(actions.receiveCompClasses(compClasses));
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+      });
+  };
+}
 
 export function saveEditCompClass(): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
     let compClass = getState().editCompClass!;
     Api.saveCompClass(compClass)
       .then((compClass) => {
-        // Reload the list of comp classes:
         dispatch(actions.cancelEditCompClass());
-        reloadCompClasses(dispatch, compClass.contestId);
+        loadCompClasses(compClass.contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -398,7 +352,7 @@ export function deleteCompClass(compClass: CompClass): any {
     Api.deleteCompClass(compClass)
       .then(() => {
         dispatch(actions.cancelEditCompClass());
-        reloadCompClasses(dispatch, compClass.contestId);
+        loadCompClasses(compClass.contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -406,25 +360,24 @@ export function deleteCompClass(compClass: CompClass): any {
   };
 }
 
-let reloadContendersForContest = (
-  dispatch: Dispatch<any>,
-  contestId: number
-) => {
-  Api.getContenders(contestId)
-    .then((contenders) => {
-      dispatch(actions.receiveContenders(contenders));
-    })
-    .catch((error) => {
-      dispatch(actions.setErrorMessage(error));
-    });
-};
+export function loadContendersForContest(contestId: number): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.getContenders(contestId)
+      .then((contenders) => {
+        dispatch(actions.receiveContenders(contenders));
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+      });
+  };
+}
 
 export function createContenders(nNewContenders: number): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
     let contestId = getState().contest?.id!;
     Api.createContenders(contestId, nNewContenders)
       .then(() => {
-        reloadContendersForContest(dispatch, contestId);
+        loadContendersForContest(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -432,13 +385,13 @@ export function createContenders(nNewContenders: number): any {
   };
 }
 
-export function reloadContenders(): any {
+export function loadContenders(): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
     let contestId = getState().contest?.id!;
     dispatch(actions.receiveContenders([]));
     dispatch(actions.receiveTicks([]));
-    reloadContendersForContest(dispatch, contestId);
-    reloadTicks(dispatch, contestId);
+    loadContendersForContest(contestId)(dispatch);
+    loadTicks(contestId)(dispatch);
   };
 }
 
@@ -447,7 +400,7 @@ export function resetContenders(): any {
     let contestId = getState().contest?.id!;
     Api.resetContenders(contestId)
       .then(() => {
-        reloadContendersForContest(dispatch, contestId);
+        loadContendersForContest(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -521,32 +474,36 @@ export function createPdf(): any {
   };
 }
 
-let reloadTicks = (dispatch: Dispatch<any>, contestId: number) => {
-  Api.getTicks(contestId)
-    .then((ticks) => {
-      dispatch(actions.receiveTicks(ticks));
-    })
-    .catch((error) => {
-      dispatch(actions.setErrorMessage(error));
-    });
-};
+export function loadTicks(contestId: number): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.getTicks(contestId)
+      .then((ticks) => {
+        dispatch(actions.receiveTicks(ticks));
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+      });
+  };
+}
 
-let reloadRaffles = (dispatch: Dispatch<any>, contestId: number) => {
-  Api.getRaffles(contestId)
-    .then((raffles) => {
-      dispatch(actions.receiveRaffles(raffles));
-      for (let raffle of raffles) {
-        Api.getRaffleWinners(raffle).then((winners) => {
-          dispatch(
-            actions.receiveRaffleWinners({ raffle: raffle, winners: winners })
-          );
-        });
-      }
-    })
-    .catch((error) => {
-      dispatch(actions.setErrorMessage(error));
-    });
-};
+export function loadRaffles(contestId: number): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.getRaffles(contestId)
+      .then((raffles) => {
+        dispatch(actions.receiveRaffles(raffles));
+        for (let raffle of raffles) {
+          Api.getRaffleWinners(raffle).then((winners) => {
+            dispatch(
+              actions.receiveRaffleWinners({ raffle: raffle, winners: winners })
+            );
+          });
+        }
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+      });
+  };
+}
 
 export function createRaffle(): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
@@ -559,7 +516,7 @@ export function createRaffle(): any {
     };
     Api.saveRaffle(newRaffle)
       .then(() => {
-        reloadRaffles(dispatch, contestId);
+        loadRaffles(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -575,7 +532,7 @@ export function activateRaffle(raffle: Raffle): any {
     dispatch(actions.clearRaffles());
     Api.saveRaffle(raffle)
       .then(() => {
-        reloadRaffles(dispatch, contestId);
+        loadRaffles(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -591,7 +548,7 @@ export function deactivateRaffle(raffle: Raffle): any {
     dispatch(actions.clearRaffles());
     Api.saveRaffle(raffle)
       .then(() => {
-        reloadRaffles(dispatch, contestId);
+        loadRaffles(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -616,10 +573,37 @@ export function deleteRaffle(raffle: Raffle): any {
     let contestId = getState().contest?.id!;
     Api.deleteRaffle(raffle)
       .then(() => {
-        reloadRaffles(dispatch, contestId);
+        loadRaffles(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
       });
   };
+}
+
+let loadEverything = (dispatch: Dispatch<any>) => {
+  loadLocations()(dispatch);
+  loadSeries()(dispatch);
+  loadColors()(dispatch);
+  loadContests()(dispatch);
+};
+
+function pickOrganizer(organizers: Organizer[]): Organizer {
+  let organizer: Organizer | undefined;
+
+  let previousOrganizerId = parseInt(
+    localStorage.getItem("organizerId") ?? "",
+    10
+  );
+
+  if (previousOrganizerId != null) {
+    organizer = organizers.find((o) => o.id === previousOrganizerId);
+  }
+
+  if (organizer == null) {
+    organizer = organizers[0];
+    localStorage.setItem("organizerId", organizer.id!.toString());
+  }
+
+  return organizer;
 }

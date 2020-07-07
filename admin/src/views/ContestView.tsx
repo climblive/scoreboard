@@ -84,7 +84,7 @@ interface Props {
   updateEditCompClass?: (propName: string, value: any) => void;
 
   createContenders?: (nNewContenders: number) => void;
-  reloadContenders?: () => void;
+  loadContenders?: () => void;
   setContenderFilterCompClass?: (contenderFilterCompClass: CompClass) => void;
   setContenderSortBy?: (contenderSortBy: SortBy) => void;
   exportResults?: () => void;
@@ -276,7 +276,7 @@ class ContestView extends React.Component<Props, State> {
               problemMap={this.props.problemMap}
               colorMap={this.props.colorMap}
               createContenders={this.props.createContenders}
-              reloadContenders={this.props.reloadContenders}
+              loadContenders={this.props.loadContenders}
               setContenderFilterCompClass={
                 this.props.setContenderFilterCompClass
               }
@@ -368,7 +368,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
     createContenders: (nNewContenders: number) =>
       dispatch(asyncActions.createContenders(nNewContenders)),
-    reloadContenders: () => dispatch(asyncActions.reloadContenders()),
+    loadContenders: () => dispatch(asyncActions.loadContenders()),
     setContenderFilterCompClass: (contenderFilterCompClass: CompClass) =>
       dispatch(actions.setContenderFilterCompClass(contenderFilterCompClass)),
     setContenderSortBy: (sortBy: SortBy) =>

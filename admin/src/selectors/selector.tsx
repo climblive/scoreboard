@@ -22,7 +22,6 @@ const getContest = (state: StoreState) => state.contest;
 const getContenderFilterCompClassId = (state: StoreState) =>
   state.contenderFilterCompClassId;
 const getContenderSortBy = (state: StoreState) => state.contenderSortBy;
-const getOrganizer = (state: StoreState) => state.organizer;
 
 export const getColorMap = createSelector([getColors], (colors) => {
   const colorMap = new Map<number, Color>();

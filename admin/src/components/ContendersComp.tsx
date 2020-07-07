@@ -46,7 +46,7 @@ interface Props {
 
   createContenders?: (nContenders: number) => void;
   exportResults?: () => void;
-  reloadContenders?: () => void;
+  loadContenders?: () => void;
   resetContenders?: () => void;
   setContenderFilterCompClass?: (contenderFilterCompClass?: CompClass) => void;
   setContenderSortBy?: (contenderSortBy: SortBy) => void;
@@ -209,7 +209,7 @@ class ContendersComp extends React.Component<Props, State> {
             color="inherit"
             aria-label="Menu"
             title="Reload contenders"
-            onClick={this.props.reloadContenders}
+            onClick={this.props.loadContenders}
           >
             <RefreshIcon />
           </IconButton>

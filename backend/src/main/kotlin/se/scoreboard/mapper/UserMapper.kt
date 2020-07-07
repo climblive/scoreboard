@@ -7,8 +7,6 @@ import se.scoreboard.dto.UserDto
 @Mapper(componentModel = "spring")
 abstract class UserMapper : AbstractMapper<User, UserDto>() {
     @InheritInverseConfiguration(name = "convertToDto")
-    @Mappings(
-            Mapping(target = "organizers", ignore = true)
-    )
+    @Mappings
     abstract override fun convertToEntity(source: UserDto): User
 }

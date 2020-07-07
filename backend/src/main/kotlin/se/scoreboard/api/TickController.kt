@@ -15,6 +15,7 @@ import se.scoreboard.exception.WebException
 import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -28,7 +29,7 @@ class TickController @Autowired constructor(
     @GetMapping("/tick")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getTicks(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(pageable)
+    fun getTicks(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(request, pageable)
 
     @GetMapping("/tick/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

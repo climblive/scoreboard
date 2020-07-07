@@ -15,6 +15,7 @@ import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.userHasRole
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID> constructor(
@@ -48,12 +49,12 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun findAll() : ResponseEntity<List<DtoType>> {
-        return search(PageRequest.of(0, 1000))
+    open fun findAll(request: HttpServletRequest) : ResponseEntity<List<DtoType>> {
+        return search(request, PageRequest.of(0, 1000))
     }
 
     @Transactional
-    open fun search(pageable: Pageable?) : ResponseEntity<List<DtoType>> {
+    open fun search(request: HttpServletRequest, pageable: Pageable?) : ResponseEntity<List<DtoType>> {
         var result: List<DtoType>
 
         var headers = HttpHeaders()
@@ -67,7 +68,12 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         } else if (userHasRole("CONTENDER")) {
             page = entityRepository.findAllByContenderId(principal?.contenderId!!, pageable)
         } else {
-            page = entityRepository.findAll(pageable)
+            val organizerId: Int? = request.getHeader("Organizer-Id")?.toInt()
+            if (organizerId != null) {
+                page = entityRepository.findAllByOrganizerIds(listOf(organizerId), pageable)
+            } else {
+                page = entityRepository.findAll(pageable)
+            }
         }
 
         headers.set("Content-Range", "bytes %d-%d/%d".format(

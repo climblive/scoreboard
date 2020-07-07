@@ -10,6 +10,7 @@ import se.scoreboard.dto.CompClassDto
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.service.CompClassService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -23,7 +24,7 @@ class CompClassController @Autowired constructor(
     @GetMapping("/compClass")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getCompClasses(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = compClassService.search(pageable)
+    fun getCompClasses(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = compClassService.search(request, pageable)
 
     @GetMapping("/compClass/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

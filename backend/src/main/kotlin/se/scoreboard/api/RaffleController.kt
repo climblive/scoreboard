@@ -16,6 +16,7 @@ import se.scoreboard.mapper.RaffleWinnerMapper
 import se.scoreboard.service.RaffleService
 import se.scoreboard.service.RaffleWinnerService
 import java.time.OffsetDateTime
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -30,7 +31,7 @@ class RaffleController @Autowired constructor(
     @GetMapping("/raffle")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getRaffles(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = raffleService.search(pageable)
+    fun getRaffles(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = raffleService.search(request, pageable)
 
     @GetMapping("/raffle/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ColorDto
 import se.scoreboard.service.ColorService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -20,7 +21,7 @@ class ColorController @Autowired constructor(
 
     @GetMapping("/color")
     @Transactional
-    fun getColors(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = colorService.search(pageable)
+    fun getColors(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = colorService.search(request, pageable)
 
     @GetMapping("/color/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

@@ -20,6 +20,7 @@ import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.CompClassService
 import se.scoreboard.service.ContenderService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -33,7 +34,7 @@ class ContenderController @Autowired constructor(
     @GetMapping("/contender")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getContenders(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contenderService.search(pageable)
+    fun getContenders(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contenderService.search(request, pageable)
 
     @GetMapping("/contender/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

@@ -13,6 +13,7 @@ import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.OrganizerMapper
 import se.scoreboard.service.UserService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 
@@ -27,7 +28,7 @@ class UserController @Autowired constructor(
     @GetMapping("/user")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getUsers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(pageable)
+    fun getUsers(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(request, pageable)
 
     @GetMapping("/user/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

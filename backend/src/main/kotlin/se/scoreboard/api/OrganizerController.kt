@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
 import se.scoreboard.mapper.*
 import se.scoreboard.service.OrganizerService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -26,7 +27,7 @@ class OrganizerController @Autowired constructor(
     @GetMapping("/organizer")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getOrganizers(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = organizerService.search(pageable)
+    fun getOrganizers(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = organizerService.search(request, pageable)
 
     @GetMapping("/organizer/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

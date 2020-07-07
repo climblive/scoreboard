@@ -1,6 +1,7 @@
 package se.scoreboard.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.OffsetDateTime
 
 data class ContestDto (
     var id: Int?,
@@ -17,7 +18,9 @@ data class ContestDto (
     var finalists: Int,
     var rules: String?,
     var gracePeriod: Int?,
-    var scoreboardUrl: String?) {
+    var scoreboardUrl: String?,
+    var timeBegin: OffsetDateTime?,
+    var timeEnd: OffsetDateTime?) {
 
-    constructor() : this(null, null, null, null, false, null, null, false, Int.MAX_VALUE, Int.MAX_VALUE, null, null, null)
+    constructor() : this(null, null, null, null, false, null, null, false, Int.MAX_VALUE, Int.MAX_VALUE, null, null, null, null, null)
 }

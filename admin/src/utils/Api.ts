@@ -98,13 +98,10 @@ export class Api {
   }
 
   static saveContest(contest: Contest): Promise<Contest> {
-    if (contest.isNew) {
-      return this.post("/contest", Contest.makeRequestBody(contest));
+    if (contest.id == undefined) {
+      return this.post("/contest", contest);
     } else {
-      return this.put(
-        "/contest/" + contest.id,
-        Contest.makeRequestBody(contest)
-      );
+      return this.put("/contest/" + contest.id, contest);
     }
   }
 

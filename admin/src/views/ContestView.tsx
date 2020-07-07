@@ -127,9 +127,10 @@ class ContestView extends React.Component<Props, State> {
   componentDidUpdate(nextProps: Readonly<Props>, nextContext: any): void {
     let title = "";
     if (this.props.contest) {
-      title = this.props.contest.isNew
-        ? "Add contest"
-        : this.props.contest.name;
+      title =
+        this.props.contest?.id == undefined
+          ? "Add contest"
+          : this.props.contest.name;
     }
     this.props.setTitle!(title);
   }
@@ -156,7 +157,7 @@ class ContestView extends React.Component<Props, State> {
       return <Redirect to="/contests" />;
     }
 
-    let isNew = this.props.contest == undefined || this.props.contest.isNew;
+    let isNew = this.props.contest?.id == undefined;
 
     let tabs = [
       <Tab

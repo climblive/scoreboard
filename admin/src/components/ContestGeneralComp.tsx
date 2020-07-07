@@ -93,9 +93,8 @@ class ContestGeneralComp extends React.Component<
   };
 
   onSave = () => {
-    let isNew = this.props.contest.isNew;
     this.props.saveContest!((contest: Contest) => {
-      if (isNew) {
+      if (this.isNew()) {
         this.props.history.push("/contests/" + contest.id);
       }
     });
@@ -122,6 +121,10 @@ class ContestGeneralComp extends React.Component<
   closePopup = () => {
     this.state.showPopup = false;
     this.setState(this.state);
+  };
+
+  isNew = () => {
+    return this.props.contest.id == undefined;
   };
 
   render() {
@@ -155,7 +158,7 @@ class ContestGeneralComp extends React.Component<
           </div>
         ))}
         <div style={{ padding: 10 }}>
-          {!contest.isNew && this.props.contestIssues.length == 0 && (
+          {!this.isNew() && this.props.contestIssues.length == 0 && (
             <div style={{ marginBottom: 10 }}>
               <Button
                 style={{ marginRight: 10 }}
@@ -301,9 +304,9 @@ class ContestGeneralComp extends React.Component<
             color="primary"
             onClick={this.onSave}
           >
-            {contest.isNew ? "Add" : "Save"}
+            {this.isNew() ? "Add" : "Save"}
           </Button>
-          {!contest.isNew && (
+          {!this.isNew() && (
             <Button
               style={{ marginLeft: 10, marginTop: 10 }}
               variant="contained"

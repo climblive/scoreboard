@@ -68,7 +68,7 @@ export function loadContest(contestId: number): any {
 export function saveContest(onSuccess: (contest: Contest) => void): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
     let contest = getState().contest;
-    let isNew = contest!.isNew;
+    let isNew = contest?.id == undefined;
     Api.saveContest(contest!)
       .then((contest) => {
         dispatch(actions.receiveContest(contest));

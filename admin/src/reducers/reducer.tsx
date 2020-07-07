@@ -6,6 +6,7 @@ import { Problem } from "../model/problem";
 import { CompLocation } from "../model/compLocation";
 import { Organizer } from "../model/organizer";
 import { CompClass } from "../model/compClass";
+import { Contest } from "../model/contest";
 import { Series } from "../model/series";
 import { SortBy } from "../constants/sortBy";
 
@@ -62,21 +63,22 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       };
 
     case getType(scoreboardActions.setNewContest):
+      let contest: Contest = {
+        id: undefined,
+        name: "",
+        protected: false,
+        description: "",
+        organizerId: state.organizer?.id!,
+        finalEnabled: false,
+        qualifyingProblems: 10,
+        finalists: 7,
+        gracePeriod: 15,
+        rules: "",
+      };
+
       return {
         ...state,
-        contest: {
-          id: undefined,
-          name: "",
-          protected: false,
-          description: "",
-          organizerId: state.organizer?.id!,
-          finalEnabled: false,
-          qualifyingProblems: 10,
-          finalists: 7,
-          gracePeriod: 15,
-          rules: "",
-          isNew: true,
-        },
+        contest,
         compClasses: undefined,
         editCompClass: undefined,
         contenders: undefined,

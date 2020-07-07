@@ -12,4 +12,6 @@ export class Contest {
   rules: string;
   gracePeriod: number;
   scoreboardUrl?: number;
+  timeBegin?: string;
+  timeEnd?: string;
 }

@@ -24,6 +24,7 @@ import {
 import { Organizer } from "../model/organizer";
 import { CompLocation } from "../model/compLocation";
 import { Series } from "src/model/series";
+import moment from "moment";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -107,7 +108,8 @@ class ContestsView extends React.Component<
                 <TableCell>Name</TableCell>
                 <TableCell>Location</TableCell>
                 <TableCell>Series</TableCell>
-                <TableCell>Qualifying problems</TableCell>
+                <TableCell>Start time</TableCell>
+                <TableCell>End time</TableCell>
                 <TableCell className={"icon-cell"}>
                   <IconButton
                     color="inherit"
@@ -137,8 +139,15 @@ class ContestsView extends React.Component<
                     {this.getLocationName(contest.locationId)}
                   </TableCell>
                   <TableCell>{this.getSeriesName(contest.seriesId)}</TableCell>
-                  <TableCell colSpan={2}>
-                    {contest.qualifyingProblems}
+                  <TableCell>
+                    {contest.timeBegin
+                      ? moment(contest.timeBegin).format("YYYY-MM-DD HH:mm")
+                      : undefined}
+                  </TableCell>
+                  <TableCell>
+                    {contest.timeEnd
+                      ? moment(contest.timeEnd).format("YYYY-MM-DD HH:mm")
+                      : undefined}
                   </TableCell>
                 </TableRow>
               ))}

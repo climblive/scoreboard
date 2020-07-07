@@ -32,7 +32,7 @@ export interface Props {
   organizers?: Organizer[];
   organizer?: Organizer;
   clearErrorMessage?: () => void;
-  setOrganizer?: (organizer: Organizer) => void;
+  changeOrganizer?: (organizer: Organizer) => void;
   login?: (code: string) => void;
   logout?: () => void;
 }
@@ -82,13 +82,13 @@ class App extends React.Component<Props> {
                   loggedInUser={this.props.loggedInUser}
                   organizers={this.props.organizers}
                   organizer={this.props.organizer}
-                  setOrganizer={this.props.setOrganizer}
+                  changeOrganizer={this.props.changeOrganizer}
                   title={this.props.title}
                 />
                 <div className="mainView">
                   {this.props.loggedInUser && (
                     <Switch>
-                      <Route path="/" exact component={ContestsView} />
+                      <Route path="/" exact component={WelcomeView} />
                       <Route path="/start" exact component={WelcomeView} />
                       <Route path="/contests" exact component={ContestsView} />
                       <Route
@@ -159,8 +159,8 @@ export function mapDispatchToProps(dispatch: Dispatch<any>) {
     clearErrorMessage: () => dispatch(actions.clearErrorMessage()),
     login: (code: string) => dispatch(asyncActions.login(code)),
     logout: () => dispatch(actions.logout()),
-    setOrganizer: (organizer: Organizer) =>
-      dispatch(actions.setOrganizer(organizer)),
+    changeOrganizer: (organizer: Organizer) =>
+      dispatch(asyncActions.changeOrganizer(organizer)),
   };
 }
 

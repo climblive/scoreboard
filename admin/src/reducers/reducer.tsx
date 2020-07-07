@@ -295,7 +295,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       return {
         ...state,
         organizers: action.payload,
-        organizer: action.payload[0],
       };
 
     case getType(scoreboardActions.clearOrganizers):

@@ -22,7 +22,6 @@ const getContest = (state: StoreState) => state.contest;
 const getContenderFilterCompClassId = (state: StoreState) =>
   state.contenderFilterCompClassId;
 const getContenderSortBy = (state: StoreState) => state.contenderSortBy;
-
 const getOrganizer = (state: StoreState) => state.organizer;
 
 export const getColorMap = createSelector([getColors], (colors) => {
@@ -95,42 +94,6 @@ export const getProblemMap = createSelector([getProblems], (problems) => {
   }
   return map;
 });
-
-export const getOrganizerContests = createSelector(
-  [getContests, getOrganizer],
-  (contests, organizer) => {
-    return contests && organizer
-      ? contests.filter((c) => c.organizerId == organizer.id)
-      : undefined;
-  }
-);
-
-export const getOrganizerSeries = createSelector(
-  [getSeries, getOrganizer],
-  (series, organizer) => {
-    return series && organizer
-      ? series.filter((c) => c.organizerId == organizer.id)
-      : undefined;
-  }
-);
-
-export const getOrganizerLocations = createSelector(
-  [getLocations, getOrganizer],
-  (locations, organizer) => {
-    return locations && organizer
-      ? locations.filter((c) => c.organizerId == organizer.id)
-      : undefined;
-  }
-);
-
-export const getOrganizerColors = createSelector(
-  [getColors, getOrganizer],
-  (colors, organizer) => {
-    return colors && organizer
-      ? colors.filter((c) => c.organizerId == organizer.id || c.shared)
-      : undefined;
-  }
-);
 
 export const getProblemsWithTicks = createSelector(
   [getProblems, getTicks],

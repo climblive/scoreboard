@@ -62,7 +62,7 @@ export const receiveOrganizers = createStandardAction("RECEIVE_ORGANIZERS")<
   Organizer[]
 >();
 export const clearOrganizers = createStandardAction("CLEAR_ORGANIZERS")();
-export const setOrganizer = createStandardAction("SET_ORGANIZERS")<Organizer>();
+export const setOrganizer = createStandardAction("SET_ORGANIZER")<Organizer>();
 export const startEditOrganizer = createStandardAction("START_EDIT_ORGANIZER")<
   Organizer
 >();
@@ -84,8 +84,8 @@ export const updateEditColor = createStandardAction("UPDATE_EDIT_COLOR")<{
   value: any;
 }>();
 
-export const receiveSeries = createStandardAction("RECEIVE_SERIE")<Series[]>();
-export const clearSeries = createStandardAction("CLEAR_SERIE")();
+export const receiveSeries = createStandardAction("RECEIVE_SERIES")<Series[]>();
+export const clearSeries = createStandardAction("CLEAR_SERIES")();
 export const startEditSeries = createStandardAction("START_EDIT_SERIES")<
   Series
 >();

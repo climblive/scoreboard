@@ -20,11 +20,16 @@ export function login(code: string): any {
     Api.getUser()
       .then((userData) => {
         localStorage.setItem("credentials", code);
+
+        let organizer: Organizer = pickOrganizer(userData.organizers);
+        Api.setOrganizerId(organizer.id);
+        dispatch(actions.setOrganizer(organizer));
+        dispatch(actions.receiveOrganizers(userData.organizers));
+
         dispatch(actions.setLoggingIn(false));
         dispatch(actions.setLoggedInUser(userData));
-        reloadSeries(dispatch);
-        reloadOrganizers(dispatch);
-        reloadLocations(dispatch);
+
+        loadEverything(dispatch);
       })
       .catch((error) => {
         Api.setCredentials(undefined);
@@ -33,6 +38,42 @@ export function login(code: string): any {
       });
   };
 }
+
+function pickOrganizer(organizers: Organizer[]): Organizer {
+  let organizer: Organizer | undefined;
+
+  let previousOrganizerId = parseInt(
+    localStorage.getItem("organizerId") ?? "",
+    10
+  );
+
+  if (previousOrganizerId != null) {
+    organizer = organizers.find((o) => o.id === previousOrganizerId);
+  }
+
+  if (organizer == null) {
+    organizer = organizers[0];
+    localStorage.setItem("organizerId", organizer.id!.toString());
+  }
+
+  return organizer;
+}
+
+export function changeOrganizer(organizer: Organizer): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.setOrganizerId(organizer.id);
+    dispatch(actions.setOrganizer(organizer));
+    localStorage.setItem("organizerId", organizer.id!.toString());
+    loadEverything(dispatch);
+  };
+}
+
+let loadEverything = (dispatch: Dispatch<any>) => {
+  reloadLocations(dispatch);
+  reloadSeries(dispatch);
+  reloadColors(dispatch);
+  loadContests()(dispatch);
+};
 
 export function loadContests(): any {
   return (dispatch: Dispatch<any>) => {

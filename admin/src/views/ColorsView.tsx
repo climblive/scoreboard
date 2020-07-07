@@ -31,7 +31,6 @@ import CheckIcon from "@material-ui/icons/Check";
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import PeopleIcon from "@material-ui/icons/People";
-import { getOrganizerColors } from "../selectors/selector";
 import { Organizer } from "../model/organizer";
 
 const styles = ({ spacing }: Theme) =>
@@ -360,7 +359,7 @@ class ColorsView extends React.Component<
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    colors: getOrganizerColors(state),
+    colors: state.colors,
     editColor: state.editColor,
     organizer: state.organizer,
     loggedInUser: state.loggedInUser,

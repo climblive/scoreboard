@@ -18,7 +18,6 @@ import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import {
   getLocationMap,
-  getOrganizerContests,
   getOrganizerMap,
   getSeriesMap,
 } from "../selectors/selector";
@@ -163,7 +162,7 @@ class ContestsView extends React.Component<
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    contests: getOrganizerContests(state),
+    contests: state.contests,
     organizerMap: getOrganizerMap(state),
     locationMap: getLocationMap(state),
     seriesMap: getSeriesMap(state),

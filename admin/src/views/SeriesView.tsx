@@ -22,7 +22,6 @@ import CheckIcon from "@material-ui/icons/Check";
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { Series } from "../model/series";
-import { getOrganizerSeries } from "../selectors/selector";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -193,7 +192,7 @@ class SeriesView extends React.Component<
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    series: getOrganizerSeries(state),
+    series: state.series,
     editSeries: state.editSeries,
   };
 }

@@ -14,6 +14,7 @@ import { Environment } from "../environment";
 
 export class Api {
   static credentials?: string;
+  static organizerId?: number;
 
   static readonly url = "https://api." + Environment.siteDomain;
   static readonly defaultPageSize = 1000;
@@ -35,6 +36,9 @@ export class Api {
     let authHeaders: any = {};
     if (this.credentials) {
       authHeaders.Authorization = "Bearer " + this.credentials;
+    }
+    if (this.organizerId != undefined) {
+      authHeaders["Organizer-Id"] = this.organizerId;
     }
     return authHeaders;
   }
@@ -83,6 +87,10 @@ export class Api {
 
   static setCredentials(credentials?: string) {
     this.credentials = credentials;
+  }
+
+  static setOrganizerId(organizerId?: number) {
+    this.organizerId = organizerId;
   }
 
   // ---------------------------------------------------------------------------

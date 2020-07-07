@@ -14,6 +14,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { Api } from "../utils/Api";
 
 export interface TopMenuCompProps {
   title: string;
@@ -24,7 +25,7 @@ export interface TopMenuCompProps {
 
   login?: (code: string) => void;
   logout?: () => void;
-  setOrganizer?: (organizer: Organizer) => void;
+  changeOrganizer?: (organizer: Organizer) => void;
 }
 
 const styles = {
@@ -70,7 +71,7 @@ class TopMenuComp extends React.Component<
 
     if (credentials) {
       this.props.login!(credentials);
-      this.props.history.push("/");
+      this.props.history.push("/contests");
     } else {
       credentials = localStorage.getItem("credentials");
 
@@ -82,7 +83,8 @@ class TopMenuComp extends React.Component<
 
   onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = parseInt(e.target.value);
-    this.props.setOrganizer!(this.props.organizers!.find((o) => o.id == id)!);
+    let organizer = this.props.organizers!.find((o) => o.id == id)!;
+    this.props.changeOrganizer?.(organizer);
   };
 
   getUrl = (command: string) => {
@@ -127,7 +129,7 @@ class TopMenuComp extends React.Component<
                   </InputLabel>
                   <Select
                     id="series-select"
-                    value={organizer!.id}
+                    value={organizer?.id}
                     onChange={this.onOrganizerChange}
                   >
                     {organizers!.map((organizer) => (

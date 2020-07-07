@@ -85,9 +85,17 @@ export class Api {
     this.credentials = credentials;
   }
 
+  // ---------------------------------------------------------------------------
+  // Users
+  // ---------------------------------------------------------------------------
+
   static getUser(): Promise<User> {
     return this.get("/user/me");
   }
+
+  // ---------------------------------------------------------------------------
+  // Contests
+  // ---------------------------------------------------------------------------
 
   static getContests(): Promise<Contest[]> {
     return this.get(`/contest?size=${this.defaultPageSize}`);
@@ -107,154 +115,6 @@ export class Api {
 
   static deleteContest(contest: Contest): Promise<any> {
     return this.delete("/contest/" + contest.id);
-  }
-
-  static getProblems(contestId: number): Promise<Problem[]> {
-    return this.get("/contest/" + contestId + "/problem");
-  }
-
-  static saveProblem(problem: Problem): Promise<Problem> {
-    if (problem.id == undefined) {
-      return this.post("/problem", Problem.makeRequestBody(problem));
-    } else {
-      return this.put(
-        "/problem/" + problem.id,
-        Problem.makeRequestBody(problem)
-      );
-    }
-  }
-
-  static deleteProblem(problem: Problem): Promise<any> {
-    return this.delete("/problem/" + problem.id);
-  }
-
-  static getCompClasses(contestId: number): Promise<CompClass[]> {
-    return this.get("/contest/" + contestId + "/compClass");
-  }
-
-  static saveCompClass(compClass: CompClass): Promise<CompClass> {
-    if (compClass.id == undefined) {
-      return this.post("/compClass", compClass);
-    } else {
-      return this.put("/compClass/" + compClass.id, compClass);
-    }
-  }
-
-  static deleteCompClass(compClass: CompClass): Promise<any> {
-    return this.delete("/compClass/" + compClass.id);
-  }
-
-  static getContenders(contestId: number): Promise<ContenderData[]> {
-    return this.get("/contest/" + contestId + "/contender");
-  }
-
-  static getRaffles(contestId: number): Promise<Raffle[]> {
-    return this.get("/contest/" + contestId + "/raffle");
-  }
-
-  static getRaffleWinners(raffle: Raffle): Promise<RaffleWinner[]> {
-    return this.get("/raffle/" + raffle.id + "/winner");
-  }
-
-  static saveRaffle(raffle: Raffle): Promise<Raffle> {
-    if (raffle.id == undefined) {
-      return this.post("/raffle", Raffle.makeRequestBody(raffle));
-    } else {
-      return this.put("/raffle/" + raffle.id, Raffle.makeRequestBody(raffle));
-    }
-  }
-
-  static drawWinner(raffle: Raffle): Promise<RaffleWinner> {
-    return this.post("/raffle/" + raffle.id + "/winner", {});
-  }
-
-  static deleteRaffle(raffle: Raffle): Promise<any> {
-    return this.delete("/raffle/" + raffle.id);
-  }
-
-  static getColors(): Promise<Color[]> {
-    return this.get(`/color?size=${this.defaultPageSize}`);
-  }
-
-  static saveColor(color: Color): Promise<Color> {
-    if (color.id == undefined) {
-      return this.post("/color", color);
-    } else {
-      return this.put("/color/" + color.id, color);
-    }
-  }
-
-  static deleteSeries(series: Series): Promise<any> {
-    return this.delete("/series/" + series.id);
-  }
-
-  static getSeries(): Promise<Series[]> {
-    return this.get(`/series?size=${this.defaultPageSize}`);
-  }
-
-  static saveSeries(series: Series): Promise<Series> {
-    if (series.id == undefined) {
-      return this.post("/series", series);
-    } else {
-      return this.put("/series/" + series.id, series);
-    }
-  }
-
-  static deleteColor(color: Color): Promise<any> {
-    return this.delete("/color/" + color.id);
-  }
-
-  static getLocations(): Promise<CompLocation[]> {
-    return this.get(`/location?size=${this.defaultPageSize}`);
-  }
-
-  static saveLocation(location: CompLocation): Promise<CompLocation> {
-    if (location.id == undefined) {
-      return this.post("/location", location);
-    } else {
-      return this.put("/location/" + location.id, location);
-    }
-  }
-
-  static deleteLocation(location: CompLocation): Promise<any> {
-    return this.delete("/location/" + location.id);
-  }
-
-  static deleteOrganizer(organizer: Organizer): Promise<any> {
-    return this.delete("/organizer/" + organizer.id);
-  }
-
-  static getOrganizers(): Promise<Organizer[]> {
-    return this.get(`/organizer?size=${this.defaultPageSize}`);
-  }
-
-  static saveOrganizer(organizer: Organizer): Promise<Organizer> {
-    if (organizer.id == undefined) {
-      return this.post("/organizer", organizer);
-    } else {
-      return this.put("/organizer/" + organizer.id, organizer);
-    }
-  }
-
-  static saveContender(contender: ContenderData): Promise<ContenderData> {
-    if (contender.id == undefined) {
-      return this.post("/contender", ContenderData.makeRequestBody(contender));
-    } else {
-      return this.put(
-        "/contender/" + contender.id,
-        ContenderData.makeRequestBody(contender)
-      );
-    }
-  }
-
-  static createContenders(contestId: number, nNewContenders: number) {
-    return this.put("/contest/" + contestId + "/createContenders", {
-      count: nNewContenders,
-    });
-  }
-
-  static resetContenders(contestId: number): Promise<any> {
-    return this.put("/contest/" + contestId + "/resetContenders", {});
   }
 
   static async exportContest(contestId: number) {
@@ -288,6 +148,190 @@ export class Api {
     });
     return (await this.handleErrors(response)).blob();
   }
+
+  // ---------------------------------------------------------------------------
+  // Problems
+  // ---------------------------------------------------------------------------
+
+  static getProblems(contestId: number): Promise<Problem[]> {
+    return this.get("/contest/" + contestId + "/problem");
+  }
+
+  static saveProblem(problem: Problem): Promise<Problem> {
+    if (problem.id == undefined) {
+      return this.post("/problem", Problem.makeRequestBody(problem));
+    } else {
+      return this.put(
+        "/problem/" + problem.id,
+        Problem.makeRequestBody(problem)
+      );
+    }
+  }
+
+  static deleteProblem(problem: Problem): Promise<any> {
+    return this.delete("/problem/" + problem.id);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Classes
+  // ---------------------------------------------------------------------------
+
+  static getCompClasses(contestId: number): Promise<CompClass[]> {
+    return this.get("/contest/" + contestId + "/compClass");
+  }
+
+  static saveCompClass(compClass: CompClass): Promise<CompClass> {
+    if (compClass.id == undefined) {
+      return this.post("/compClass", compClass);
+    } else {
+      return this.put("/compClass/" + compClass.id, compClass);
+    }
+  }
+
+  static deleteCompClass(compClass: CompClass): Promise<any> {
+    return this.delete("/compClass/" + compClass.id);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Contenders
+  // ---------------------------------------------------------------------------
+
+  static getContenders(contestId: number): Promise<ContenderData[]> {
+    return this.get("/contest/" + contestId + "/contender");
+  }
+
+  static saveContender(contender: ContenderData): Promise<ContenderData> {
+    if (contender.id == undefined) {
+      return this.post("/contender", ContenderData.makeRequestBody(contender));
+    } else {
+      return this.put(
+        "/contender/" + contender.id,
+        ContenderData.makeRequestBody(contender)
+      );
+    }
+  }
+
+  static createContenders(contestId: number, nNewContenders: number) {
+    return this.put("/contest/" + contestId + "/createContenders", {
+      count: nNewContenders,
+    });
+  }
+
+  static resetContenders(contestId: number): Promise<any> {
+    return this.put("/contest/" + contestId + "/resetContenders", {});
+  }
+
+  // ---------------------------------------------------------------------------
+  // Raffles
+  // ---------------------------------------------------------------------------
+
+  static getRaffles(contestId: number): Promise<Raffle[]> {
+    return this.get("/contest/" + contestId + "/raffle");
+  }
+
+  static saveRaffle(raffle: Raffle): Promise<Raffle> {
+    if (raffle.id == undefined) {
+      return this.post("/raffle", Raffle.makeRequestBody(raffle));
+    } else {
+      return this.put("/raffle/" + raffle.id, Raffle.makeRequestBody(raffle));
+    }
+  }
+
+  static deleteRaffle(raffle: Raffle): Promise<any> {
+    return this.delete("/raffle/" + raffle.id);
+  }
+
+  static drawWinner(raffle: Raffle): Promise<RaffleWinner> {
+    return this.post("/raffle/" + raffle.id + "/winner", {});
+  }
+
+  static getRaffleWinners(raffle: Raffle): Promise<RaffleWinner[]> {
+    return this.get("/raffle/" + raffle.id + "/winner");
+  }
+
+  // ---------------------------------------------------------------------------
+  // Colors
+  // ---------------------------------------------------------------------------
+
+  static getColors(): Promise<Color[]> {
+    return this.get(`/color?size=${this.defaultPageSize}`);
+  }
+
+  static saveColor(color: Color): Promise<Color> {
+    if (color.id == undefined) {
+      return this.post("/color", color);
+    } else {
+      return this.put("/color/" + color.id, color);
+    }
+  }
+
+  static deleteColor(color: Color): Promise<any> {
+    return this.delete("/color/" + color.id);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Series
+  // ---------------------------------------------------------------------------
+
+  static deleteSeries(series: Series): Promise<any> {
+    return this.delete("/series/" + series.id);
+  }
+
+  static getSeries(): Promise<Series[]> {
+    return this.get(`/series?size=${this.defaultPageSize}`);
+  }
+
+  static saveSeries(series: Series): Promise<Series> {
+    if (series.id == undefined) {
+      return this.post("/series", series);
+    } else {
+      return this.put("/series/" + series.id, series);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Locations
+  // ---------------------------------------------------------------------------
+
+  static getLocations(): Promise<CompLocation[]> {
+    return this.get(`/location?size=${this.defaultPageSize}`);
+  }
+
+  static saveLocation(location: CompLocation): Promise<CompLocation> {
+    if (location.id == undefined) {
+      return this.post("/location", location);
+    } else {
+      return this.put("/location/" + location.id, location);
+    }
+  }
+
+  static deleteLocation(location: CompLocation): Promise<any> {
+    return this.delete("/location/" + location.id);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Organizers
+  // ---------------------------------------------------------------------------
+
+  static deleteOrganizer(organizer: Organizer): Promise<any> {
+    return this.delete("/organizer/" + organizer.id);
+  }
+
+  static getOrganizers(): Promise<Organizer[]> {
+    return this.get(`/organizer?size=${this.defaultPageSize}`);
+  }
+
+  static saveOrganizer(organizer: Organizer): Promise<Organizer> {
+    if (organizer.id == undefined) {
+      return this.post("/organizer", organizer);
+    } else {
+      return this.put("/organizer/" + organizer.id, organizer);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Ticks
+  // ---------------------------------------------------------------------------
 
   static getTicks(contestId: number): Promise<Tick[]> {
     return this.get("/contest/" + contestId + "/tick");

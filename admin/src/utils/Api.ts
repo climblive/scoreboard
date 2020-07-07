@@ -99,9 +99,12 @@ export class Api {
 
   static saveContest(contest: Contest): Promise<Contest> {
     if (contest.isNew) {
-      return this.post("/contest", contest);
+      return this.post("/contest", Contest.makeRequestBody(contest));
     } else {
-      return this.put("/contest/" + contest.id, contest);
+      return this.put(
+        "/contest/" + contest.id,
+        Contest.makeRequestBody(contest)
+      );
     }
   }
 
@@ -115,9 +118,12 @@ export class Api {
 
   static saveProblem(problem: Problem): Promise<Problem> {
     if (problem.id == undefined) {
-      return this.post("/problem", problem);
+      return this.post("/problem", Problem.makeRequestBody(problem));
     } else {
-      return this.put("/problem/" + problem.id, problem);
+      return this.put(
+        "/problem/" + problem.id,
+        Problem.makeRequestBody(problem)
+      );
     }
   }
 
@@ -155,9 +161,9 @@ export class Api {
 
   static saveRaffle(raffle: Raffle): Promise<Raffle> {
     if (raffle.id == undefined) {
-      return this.post("/raffle", raffle);
+      return this.post("/raffle", Raffle.makeRequestBody(raffle));
     } else {
-      return this.put("/raffle/" + raffle.id, raffle);
+      return this.put("/raffle/" + raffle.id, Raffle.makeRequestBody(raffle));
     }
   }
 
@@ -234,11 +240,14 @@ export class Api {
   }
 
   static saveContender(contender: ContenderData): Promise<ContenderData> {
-    return this.put("/contender/" + contender.id, contender);
-  }
-
-  static setContender(contenderData: ContenderData): Promise<ContenderData> {
-    return this.put("/contender/" + contenderData.id, contenderData);
+    if (contender.id == undefined) {
+      return this.post("/contender", ContenderData.makeRequestBody(contender));
+    } else {
+      return this.put(
+        "/contender/" + contender.id,
+        ContenderData.makeRequestBody(contender)
+      );
+    }
   }
 
   static createContenders(contestId: number, nNewContenders: number) {

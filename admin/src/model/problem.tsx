@@ -1,14 +1,29 @@
 import { Tick } from "./tick";
 
-export interface Problem {
+export class Problem {
   id?: number;
+  colorId?: number;
   contestId: number;
   number?: number;
-  colorId?: number;
+  name?: string;
   points?: number;
   flashBonus?: number;
-  text?: string;
 
-  // Internal data:
+  static makeRequestBody = (problem: Problem) => {
+    return {
+      id: problem.id,
+      colorId: problem.colorId,
+      contestId: problem.contestId,
+      number: problem.number,
+      name: problem.name,
+      points: problem.points,
+      flashBonus: problem.flashBonus,
+    };
+  };
+
+  // ---------------------------------------------------------------------------
+  // Internal properties
+  // ---------------------------------------------------------------------------
+
   ticks?: Tick[];
 }

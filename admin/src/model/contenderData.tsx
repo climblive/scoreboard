@@ -1,15 +1,32 @@
 import { Tick } from "./tick";
 
 export class ContenderData {
-  registrationCode: string;
+  id?: number;
+  compClassId?: number;
   contestId: number;
+  registrationCode: string;
   name?: string;
-  id: number;
   entered?: string;
   disqualified: boolean;
-  compClassId?: number;
+  finalPlacing?: number;
 
-  // Internal data:
+  static makeRequestBody = (contender: ContenderData) => {
+    return {
+      id: contender.id,
+      compClassId: contender.compClassId,
+      contestId: contender.contestId,
+      registrationCode: contender.registrationCode,
+      name: contender.name,
+      entered: contender.entered,
+      disqualified: contender.disqualified,
+      finalPlacing: contender.finalPlacing,
+    };
+  };
+
+  // ---------------------------------------------------------------------------
+  // Internal properties
+  // ---------------------------------------------------------------------------
+
   ticks?: Tick[];
   totalScore?: number;
   totalPosition?: number;

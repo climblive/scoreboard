@@ -1,8 +1,21 @@
 import { RaffleWinner } from "./raffleWinner";
 
-export interface Raffle {
+export class Raffle {
   id?: number;
   contestId: number;
   active: boolean;
+
+  static makeRequestBody = (raffle: Raffle) => {
+    return {
+      id: raffle.id,
+      contestId: raffle.contestId,
+      active: raffle.active,
+    };
+  };
+
+  // ---------------------------------------------------------------------------
+  // Internal properties
+  // ---------------------------------------------------------------------------
+
   winners?: RaffleWinner[];
 }

@@ -3,6 +3,7 @@ export interface CompClass {
   contestId: number;
   name: string;
   description: string;
+  color?: string;
   timeBegin: string;
   timeEnd: string;
 }

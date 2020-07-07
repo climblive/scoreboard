@@ -51,7 +51,9 @@ export const getCompClassMap = createSelector(
 export const getContenderMap = createSelector([getContenders], (contenders) => {
   const map = new Map<number, ContenderData>();
   if (contenders) {
-    contenders.forEach((contender) => map.set(contender.id, contender));
+    contenders
+      .filter((contender) => contender.id != undefined)
+      .forEach((contender) => map.set(contender.id!, contender));
   }
   return map;
 });
@@ -189,7 +191,7 @@ export const getContendersWithTicks = createSelector(
         ) {
           let newContender = { ...contender, ticks: [] };
           newContenders.push(newContender);
-          contendersMap.set(contender.id, newContender);
+          contendersMap.set(contender.id!, newContender);
 
           if (contender.compClassId != undefined) {
             if (!contendersPerClass.has(contender.compClassId!)) {

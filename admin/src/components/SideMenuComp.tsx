@@ -89,14 +89,12 @@ function SideMenuComp({
               </Button>
             </Link>
           )}
-          {loggedInUser.admin && (
-            <Link to="/series">
-              <Button className={classes!!.menuItem}>
-                <LibraryBooksIcon />
-                <span className={classes!!.menuText}>Series</span>
-              </Button>
-            </Link>
-          )}
+          <Link to="/series">
+            <Button className={classes!!.menuItem}>
+              <LibraryBooksIcon />
+              <span className={classes!!.menuText}>Series</span>
+            </Button>
+          </Link>
         </div>
       )}
       <div style={{ margin: "auto 10px 20px 10px", textAlign: "center" }}>

@@ -155,7 +155,9 @@ export function deleteColor(color: Color): any {
   };
 }
 
-// ************
+// -----------------------------------------------------------------------------
+// Series
+// -----------------------------------------------------------------------------
 
 export function loadSeries(): any {
   return (dispatch: Dispatch<any>) => {
@@ -164,35 +166,35 @@ export function loadSeries(): any {
         dispatch(actions.receiveSeries(series));
       })
       .catch((error) => {
-        dispatch(actions.receiveSeries([]));
         dispatch(actions.setErrorMessage(error));
       });
   };
 }
 
-export function saveEditSeries(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let series = getState().editSeries!;
-    Api.saveSeries(series)
-      .then((serie) => {
-        dispatch(actions.cancelEditSeries());
-        loadSeries()(dispatch);
+export function saveSeries(series: Series): any {
+  return (dispatch: Dispatch<any>): Promise<void | Series> => {
+    return Api.saveSeries(series)
+      .then((s) => {
+        dispatch(actions.saveSeriesSuccess(s));
+        return Promise.resolve(s);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteSeries(series: Series): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.deleteSeries(series)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteSeries(series)
       .then(() => {
-        dispatch(actions.cancelEditSeries());
-        loadColors()(dispatch);
+        dispatch(actions.deleteSeriesSuccess(series));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }

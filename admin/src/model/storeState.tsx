@@ -38,7 +38,6 @@ export interface StoreState {
   editColor?: Color;
 
   series?: Series[];
-  editSeries?: Series;
 
   locations?: CompLocation[];
   editLocation?: CompLocation;

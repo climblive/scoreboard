@@ -85,16 +85,12 @@ export const updateEditColor = createStandardAction("UPDATE_EDIT_COLOR")<{
 }>();
 
 export const receiveSeries = createStandardAction("RECEIVE_SERIES")<Series[]>();
-export const clearSeries = createStandardAction("CLEAR_SERIES")();
-export const startEditSeries = createStandardAction("START_EDIT_SERIES")<
+export const saveSeriesSuccess = createStandardAction("SAVE_SERIES_SUCCESS")<
   Series
 >();
-export const cancelEditSeries = createStandardAction("CANCEL_EDIT_SERIES")();
-export const startAddSeries = createStandardAction("START_ADD_SERIES")();
-export const updateEditSeries = createStandardAction("UPDATE_EDIT_SERIES")<{
-  propName: string;
-  value: any;
-}>();
+export const deleteSeriesSuccess = createStandardAction(
+  "DELETE_SERIES_SUCCESS"
+)<Series>();
 
 export const receiveCompClasses = createStandardAction("RECEIVE_COMP_CLASSES")<
   CompClass[]

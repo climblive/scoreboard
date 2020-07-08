@@ -229,35 +229,38 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       newEditColor[action.payload.propName] = action.payload.value;
       return { ...state, editColor: newEditColor };
 
-    // ********
+    // -------------------------------------------------------------------------
+    // Series
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveSeries):
       return { ...state, series: action.payload };
 
-    case getType(scoreboardActions.clearSeries):
-      return { ...state, series: undefined, editSeries: undefined };
+    case getType(scoreboardActions.saveSeriesSuccess):
+      let replaced = false;
+      let series = state.series?.map((s) => {
+        if (s.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return s;
+        }
+      });
 
-    case getType(scoreboardActions.startEditSeries):
-      return { ...state, editSeries: action.payload };
+      if (!replaced) {
+        series?.push(action.payload);
+      }
 
-    case getType(scoreboardActions.cancelEditSeries):
-      const newSeriesList = state.series!.filter((p2) => p2.id != undefined);
-      return { ...state, editSeries: undefined, series: newSeriesList };
-
-    case getType(scoreboardActions.startAddSeries):
-      const newSeriesList2 = [...state.series!];
-      let newSeries: Series = {
-        id: undefined,
-        name: "",
-        organizerId: state.organizer?.id!,
+      return {
+        ...state,
+        series: series,
       };
-      newSeriesList2.push(newSeries);
-      return { ...state, editSeries: newSeries, series: newSeriesList2 };
 
-    case getType(scoreboardActions.updateEditSeries):
-      let newEditSeries = { ...state.editSeries! };
-      newEditSeries[action.payload.propName] = action.payload.value;
-      return { ...state, editSeries: newEditSeries };
+    case getType(scoreboardActions.deleteSeriesSuccess):
+      return {
+        ...state,
+        series: state.series?.filter((s) => s.id != action.payload.id),
+      };
 
     // ********
 

@@ -9,6 +9,7 @@ import { reducer } from "./reducers/reducer";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import { Environment } from "./environment";
+import initialState from "./initialState";
 
 let middleware = [applyMiddleware(thunk)];
 
@@ -23,7 +24,7 @@ if (Environment.siteDomain.startsWith("test")) {
 
 const store = createStore<StoreState, any, any, any>(
   reducer,
-  {},
+  initialState,
   compose(...middleware)
 );
 

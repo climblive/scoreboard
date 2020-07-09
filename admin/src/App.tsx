@@ -14,7 +14,7 @@ import { StoreState } from "./model/storeState";
 import { connect, Dispatch } from "react-redux";
 import * as actions from "./actions/actions";
 import * as asyncActions from "./actions/asyncActions";
-import ContestsView from "./views/ContestsView";
+import ContestsList from "./components/contest/ContestsList";
 import ContestView from "./views/ContestView";
 import ColorList from "./components/color/ColorList";
 import SeriesList from "./components/series/SeriesList";
@@ -91,7 +91,7 @@ class App extends React.Component<Props> {
                     <Switch>
                       <Route path="/" exact component={WelcomeView} />
                       <Route path="/start" exact component={WelcomeView} />
-                      <Route path="/contests" exact component={ContestsView} />
+                      <Route path="/contests" exact component={ContestsList} />
                       <Route
                         path="/contests/:contestId"
                         component={ContestView}

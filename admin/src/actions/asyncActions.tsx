@@ -39,14 +39,15 @@ export function login(code: string): any {
 }
 
 export function loadContests(): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getContests()
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getContests()
       .then((contests) => {
         dispatch(actions.receiveContests(contests));
+        return Promise.resolve();
       })
       .catch((error) => {
-        dispatch(actions.receiveContests([]));
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }

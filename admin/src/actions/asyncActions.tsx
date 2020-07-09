@@ -191,44 +191,48 @@ export function deleteSeries(series: Series): any {
   };
 }
 
-// ************
+// -----------------------------------------------------------------------------
+// Locations
+// -----------------------------------------------------------------------------
 
 export function loadLocations(): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getLocations()
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getLocations()
       .then((locations) => {
         dispatch(actions.receiveLocations(locations));
+        return Promise.resolve();
       })
       .catch((error) => {
-        dispatch(actions.receiveLocations([]));
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function saveEditLocation(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let location = getState().editLocation!;
-    Api.saveLocation(location)
+export function saveLocation(location: CompLocation): any {
+  return (dispatch: Dispatch<any>): Promise<void | CompLocation> => {
+    return Api.saveLocation(location)
       .then((location) => {
-        dispatch(actions.cancelEditLocation());
-        loadLocations()(dispatch);
+        dispatch(actions.saveLocationSuccess(location));
+        return Promise.resolve(location);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteLocation(location: CompLocation): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.deleteLocation(location)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteLocation(location)
       .then(() => {
-        dispatch(actions.cancelEditLocation());
-        loadLocations()(dispatch);
+        dispatch(actions.deleteLocationSuccess(location));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }

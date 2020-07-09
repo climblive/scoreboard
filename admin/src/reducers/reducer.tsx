@@ -260,35 +260,40 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         series: state.series?.filter((s) => s.id != action.payload.id),
       };
 
-    // ********
+    // -------------------------------------------------------------------------
+    // Locations
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveLocations):
       return { ...state, locations: action.payload };
 
-    case getType(scoreboardActions.clearLocations):
-      return { ...state, locations: undefined, editLocation: undefined };
+    case getType(scoreboardActions.saveLocationSuccess):
+      replaced = false;
+      let locations = state.locations?.map((location) => {
+        if (location.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return location;
+        }
+      });
 
-    case getType(scoreboardActions.startEditLocation):
-      return { ...state, editLocation: action.payload };
+      if (!replaced) {
+        locations?.push(action.payload);
+      }
 
-    case getType(scoreboardActions.cancelEditLocation):
-      const newLocations = state.locations!.filter((p2) => p2.id != undefined);
-      return { ...state, editLocation: undefined, locations: newLocations };
-
-    case getType(scoreboardActions.startAddLocation):
-      const newLocations2 = [...state.locations!];
-      let newLocation2: CompLocation = {
-        id: undefined,
-        organizerId: state.selectedOrganizer?.id!,
-        name: "",
+      return {
+        ...state,
+        locations,
       };
-      newLocations2.push(newLocation2);
-      return { ...state, editLocation: newLocation2, locations: newLocations2 };
 
-    case getType(scoreboardActions.updateEditLocation):
-      let newEditLocation = { ...state.editLocation! };
-      newEditLocation[action.payload.propName] = action.payload.value;
-      return { ...state, editLocation: newEditLocation };
+    case getType(scoreboardActions.deleteLocationSuccess):
+      return {
+        ...state,
+        locations: state.locations?.filter(
+          (locations) => locations.id != action.payload.id
+        ),
+      };
 
     // -------------------------------------------------------------------------
     // Organizers

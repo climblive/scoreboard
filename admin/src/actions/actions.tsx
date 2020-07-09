@@ -45,18 +45,12 @@ export const deleteContest = createStandardAction("DELETE_CONTEST")<Contest>();
 export const receiveLocations = createStandardAction("RECEIVE_LOCATIONS")<
   CompLocation[]
 >();
-export const clearLocations = createStandardAction("CLEAR_LOCATIONS")();
-export const startEditLocation = createStandardAction("START_EDIT_LOCATION")<
-  CompLocation
->();
-export const cancelEditLocation = createStandardAction(
-  "CANCEL_EDIT_LOCATION"
-)();
-export const startAddLocation = createStandardAction("START_ADD_LOCATION")();
-export const updateEditLocation = createStandardAction("UPDATE_EDIT_LOCATION")<{
-  propName: string;
-  value: any;
-}>();
+export const saveLocationSuccess = createStandardAction(
+  "SAVE_LOCATION_SUCCESS"
+)<CompLocation>();
+export const deleteLocationSuccess = createStandardAction(
+  "DELETE_LOCATION_SUCCESS"
+)<CompLocation>();
 
 export const receiveOrganizers = createStandardAction("RECEIVE_ORGANIZERS")<
   Organizer[]

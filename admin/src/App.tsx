@@ -22,7 +22,7 @@ import { User } from "./model/user";
 import { Organizer } from "./model/organizer";
 import WelcomeView from "./views/WelcomeView";
 import OrganizerList from "./components/organizer/OrganizerList";
-import LocationsView from "./views/LocationsView";
+import LocationList from "./components/location/LocationList";
 
 export interface Props {
   title: string;
@@ -103,11 +103,7 @@ class App extends React.Component<Props> {
                         exact
                         component={OrganizerList}
                       />
-                      <Route
-                        path="/locations"
-                        exact
-                        component={LocationsView}
-                      />
+                      <Route path="/locations" exact component={LocationList} />
                     </Switch>
                   )}
                   {!this.props.loggedInUser && <WelcomeView />}

@@ -16,16 +16,8 @@ import { loadContests } from "../../actions/asyncActions";
 import { setTitle } from "../../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
-import {
-  getLocationMap,
-  getOrganizerMap,
-  getSeriesMap,
-} from "../../selectors/selector";
-import { Organizer } from "../../model/organizer";
-import { CompLocation } from "../../model/compLocation";
-import { Series } from "src/model/series";
-import moment from "moment";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import ContestLineItemView from "./ContestLineItemView";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -39,9 +31,6 @@ const styles = ({ spacing }: Theme) =>
 
 interface Props {
   contests?: Contest[];
-  organizerMap: Map<number, Organizer>;
-  locationMap: Map<number, CompLocation>;
-  seriesMap: Map<number, Series>;
   loadContests?: () => Promise<void>;
   setTitle?: (title: string) => void;
 }
@@ -60,22 +49,6 @@ const ContestsList = (
       props.loadContests?.();
     }
   }, [props.contests]);
-
-  const getLocationName = (id?: number) => {
-    if (id) {
-      return props.locationMap.get(id)?.name;
-    } else {
-      return undefined;
-    }
-  };
-
-  const getSeriesName = (id?: number) => {
-    if (id) {
-      return props.seriesMap.get(id)?.name;
-    } else {
-      return undefined;
-    }
-  };
 
   const refreshContests = () => {
     setRefreshing(true);
@@ -122,28 +95,7 @@ const ContestsList = (
           </TableHead>
           <TableBody>
             {props.contests?.map((contest) => (
-              <TableRow
-                key={contest.id}
-                style={{ cursor: "pointer" }}
-                hover
-                onClick={() => props.history.push("/contests/" + contest.id)}
-              >
-                <TableCell component="th" scope="row">
-                  {contest.name}
-                </TableCell>
-                <TableCell>{getLocationName(contest.locationId)}</TableCell>
-                <TableCell>{getSeriesName(contest.seriesId)}</TableCell>
-                <TableCell>
-                  {contest.timeBegin
-                    ? moment(contest.timeBegin).format("YYYY-MM-DD HH:mm")
-                    : undefined}
-                </TableCell>
-                <TableCell>
-                  {contest.timeEnd
-                    ? moment(contest.timeEnd).format("YYYY-MM-DD HH:mm")
-                    : undefined}
-                </TableCell>
-              </TableRow>
+              <ContestLineItemView contest={contest} />
             ))}
           </TableBody>
         </Table>
@@ -162,9 +114,6 @@ const ContestsList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     contests: state.contests,
-    organizerMap: getOrganizerMap(state),
-    locationMap: getLocationMap(state),
-    seriesMap: getSeriesMap(state),
   };
 }
 

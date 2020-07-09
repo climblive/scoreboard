@@ -35,12 +35,10 @@ export interface StoreState {
   raffles?: Raffle[];
 
   colors?: Color[];
-  editColor?: Color;
 
   series?: Series[];
 
   locations?: CompLocation[];
-  editLocation?: CompLocation;
 
   organizers?: Organizer[];
   selectedOrganizer?: Organizer;

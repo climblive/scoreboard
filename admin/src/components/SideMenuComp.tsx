@@ -81,14 +81,12 @@ function SideMenuComp({
               </Button>
             </Link>
           )}
-          {loggedInUser.admin && (
-            <Link to="/organizers">
-              <Button className={classes!!.menuItem}>
-                <PeopleIcon />
-                <span className={classes!!.menuText}>Organizers</span>
-              </Button>
-            </Link>
-          )}
+          <Link to="/organizers">
+            <Button className={classes!!.menuItem}>
+              <PeopleIcon />
+              <span className={classes!!.menuText}>Organizers</span>
+            </Button>
+          </Link>
           <Link to="/series">
             <Button className={classes!!.menuItem}>
               <LibraryBooksIcon />

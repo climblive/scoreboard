@@ -61,18 +61,15 @@ export const updateEditLocation = createStandardAction("UPDATE_EDIT_LOCATION")<{
 export const receiveOrganizers = createStandardAction("RECEIVE_ORGANIZERS")<
   Organizer[]
 >();
-export const clearOrganizers = createStandardAction("CLEAR_ORGANIZERS")();
-export const setOrganizer = createStandardAction("SET_ORGANIZER")<Organizer>();
-export const startEditOrganizer = createStandardAction("START_EDIT_ORGANIZER")<
+export const saveOrganizerSuccess = createStandardAction(
+  "SAVE_ORGANIZER_SUCCESS"
+)<Organizer>();
+export const deleteOrganizerSuccess = createStandardAction(
+  "DELETE_ORGANIZER_SUCCESS"
+)<Organizer>();
+export const selectOrganizer = createStandardAction("SELECT_ORGANIZER")<
   Organizer
 >();
-export const cancelEditOrganizer = createStandardAction(
-  "CANCEL_EDIT_ORGANIZER"
-)();
-export const startAddOrganizer = createStandardAction("START_ADD_ORGANIZER")();
-export const updateEditOrganizer = createStandardAction(
-  "UPDATE_EDIT_ORGANIZER"
-)<{ propName: string; value: any }>();
 
 export const receiveColors = createStandardAction("RECEIVE_COLORS")<Color[]>();
 export const clearColors = createStandardAction("CLEAR_COLORS")<Color>();

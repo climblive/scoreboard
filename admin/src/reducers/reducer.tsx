@@ -4,10 +4,8 @@ import { ActionType, getType } from "typesafe-actions";
 import { Color } from "../model/color";
 import { Problem } from "../model/problem";
 import { CompLocation } from "../model/compLocation";
-import { Organizer } from "../model/organizer";
 import { CompClass } from "../model/compClass";
 import { Contest } from "../model/contest";
-import { Series } from "../model/series";
 import { SortBy } from "../constants/sortBy";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
@@ -253,7 +251,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
       return {
         ...state,
-        series: series,
+        series,
       };
 
     case getType(scoreboardActions.deleteSeriesSuccess):
@@ -292,50 +290,46 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       newEditLocation[action.payload.propName] = action.payload.value;
       return { ...state, editLocation: newEditLocation };
 
-    // ********
+    // -------------------------------------------------------------------------
+    // Organizers
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveOrganizers):
+      return { ...state, organizers: action.payload };
+
+    case getType(scoreboardActions.saveOrganizerSuccess):
+      replaced = false;
+      let organizers = state.organizers?.map((organizer) => {
+        if (organizer.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return organizer;
+        }
+      });
+
+      if (!replaced) {
+        organizers?.push(action.payload);
+      }
+
       return {
         ...state,
-        organizers: action.payload,
+        organizers,
       };
 
-    case getType(scoreboardActions.clearOrganizers):
-      return { ...state, organizers: undefined, editOrganizer: undefined };
-
-    case getType(scoreboardActions.setOrganizer):
-      return { ...state, organizer: action.payload };
-
-    case getType(scoreboardActions.startEditOrganizer):
-      return { ...state, editOrganizer: action.payload };
-
-    case getType(scoreboardActions.cancelEditOrganizer):
-      const newOrganizerList = state.organizers!.filter(
-        (p2) => p2.id != undefined
-      );
+    case getType(scoreboardActions.deleteOrganizerSuccess):
       return {
         ...state,
-        editOrganizer: undefined,
-        organizers: newOrganizerList,
+        organizers: state.organizers?.filter(
+          (organizer) => organizer.id != action.payload.id
+        ),
       };
 
-    case getType(scoreboardActions.startAddOrganizer):
-      const newOrganizerList2 = [...state.organizers!];
-      let newOrganizer: Organizer = {
-        id: undefined,
-        name: "",
-      };
-      newOrganizerList2.push(newOrganizer);
+    case getType(scoreboardActions.selectOrganizer):
       return {
         ...state,
-        editOrganizer: newOrganizer,
-        organizers: newOrganizerList2,
+        organizer: action.payload,
       };
-
-    case getType(scoreboardActions.updateEditOrganizer):
-      let newEditOrganizer = { ...state.editOrganizer! };
-      newEditOrganizer[action.payload.propName] = action.payload.value;
-      return { ...state, editOrganizer: newEditOrganizer };
 
     // ********
 

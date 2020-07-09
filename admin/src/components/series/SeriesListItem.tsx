@@ -22,7 +22,7 @@ const SeriesListItem = (props: Props) => {
       }}
     />
   ) : (
-    <SeriesView series={props.series} onClickEdit={() => setEditing(true)} />
+    <SeriesView series={props.series} onBeginEdit={() => setEditing(true)} />
   );
 };
 

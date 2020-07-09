@@ -32,12 +32,12 @@ export class Api {
     return data;
   }
 
-  private static getAuthHeader(): any {
+  private static getAuthHeader(url: string): any {
     let authHeaders: any = {};
     if (this.credentials) {
       authHeaders.Authorization = "Bearer " + this.credentials;
     }
-    if (this.organizerId != undefined) {
+    if (this.organizerId != undefined && !url.startsWith("/organizer")) {
       authHeaders["Organizer-Id"] = this.organizerId;
     }
     return authHeaders;
@@ -45,7 +45,7 @@ export class Api {
 
   private static async get(url: string) {
     let response = await fetch(this.getBaseUrl() + url, {
-      headers: Api.getAuthHeader(),
+      headers: Api.getAuthHeader(url),
     });
     return (await this.handleErrors(response)).json();
   }
@@ -56,7 +56,7 @@ export class Api {
       body: JSON.stringify(postData),
       headers: {
         "Content-Type": "application/json",
-        ...Api.getAuthHeader(),
+        ...Api.getAuthHeader(url),
       },
     });
     return (await this.handleErrors(response)).json();
@@ -67,7 +67,7 @@ export class Api {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        ...Api.getAuthHeader(),
+        ...Api.getAuthHeader(url),
       },
     });
     return this.handleErrors(response);
@@ -79,7 +79,7 @@ export class Api {
       body: JSON.stringify(postData),
       headers: {
         "Content-Type": "application/json",
-        ...Api.getAuthHeader(),
+        ...Api.getAuthHeader(url),
       },
     });
     return (await this.handleErrors(response)).json();
@@ -128,7 +128,7 @@ export class Api {
   static async exportContest(contestId: number) {
     let url = "/contest/export/" + contestId;
     let response = await fetch(this.getBaseUrl() + url, {
-      headers: Api.getAuthHeader(),
+      headers: Api.getAuthHeader(url),
     });
     return (await this.handleErrors(response)).blob();
   }
@@ -138,7 +138,7 @@ export class Api {
     let response = await fetch(this.getBaseUrl() + url, {
       method: "GET",
       headers: {
-        ...Api.getAuthHeader(),
+        ...Api.getAuthHeader(url),
       },
     });
     return (await this.handleErrors(response)).blob();
@@ -151,7 +151,7 @@ export class Api {
       body: arrayBuffer,
       headers: {
         "Content-Type": "application/pdf",
-        ...Api.getAuthHeader(),
+        ...Api.getAuthHeader(url),
       },
     });
     return (await this.handleErrors(response)).blob();

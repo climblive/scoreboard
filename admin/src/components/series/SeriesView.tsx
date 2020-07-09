@@ -13,7 +13,7 @@ import { CircularProgress } from "@material-ui/core";
 interface Props {
   series?: Series;
   deleteSeries?: (series: Series) => Promise<void>;
-  onClickEdit?: (series: Series) => void;
+  onBeginEdit?: () => void;
 }
 
 const SeriesView = (props: Props) => {
@@ -21,10 +21,7 @@ const SeriesView = (props: Props) => {
 
   const onDelete = () => {
     setDeleting(true);
-    props
-      .deleteSeries?.(props.series!)
-      .then(() => setDeleting(false))
-      .catch((error) => setDeleting(false));
+    props.deleteSeries?.(props.series!).catch((error) => setDeleting(false));
   };
 
   return (
@@ -38,7 +35,7 @@ const SeriesView = (props: Props) => {
           aria-label="Menu"
           title="Edit"
           disabled={deleting}
-          onClick={() => props.onClickEdit?.(props.series!)}
+          onClick={props.onBeginEdit}
         >
           <EditIcon />
         </IconButton>

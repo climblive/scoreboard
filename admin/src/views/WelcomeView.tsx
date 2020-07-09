@@ -1,10 +1,7 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
-import { Palette, TableChart } from "@material-ui/icons";
-import { Button, StyledComponentProps, Theme } from "@material-ui/core";
+import { StyledComponentProps, Theme } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { User } from "../model/user";
 
 export interface Props {}
 

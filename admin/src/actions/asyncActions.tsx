@@ -23,7 +23,7 @@ export function login(code: string): any {
 
         let organizer: Organizer = pickOrganizer(userData.organizers);
         Api.setOrganizerId(organizer.id);
-        dispatch(actions.setOrganizer(organizer));
+        dispatch(actions.selectOrganizer(organizer));
         dispatch(actions.receiveOrganizers(userData.organizers));
 
         dispatch(actions.setLoggingIn(false));
@@ -36,15 +36,6 @@ export function login(code: string): any {
         dispatch(actions.setLoggingIn(false));
         dispatch(actions.setErrorMessage(error));
       });
-  };
-}
-
-export function changeOrganizer(organizer: Organizer): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.setOrganizerId(organizer.id);
-    dispatch(actions.setOrganizer(organizer));
-    localStorage.setItem("organizerId", organizer.id!.toString());
-    loadEverything(dispatch);
   };
 }
 
@@ -243,44 +234,58 @@ export function deleteLocation(location: CompLocation): any {
   };
 }
 
-// ************
+// -----------------------------------------------------------------------------
+// Organizers
+// -----------------------------------------------------------------------------
 
 export function loadOrganizers(): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getOrganizers()
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getOrganizers()
       .then((organizers) => {
         dispatch(actions.receiveOrganizers(organizers));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function saveEditOrganizer(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let organizer = getState().editOrganizer!;
-    Api.saveOrganizer(organizer)
+export function saveOrganizer(organizer: Organizer): any {
+  return (dispatch: Dispatch<any>): Promise<void | Organizer> => {
+    return Api.saveOrganizer(organizer)
       .then((organizer) => {
-        dispatch(actions.cancelEditOrganizer());
-        loadOrganizers()(dispatch);
+        dispatch(actions.saveOrganizerSuccess(organizer));
+        return Promise.resolve(organizer);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteOrganizer(organizer: Organizer): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.deleteOrganizer(organizer)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteOrganizer(organizer)
       .then(() => {
-        dispatch(actions.cancelEditOrganizer());
-        loadOrganizers()(dispatch);
+        dispatch(actions.deleteOrganizerSuccess(organizer));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
+  };
+}
+
+export function selectOrganizer(organizer: Organizer): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.setOrganizerId(organizer.id);
+    dispatch(actions.selectOrganizer(organizer));
+    localStorage.setItem("organizerId", organizer.id!.toString());
+    loadEverything(dispatch);
   };
 }
 

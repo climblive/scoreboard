@@ -21,7 +21,7 @@ import SeriesList from "./components/series/SeriesList";
 import { User } from "./model/user";
 import { Organizer } from "./model/organizer";
 import WelcomeView from "./views/WelcomeView";
-import OrganizersView from "./views/OrganizersView";
+import OrganizerList from "./components/organizer/OrganizerList";
 import LocationsView from "./views/LocationsView";
 
 export interface Props {
@@ -35,6 +35,7 @@ export interface Props {
   changeOrganizer?: (organizer: Organizer) => void;
   login?: (code: string) => void;
   logout?: () => void;
+  selectOrganizer?: (organizer: Organizer) => void;
 }
 
 class App extends React.Component<Props> {
@@ -82,7 +83,7 @@ class App extends React.Component<Props> {
                   loggedInUser={this.props.loggedInUser}
                   organizers={this.props.organizers}
                   organizer={this.props.organizer}
-                  changeOrganizer={this.props.changeOrganizer}
+                  selectOrganizer={this.props.selectOrganizer}
                   title={this.props.title}
                 />
                 <div className="mainView">
@@ -100,7 +101,7 @@ class App extends React.Component<Props> {
                       <Route
                         path="/organizers"
                         exact
-                        component={OrganizersView}
+                        component={OrganizerList}
                       />
                       <Route
                         path="/locations"
@@ -159,8 +160,8 @@ export function mapDispatchToProps(dispatch: Dispatch<any>) {
     clearErrorMessage: () => dispatch(actions.clearErrorMessage()),
     login: (code: string) => dispatch(asyncActions.login(code)),
     logout: () => dispatch(actions.logout()),
-    changeOrganizer: (organizer: Organizer) =>
-      dispatch(asyncActions.changeOrganizer(organizer)),
+    selectOrganizer: (organizer: Organizer) =>
+      dispatch(asyncActions.selectOrganizer(organizer)),
   };
 }
 

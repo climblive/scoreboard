@@ -25,7 +25,7 @@ export interface TopMenuCompProps {
 
   login?: (code: string) => void;
   logout?: () => void;
-  changeOrganizer?: (organizer: Organizer) => void;
+  selectOrganizer?: (organizer: Organizer) => void;
 }
 
 const styles = {
@@ -84,7 +84,7 @@ class TopMenuComp extends React.Component<
   onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = parseInt(e.target.value);
     let organizer = this.props.organizers!.find((o) => o.id == id)!;
-    this.props.changeOrganizer?.(organizer);
+    this.props.selectOrganizer?.(organizer);
   };
 
   getUrl = (command: string) => {

@@ -44,7 +44,6 @@ export interface StoreState {
 
   organizers?: Organizer[];
   organizer?: Organizer;
-  editOrganizer?: Organizer;
 
   ticks?: Tick[];
 

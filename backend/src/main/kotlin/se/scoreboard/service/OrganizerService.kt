@@ -30,4 +30,11 @@ class OrganizerService @Autowired constructor(
             else -> {}
         }
     }
+
+    override fun onUpdate(phase: Phase, old: Organizer, new: Organizer) {
+        when (phase) {
+            Phase.BEFORE -> new.users = old.users
+            else -> {}
+        }
+    }
 }

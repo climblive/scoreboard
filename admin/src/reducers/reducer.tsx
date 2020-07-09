@@ -329,6 +329,15 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       return {
         ...state,
         selectedOrganizer: action.payload,
+        contests: undefined,
+        problems: undefined,
+        compClasses: undefined,
+        contenders: undefined,
+        raffles: undefined,
+        colors: undefined,
+        locations: undefined,
+        series: undefined,
+        ticks: undefined,
       };
 
     // ********

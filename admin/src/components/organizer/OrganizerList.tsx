@@ -41,7 +41,6 @@ const OrganizerList = (
   props: Props & RouteComponentProps & StyledComponentProps
 ) => {
   React.useEffect(() => {
-    refreshOrganizers();
     props.setTitle?.("Organizers");
   }, []);
 

@@ -42,9 +42,14 @@ const SeriesList = (
   props: Props & RouteComponentProps & StyledComponentProps
 ) => {
   React.useEffect(() => {
-    refreshSeries();
     props.setTitle?.("Series");
   }, []);
+
+  React.useEffect(() => {
+    if (props.series == undefined) {
+      refreshSeries();
+    }
+  }, [props.series]);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);

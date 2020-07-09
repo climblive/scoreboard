@@ -28,8 +28,6 @@ export function login(code: string): any {
 
           dispatch(actions.setLoggingIn(false));
           dispatch(actions.setLoggedInUser(userData));
-
-          loadEverything(dispatch);
         });
       })
       .catch((error) => {
@@ -286,7 +284,6 @@ export function selectOrganizer(organizer: Organizer): any {
     Api.setOrganizerId(organizer.id);
     dispatch(actions.selectOrganizer(organizer));
     localStorage.setItem("organizerId", organizer.id!.toString());
-    loadEverything(dispatch);
   };
 }
 
@@ -590,13 +587,6 @@ export function deleteRaffle(raffle: Raffle): any {
       });
   };
 }
-
-let loadEverything = (dispatch: Dispatch<any>) => {
-  loadLocations()(dispatch);
-  loadSeries()(dispatch);
-  loadColors()(dispatch);
-  loadContests()(dispatch);
-};
 
 function pickOrganizer(organizers: Organizer[]): Organizer {
   let organizer: Organizer | undefined;

@@ -66,14 +66,12 @@ export const selectOrganizer = createStandardAction("SELECT_ORGANIZER")<
 >();
 
 export const receiveColors = createStandardAction("RECEIVE_COLORS")<Color[]>();
-export const clearColors = createStandardAction("CLEAR_COLORS")<Color>();
-export const startEditColor = createStandardAction("START_EDIT_COLOR")<Color>();
-export const cancelEditColor = createStandardAction("CANCEL_EDIT_COLOR")();
-export const startAddColor = createStandardAction("START_ADD_COLOR")();
-export const updateEditColor = createStandardAction("UPDATE_EDIT_COLOR")<{
-  propName: string;
-  value: any;
-}>();
+export const saveColorSuccess = createStandardAction("SAVE_COLOR_SUCCESS")<
+  Color
+>();
+export const deleteColorSuccess = createStandardAction("DELETE_COLOR_SUCCESS")<
+  Color
+>();
 
 export const receiveSeries = createStandardAction("RECEIVE_SERIES")<Series[]>();
 export const saveSeriesSuccess = createStandardAction("SAVE_SERIES_SUCCESS")<

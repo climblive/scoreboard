@@ -16,7 +16,7 @@ import * as actions from "./actions/actions";
 import * as asyncActions from "./actions/asyncActions";
 import ContestsView from "./views/ContestsView";
 import ContestView from "./views/ContestView";
-import ColorsView from "./views/ColorsView";
+import ColorList from "./components/color/ColorList";
 import SeriesList from "./components/series/SeriesList";
 import { User } from "./model/user";
 import { Organizer } from "./model/organizer";
@@ -96,7 +96,7 @@ class App extends React.Component<Props> {
                         path="/contests/:contestId"
                         component={ContestView}
                       />
-                      <Route path="/colors" exact component={ColorsView} />
+                      <Route path="/colors" exact component={ColorList} />
                       <Route path="/series" exact component={SeriesList} />
                       <Route
                         path="/organizers"

@@ -195,37 +195,40 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveContenders):
       return { ...state, contenders: action.payload };
 
-    // ********
+    // -------------------------------------------------------------------------
+    // Colors
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveColors):
       return { ...state, colors: action.payload };
 
-    case getType(scoreboardActions.clearColors):
-      return { ...state, colors: undefined, editColor: undefined };
+    case getType(scoreboardActions.saveColorSuccess):
+      let replaced = false;
+      let colors = state.colors?.map((color) => {
+        if (color.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return color;
+        }
+      });
 
-    case getType(scoreboardActions.startEditColor):
-      return { ...state, editColor: action.payload };
+      if (!replaced) {
+        colors?.push(action.payload);
+      }
 
-    case getType(scoreboardActions.cancelEditColor):
-      const newColors = state.colors!.filter((p2) => p2.id != undefined);
-      return { ...state, editColor: undefined, colors: newColors };
-
-    case getType(scoreboardActions.startAddColor):
-      const newColors2 = [...state.colors!];
-      let newColor: Color = {
-        rgbPrimary: "#000000",
-        organizerId: state.selectedOrganizer?.id!,
-        id: undefined,
-        name: "",
-        shared: false,
+      return {
+        ...state,
+        colors,
       };
-      newColors2.push(newColor);
-      return { ...state, editColor: newColor, colors: newColors2 };
 
-    case getType(scoreboardActions.updateEditColor):
-      let newEditColor = { ...state.editColor! };
-      newEditColor[action.payload.propName] = action.payload.value;
-      return { ...state, editColor: newEditColor };
+    case getType(scoreboardActions.deleteColorSuccess):
+      return {
+        ...state,
+        colors: state.colors?.filter(
+          (colors) => colors.id != action.payload.id
+        ),
+      };
 
     // -------------------------------------------------------------------------
     // Series
@@ -235,7 +238,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       return { ...state, series: action.payload };
 
     case getType(scoreboardActions.saveSeriesSuccess):
-      let replaced = false;
+      replaced = false;
       let series = state.series?.map((s) => {
         if (s.id == action.payload.id) {
           replaced = true;

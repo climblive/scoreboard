@@ -103,44 +103,48 @@ export function deleteContest(contest: Contest): any {
   };
 }
 
-// ************
+// -----------------------------------------------------------------------------
+// Colors
+// -----------------------------------------------------------------------------
 
 export function loadColors(): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getColors()
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getColors()
       .then((colors) => {
         dispatch(actions.receiveColors(colors));
+        return Promise.resolve();
       })
       .catch((error) => {
-        dispatch(actions.receiveColors([]));
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function saveEditColor(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let color = getState().editColor!;
-    Api.saveColor(color)
+export function saveColor(color: Color): any {
+  return (dispatch: Dispatch<any>): Promise<void | Color> => {
+    return Api.saveColor(color)
       .then((color) => {
-        dispatch(actions.cancelEditColor());
-        loadColors()(dispatch);
+        dispatch(actions.saveColorSuccess(color));
+        return Promise.resolve(color);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteColor(color: Color): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.deleteColor(color)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteColor(color)
       .then(() => {
-        dispatch(actions.cancelEditColor());
-        loadColors()(dispatch);
+        dispatch(actions.deleteColorSuccess(color));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }

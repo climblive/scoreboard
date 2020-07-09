@@ -73,7 +73,7 @@ const OrganizerView = (props: Props) => {
           color="inherit"
           aria-label="Menu"
           title="Switch"
-          disabled={props.isSelectedOrganizer}
+          disabled={deleting || props.isSelectedOrganizer}
           onClick={onSwitchOrganizer}
         >
           <SyncAltIcon />

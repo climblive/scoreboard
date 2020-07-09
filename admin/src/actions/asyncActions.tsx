@@ -14,22 +14,23 @@ import { Raffle } from "../model/raffle";
 import { ContenderData } from "src/model/contenderData";
 
 export function login(code: string): any {
-  return (dispatch: Dispatch<any>) => {
+  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
     dispatch(actions.setLoggingIn(true));
     Api.setCredentials(code);
     Api.getUser()
       .then((userData) => {
         localStorage.setItem("credentials", code);
 
-        let organizer: Organizer = pickOrganizer(userData.organizers);
-        Api.setOrganizerId(organizer.id);
-        dispatch(actions.selectOrganizer(organizer));
-        dispatch(actions.receiveOrganizers(userData.organizers));
+        loadOrganizers()(dispatch).then(() => {
+          let organizer: Organizer = pickOrganizer(getState().organizers!);
+          Api.setOrganizerId(organizer.id);
+          dispatch(actions.selectOrganizer(organizer));
 
-        dispatch(actions.setLoggingIn(false));
-        dispatch(actions.setLoggedInUser(userData));
+          dispatch(actions.setLoggingIn(false));
+          dispatch(actions.setLoggedInUser(userData));
 
-        loadEverything(dispatch);
+          loadEverything(dispatch);
+        });
       })
       .catch((error) => {
         Api.setCredentials(undefined);

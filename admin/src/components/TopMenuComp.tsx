@@ -127,17 +127,19 @@ class TopMenuComp extends React.Component<
                   <InputLabel shrink htmlFor="series-select">
                     Organizer
                   </InputLabel>
-                  <Select
-                    id="series-select"
-                    value={organizer?.id}
-                    onChange={this.onOrganizerChange}
-                  >
-                    {organizers!.map((organizer) => (
-                      <MenuItem key={organizer.id} value={organizer.id}>
-                        {organizer.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  {organizer != undefined && (
+                    <Select
+                      id="series-select"
+                      value={organizer?.id}
+                      onChange={this.onOrganizerChange}
+                    >
+                      {organizers!.map((organizer) => (
+                        <MenuItem key={organizer.id} value={organizer.id}>
+                          {organizer.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
                 </FormControl>
               )}
               <Typography

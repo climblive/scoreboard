@@ -14,7 +14,9 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import { Api } from "../utils/Api";
+import Chip from "@material-ui/core/Chip";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 export interface TopMenuCompProps {
   title: string;
@@ -166,9 +168,24 @@ class TopMenuComp extends React.Component<
               )}
               {loggedInUser && (
                 <div>
-                  <span style={{ marginRight: 10 }}>{loggedInUser.name}</span>
-                  <Button color="inherit" onClick={this.logout}>
-                    Logout
+                  <span style={{ marginRight: 10 }}>
+                    {loggedInUser.name}
+                    {loggedInUser.admin && (
+                      <Chip
+                        style={{ marginLeft: "5px" }}
+                        icon={<AccountCircleIcon />}
+                        label="Admin"
+                        color="secondary"
+                        size="small"
+                      />
+                    )}
+                  </span>
+                  <Button
+                    variant="contained"
+                    onClick={this.logout}
+                    size="small"
+                  >
+                    <ExitToAppIcon /> Logout
                   </Button>
                 </div>
               )}

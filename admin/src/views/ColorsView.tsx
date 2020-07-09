@@ -46,7 +46,7 @@ const styles = ({ spacing }: Theme) =>
 interface Props {
   colors?: Color[];
   editColor?: Color;
-  organizer?: Organizer;
+  selectedOrganizer?: Organizer;
   loggedInUser?: User;
 
   loadColors?: () => void;
@@ -208,7 +208,8 @@ class ColorsView extends React.Component<
             <TableBody>
               {colors.map((color) => {
                 if (editColor == undefined || color.id != editColor.id) {
-                  let showEdit = color.organizerId == this.props.organizer!.id;
+                  let showEdit =
+                    color.organizerId == this.props.selectedOrganizer!.id;
                   return (
                     <TableRow key={color.id}>
                       <TableCell component="th" scope="row">
@@ -361,7 +362,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
   return {
     colors: state.colors,
     editColor: state.editColor,
-    organizer: state.organizer,
+    selectedOrganizer: state.selectedOrganizer,
     loggedInUser: state.loggedInUser,
   };
 }

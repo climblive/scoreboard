@@ -40,7 +40,7 @@ interface Props {
     };
   };
   contest?: Contest;
-  organizer?: Organizer;
+  selectedOrganizer?: Organizer;
   creatingPdf: boolean;
   series?: Series[];
   locations?: CompLocation[];
@@ -149,8 +149,8 @@ class ContestView extends React.Component<Props, State> {
   render() {
     if (
       this.props.contest &&
-      this.props.organizer &&
-      this.props.contest!.organizerId !== this.props.organizer!.id
+      this.props.selectedOrganizer &&
+      this.props.contest!.organizerId !== this.props.selectedOrganizer!.id
     ) {
       return <Redirect to="/contests" />;
     }
@@ -307,7 +307,7 @@ class ContestView extends React.Component<Props, State> {
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     contest: state.contest,
-    organizer: state.organizer,
+    selectedOrganizer: state.selectedOrganizer,
     creatingPdf: state.creatingPdf,
     locations: state.locations,
     problems: getProblemsWithTicks(state),

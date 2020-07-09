@@ -30,7 +30,7 @@ export interface Props {
   loggedInUser?: User;
   loggingIn: boolean;
   organizers?: Organizer[];
-  organizer?: Organizer;
+  selectedOrganizer?: Organizer;
   clearErrorMessage?: () => void;
   changeOrganizer?: (organizer: Organizer) => void;
   login?: (code: string) => void;
@@ -82,7 +82,7 @@ class App extends React.Component<Props> {
                   loggingIn={this.props.loggingIn}
                   loggedInUser={this.props.loggedInUser}
                   organizers={this.props.organizers}
-                  organizer={this.props.organizer}
+                  selectedOrganizer={this.props.selectedOrganizer}
                   selectOrganizer={this.props.selectOrganizer}
                   title={this.props.title}
                 />
@@ -151,7 +151,7 @@ export function mapStateToProps(state: StoreState, props: any): Props {
     loggingIn: state.loggingIn,
     loggedInUser: state.loggedInUser,
     organizers: state.organizers,
-    organizer: state.organizer,
+    selectedOrganizer: state.selectedOrganizer,
   };
 }
 

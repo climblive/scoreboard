@@ -32,7 +32,7 @@ const styles = ({ spacing }: Theme) =>
 
 interface Props {
   series?: Series[];
-  organizer?: Organizer;
+  selectedOrganizer?: Organizer;
 
   loadSeries?: () => Promise<void>;
   setTitle?: (title: string) => void;
@@ -97,7 +97,7 @@ const SeriesList = (
             {showCreate && (
               <SeriesListItem
                 onCreateDone={onCreateDone}
-                series={{ organizerId: props.organizer?.id!, name: "" }}
+                series={{ organizerId: props.selectedOrganizer?.id!, name: "" }}
               />
             )}
             {props.series?.map((s) => (
@@ -113,7 +113,7 @@ const SeriesList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     series: state.series,
-    organizer: state.organizer,
+    selectedOrganizer: state.selectedOrganizer,
   };
 }
 

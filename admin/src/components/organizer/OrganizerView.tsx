@@ -85,7 +85,7 @@ const OrganizerView = (props: Props) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    isSelectedOrganizer: props.organizer?.id === state.organizer?.id,
+    isSelectedOrganizer: props.organizer?.id === state.selectedOrganizer?.id,
   };
 }
 

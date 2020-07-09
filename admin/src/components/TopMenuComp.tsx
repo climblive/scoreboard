@@ -21,7 +21,7 @@ export interface TopMenuCompProps {
   loggingIn: boolean;
   loggedInUser?: User;
   organizers?: Organizer[];
-  organizer?: Organizer;
+  selectedOrganizer?: Organizer;
 
   login?: (code: string) => void;
   logout?: () => void;
@@ -116,7 +116,7 @@ class TopMenuComp extends React.Component<
     const loggedInUser = this.props.loggedInUser;
     const classes = this.props.classes!;
     const organizers = this.props.organizers;
-    const organizer = this.props.organizer;
+    const organizer = this.props.selectedOrganizer;
     return (
       <div>
         <AppBar position="static">

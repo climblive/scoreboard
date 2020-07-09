@@ -31,7 +31,7 @@ const styles = ({ spacing }: Theme) =>
 
 interface Props {
   organizers?: Organizer[];
-  organizer?: Organizer;
+  selectedOrganizer?: Organizer;
 
   loadOrganizers?: () => Promise<void>;
   setTitle?: (title: string) => void;
@@ -113,7 +113,7 @@ const OrganizerList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     organizers: state.organizers,
-    organizer: state.organizer,
+    selectedOrganizer: state.selectedOrganizer,
   };
 }
 

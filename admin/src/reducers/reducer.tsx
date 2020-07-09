@@ -66,7 +66,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         name: "",
         protected: false,
         description: "",
-        organizerId: state.organizer?.id!,
+        organizerId: state.selectedOrganizer?.id!,
         finalEnabled: false,
         qualifyingProblems: 10,
         finalists: 7,
@@ -214,7 +214,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       const newColors2 = [...state.colors!];
       let newColor: Color = {
         rgbPrimary: "#000000",
-        organizerId: state.organizer?.id!,
+        organizerId: state.selectedOrganizer?.id!,
         id: undefined,
         name: "",
         shared: false,
@@ -279,7 +279,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       const newLocations2 = [...state.locations!];
       let newLocation2: CompLocation = {
         id: undefined,
-        organizerId: state.organizer?.id!,
+        organizerId: state.selectedOrganizer?.id!,
         name: "",
       };
       newLocations2.push(newLocation2);
@@ -328,7 +328,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.selectOrganizer):
       return {
         ...state,
-        organizer: action.payload,
+        selectedOrganizer: action.payload,
       };
 
     // ********

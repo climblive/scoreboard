@@ -160,13 +160,15 @@ export function deleteColor(color: Color): any {
 // -----------------------------------------------------------------------------
 
 export function loadSeries(): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getSeries()
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getSeries()
       .then((series) => {
         dispatch(actions.receiveSeries(series));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }

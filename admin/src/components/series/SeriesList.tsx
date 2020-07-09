@@ -19,6 +19,7 @@ import { Series } from "../../model/series";
 import SeriesViewAndEdit from "./SeriesViewAndEdit";
 import SeriesEdit from "./SeriesEdit";
 import { Organizer } from "src/model/organizer";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -34,7 +35,7 @@ interface Props {
   series?: Series[];
   organizer?: Organizer;
 
-  loadSeries?: () => void;
+  loadSeries?: () => Promise<void>;
   setTitle?: (title: string) => void;
 }
 
@@ -42,23 +43,21 @@ const SeriesList = (
   props: Props & RouteComponentProps & StyledComponentProps
 ) => {
   React.useEffect(() => {
-    props.loadSeries?.();
+    refreshSeries();
     props.setTitle?.("Series");
   }, []);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const onCreateDone = () => {
     setShowCreate(false);
   };
 
-  if (!props.series) {
-    return (
-      <div style={{ textAlign: "center", marginTop: 10 }}>
-        <CircularProgress />
-      </div>
-    );
-  }
+  const refreshSeries = () => {
+    setRefreshing(true);
+    props.loadSeries?.().finally(() => setRefreshing(false));
+  };
 
   return (
     <Paper
@@ -74,11 +73,23 @@ const SeriesList = (
                 <IconButton
                   color="inherit"
                   aria-label="Menu"
-                  title="Add series"
+                  title="Add"
                   disabled={showCreate}
                   onClick={() => setShowCreate(true)}
                 >
                   <AddIcon />
+                </IconButton>
+                <IconButton
+                  color="inherit"
+                  aria-label="Menu"
+                  title="Refresh"
+                  onClick={refreshSeries}
+                >
+                  {refreshing ? (
+                    <CircularProgress size={24} />
+                  ) : (
+                    <RefreshIcon />
+                  )}
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -90,7 +101,7 @@ const SeriesList = (
                 series={{ organizerId: props.organizer?.id!, name: "" }}
               />
             )}
-            {props.series.map((s) => (
+            {props.series?.map((s) => (
               <SeriesViewAndEdit key={s.id!} series={s} />
             ))}
           </TableBody>

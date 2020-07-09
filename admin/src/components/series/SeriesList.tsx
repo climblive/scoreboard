@@ -16,8 +16,7 @@ import { setTitle } from "../../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { Series } from "../../model/series";
-import SeriesViewAndEdit from "./SeriesViewAndEdit";
-import SeriesEdit from "./SeriesEdit";
+import SeriesListItem from "./SeriesListItem";
 import { Organizer } from "src/model/organizer";
 import RefreshIcon from "@material-ui/icons/Refresh";
 
@@ -96,13 +95,13 @@ const SeriesList = (
           </TableHead>
           <TableBody>
             {showCreate && (
-              <SeriesEdit
-                onDone={onCreateDone}
+              <SeriesListItem
+                onCreateDone={onCreateDone}
                 series={{ organizerId: props.organizer?.id!, name: "" }}
               />
             )}
             {props.series?.map((s) => (
-              <SeriesViewAndEdit key={s.id!} series={s} />
+              <SeriesListItem key={s.id!} series={s} />
             ))}
           </TableBody>
         </Table>

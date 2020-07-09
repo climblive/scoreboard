@@ -28,7 +28,7 @@ const SeriesView = (props: Props) => {
   };
 
   return (
-    <TableRow key={props.series?.id}>
+    <TableRow>
       <TableCell component="th" scope="row">
         {props.series?.name}
       </TableCell>

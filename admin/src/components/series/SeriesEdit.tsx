@@ -39,7 +39,7 @@ const SeriesEdit = (props: Props) => {
   };
 
   return (
-    <TableRow key={series.id}>
+    <TableRow>
       <TableCell component="th" scope="row">
         <TextField style={{}} value={series.name} onChange={onNameChange} />
       </TableCell>

@@ -13,7 +13,7 @@ import initialState from "./initialState";
 
 let middleware = [applyMiddleware(thunk)];
 
-if (Environment.siteDomain.startsWith("test")) {
+if (Environment.siteDomain === "localhost") {
   const composeEnhancers =
     (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   middleware.push(

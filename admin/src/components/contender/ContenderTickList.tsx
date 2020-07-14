@@ -10,12 +10,12 @@ import DoneIcon from "@material-ui/icons/Done";
 import { OrderedMap } from "immutable";
 import moment from "moment";
 import React from "react";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { ContenderScoringData } from "src/model/contenderScoringData";
 import { Color } from "../../model/color";
 import { Problem } from "../../model/problem";
 
 interface Props {
-  scoring: ContenderScoringInfo;
+  scoring: ContenderScoringData;
   problems?: OrderedMap<number, Problem>;
   colors?: OrderedMap<number, Color>;
 }

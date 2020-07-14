@@ -1,0 +1,12 @@
+package se.scoreboard.engine
+
+enum class ActionType {
+    REGISTER_TICK,
+    UNREGISTER_TICK,
+    REGISTER_PROBLEM,
+    UNREGISTER_PROBLEM,
+    REGISTER_CONTEST,
+    UNREGISTER_CONTEST,
+    REGISTER_CONTENDER,
+    UNREGISTER_CONTENDER
+}

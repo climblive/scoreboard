@@ -1,3 +1,5 @@
+import { ContenderScoringData } from "./contenderScoringData";
+
 export interface ContenderData {
   id?: number;
   compClassId?: number;
@@ -7,4 +9,5 @@ export interface ContenderData {
   entered?: string;
   disqualified: boolean;
   finalPlacing?: number;
+  scorings?: ContenderScoringData[];
 }

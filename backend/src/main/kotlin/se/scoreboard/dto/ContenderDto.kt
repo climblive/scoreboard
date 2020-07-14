@@ -13,7 +13,7 @@ data class ContenderDto (
     @JsonProperty("disqualified")
     var disqualified: Boolean,
     var finalPlacing: Int?,
-    var scoring: ScoringDto?) {
+    var scorings: List<ScoringDto>?) {
 
     constructor() : this(null, null, null, null, null, null, false, null, null)
 }

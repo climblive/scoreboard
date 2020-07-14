@@ -6,7 +6,7 @@ import { OrderedMap } from "immutable";
 import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { ContenderData } from "src/model/contenderData";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { ContenderScoringData } from "src/model/contenderScoringData";
 import { updateContender } from "../../actions/asyncActions";
 import { Environment } from "../../environment";
 import { CompClass } from "../../model/compClass";
@@ -20,7 +20,7 @@ import ContenderTickList from "./ContenderTickList";
 
 interface Props {
   contender: ContenderData;
-  scoring?: ContenderScoringInfo;
+  scoring?: ContenderScoringData;
   compClasses?: OrderedMap<number, CompClass>;
   problems?: OrderedMap<number, Problem>;
   breakpoints?: Map<number, string>;

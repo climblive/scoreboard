@@ -7,7 +7,8 @@ data class ProblemDto (
     var number: Int,
     var name: String?,
     var points: Int,
-    var flashBonus: Int?) {
+    var flashBonus: Int?,
+    var currentPoints: List<CurrentPointsDto>?) {
 
-    constructor() : this(null, null, null, Int.MAX_VALUE, null, Int.MAX_VALUE, null)
+    constructor() : this(null, null, null, Int.MAX_VALUE, null, Int.MAX_VALUE, null, null)
 }

@@ -2,17 +2,28 @@ package se.scoreboard.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import se.scoreboard.afterCommit
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.Problem
 import se.scoreboard.data.repo.ProblemRepository
 import se.scoreboard.dto.ProblemDto
+import se.scoreboard.engine.ActionType
+import se.scoreboard.engine.PointsMode
+import se.scoreboard.engine.ScoringEngine
+import se.scoreboard.engine.params.RegisterProblemParam
+import se.scoreboard.engine.params.UnregisterProblemParam
 import se.scoreboard.mapper.AbstractMapper
 
 @Service
 class ProblemService @Autowired constructor(
-    private val problemRepository: ProblemRepository,
-    override var entityMapper: AbstractMapper<Problem, ProblemDto>) : AbstractDataService<Problem, ProblemDto, Int>(
+        private val scoringEngine: ScoringEngine,
+        private val problemRepository: ProblemRepository,
+        override var entityMapper: AbstractMapper<Problem, ProblemDto>) : AbstractDataService<Problem, ProblemDto, Int>(
         problemRepository) {
+
+    init {
+        addConstraints(ProblemDto::contestId.name, ProblemDto::contestId, null, AttributeConstraintType.IMMUTABLE)
+    }
 
     private enum class ProblemAdjustmentAction {
         MAKE_ROOM,
@@ -23,7 +34,7 @@ class ProblemService @Autowired constructor(
     override fun onCreate(phase: Phase, new: Problem) {
         when (phase) {
             Phase.BEFORE -> handleRenumbering(new.contest, ProblemAdjustmentAction.MAKE_ROOM, new.number)
-            else -> {}
+            Phase.AFTER -> afterCreateOrUpdate(new)
         }
     }
 
@@ -47,15 +58,28 @@ class ProblemService @Autowired constructor(
 
                 action?.let { handleRenumbering(new.contest, it, requestedProblemNumber) }
             }
-            else -> {}
+            Phase.AFTER -> afterCreateOrUpdate(new)
         }
     }
 
     override fun onDelete(phase: Phase, old: Problem) {
         when (phase) {
-            Phase.AFTER -> handleRenumbering(old.contest, ProblemAdjustmentAction.CLOSE_GAP, old.number)
+            Phase.AFTER -> {
+                handleRenumbering(old.contest, ProblemAdjustmentAction.CLOSE_GAP, old.number)
+                afterCommit { scoringEngine.dispatch(ActionType.UNREGISTER_PROBLEM, UnregisterProblemParam(old.id!!)) }
+            }
             else -> {}
         }
+    }
+
+    private fun afterCreateOrUpdate(problem: Problem) {
+        scoringEngine.await(ActionType.REGISTER_PROBLEM, RegisterProblemParam(
+                problem.id!!,
+                problem.contest?.id!!,
+                problem.points,
+                PointsMode.SHARED,
+                problem.flashBonus,
+                PointsMode.SHARED))
     }
 
     private fun handleRenumbering(contest: Contest?, action: ProblemAdjustmentAction, affectedProblemNumber: Int) {

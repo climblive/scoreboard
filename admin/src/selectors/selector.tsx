@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { ContenderScoringData } from "src/model/contenderScoringData";
 import { Contest } from "src/model/contest";
 import { Tick } from "src/model/tick";
 import { ContenderData } from "../model/contenderData";
@@ -50,12 +50,18 @@ export const calculateContenderScoringInfo = (
   }
 
   // Create contenders list:
-  let scoringsMap = new Map<number, ContenderScoringInfo>();
-  let scoringsPerClass = new Map<number, ContenderScoringInfo[]>();
-  let scorings: ContenderScoringInfo[] = [];
+  let scoringsMap = new Map<number, ContenderScoringData>();
+  let scoringsPerClass = new Map<number, ContenderScoringData[]>();
+  let scorings: ContenderScoringData[] = [];
   if (contenders) {
     for (let contender of contenders) {
-      let newContender: ContenderScoringInfo = { ticks: [] };
+      let newContender: ContenderScoringData = {
+        ticks: [],
+        contenderId: contender.id!,
+        ruleId: 0,
+        score: 0,
+        placement: 0,
+      };
       scorings.push(newContender);
       scoringsMap.set(contender.id!, newContender);
 

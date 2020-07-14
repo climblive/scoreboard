@@ -19,7 +19,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { saveAs } from "file-saver";
 import React, { useMemo, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { ContenderScoringData } from "src/model/contenderScoringData";
 import { StoreState } from "src/model/storeState";
 import { Api } from "src/utils/Api";
 import { setErrorMessage } from "../../actions/actions";
@@ -125,7 +125,7 @@ const ContenderList = (props: Props & PropsFromRedux) => {
 
     const getScore = (
       contender: ContenderData
-    ): ContenderScoringInfo | undefined => {
+    ): ContenderScoringData | undefined => {
       return contender.id ? scoringByContender?.get(contender.id) : undefined;
     };
 

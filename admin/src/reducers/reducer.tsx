@@ -38,7 +38,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveContests):
       return { ...state, contests: action.payload };
 
-    case getType(scoreboardActions.updateContestSuccess):
+    case getType(scoreboardActions.updateContestSuccess): {
       let replaced = false;
       let contests = state.contests?.map((contest) => {
         if (contest.id == action.payload.id) {
@@ -61,6 +61,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ...state,
         contests,
       };
+    }
 
     case getType(scoreboardActions.deleteContestSuccess):
       return {
@@ -80,8 +81,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         compClasses: dedupeMerge(state.compClasses, action.payload),
       };
 
-    case getType(scoreboardActions.updateCompClassSuccess):
-      replaced = false;
+    case getType(scoreboardActions.updateCompClassSuccess): {
+      let replaced = false;
       let compClasses = state.compClasses?.map((compClass) => {
         if (compClass.id == action.payload.id) {
           replaced = true;
@@ -100,6 +101,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       }
 
       return { ...state, compClasses };
+    }
 
     case getType(scoreboardActions.deleteCompClassSuccess):
       return {
@@ -119,8 +121,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         problems: dedupeMerge(state.problems, action.payload),
       };
 
-    case getType(scoreboardActions.updateProblemSuccess):
-      replaced = false;
+    case getType(scoreboardActions.updateProblemSuccess): {
+      let replaced = false;
       let problems = state.problems?.map((problem) => {
         if (problem.id == action.payload.id) {
           replaced = true;
@@ -139,6 +141,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       }
 
       return { ...state, problems };
+    }
 
     case getType(scoreboardActions.deleteProblemSuccess):
       return {
@@ -160,8 +163,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveColors):
       return { ...state, colors: action.payload };
 
-    case getType(scoreboardActions.saveColorSuccess):
-      replaced = false;
+    case getType(scoreboardActions.saveColorSuccess): {
+      let replaced = false;
       let colors = state.colors?.map((color) => {
         if (color.id == action.payload.id) {
           replaced = true;
@@ -179,6 +182,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ...state,
         colors,
       };
+    }
 
     case getType(scoreboardActions.deleteColorSuccess):
       return {
@@ -195,8 +199,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveSeries):
       return { ...state, series: action.payload };
 
-    case getType(scoreboardActions.saveSeriesSuccess):
-      replaced = false;
+    case getType(scoreboardActions.saveSeriesSuccess): {
+      let replaced = false;
       let series = state.series?.map((s) => {
         if (s.id == action.payload.id) {
           replaced = true;
@@ -214,6 +218,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ...state,
         series,
       };
+    }
 
     case getType(scoreboardActions.deleteSeriesSuccess):
       return {
@@ -228,8 +233,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveLocations):
       return { ...state, locations: action.payload };
 
-    case getType(scoreboardActions.saveLocationSuccess):
-      replaced = false;
+    case getType(scoreboardActions.saveLocationSuccess): {
+      let replaced = false;
       let locations = state.locations?.map((location) => {
         if (location.id == action.payload.id) {
           replaced = true;
@@ -247,6 +252,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ...state,
         locations,
       };
+    }
 
     case getType(scoreboardActions.deleteLocationSuccess):
       return {
@@ -263,8 +269,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveOrganizers):
       return { ...state, organizers: action.payload };
 
-    case getType(scoreboardActions.saveOrganizerSuccess):
-      replaced = false;
+    case getType(scoreboardActions.saveOrganizerSuccess): {
+      let replaced = false;
       let organizers = state.organizers?.map((organizer) => {
         if (organizer.id == action.payload.id) {
           replaced = true;
@@ -282,6 +288,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ...state,
         organizers,
       };
+    }
 
     case getType(scoreboardActions.deleteOrganizerSuccess):
       return {
@@ -323,8 +330,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         contenders: dedupeMerge(state.contenders, action.payload),
       };
 
-    case getType(scoreboardActions.updateContenderSuccess):
-      replaced = false;
+    case getType(scoreboardActions.updateContenderSuccess): {
+      let replaced = false;
       let contenders = state.contenders?.map((contender) => {
         if (contender.id == action.payload.id) {
           replaced = true;
@@ -343,6 +350,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       }
 
       return { ...state, contenders };
+    }
 
     // -------------------------------------------------------------------------
     // Raffles
@@ -351,8 +359,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveRaffles):
       return { ...state, raffles: dedupeMerge(state.raffles, action.payload) };
 
-    case getType(scoreboardActions.saveRaffleSuccess):
-      replaced = false;
+    case getType(scoreboardActions.saveRaffleSuccess): {
+      let replaced = false;
       let raffles = state.raffles?.map((raffle) => {
         if (raffle.id == action.payload.id) {
           replaced = true;
@@ -371,6 +379,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       }
 
       return { ...state, raffles };
+    }
 
     case getType(scoreboardActions.deleteRaffleSuccess):
       return {

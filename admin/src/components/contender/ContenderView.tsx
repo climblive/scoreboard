@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
 import TableRow from "@material-ui/core/TableRow";
 import { TableCell } from "@material-ui/core";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { ContenderScoring } from "src/model/contenderScoring";
 import { Environment } from "../../environment";
 import Button from "@material-ui/core/Button";
 import { CompClass } from "../../model/compClass";
@@ -24,10 +24,11 @@ import DialogActions from "@material-ui/core/DialogActions";
 import moment from "moment";
 import { Problem } from "../../model/problem";
 import { Color } from "../../model/color";
+import { Tick } from "../../model/tick";
+import { Api } from "../../utils/Api";
 
 interface Props {
   contender?: ContenderData;
-  scoring?: ContenderScoringInfo;
   finalEnabled?: boolean;
   compClassMap: Map<number, CompClass>;
   problemMap: Map<number, Problem>;
@@ -39,8 +40,10 @@ interface Props {
 
 const ContenderView = (props: Props) => {
   const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
+  const [ticks, setTicks] = useState<Tick[]>([]);
 
   const showContenderDialog = () => {
+    Api.getTicksForContender(contender.id!).then((ticks) => setTicks(ticks));
     setScoreDialogOpen(true);
   };
 
@@ -69,7 +72,7 @@ const ContenderView = (props: Props) => {
     props.updateContender?.({ ...contender, disqualified: false });
   };
 
-  let scoring = props.scoring;
+  let scoring = props.contender?.scoring;
   let contender = props.contender!;
 
   return (
@@ -100,7 +103,7 @@ const ContenderView = (props: Props) => {
             {contender.name ? scoring?.totalScore : "-"}
           </div>
           <div style={{ display: "inline-block" }}>
-            {contender.name ? "(" + scoring?.totalPosition + ")" : ""}
+            {contender.name ? "(" + scoring?.totalPlacement + ")" : ""}
           </div>
         </TableCell>
         {props.finalEnabled && (
@@ -110,7 +113,7 @@ const ContenderView = (props: Props) => {
                 {contender.name ? scoring?.qualifyingScore : "-"}
               </div>
               <div style={{ display: "inline-block" }}>
-                {contender.name ? "(" + scoring?.qualifyingPosition + ")" : ""}
+                {contender.name ? "(" + scoring?.qualifyingPlacement + ")" : ""}
               </div>
             </TableCell>
             <TableCell component="th" scope="row">
@@ -119,7 +122,7 @@ const ContenderView = (props: Props) => {
           </>
         )}
         <TableCell component="th" scope="row">
-          {contender.name ? scoring?.ticks?.length : "-"}
+          {contender.name ? scoring?.numberOfTicks : "-"}
         </TableCell>
         <TableCell component="th" scope="row">
           <Button
@@ -181,7 +184,7 @@ const ContenderView = (props: Props) => {
           <div style={{ width: 100, marginLeft: 10 }}>Flash</div>
         </div>
         <DialogContent>
-          {scoring?.ticks?.map((tick) => {
+          {ticks.map((tick) => {
             let problem = props.problemMap.get(tick.problemId);
             let color = props.colorMap.get(problem!.colorId!);
             let points = problem!.points!;

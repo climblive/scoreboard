@@ -31,7 +31,6 @@ import {
   getContendersForContest,
   getProblemsForContestSorted,
   getTicksForContest,
-  calculateContenderScoringInfo,
 } from "../../selectors/selector";
 import { connect } from "react-redux";
 import {
@@ -45,7 +44,7 @@ import { StoreState } from "src/model/storeState";
 import { Api } from "src/utils/Api";
 import { Tick } from "src/model/tick";
 import ContenderView from "./ContenderView";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { ContenderScoring } from "src/model/contenderScoring";
 
 interface Props {
   contestId?: number;
@@ -80,19 +79,6 @@ const ContenderList = (props: Props) => {
   );
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const scoringByContender = useMemo(() => {
-    if (props.contest == undefined) {
-      return undefined;
-    }
-
-    return calculateContenderScoringInfo(
-      props.contenders ?? [],
-      props.ticks ?? [],
-      props.problems ?? [],
-      props.contest
-    );
-  }, [props.contenders, props.ticks, props.problems, props.contest]);
-
   const contendersSortedAndFiltered = useMemo(() => {
     let contenders = props.contenders;
 
@@ -102,27 +88,19 @@ const ContenderList = (props: Props) => {
       );
     }
 
-    const getScore = (
-      contender: ContenderData
-    ): ContenderScoringInfo | undefined => {
-      return contender.id ? scoringByContender?.get(contender.id) : undefined;
-    };
-
     if (contenderSortBy == SortBy.BY_NUMBER_OF_TICKS) {
       contenders?.sort(
         (a, b) =>
-          (getScore(b)?.ticks?.length ?? 0) - (getScore(a)?.ticks?.length ?? 0)
+          (b.scoring?.numberOfTicks ?? 0) - (a.scoring?.numberOfTicks ?? 0)
       );
     } else if (contenderSortBy == SortBy.BY_TOTAL_POINTS) {
       contenders?.sort(
-        (a, b) =>
-          (getScore(b)?.totalScore ?? 0) - (getScore(a)?.totalScore ?? 0)
+        (a, b) => (b.scoring?.totalScore ?? 0) - (a.scoring?.totalScore ?? 0)
       );
     } else if (contenderSortBy == SortBy.BY_QUALIFYING_POINTS) {
       contenders?.sort(
         (a, b) =>
-          (getScore(b)?.qualifyingScore ?? 0) -
-          (getScore(a)?.qualifyingScore ?? 0)
+          (b.scoring?.qualifyingScore ?? 0) - (a.scoring?.qualifyingScore ?? 0)
       );
     } else {
       contenders?.sort((a, b) => {
@@ -313,11 +291,7 @@ const ContenderList = (props: Props) => {
           </TableHead>
           <TableBody>
             {contendersSortedAndFiltered?.map((contender) => (
-              <ContenderView
-                key={contender.id}
-                contender={contender}
-                scoring={scoringByContender?.get(contender?.id!)}
-              />
+              <ContenderView key={contender.id} contender={contender} />
             ))}
           </TableBody>
         </Table>

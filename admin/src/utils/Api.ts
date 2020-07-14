@@ -348,4 +348,8 @@ export class Api {
         return Promise.reject(error);
       });
   }
+
+  static getTicksForContender(contenderId: number): Promise<Tick[]> {
+    return this.get("/contender/" + contenderId + "/tick");
+  }
 }

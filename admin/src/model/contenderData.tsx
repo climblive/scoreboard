@@ -1,4 +1,4 @@
-import { Tick } from "./tick";
+import { ContenderScoring } from "./contenderScoring";
 
 export class ContenderData {
   id?: number;
@@ -9,4 +9,5 @@ export class ContenderData {
   entered?: string;
   disqualified: boolean;
   finalPlacing?: number;
+  scoring?: ContenderScoring;
 }

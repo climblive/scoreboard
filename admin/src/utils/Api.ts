@@ -167,12 +167,9 @@ export class Api {
 
   static saveProblem(problem: Problem): Promise<Problem> {
     if (problem.id == undefined) {
-      return this.post("/problem", Problem.makeRequestBody(problem));
+      return this.post("/problem", problem);
     } else {
-      return this.put(
-        "/problem/" + problem.id,
-        Problem.makeRequestBody(problem)
-      );
+      return this.put("/problem/" + problem.id, problem);
     }
   }
 
@@ -210,12 +207,9 @@ export class Api {
 
   static saveContender(contender: ContenderData): Promise<ContenderData> {
     if (contender.id == undefined) {
-      return this.post("/contender", ContenderData.makeRequestBody(contender));
+      return this.post("/contender", contender);
     } else {
-      return this.put(
-        "/contender/" + contender.id,
-        ContenderData.makeRequestBody(contender)
-      );
+      return this.put("/contender/" + contender.id, contender);
     }
   }
 
@@ -342,6 +336,16 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getTicks(contestId: number): Promise<Tick[]> {
-    return this.get("/contest/" + contestId + "/tick");
+    return this.get("/contest/" + contestId + "/tick")
+      .then((ticks) => {
+        return Promise.resolve(
+          ticks.map((tick) => {
+            return { ...tick, contestId };
+          })
+        );
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
   }
 }

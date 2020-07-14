@@ -123,7 +123,13 @@ export class CreatePdfDialog extends React.Component<
             Cancel
           </Button>
           {selectedTab == 0 && (
-            <Button onClick={this.props.createPdf} color="primary">
+            <Button
+              onClick={() => {
+                this.props.onClose();
+                this.props.createPdf?.();
+              }}
+              color="primary"
+            >
               Download PDF
             </Button>
           )}

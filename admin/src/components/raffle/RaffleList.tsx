@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Contest } from "../../model/contest";
+import React, { useState, useEffect } from "react";
 import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
@@ -11,13 +10,14 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
-import { connect, Dispatch } from "react-redux";
-import { loadContests } from "../../actions/asyncActions";
-import { setTitle } from "../../actions/actions";
+import { connect } from "react-redux";
+import { loadRaffles, saveRaffle } from "../../actions/asyncActions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
+import { Raffle } from "../../model/raffle";
+import RaffleView from "./RaffleView";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import ContestLineItemView from "./ContestLineItemView";
+import { getRafflesForContest } from "src/selectors/selector";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -30,59 +30,60 @@ const styles = ({ spacing }: Theme) =>
   });
 
 interface Props {
-  contests?: Contest[];
-  loadContests?: () => Promise<void>;
-  setTitle?: (title: string) => void;
+  contestId?: number;
+  raffles?: Raffle[];
+
+  loadRaffles?: (contestId: number) => Promise<void>;
+  saveRaffle?: (raffle: Raffle) => Promise<Raffle>;
 }
 
-const ContestsList = (
+const RaffleList = (
   props: Props & RouteComponentProps & StyledComponentProps
 ) => {
+  useEffect(() => {
+    if (props.raffles == undefined) {
+      refreshRaffles();
+    }
+  }, [props.raffles]);
+
+  const [creating, setCreating] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  useEffect(() => {
-    props.setTitle!("Contests");
-  }, []);
+  const createRaffle = () => {
+    setCreating(true);
+    props
+      .saveRaffle?.({ contestId: props.contestId!, active: false })
+      .finally(() => setCreating(false));
+  };
 
-  useEffect(() => {
-    if (props.contests == undefined) {
-      props.loadContests?.();
-    }
-  }, [props.contests]);
-
-  const refreshContests = () => {
+  const refreshRaffles = () => {
     setRefreshing(true);
-    props.loadContests?.().finally(() => setRefreshing(false));
+    props.loadRaffles?.(props.contestId!).finally(() => setRefreshing(false));
   };
 
   return (
-    <Paper
-      className={props.classes?.root}
-      style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
-    >
-      <div style={{ flexBasis: 0, flexGrow: 1, overflowY: "auto" }}>
-        <Table className={props.classes?.table}>
+    <>
+      <Paper style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+        <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>Series</TableCell>
-              <TableCell>Start time</TableCell>
-              <TableCell>End time</TableCell>
-              <TableCell className={"icon-cell"}>
+              <TableCell style={{ minWidth: 120 }}>Id</TableCell>
+              <TableCell style={{ width: "100%" }}>Winners</TableCell>
+              <TableCell className={"icon-cell"} style={{ minWidth: 146 }}>
                 <IconButton
                   color="inherit"
                   aria-label="Menu"
                   title="Add"
-                  onClick={() => props.history.push("/contests/new")}
+                  disabled={creating}
+                  onClick={createRaffle}
                 >
-                  <AddIcon />
+                  {creating ? <CircularProgress size={24} /> : <AddIcon />}
                 </IconButton>
                 <IconButton
                   color="inherit"
                   aria-label="Menu"
                   title="Refresh"
-                  onClick={refreshContests}
+                  onClick={refreshRaffles}
                 >
                   {refreshing ? (
                     <CircularProgress size={24} />
@@ -94,35 +95,34 @@ const ContestsList = (
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.contests?.map((contest) => (
-              <ContestLineItemView contest={contest} />
+            {props.raffles?.map((raffle) => (
+              <RaffleView key={raffle.id!} raffle={raffle} />
             ))}
           </TableBody>
         </Table>
-        {(props.contests?.length ?? 0) === 0 && (
+        {(props.raffles?.length ?? 0) === 0 && (
           <div className={"emptyText"}>
-            <div>
-              Create your first contest by clicking the plus button above.
-            </div>
+            <div>You have no raffles.</div>
+            <div>Please create a raffle by clicking the plus button above.</div>
           </div>
         )}
-      </div>
-    </Paper>
+      </Paper>
+    </>
   );
 };
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    contests: state.contests,
+    raffles: getRafflesForContest(state, props.contestId),
   };
 }
 
 const mapDispatchToProps = {
-  loadContests,
-  setTitle,
+  loadRaffles,
+  saveRaffle,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(withRouter(ContestsList)));
+)(withStyles(styles)(withRouter(RaffleList)));

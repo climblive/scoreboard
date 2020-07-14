@@ -1,11 +1,7 @@
 import { StoreState } from "../model/storeState";
 import * as scoreboardActions from "../actions/actions";
 import { ActionType, getType } from "typesafe-actions";
-import { Color } from "../model/color";
 import { Problem } from "../model/problem";
-import { CompLocation } from "../model/compLocation";
-import { CompClass } from "../model/compClass";
-import { Contest } from "../model/contest";
 import { SortBy } from "../constants/sortBy";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
@@ -26,12 +22,6 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         contenderSortBy: SortBy.BY_NAME,
       };
 
-    case getType(scoreboardActions.setCreatingPdf):
-      return { ...state, creatingPdf: action.payload };
-
-    case getType(scoreboardActions.receiveContests):
-      return { ...state, contests: action.payload };
-
     case getType(scoreboardActions.clearErrorMessage):
       return { ...state, errorMessage: undefined };
 
@@ -41,156 +31,124 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.setTitle):
       return { ...state, title: action.payload };
 
-    case getType(scoreboardActions.receiveContest):
-      return { ...state, contest: action.payload };
+    // -------------------------------------------------------------------------
+    // Contests
+    // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.clearContests):
-      return { ...state, contests: undefined };
+    case getType(scoreboardActions.receiveContests):
+      return { ...state, contests: action.payload };
 
-    case getType(scoreboardActions.clearContest):
-      return {
-        ...state,
-        contest: undefined,
-        compClasses: undefined,
-        editCompClass: undefined,
-        contenders: undefined,
-        problems: undefined,
-        raffles: undefined,
-        editProblem: undefined,
-        ticks: undefined,
-      };
+    case getType(scoreboardActions.updateContestSuccess):
+      let replaced = false;
+      let contests = state.contests?.map((contest) => {
+        if (contest.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return contest;
+        }
+      });
 
-    case getType(scoreboardActions.setNewContest):
-      let contest: Contest = {
-        id: undefined,
-        name: "",
-        protected: false,
-        description: "",
-        organizerId: state.selectedOrganizer?.id!,
-        finalEnabled: false,
-        qualifyingProblems: 10,
-        finalists: 7,
-        gracePeriod: 15,
-        rules: "",
-      };
+      if (!replaced) {
+        contests = contests?.concat(action.payload);
+      }
+
+      if (contests == undefined) {
+        contests = [action.payload];
+      }
 
       return {
         ...state,
-        contest,
-        compClasses: undefined,
-        editCompClass: undefined,
-        contenders: undefined,
-        problems: undefined,
-        raffles: undefined,
-        editProblem: undefined,
-        ticks: undefined,
+        contests,
       };
 
-    case getType(scoreboardActions.updateContest):
-      let newContest = { ...state.contest! };
-      newContest[action.payload.propName] = action.payload.value;
-      return { ...state, contest: newContest };
+    case getType(scoreboardActions.deleteContestSuccess):
+      return {
+        ...state,
+        contests: state.contests?.filter(
+          (contests) => contests.id != action.payload.id
+        ),
+      };
 
-    case getType(scoreboardActions.deleteContest):
-      let contests = state.contests?.filter(
-        (contest) => contest.id != action.payload.id
-      );
-      return { ...state, contest: undefined, contests };
-
-    // ********
+    // -------------------------------------------------------------------------
+    // Comp Classes
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveCompClasses):
       return {
         ...state,
-        compClasses: action.payload.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)),
+        compClasses: dedupeMerge(state.compClasses, action.payload),
       };
 
-    case getType(scoreboardActions.clearCompClasses):
-      return { ...state, compClasses: undefined, editCompClass: undefined };
+    case getType(scoreboardActions.updateCompClassSuccess):
+      replaced = false;
+      let compClasses = state.compClasses?.map((compClass) => {
+        if (compClass.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return compClass;
+        }
+      });
 
-    case getType(scoreboardActions.startEditCompClass):
-      return { ...state, editCompClass: action.payload };
+      if (!replaced) {
+        compClasses = compClasses?.concat(action.payload);
+      }
 
-    case getType(scoreboardActions.cancelEditCompClass):
-      const newCompClasses1 = state.compClasses!.filter(
-        (p2) => p2.id != undefined
-      );
+      if (compClasses == undefined) {
+        compClasses = [action.payload];
+      }
+
+      return { ...state, compClasses };
+
+    case getType(scoreboardActions.deleteCompClassSuccess):
       return {
         ...state,
-        editCompClass: undefined,
-        compClasses: newCompClasses1,
+        compClasses: state.compClasses?.filter(
+          (compClass) => compClass.id != action.payload.id
+        ),
       };
 
-    case getType(scoreboardActions.startAddCompClass):
-      const newCompClasses: CompClass[] = [...state.compClasses!];
-      let newCompClass: CompClass = {
-        id: undefined,
-        contestId: state.contest?.id!,
-        name: "",
-        description: "",
-        timeBegin: new Date().toISOString(),
-        timeEnd: new Date().toISOString(),
-      };
-      newCompClasses.push(newCompClass);
-      return {
-        ...state,
-        editCompClass: newCompClass,
-        compClasses: newCompClasses,
-      };
-
-    case getType(scoreboardActions.updateEditCompClass):
-      let newEditCompClass = { ...state.editCompClass! };
-      newEditCompClass[action.payload.propName] = action.payload.value;
-      return { ...state, editCompClass: newEditCompClass };
-
-    // ********
+    // -------------------------------------------------------------------------
+    // Problems
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveProblems):
-      const problems2: Problem[] = action.payload.sort(
-        (a, b) => (a.number || 0) - (b.number || 0)
-      );
-      let editProblem: Problem | undefined = undefined;
-      if (problems2.length == 0) {
-        editProblem = {
-          id: undefined,
-          contestId: state.contest?.id!,
-          number: 1,
-        };
-        problems2.push(editProblem);
-      }
-      return { ...state, problems: problems2, editProblem: editProblem };
-
-    case getType(scoreboardActions.clearProblems):
-      return { ...state, problems: undefined, editProblem: undefined };
-
-    case getType(scoreboardActions.startEditProblem):
-      return { ...state, editProblem: action.payload };
-
-    case getType(scoreboardActions.cancelEditProblem):
-      const newProblems1 = state.problems!.filter((p1) => p1.id != undefined);
-      return { ...state, editProblem: undefined, problems: newProblems1 };
-
-    case getType(scoreboardActions.startAddProblem):
-      const problem = action.payload;
-      const newProblems: Problem[] = [];
-      let newProblem: Problem = {
-        id: undefined,
-        contestId: state.contest?.id!,
-        number: undefined,
+      return {
+        ...state,
+        problems: dedupeMerge(state.problems, action.payload),
       };
-      for (let p of state.problems!) {
-        newProblems.push(p);
-        if (p.id == problem.id) {
-          newProblem.number = (p.number ?? 0) + 1;
-          newProblems.push(newProblem);
-        }
-      }
-      return { ...state, editProblem: newProblem, problems: newProblems };
 
-    case getType(scoreboardActions.updateEditProblem):
-      let newEditProblem = { ...state.editProblem! };
-      newEditProblem[action.payload.propName] = action.payload.value;
-      return { ...state, editProblem: newEditProblem };
+    case getType(scoreboardActions.updateProblemSuccess):
+      replaced = false;
+      let problems = state.problems?.map((problem) => {
+        if (problem.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return problem;
+        }
+      });
+
+      if (!replaced) {
+        problems = insertProblemAndRenumber(action.payload, problems);
+      }
+
+      if (problems == undefined) {
+        problems = [action.payload];
+      }
+
+      return { ...state, problems };
+
+    case getType(scoreboardActions.deleteProblemSuccess):
+      return {
+        ...state,
+        problems: deleteProblemAndRenumber(action.payload, state.problems),
+      };
+
+    // -------------------------------------------------------------------------
+    // Contenders
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveContenders):
       return { ...state, contenders: action.payload };
@@ -203,7 +161,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       return { ...state, colors: action.payload };
 
     case getType(scoreboardActions.saveColorSuccess):
-      let replaced = false;
+      replaced = false;
       let colors = state.colors?.map((color) => {
         if (color.id == action.payload.id) {
           replaced = true;
@@ -214,7 +172,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       });
 
       if (!replaced) {
-        colors?.push(action.payload);
+        colors = colors?.concat(action.payload);
       }
 
       return {
@@ -249,7 +207,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       });
 
       if (!replaced) {
-        series?.push(action.payload);
+        series = series?.concat(action.payload);
       }
 
       return {
@@ -282,7 +240,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       });
 
       if (!replaced) {
-        locations?.push(action.payload);
+        locations = locations?.concat(action.payload);
       }
 
       return {
@@ -317,7 +275,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       });
 
       if (!replaced) {
-        organizers?.push(action.payload);
+        organizers = organizers?.concat(action.payload);
       }
 
       return {
@@ -348,65 +306,168 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ticks: undefined,
       };
 
-    // ********
+    // -------------------------------------------------------------------------
+    // Ticks
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveTicks):
-      return { ...state, ticks: action.payload };
+      return { ...state, ticks: dedupeMerge(state.ticks, action.payload) };
 
-    case getType(scoreboardActions.setContenderFilterCompClass):
+    // -------------------------------------------------------------------------
+    // Contenders
+    // -------------------------------------------------------------------------
+
+    case getType(scoreboardActions.receiveContenders):
       return {
         ...state,
-        contenderFilterCompClassId: action.payload
-          ? action.payload.id
-          : undefined,
+        contenders: dedupeMerge(state.contenders, action.payload),
       };
 
-    case getType(scoreboardActions.setContenderSortBy):
-      return { ...state, contenderSortBy: action.payload };
+    case getType(scoreboardActions.updateContenderSuccess):
+      replaced = false;
+      let contenders = state.contenders?.map((contender) => {
+        if (contender.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return contender;
+        }
+      });
 
-    case getType(scoreboardActions.updateContender):
-      return {
-        ...state,
-        contenders: state.contenders?.map((contender) => {
-          if (contender.id == action.payload.id) {
-            return action.payload;
-          } else {
-            return contender;
-          }
-        }),
-      };
+      if (!replaced) {
+        contenders = contenders?.concat(action.payload);
+      }
+
+      if (contenders == undefined) {
+        contenders = [action.payload];
+      }
+
+      return { ...state, contenders };
+
+    // -------------------------------------------------------------------------
+    // Raffles
+    // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveRaffles):
-      return { ...state, raffles: action.payload };
+      return { ...state, raffles: dedupeMerge(state.raffles, action.payload) };
 
-    case getType(scoreboardActions.clearRaffles):
-      return { ...state, raffles: undefined };
+    case getType(scoreboardActions.saveRaffleSuccess):
+      replaced = false;
+      let raffles = state.raffles?.map((raffle) => {
+        if (raffle.id == action.payload.id) {
+          replaced = true;
+          return action.payload;
+        } else {
+          return raffle;
+        }
+      });
 
-    case getType(scoreboardActions.receiveRaffleWinners):
-      const newRaffles = [...state.raffles!];
-      const index = newRaffles.findIndex(
-        (r) => r.id == action.payload.raffle.id
-      );
-      if (index != -1) {
-        const newRaffle = { ...newRaffles[index] };
-        newRaffle.winners = action.payload.winners.reverse();
-        newRaffles[index] = newRaffle;
+      if (!replaced) {
+        raffles = raffles?.concat(action.payload);
       }
-      return { ...state, raffles: newRaffles };
 
-    case getType(scoreboardActions.receiveRaffleWinner):
-      const newRaffles2 = [...state.raffles!];
-      const index2 = newRaffles2.findIndex(
-        (r) => r.id == action.payload.raffleId
-      );
-      if (index2 != -1) {
-        const newRaffle2 = { ...newRaffles2[index2] };
-        newRaffle2.winners = [action.payload, ...newRaffle2.winners!];
-        newRaffles2[index2] = newRaffle2;
+      if (raffles == undefined) {
+        raffles = [action.payload];
       }
-      return { ...state, raffles: newRaffles2 };
+
+      return { ...state, raffles };
+
+    case getType(scoreboardActions.deleteRaffleSuccess):
+      return {
+        ...state,
+        raffles: state.raffles?.filter(
+          (raffle) => raffle.id != action.payload.id
+        ),
+      };
+
+    case getType(scoreboardActions.receiveRaffleWinners): {
+      let raffles = state.raffles?.map((raffle) => {
+        if ((raffle.id = action.payload.raffle.id)) {
+          let winners = dedupeMerge(
+            raffle.winners ?? [],
+            action.payload.winners
+          );
+          return { ...raffle, winners };
+        } else {
+          return raffle;
+        }
+      });
+
+      return { ...state, raffles };
+    }
+
+    case getType(scoreboardActions.receiveRaffleWinner): {
+      let raffles = state.raffles?.map((raffle) => {
+        if ((raffle.id = action.payload.raffleId)) {
+          let winners = dedupeMerge(raffle.winners ?? [], [action.payload]);
+          return { ...raffle, winners };
+        } else {
+          return raffle;
+        }
+      });
+
+      return { ...state, raffles };
+    }
 
     default:
       return state;
   }
+};
+
+const dedupeMerge = <T extends unknown>(
+  arr1: T[] | undefined,
+  arr2: T[],
+  property: string = "id"
+): T[] => {
+  if (arr1 == undefined) {
+    return arr2;
+  }
+
+  let map = {};
+
+  arr1?.forEach((object) => {
+    map[object[property]] = object;
+  });
+
+  arr2.forEach((object) => {
+    map[object[property]] = object;
+  });
+
+  return Object.values(map);
+};
+
+const insertProblemAndRenumber = (
+  problem: Problem,
+  problems: Problem[] | undefined
+) => {
+  const renumberingCondition = (subject: Problem) =>
+    subject.contestId == problem.contestId && subject.number >= problem.number;
+
+  return problems
+    ?.map((problem) => {
+      if (renumberingCondition(problem)) {
+        return { ...problem, number: problem.number + 1 };
+      } else {
+        return problem;
+      }
+    })
+    .concat(problem);
+};
+
+const deleteProblemAndRenumber = (
+  problem: Problem,
+  problems: Problem[] | undefined
+) => {
+  const renumberingCondition = (subject: Problem) =>
+    subject.contestId == problem.contestId && subject.number > problem.number;
+
+  return problems
+    ?.filter((p) => p.id != problem.id)
+    ?.map((problem) => {
+      if (renumberingCondition(problem)) {
+        return { ...problem, number: problem.number - 1 };
+      } else {
+        return problem;
+      }
+    });
 };

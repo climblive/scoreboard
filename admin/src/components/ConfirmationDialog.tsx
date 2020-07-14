@@ -10,18 +10,18 @@ export interface ConfirmationDialogProps {
   open: boolean;
   title: string;
   message: string;
-  onClose: (value: boolean) => void;
+  onClose?: (value: boolean) => void;
 }
 
 export function ConfirmationDialog(props: ConfirmationDialogProps) {
   const { onClose, title, message, open, ...other } = props;
 
   function handleCancel() {
-    onClose(false);
+    onClose?.(false);
   }
 
   function handleOk() {
-    onClose(true);
+    onClose?.(true);
   }
 
   return (

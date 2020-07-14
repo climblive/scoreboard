@@ -1,17 +1,17 @@
 import { Problem } from "../model/problem";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 import { Api } from "../utils/Api";
 import * as actions from "./actions";
 import { Contest } from "../model/contest";
 import { StoreState } from "../model/storeState";
 import { CompClass } from "../model/compClass";
-import { saveAs } from "file-saver";
 import { Color } from "../model/color";
 import { Series } from "../model/series";
 import { Organizer } from "../model/organizer";
 import { CompLocation } from "../model/compLocation";
 import { Raffle } from "../model/raffle";
 import { ContenderData } from "src/model/contenderData";
+import { RaffleWinner } from "src/model/raffleWinner";
 
 export function login(code: string): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
@@ -38,6 +38,10 @@ export function login(code: string): any {
   };
 }
 
+// -----------------------------------------------------------------------------
+// Contests
+// -----------------------------------------------------------------------------
+
 export function loadContests(): any {
   return (dispatch: Dispatch<any>): Promise<void> => {
     return Api.getContests()
@@ -53,53 +57,43 @@ export function loadContests(): any {
 }
 
 export function loadContest(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
-    dispatch(actions.clearContest());
-    Api.getContest(contestId)
+  return (dispatch: Dispatch<any>): Promise<Contest> => {
+    return Api.getContest(contestId)
       .then((contest) => {
-        dispatch(actions.receiveContest(contest));
-        loadProblems(contestId)(dispatch);
-        loadCompClasses(contestId)(dispatch);
-        loadContendersForContest(contestId)(dispatch);
-        loadTicks(contestId)(dispatch);
-        loadRaffles(contestId)(dispatch);
+        dispatch(actions.updateContestSuccess(contest));
+        return Promise.resolve(contest);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function saveContest(onSuccess: (contest: Contest) => void): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contest = getState().contest;
-    let isNew = contest?.id == undefined;
-    Api.saveContest(contest!)
+export function saveContest(contest: Contest): any {
+  return (dispatch: Dispatch<any>): Promise<void | Contest> => {
+    return Api.saveContest(contest)
       .then((contest) => {
-        dispatch(actions.receiveContest(contest));
-        if (isNew) {
-          dispatch(actions.receiveProblems([]));
-          dispatch(actions.receiveTicks([]));
-          dispatch(actions.receiveCompClasses([]));
-          dispatch(actions.receiveContenders([]));
-          dispatch(actions.receiveRaffles([]));
-        }
-        onSuccess(contest);
+        dispatch(actions.updateContestSuccess(contest));
+        return Promise.resolve(contest);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteContest(contest: Contest): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    Api.deleteContest(contest)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteContest(contest)
       .then(() => {
-        dispatch(actions.deleteContest(contest));
+        dispatch(actions.deleteContestSuccess(contest));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
@@ -296,215 +290,184 @@ export function selectOrganizer(organizer: Organizer): any {
   };
 }
 
-// ************
+// -----------------------------------------------------------------------------
+// Problems
+// -----------------------------------------------------------------------------
 
 export function loadProblems(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getProblems(contestId)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getProblems(contestId)
       .then((problems) => {
         dispatch(actions.receiveProblems(problems));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function saveEditProblem(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let problem = getState().editProblem!;
-    Api.saveProblem(problem)
+export function saveProblem(problem: Problem): any {
+  return (dispatch: Dispatch<any>): Promise<Problem> => {
+    return Api.saveProblem(problem)
       .then((problem) => {
-        dispatch(actions.cancelEditProblem());
-        loadProblems(problem.contestId)(dispatch);
+        dispatch(actions.updateProblemSuccess(problem));
+        return Promise.resolve(problem);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteProblem(problem: Problem): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.deleteProblem(problem)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteProblem(problem)
       .then(() => {
-        dispatch(actions.cancelEditProblem());
-        loadProblems(problem.contestId)(dispatch);
+        dispatch(actions.deleteProblemSuccess(problem));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
+
+// -----------------------------------------------------------------------------
+// Comp Classes
+// -----------------------------------------------------------------------------
 
 export function loadCompClasses(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getCompClasses(contestId)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getCompClasses(contestId)
       .then((compClasses) => {
         dispatch(actions.receiveCompClasses(compClasses));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function saveEditCompClass(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let compClass = getState().editCompClass!;
-    Api.saveCompClass(compClass)
+export function saveCompClass(compClass: CompClass): any {
+  return (dispatch: Dispatch<any>): Promise<CompClass> => {
+    return Api.saveCompClass(compClass)
       .then((compClass) => {
-        dispatch(actions.cancelEditCompClass());
-        loadCompClasses(compClass.contestId)(dispatch);
+        dispatch(actions.updateCompClassSuccess(compClass));
+        return Promise.resolve(compClass);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteCompClass(compClass: CompClass): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.deleteCompClass(compClass)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteCompClass(compClass)
       .then(() => {
-        dispatch(actions.cancelEditCompClass());
-        loadCompClasses(compClass.contestId)(dispatch);
+        dispatch(actions.deleteCompClassSuccess(compClass));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function loadContendersForContest(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getContenders(contestId)
+// -----------------------------------------------------------------------------
+// Contenders
+// -----------------------------------------------------------------------------
+
+export function createContenders(
+  contestId: number,
+  nNewContenders: number
+): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.createContenders(contestId, nNewContenders)
+      .then(() => {
+        return loadContenders(contestId)(dispatch);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function loadContenders(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getContenders(contestId)
       .then((contenders) => {
         dispatch(actions.receiveContenders(contenders));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function createContenders(nNewContenders: number): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    Api.createContenders(contestId, nNewContenders)
+export function resetContenders(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.resetContenders(contestId)
       .then(() => {
-        loadContendersForContest(contestId)(dispatch);
+        return loadContenders(contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
-      });
-  };
-}
-
-export function loadContenders(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    dispatch(actions.receiveContenders([]));
-    dispatch(actions.receiveTicks([]));
-    loadContendersForContest(contestId)(dispatch);
-    loadTicks(contestId)(dispatch);
-  };
-}
-
-export function resetContenders(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    Api.resetContenders(contestId)
-      .then(() => {
-        loadContendersForContest(contestId)(dispatch);
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function updateContender(contender: ContenderData): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    Api.saveContender(contender)
+  return (dispatch: Dispatch<any>): Promise<ContenderData> => {
+    return Api.saveContender(contender)
       .then(() => {
-        dispatch(actions.updateContender(contender));
+        dispatch(actions.updateContenderSuccess(contender));
+        return Promise.resolve(contender);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function exportResults(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    Api.exportContest(contestId)
-      .then((response) => {
-        saveAs(response, "contest.xls");
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-      });
-  };
-}
-
-export function createPdfFromTemplate(file: Blob): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    let reader = new FileReader();
-    dispatch(actions.setCreatingPdf(true));
-    reader.onload = (evt: any) => {
-      let arrayBuffer = evt.currentTarget.result;
-      Api.createPdfFromTemplate(contestId, arrayBuffer)
-        .then((response) => {
-          dispatch(actions.setCreatingPdf(false));
-          saveAs(response, "contest.pdf");
-        })
-        .catch((error) => {
-          dispatch(actions.setCreatingPdf(false));
-          dispatch(actions.setErrorMessage(error));
-        });
-    };
-    reader.onerror = function (evt) {
-      dispatch(actions.setCreatingPdf(false));
-      dispatch(actions.setErrorMessage("Failed to load file:" + evt));
-    };
-    reader.readAsArrayBuffer(file);
-  };
-}
-
-export function createPdf(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    dispatch(actions.setCreatingPdf(true));
-    Api.createPdf(contestId)
-      .then((response) => {
-        dispatch(actions.setCreatingPdf(false));
-        saveAs(response, "contest.pdf");
-      })
-      .catch((error) => {
-        dispatch(actions.setCreatingPdf(false));
-        dispatch(actions.setErrorMessage(error));
-      });
-  };
-}
+// -----------------------------------------------------------------------------
+// Ticks
+// -----------------------------------------------------------------------------
 
 export function loadTicks(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getTicks(contestId)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getTicks(contestId)
       .then((ticks) => {
         dispatch(actions.receiveTicks(ticks));
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
+// -----------------------------------------------------------------------------
+// Raffles
+// -----------------------------------------------------------------------------
+
 export function loadRaffles(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.getRaffles(contestId)
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getRaffles(contestId)
       .then((raffles) => {
         dispatch(actions.receiveRaffles(raffles));
         for (let raffle of raffles) {
@@ -514,85 +477,53 @@ export function loadRaffles(contestId: number): any {
             );
           });
         }
+        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
-export function createRaffle(): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    let newRaffle: Raffle = {
-      id: undefined,
-      contestId: contestId,
-      winners: undefined,
-      active: false,
-    };
-    Api.saveRaffle(newRaffle)
-      .then(() => {
-        loadRaffles(contestId)(dispatch);
+export function saveRaffle(raffle: Raffle): any {
+  return (dispatch: Dispatch<any>): Promise<Raffle> => {
+    return Api.saveRaffle(raffle)
+      .then((raffle) => {
+        dispatch(actions.saveRaffleSuccess(raffle));
+        return Promise.resolve(raffle);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
-      });
-  };
-}
-
-export function activateRaffle(raffle: Raffle): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    raffle.active = true;
-    raffle.winners = undefined;
-    dispatch(actions.clearRaffles());
-    Api.saveRaffle(raffle)
-      .then(() => {
-        loadRaffles(contestId)(dispatch);
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-      });
-  };
-}
-
-export function deactivateRaffle(raffle: Raffle): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    raffle.active = false;
-    raffle.winners = undefined;
-    dispatch(actions.clearRaffles());
-    Api.saveRaffle(raffle)
-      .then(() => {
-        loadRaffles(contestId)(dispatch);
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function drawWinner(raffle: Raffle): any {
-  return (dispatch: Dispatch<any>) => {
-    Api.drawWinner(raffle)
+  return (dispatch: Dispatch<any>): Promise<RaffleWinner> => {
+    return Api.drawWinner(raffle)
       .then((winner) => {
         dispatch(actions.receiveRaffleWinner(winner));
+        return Promise.resolve(winner);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }
 
 export function deleteRaffle(raffle: Raffle): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-    let contestId = getState().contest?.id!;
-    Api.deleteRaffle(raffle)
+  return (dispatch: Dispatch<any>): Promise<Raffle> => {
+    return Api.deleteRaffle(raffle)
       .then(() => {
-        loadRaffles(contestId)(dispatch);
+        dispatch(actions.deleteRaffleSuccess(raffle));
+        return Promise.resolve(raffle);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
   };
 }

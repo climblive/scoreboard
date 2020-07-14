@@ -8,7 +8,6 @@ import { CompLocation } from "./compLocation";
 import { Series } from "./series";
 import { User } from "./user";
 import { Tick } from "./tick";
-import { SortBy } from "../constants/sortBy";
 import { Raffle } from "./raffle";
 
 export interface StoreState {
@@ -18,19 +17,12 @@ export interface StoreState {
   loggedInUser?: User;
 
   contests?: Contest[];
-  contest?: Contest;
-  creatingPdf: boolean;
 
   problems?: Problem[];
-  editProblem?: Problem;
-  problemIdBeingUpdated?: number;
 
   compClasses?: CompClass[];
-  editCompClass?: CompClass;
 
   contenders?: ContenderData[];
-  contenderSortBy: SortBy;
-  contenderFilterCompClassId?: number;
 
   raffles?: Raffle[];
 

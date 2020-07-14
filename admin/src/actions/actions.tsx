@@ -9,7 +9,6 @@ import { ContenderData } from "../model/contenderData";
 import { Series } from "../model/series";
 import { User } from "../model/user";
 import { Tick } from "../model/tick";
-import { SortBy } from "../constants/sortBy";
 import { Raffle } from "../model/raffle";
 import { RaffleWinner } from "../model/raffleWinner";
 
@@ -23,24 +22,24 @@ export const setLoggedInUser = createStandardAction("SET_LOGGED_IN_USER")<
   User
 >();
 export const logout = createStandardAction("LOGOUT")();
-export const setCreatingPdf = createStandardAction("SET_CREATING_PDF")<
-  boolean
->();
 
-export const clearContest = createStandardAction("CLEAR_CONTEST")();
-export const setNewContest = createStandardAction("SET_NEW_CONTEST")();
-export const updateContest = createStandardAction("UPDATE_CONTEST")<{
-  propName: string;
-  value: any;
-}>();
+// =============================================================================
+// Contests
+// =============================================================================
+
 export const receiveContests = createStandardAction("RECEIVE_CONTESTS")<
   Contest[]
 >();
-export const clearContests = createStandardAction("CLEAR_CONTESTS")();
-export const receiveContest = createStandardAction("RECEIVE_CONTEST")<
-  Contest
->();
-export const deleteContest = createStandardAction("DELETE_CONTEST")<Contest>();
+export const updateContestSuccess = createStandardAction(
+  "UPDATE_CONTEST_SUCCESS"
+)<Contest>();
+export const deleteContestSuccess = createStandardAction(
+  "DELETE_CONTEST_SUCCESS"
+)<Contest>();
+
+// =============================================================================
+// Locations
+// =============================================================================
 
 export const receiveLocations = createStandardAction("RECEIVE_LOCATIONS")<
   CompLocation[]
@@ -51,6 +50,10 @@ export const saveLocationSuccess = createStandardAction(
 export const deleteLocationSuccess = createStandardAction(
   "DELETE_LOCATION_SUCCESS"
 )<CompLocation>();
+
+// =============================================================================
+// Organizers
+// =============================================================================
 
 export const receiveOrganizers = createStandardAction("RECEIVE_ORGANIZERS")<
   Organizer[]
@@ -65,6 +68,10 @@ export const selectOrganizer = createStandardAction("SELECT_ORGANIZER")<
   Organizer
 >();
 
+// =============================================================================
+// Colors
+// =============================================================================
+
 export const receiveColors = createStandardAction("RECEIVE_COLORS")<Color[]>();
 export const saveColorSuccess = createStandardAction("SAVE_COLOR_SUCCESS")<
   Color
@@ -72,6 +79,10 @@ export const saveColorSuccess = createStandardAction("SAVE_COLOR_SUCCESS")<
 export const deleteColorSuccess = createStandardAction("DELETE_COLOR_SUCCESS")<
   Color
 >();
+
+// =============================================================================
+// Series
+// =============================================================================
 
 export const receiveSeries = createStandardAction("RECEIVE_SERIES")<Series[]>();
 export const saveSeriesSuccess = createStandardAction("SAVE_SERIES_SUCCESS")<
@@ -81,41 +92,47 @@ export const deleteSeriesSuccess = createStandardAction(
   "DELETE_SERIES_SUCCESS"
 )<Series>();
 
+// =============================================================================
+// Comp Classes
+// =============================================================================
+
 export const receiveCompClasses = createStandardAction("RECEIVE_COMP_CLASSES")<
   CompClass[]
 >();
-export const clearCompClasses = createStandardAction("CLEAR_COMP_CLASSES")();
-export const startEditCompClass = createStandardAction("START_EDIT_COMP_CLASS")<
-  CompClass
->();
-export const cancelEditCompClass = createStandardAction(
-  "CANCEL_EDIT_COMP_CLASS"
-)();
-export const startAddCompClass = createStandardAction("START_ADD_COMP_CLASS")();
-export const updateEditCompClass = createStandardAction(
-  "UPDATE_EDIT_COMP_CLASS"
-)<{ propName: string; value: any }>();
+export const updateCompClassSuccess = createStandardAction(
+  "UPDATE_COMP_CLASS_SUCCESS"
+)<CompClass>();
+export const deleteCompClassSuccess = createStandardAction(
+  "DELETE_COMP_CLASS_SUCCESS"
+)<CompClass>();
+
+// =============================================================================
+// Problems
+// =============================================================================
 
 export const receiveProblems = createStandardAction("RECEIVE_PROBLEMS")<
   Problem[]
 >();
-export const clearProblems = createStandardAction("CLEAR_PROBLEMS")();
-export const startEditProblem = createStandardAction("START_EDIT_PROBLEM")<
-  Problem
->();
-export const cancelEditProblem = createStandardAction("CANCEL_EDIT_PROBLEM")();
-export const startAddProblem = createStandardAction("START_ADD_PROBLEM")<
-  Problem
->();
-export const updateEditProblem = createStandardAction("UPDATE_EDIT_PROBLEM")<{
-  propName: string;
-  value: any;
-}>();
+export const updateProblemSuccess = createStandardAction(
+  "UPDATE_PROBLEM_SUCCESS"
+)<Problem>();
+export const deleteProblemSuccess = createStandardAction(
+  "DELETE_PROBLEM_SUCCESS"
+)<Problem>();
+
+// =============================================================================
+// Raffles
+// =============================================================================
 
 export const receiveRaffles = createStandardAction("RECEIVE_RAFFLES")<
   Raffle[]
 >();
-export const clearRaffles = createStandardAction("CLEAR_RAFFLES")();
+export const saveRaffleSuccess = createStandardAction("SAVE_RAFFLE_SUCCESS")<
+  Raffle
+>();
+export const deleteRaffleSuccess = createStandardAction(
+  "DELETE_RAFFLE_SUCCESS"
+)<Raffle>();
 export const receiveRaffleWinners = createStandardAction(
   "RECEIVE_RAFFLE_WINNERS"
 )<{ raffle: Raffle; winners: RaffleWinner[] }>();
@@ -123,17 +140,19 @@ export const receiveRaffleWinner = createStandardAction(
   "RECEIVE_RAFFLE_WINNER"
 )<RaffleWinner>();
 
+// =============================================================================
+// Contenders
+// =============================================================================
+
 export const receiveContenders = createStandardAction("RECEIVE_CONTENDERS")<
   ContenderData[]
 >();
-export const setContenderFilterCompClass = createStandardAction(
-  "SET_CONTENDER_FILTER_COMP_CLASS"
-)<CompClass>();
-export const setContenderSortBy = createStandardAction("SET_CONTENDER_SORT_BY")<
-  SortBy
->();
-export const updateContender = createStandardAction("UPDATE_CONTENDER")<
-  ContenderData
->();
+export const updateContenderSuccess = createStandardAction(
+  "UPDATE_CONTENDER_SUCCESS"
+)<ContenderData>();
+
+// =============================================================================
+// Ticks
+// =============================================================================
 
 export const receiveTicks = createStandardAction("RECEIVE_TICKS")<Tick[]>();

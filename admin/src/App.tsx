@@ -11,11 +11,11 @@ import IconButton from "@material-ui/core/IconButton";
 import { Snackbar } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { StoreState } from "./model/storeState";
-import { connect, Dispatch } from "react-redux";
-import * as actions from "./actions/actions";
-import * as asyncActions from "./actions/asyncActions";
-import ContestsList from "./components/contest/ContestsList";
-import ContestView from "./views/ContestView";
+import { connect } from "react-redux";
+import { clearErrorMessage, logout, selectOrganizer } from "./actions/actions";
+import { login } from "./actions/asyncActions";
+import ContestList from "./components/contest/ContestList";
+import ContestInfo from "./components/contest/ContestInfo";
 import ColorList from "./components/color/ColorList";
 import SeriesList from "./components/series/SeriesList";
 import { User } from "./model/user";
@@ -91,10 +91,10 @@ class App extends React.Component<Props> {
                     <Switch>
                       <Route path="/" exact component={WelcomeView} />
                       <Route path="/start" exact component={WelcomeView} />
-                      <Route path="/contests" exact component={ContestsList} />
+                      <Route path="/contests" exact component={ContestList} />
                       <Route
                         path="/contests/:contestId"
-                        component={ContestView}
+                        component={ContestInfo}
                       />
                       <Route path="/colors" exact component={ColorList} />
                       <Route path="/series" exact component={SeriesList} />
@@ -151,14 +151,11 @@ export function mapStateToProps(state: StoreState, props: any): Props {
   };
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {
-    clearErrorMessage: () => dispatch(actions.clearErrorMessage()),
-    login: (code: string) => dispatch(asyncActions.login(code)),
-    logout: () => dispatch(actions.logout()),
-    selectOrganizer: (organizer: Organizer) =>
-      dispatch(asyncActions.selectOrganizer(organizer)),
-  };
-}
+const mapDispatchToProps = {
+  clearErrorMessage,
+  login,
+  logout,
+  selectOrganizer,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

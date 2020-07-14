@@ -42,14 +42,6 @@ interface Props {
 }
 
 const ProblemList = (props: Props & StyledComponentProps) => {
-  useEffect(() => {
-    refreshProblems();
-
-    if (props.colors == undefined) {
-      props.loadColors?.();
-    }
-  }, []);
-
   const [insertAfterNumber, setInsertAfterNumber] = useState<
     number | undefined
   >(undefined);

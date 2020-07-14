@@ -64,13 +64,6 @@ interface Props {
 }
 
 const ContenderList = (props: Props) => {
-  React.useEffect(() => {
-    if (props.contenders == undefined) {
-      refreshContenders();
-      props.loadTicks?.(props.contestId!);
-    }
-  }, [props.contenders]);
-
   const [numberOfNewContenders, setNumberOfNewContenders] = useState<string>();
   const [showAddContendersPopup, setShowAddContendersPopup] = useState<boolean>(
     false

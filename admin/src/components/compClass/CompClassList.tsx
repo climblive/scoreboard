@@ -44,10 +44,6 @@ interface Props {
 const CompClassList = (
   props: Props & RouteComponentProps & StyledComponentProps
 ) => {
-  React.useEffect(() => {
-    refreshCompClasses();
-  }, []);
-
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 

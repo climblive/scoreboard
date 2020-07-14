@@ -12,6 +12,21 @@ import CompClassList from "../compClass/CompClassList";
 import { useLocation } from "react-router-dom";
 import ProblemList from "../problem/ProblemList";
 import ContenderList from "../contender/ContenderList";
+import {
+  loadColors,
+  loadCompClasses,
+  loadProblems,
+  loadContenders,
+  loadTicks,
+  loadRaffles,
+} from "../../actions/asyncActions";
+import { CompClass } from "src/model/compClass";
+import { Problem } from "src/model/problem";
+import { ContenderData } from "src/model/contenderData";
+import { Tick } from "src/model/tick";
+import { RaffleWinner } from "src/model/raffleWinner";
+import { Raffle } from "src/model/raffle";
+import { Color } from "../../model/color";
 
 interface Props {
   match: {
@@ -19,6 +34,14 @@ interface Props {
       contestId: string;
     };
   };
+
+  colors?: Color[];
+  loadColors?: () => Promise<void>;
+  loadCompClasses?: (contestId: number) => Promise<void>;
+  loadProblems?: (contestId: number) => Promise<void>;
+  loadContenders?: (contestId: number) => Promise<void>;
+  loadTicks?: (contestId: number) => Promise<void>;
+  loadRaffles?: (contestId: number) => Promise<void>;
 }
 
 const ContestInfo = (props: Props) => {
@@ -33,6 +56,21 @@ const ContestInfo = (props: Props) => {
       setContestId(parseInt(id));
     }
   }, [props.match]);
+
+  useEffect(() => {
+    if (contestId == undefined) {
+      return;
+    }
+
+    Promise.all([
+      props.colors == undefined ? props.loadColors?.() : Promise.resolve(),
+      props.loadCompClasses?.(contestId),
+      props.loadProblems?.(contestId),
+      props.loadContenders?.(contestId),
+      props.loadTicks?.(contestId),
+      props.loadRaffles?.(contestId),
+    ]);
+  }, [contestId]);
 
   const selectTab = (event: any, newValue: string) => {
     setSelectedPath(newValue);
@@ -136,9 +174,17 @@ const ContestInfo = (props: Props) => {
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     match: props.match,
+    colors: state.colors,
   };
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  loadColors,
+  loadCompClasses,
+  loadProblems,
+  loadContenders,
+  loadTicks,
+  loadRaffles,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContestInfo);

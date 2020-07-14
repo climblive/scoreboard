@@ -40,12 +40,6 @@ interface Props {
 const RaffleList = (
   props: Props & RouteComponentProps & StyledComponentProps
 ) => {
-  useEffect(() => {
-    if (props.raffles == undefined) {
-      refreshRaffles();
-    }
-  }, [props.raffles]);
-
   const [creating, setCreating] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 

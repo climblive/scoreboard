@@ -120,7 +120,7 @@ export function saveColor(color: Color): any {
   return (dispatch: Dispatch<any>): Promise<void | Color> => {
     return Api.saveColor(color)
       .then((color) => {
-        dispatch(actions.saveColorSuccess(color));
+        dispatch(actions.updateColorSuccess(color));
         return Promise.resolve(color);
       })
       .catch((error) => {
@@ -166,7 +166,7 @@ export function saveSeries(series: Series): any {
   return (dispatch: Dispatch<any>): Promise<void | Series> => {
     return Api.saveSeries(series)
       .then((s) => {
-        dispatch(actions.saveSeriesSuccess(s));
+        dispatch(actions.updateSeriesSuccess(s));
         return Promise.resolve(s);
       })
       .catch((error) => {
@@ -212,7 +212,7 @@ export function saveLocation(location: CompLocation): any {
   return (dispatch: Dispatch<any>): Promise<void | CompLocation> => {
     return Api.saveLocation(location)
       .then((location) => {
-        dispatch(actions.saveLocationSuccess(location));
+        dispatch(actions.updateLocationSuccess(location));
         return Promise.resolve(location);
       })
       .catch((error) => {
@@ -258,7 +258,7 @@ export function saveOrganizer(organizer: Organizer): any {
   return (dispatch: Dispatch<any>): Promise<void | Organizer> => {
     return Api.saveOrganizer(organizer)
       .then((organizer) => {
-        dispatch(actions.saveOrganizerSuccess(organizer));
+        dispatch(actions.updateOrganizerSuccess(organizer));
         return Promise.resolve(organizer);
       })
       .catch((error) => {
@@ -490,7 +490,7 @@ export function saveRaffle(raffle: Raffle): any {
   return (dispatch: Dispatch<any>): Promise<Raffle> => {
     return Api.saveRaffle(raffle)
       .then((raffle) => {
-        dispatch(actions.saveRaffleSuccess(raffle));
+        dispatch(actions.updateRaffleSuccess(raffle));
         return Promise.resolve(raffle);
       })
       .catch((error) => {

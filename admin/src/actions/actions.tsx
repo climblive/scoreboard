@@ -44,8 +44,8 @@ export const deleteContestSuccess = createStandardAction(
 export const replaceLocations = createStandardAction("REPLACE_LOCATIONS")<
   CompLocation[]
 >();
-export const saveLocationSuccess = createStandardAction(
-  "SAVE_LOCATION_SUCCESS"
+export const updateLocationSuccess = createStandardAction(
+  "UPDATE_LOCATION_SUCCESS"
 )<CompLocation>();
 export const deleteLocationSuccess = createStandardAction(
   "DELETE_LOCATION_SUCCESS"
@@ -58,8 +58,8 @@ export const deleteLocationSuccess = createStandardAction(
 export const replaceOrganizers = createStandardAction("REPLACE_ORGANIZERS")<
   Organizer[]
 >();
-export const saveOrganizerSuccess = createStandardAction(
-  "SAVE_ORGANIZER_SUCCESS"
+export const updateOrganizerSuccess = createStandardAction(
+  "UPDATE_ORGANIZER_SUCCESS"
 )<Organizer>();
 export const deleteOrganizerSuccess = createStandardAction(
   "DELETE_ORGANIZER_SUCCESS"
@@ -73,7 +73,7 @@ export const selectOrganizer = createStandardAction("SELECT_ORGANIZER")<
 // =============================================================================
 
 export const replaceColors = createStandardAction("REPLACE_COLORS")<Color[]>();
-export const saveColorSuccess = createStandardAction("SAVE_COLOR_SUCCESS")<
+export const updateColorSuccess = createStandardAction("UPDATE_COLOR_SUCCESS")<
   Color
 >();
 export const deleteColorSuccess = createStandardAction("DELETE_COLOR_SUCCESS")<
@@ -85,9 +85,9 @@ export const deleteColorSuccess = createStandardAction("DELETE_COLOR_SUCCESS")<
 // =============================================================================
 
 export const replaceSeries = createStandardAction("REPLACE_SERIES")<Series[]>();
-export const saveSeriesSuccess = createStandardAction("SAVE_SERIES_SUCCESS")<
-  Series
->();
+export const updateSeriesSuccess = createStandardAction(
+  "UPDATE_SERIES_SUCCESS"
+)<Series>();
 export const deleteSeriesSuccess = createStandardAction(
   "DELETE_SERIES_SUCCESS"
 )<Series>();
@@ -127,9 +127,9 @@ export const deleteProblemSuccess = createStandardAction(
 export const receiveRaffles = createStandardAction("RECEIVE_RAFFLES")<
   Raffle[]
 >();
-export const saveRaffleSuccess = createStandardAction("SAVE_RAFFLE_SUCCESS")<
-  Raffle
->();
+export const updateRaffleSuccess = createStandardAction(
+  "UPDATE_RAFFLE_SUCCESS"
+)<Raffle>();
 export const deleteRaffleSuccess = createStandardAction(
   "DELETE_RAFFLE_SUCCESS"
 )<Raffle>();

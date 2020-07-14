@@ -27,7 +27,7 @@ export const logout = createStandardAction("LOGOUT")();
 // Contests
 // =============================================================================
 
-export const receiveContests = createStandardAction("RECEIVE_CONTESTS")<
+export const replaceContests = createStandardAction("REPLACE_CONTESTS")<
   Contest[]
 >();
 export const updateContestSuccess = createStandardAction(
@@ -41,7 +41,7 @@ export const deleteContestSuccess = createStandardAction(
 // Locations
 // =============================================================================
 
-export const receiveLocations = createStandardAction("RECEIVE_LOCATIONS")<
+export const replaceLocations = createStandardAction("REPLACE_LOCATIONS")<
   CompLocation[]
 >();
 export const saveLocationSuccess = createStandardAction(
@@ -55,7 +55,7 @@ export const deleteLocationSuccess = createStandardAction(
 // Organizers
 // =============================================================================
 
-export const receiveOrganizers = createStandardAction("RECEIVE_ORGANIZERS")<
+export const replaceOrganizers = createStandardAction("REPLACE_ORGANIZERS")<
   Organizer[]
 >();
 export const saveOrganizerSuccess = createStandardAction(
@@ -72,7 +72,7 @@ export const selectOrganizer = createStandardAction("SELECT_ORGANIZER")<
 // Colors
 // =============================================================================
 
-export const receiveColors = createStandardAction("RECEIVE_COLORS")<Color[]>();
+export const replaceColors = createStandardAction("REPLACE_COLORS")<Color[]>();
 export const saveColorSuccess = createStandardAction("SAVE_COLOR_SUCCESS")<
   Color
 >();
@@ -84,7 +84,7 @@ export const deleteColorSuccess = createStandardAction("DELETE_COLOR_SUCCESS")<
 // Series
 // =============================================================================
 
-export const receiveSeries = createStandardAction("RECEIVE_SERIES")<Series[]>();
+export const replaceSeries = createStandardAction("REPLACE_SERIES")<Series[]>();
 export const saveSeriesSuccess = createStandardAction("SAVE_SERIES_SUCCESS")<
   Series
 >();

@@ -11,7 +11,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
-import { loadLocations } from "../../actions/asyncActions";
+import { reloadLocations } from "../../actions/asyncActions";
 import { setTitle } from "../../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
@@ -128,7 +128,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
 }
 
 const mapDispatchToProps = {
-  loadLocations,
+  loadLocations: reloadLocations,
   setTitle,
 };
 

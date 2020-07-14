@@ -21,7 +21,7 @@ export function login(code: string): any {
       .then((userData) => {
         localStorage.setItem("credentials", code);
 
-        loadOrganizers()(dispatch).then(() => {
+        reloadOrganizers()(dispatch).then(() => {
           let organizer: Organizer = pickOrganizer(getState().organizers!);
           Api.setOrganizerId(organizer.id);
           dispatch(actions.selectOrganizer(organizer));
@@ -42,11 +42,11 @@ export function login(code: string): any {
 // Contests
 // -----------------------------------------------------------------------------
 
-export function loadContests(): any {
+export function reloadContests(): any {
   return (dispatch: Dispatch<any>): Promise<void> => {
     return Api.getContests()
       .then((contests) => {
-        dispatch(actions.receiveContests(contests));
+        dispatch(actions.replaceContests(contests));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -102,11 +102,11 @@ export function deleteContest(contest: Contest): any {
 // Colors
 // -----------------------------------------------------------------------------
 
-export function loadColors(): any {
+export function reloadColors(): any {
   return (dispatch: Dispatch<any>): Promise<void> => {
     return Api.getColors()
       .then((colors) => {
-        dispatch(actions.receiveColors(colors));
+        dispatch(actions.replaceColors(colors));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -148,11 +148,11 @@ export function deleteColor(color: Color): any {
 // Series
 // -----------------------------------------------------------------------------
 
-export function loadSeries(): any {
+export function reloadSeries(): any {
   return (dispatch: Dispatch<any>): Promise<void> => {
     return Api.getSeries()
       .then((series) => {
-        dispatch(actions.receiveSeries(series));
+        dispatch(actions.replaceSeries(series));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -194,11 +194,11 @@ export function deleteSeries(series: Series): any {
 // Locations
 // -----------------------------------------------------------------------------
 
-export function loadLocations(): any {
+export function reloadLocations(): any {
   return (dispatch: Dispatch<any>): Promise<void> => {
     return Api.getLocations()
       .then((locations) => {
-        dispatch(actions.receiveLocations(locations));
+        dispatch(actions.replaceLocations(locations));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -240,11 +240,11 @@ export function deleteLocation(location: CompLocation): any {
 // Organizers
 // -----------------------------------------------------------------------------
 
-export function loadOrganizers(): any {
+export function reloadOrganizers(): any {
   return (dispatch: Dispatch<any>): Promise<void> => {
     return Api.getOrganizers()
       .then((organizers) => {
-        dispatch(actions.receiveOrganizers(organizers));
+        dispatch(actions.replaceOrganizers(organizers));
         return Promise.resolve();
       })
       .catch((error) => {

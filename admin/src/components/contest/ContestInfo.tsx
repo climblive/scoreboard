@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 import ProblemList from "../problem/ProblemList";
 import ContenderList from "../contender/ContenderList";
 import {
-  loadColors,
+  reloadColors,
   loadCompClasses,
   loadProblems,
   loadContenders,
@@ -179,7 +179,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
 }
 
 const mapDispatchToProps = {
-  loadColors,
+  loadColors: reloadColors,
   loadCompClasses,
   loadProblems,
   loadContenders,

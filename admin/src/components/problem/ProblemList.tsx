@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
-import { loadProblems, loadColors } from "../../actions/asyncActions";
+import { loadProblems, reloadColors } from "../../actions/asyncActions";
 import { setTitle } from "../../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import { Problem } from "../../model/problem";
@@ -198,7 +198,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
 
 const mapDispatchToProps = {
   loadProblems,
-  loadColors,
+  loadColors: reloadColors,
   setTitle,
 };
 

@@ -35,7 +35,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // Contests
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveContests):
+    case getType(scoreboardActions.replaceContests):
       return { ...state, contests: action.payload };
 
     case getType(scoreboardActions.updateContestSuccess): {
@@ -150,17 +150,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       };
 
     // -------------------------------------------------------------------------
-    // Contenders
-    // -------------------------------------------------------------------------
-
-    case getType(scoreboardActions.receiveContenders):
-      return { ...state, contenders: action.payload };
-
-    // -------------------------------------------------------------------------
     // Colors
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveColors):
+    case getType(scoreboardActions.replaceColors):
       return { ...state, colors: action.payload };
 
     case getType(scoreboardActions.saveColorSuccess): {
@@ -196,7 +189,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // Series
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveSeries):
+    case getType(scoreboardActions.replaceSeries):
       return { ...state, series: action.payload };
 
     case getType(scoreboardActions.saveSeriesSuccess): {
@@ -230,7 +223,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // Locations
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveLocations):
+    case getType(scoreboardActions.replaceLocations):
       return { ...state, locations: action.payload };
 
     case getType(scoreboardActions.saveLocationSuccess): {
@@ -266,7 +259,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // Organizers
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveOrganizers):
+    case getType(scoreboardActions.replaceOrganizers):
       return { ...state, organizers: action.payload };
 
     case getType(scoreboardActions.saveOrganizerSuccess): {

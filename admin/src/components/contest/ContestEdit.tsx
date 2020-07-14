@@ -24,8 +24,8 @@ import {
   saveContest,
   deleteContest,
   loadContest,
-  loadLocations,
-  loadSeries,
+  reloadLocations,
+  reloadSeries,
 } from "../../actions/asyncActions";
 import { setTitle, setErrorMessage } from "../../actions/actions";
 import { Organizer } from "src/model/organizer";
@@ -470,8 +470,8 @@ const mapDispatchToProps = {
   setTitle,
   loadContest,
   setErrorMessage,
-  loadLocations,
-  loadSeries,
+  loadLocations: reloadLocations,
+  loadSeries: reloadSeries,
 };
 
 export default connect(

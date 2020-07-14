@@ -19,6 +19,7 @@ import { Color } from "../../model/color";
 import ColorListItem from "./ColorListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
+import { getSelectedOrganizer } from "src/selectors/selector";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -127,7 +128,7 @@ const ColorList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     colors: state.colors,
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
   };
 }
 

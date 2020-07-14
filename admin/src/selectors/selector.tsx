@@ -12,6 +12,7 @@ import { Tick } from "src/model/tick";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { Contest } from "src/model/contest";
 
+const getSelectedOrganizerId = (state: StoreState) => state.selectedOrganizerId;
 const getColors = (state: StoreState) => state.colors;
 const getCompClasses = (state: StoreState) => state.compClasses;
 const getOrganizers = (state: StoreState) => state.organizers;
@@ -21,6 +22,13 @@ const getProblems = (state: StoreState) => state.problems;
 const getContenders = (state: StoreState) => state.contenders;
 const getTicks = (state: StoreState) => state.ticks;
 const getRaffles = (state: StoreState) => state.raffles;
+
+export const getSelectedOrganizer = createSelector(
+  [getOrganizers, getSelectedOrganizerId],
+  (organizers, selectedOrganizerId) => {
+    return organizers?.find((organizer) => organizer.id == selectedOrganizerId);
+  }
+);
 
 export const getColorMap = createSelector([getColors], (colors) => {
   const colorMap = new Map<number, Color>();

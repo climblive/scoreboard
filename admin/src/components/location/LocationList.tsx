@@ -19,6 +19,7 @@ import { CompLocation } from "../../model/compLocation";
 import LocationListItem from "./LocationListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
+import { getSelectedOrganizer } from "src/selectors/selector";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -123,7 +124,7 @@ const LocationList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     locations: state.locations,
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
   };
 }
 

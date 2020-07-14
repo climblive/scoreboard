@@ -20,7 +20,10 @@ import CompClassListItem from "./CompClassListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import moment from "moment";
-import { getCompClassesForContest } from "../../selectors/selector";
+import {
+  getCompClassesForContest,
+  getSelectedOrganizer,
+} from "../../selectors/selector";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -121,7 +124,7 @@ const CompClassList = (
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
     compClasses: getCompClassesForContest(state, props.contestId),
   };
 }

@@ -20,6 +20,7 @@ import {
 } from "../../selectors/selector";
 import * as Chroma from "chroma-js";
 import { Tick } from "src/model/tick";
+import { getSelectedOrganizer } from "src/selectors/selector";
 
 const styles = {
   menuButton: {
@@ -191,7 +192,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
     problems: getProblemsForContestSorted(state, props.contestId),
     colors: state.colors,
     colorMap: getColorMap(state),
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
     ticksByProblem: getTicksByProblem(state),
   };
 }

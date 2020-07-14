@@ -18,6 +18,7 @@ import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { Organizer } from "../../model/organizer";
 import OrganizerListItem from "./OrganizerListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import { getSelectedOrganizer } from "src/selectors/selector";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -112,7 +113,7 @@ const OrganizerList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     organizers: state.organizers,
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
   };
 }
 

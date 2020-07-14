@@ -12,7 +12,8 @@ import { Snackbar } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { StoreState } from "./model/storeState";
 import { connect } from "react-redux";
-import { clearErrorMessage, logout, selectOrganizer } from "./actions/actions";
+import { clearErrorMessage, logout } from "./actions/actions";
+import { selectOrganizer } from "./actions/asyncActions";
 import { login } from "./actions/asyncActions";
 import ContestList from "./components/contest/ContestList";
 import ContestInfo from "./components/contest/ContestInfo";
@@ -23,6 +24,7 @@ import { Organizer } from "./model/organizer";
 import WelcomeView from "./views/WelcomeView";
 import OrganizerList from "./components/organizer/OrganizerList";
 import LocationList from "./components/location/LocationList";
+import { getSelectedOrganizer } from "src/selectors/selector";
 
 export interface Props {
   title: string;
@@ -35,7 +37,7 @@ export interface Props {
   changeOrganizer?: (organizer: Organizer) => void;
   login?: (code: string) => void;
   logout?: () => void;
-  selectOrganizer?: (organizer: Organizer) => void;
+  selectOrganizer?: (organizerId: number) => void;
 }
 
 class App extends React.Component<Props> {
@@ -147,7 +149,7 @@ export function mapStateToProps(state: StoreState, props: any): Props {
     loggingIn: state.loggingIn,
     loggedInUser: state.loggedInUser,
     organizers: state.organizers,
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
   };
 }
 

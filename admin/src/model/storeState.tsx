@@ -33,7 +33,7 @@ export interface StoreState {
   locations?: CompLocation[];
 
   organizers?: Organizer[];
-  selectedOrganizer?: Organizer;
+  selectedOrganizerId?: number;
 
   ticks?: Tick[];
 

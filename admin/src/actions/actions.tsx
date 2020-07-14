@@ -65,7 +65,7 @@ export const deleteOrganizerSuccess = createStandardAction(
   "DELETE_ORGANIZER_SUCCESS"
 )<Organizer>();
 export const selectOrganizer = createStandardAction("SELECT_ORGANIZER")<
-  Organizer
+  number
 >();
 
 // =============================================================================

@@ -11,12 +11,13 @@ import IconButton from "@material-ui/core/IconButton";
 import { CircularProgress } from "@material-ui/core";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
 import Chip from "@material-ui/core/Chip";
+import { getSelectedOrganizer } from "src/selectors/selector";
 
 interface Props {
   isSelectedOrganizer: boolean;
   organizer?: Organizer;
   deleteOrganizer?: (organizer: Organizer) => Promise<void>;
-  selectOrganizer?: (organizer: Organizer) => Promise<void>;
+  selectOrganizer?: (organizerId: number) => Promise<void>;
   onBeginEdit?: () => void;
 }
 
@@ -31,7 +32,7 @@ const OrganizerView = (props: Props) => {
   };
 
   const onSwitchOrganizer = () => {
-    props.selectOrganizer?.(props.organizer!);
+    props.selectOrganizer?.(props.organizer?.id!);
   };
 
   return (
@@ -85,7 +86,8 @@ const OrganizerView = (props: Props) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    isSelectedOrganizer: props.organizer?.id === state.selectedOrganizer?.id,
+    isSelectedOrganizer:
+      props.organizer?.id === getSelectedOrganizer(state)?.id,
   };
 }
 

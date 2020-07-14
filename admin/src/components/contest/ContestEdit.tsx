@@ -38,6 +38,7 @@ import {
   getProblemsForContestSorted,
   getCompClassesForContest,
   getContendersForContest,
+  getSelectedOrganizer,
 } from "../../selectors/selector";
 import { ContenderData } from "src/model/contenderData";
 
@@ -457,7 +458,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
     contests: state.contests,
     series: state.series,
     locations: state.locations,
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
     problems: getProblemsForContestSorted(state, props.contestId),
     compClasses: getCompClassesForContest(state, props.contestId),
     contenders: getContendersForContest(state, props.contestId),

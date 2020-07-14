@@ -310,7 +310,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.selectOrganizer):
       return {
         ...state,
-        selectedOrganizer: action.payload,
+        selectedOrganizerId: action.payload,
         contests: undefined,
         problems: undefined,
         compClasses: undefined,

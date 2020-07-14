@@ -19,6 +19,7 @@ import { Series } from "../../model/series";
 import SeriesListItem from "./SeriesListItem";
 import { Organizer } from "src/model/organizer";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import { getSelectedOrganizer } from "src/selectors/selector";
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -118,7 +119,7 @@ const SeriesList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     series: state.series,
-    selectedOrganizer: state.selectedOrganizer,
+    selectedOrganizer: getSelectedOrganizer(state),
   };
 }
 

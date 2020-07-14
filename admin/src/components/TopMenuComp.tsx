@@ -27,7 +27,7 @@ export interface TopMenuCompProps {
 
   login?: (code: string) => void;
   logout?: () => void;
-  selectOrganizer?: (organizer: Organizer) => void;
+  selectOrganizer?: (organizerId: number) => void;
 }
 
 const styles = {
@@ -86,7 +86,7 @@ class TopMenuComp extends React.Component<
   onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = parseInt(e.target.value);
     let organizer = this.props.organizers!.find((o) => o.id == id)!;
-    this.props.selectOrganizer?.(organizer);
+    this.props.selectOrganizer?.(organizer.id!);
   };
 
   getUrl = (command: string) => {
@@ -118,7 +118,6 @@ class TopMenuComp extends React.Component<
     const loggedInUser = this.props.loggedInUser;
     const classes = this.props.classes!;
     const organizers = this.props.organizers;
-    const organizer = this.props.selectedOrganizer;
     return (
       <div>
         <AppBar position="static">
@@ -129,10 +128,10 @@ class TopMenuComp extends React.Component<
                   <InputLabel shrink htmlFor="series-select">
                     Organizer
                   </InputLabel>
-                  {organizer != undefined && (
+                  {this.props.selectedOrganizer != undefined && (
                     <Select
                       id="series-select"
-                      value={organizer?.id}
+                      value={this.props.selectedOrganizer.id}
                       onChange={this.onOrganizerChange}
                     >
                       {organizers!.map((organizer) => (

@@ -24,7 +24,7 @@ export function login(code: string): any {
         reloadOrganizers()(dispatch).then(() => {
           let organizer: Organizer = pickOrganizer(getState().organizers!);
           Api.setOrganizerId(organizer.id);
-          dispatch(actions.selectOrganizer(organizer));
+          dispatch(actions.selectOrganizer(organizer.id!));
 
           dispatch(actions.setLoggingIn(false));
           dispatch(actions.setLoggedInUser(userData));
@@ -282,11 +282,11 @@ export function deleteOrganizer(organizer: Organizer): any {
   };
 }
 
-export function selectOrganizer(organizer: Organizer): any {
+export function selectOrganizer(organizerId: number): any {
   return (dispatch: Dispatch<any>) => {
-    Api.setOrganizerId(organizer.id);
-    dispatch(actions.selectOrganizer(organizer));
-    localStorage.setItem("organizerId", organizer.id!.toString());
+    Api.setOrganizerId(organizerId);
+    dispatch(actions.selectOrganizer(organizerId));
+    localStorage.setItem("organizerId", organizerId.toString());
   };
 }
 

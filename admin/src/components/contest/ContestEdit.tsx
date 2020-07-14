@@ -41,6 +41,7 @@ import {
   getSelectedOrganizer,
 } from "../../selectors/selector";
 import { ContenderData } from "src/model/contenderData";
+import { Link } from "react-router-dom";
 
 interface Props {
   contestId?: number;
@@ -113,15 +114,24 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   }, [contest.name]);
 
   const contestIssues = useMemo(() => {
-    let issues: string[] = [];
+    let issues: any[] = [];
     if ((props.problems?.length ?? 0) == 0) {
-      issues.push("Please add problems");
+      issues.push({
+        description: "Please add problems",
+        link: `/contests/${props.contestId}/problems`,
+      });
     }
     if ((props.compClasses?.length ?? 0) == 0) {
-      issues.push("Please add at least one competition class");
+      issues.push({
+        description: "Please add at least one competition class",
+        link: `/contests/${props.contestId}/classes`,
+      });
     }
     if ((props.contenders?.length ?? 0) == 0) {
-      issues.push("Please add contenders");
+      issues.push({
+        description: "Please add contenders",
+        link: `/contests/${props.contestId}/contenders`,
+      });
     }
     return issues;
   }, [props.problems, props.compClasses, props.contenders]);
@@ -252,18 +262,20 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   return (
     <Paper>
       {contestIssues.map((issue) => (
-        <div
-          style={{
-            padding: 10,
-            display: "flex",
-            alignItems: "center",
-            fontWeight: "bold",
-            color: "#e49c3b",
-          }}
-          key={issue}
-        >
-          <WarningIcon style={{ marginRight: 10 }} />
-          {issue}
+        <div key={issue.link}>
+          <Link
+            to={issue.link}
+            style={{
+              padding: 10,
+              display: "flex",
+              alignItems: "center",
+              fontWeight: "bold",
+              color: "#e49c3b",
+            }}
+          >
+            <WarningIcon style={{ marginRight: 10 }} />
+            {issue.description}
+          </Link>
         </div>
       ))}
       <div style={{ padding: 10 }}>

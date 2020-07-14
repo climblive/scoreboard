@@ -20,13 +20,8 @@ import {
   loadTicks,
   loadRaffles,
 } from "../../actions/asyncActions";
-import { CompClass } from "src/model/compClass";
-import { Problem } from "src/model/problem";
-import { ContenderData } from "src/model/contenderData";
-import { Tick } from "src/model/tick";
-import { RaffleWinner } from "src/model/raffleWinner";
-import { Raffle } from "src/model/raffle";
 import { Color } from "../../model/color";
+import { RouteComponentProps, withRouter } from "react-router";
 
 interface Props {
   match: {
@@ -44,10 +39,8 @@ interface Props {
   loadRaffles?: (contestId: number) => Promise<void>;
 }
 
-const ContestInfo = (props: Props) => {
-  let [selectedPath, setSelectedPath] = useState<string>(
-    useLocation().pathname
-  );
+const ContestInfo = (props: Props & RouteComponentProps) => {
+  let selectedPath = useLocation().pathname;
   let [contestId, setContestId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -73,7 +66,7 @@ const ContestInfo = (props: Props) => {
   }, [contestId]);
 
   const selectTab = (event: any, newValue: string) => {
-    setSelectedPath(newValue);
+    props.history.push(newValue);
   };
 
   const createLink = (tab?: string): string => {

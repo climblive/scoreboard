@@ -5,6 +5,4 @@ data class ScoringDto (
     var qualifyingScore: Int,
     var qualifyingPlacement: Int,
     var totalScore: Int,
-    var totalPlacement: Int,
-    var numberOfTicks: Int,
-    var isFinalist: Boolean)
+    var totalPlacement: Int)

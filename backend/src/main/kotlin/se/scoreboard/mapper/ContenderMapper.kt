@@ -1,15 +1,20 @@
 package se.scoreboard.mapper
 
 import org.mapstruct.*
+import org.springframework.beans.factory.annotation.Autowired
 import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.ScoringDto
+import se.scoreboard.engine.ScoringEngine
 import kotlin.random.Random
 
 @Mapper(componentModel = "spring")
 abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
+    @Autowired
+    private lateinit var scoringEngine: ScoringEngine
+
     @Mappings(
         Mapping(source = "contest.id", target = "contestId"),
         Mapping(source = "compClass.id", target = "compClassId")
@@ -30,14 +35,6 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
 
     @AfterMapping
     fun afterMapping(source: Contender, @MappingTarget target: ContenderDto) {
-        val scoring = ScoringDto(
-            source.id!!,
-            Random.nextInt(0, 2000),
-            Random.nextInt(1, 10),
-            Random.nextInt(0, 5000),
-            Random.nextInt(1, 50),
-            Random.nextInt(1, 40),
-            Random.nextBoolean())
-        target.scoring = scoring
+        target.scoring = scoringEngine.getScoring(source.id!!)
     }
 }

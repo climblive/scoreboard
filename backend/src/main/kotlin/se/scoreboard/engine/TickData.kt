@@ -50,4 +50,6 @@ class TickData constructor(
     fun getValue() = value
 
     fun isFlash() = flash
+
+    fun getContender() = contender
 }

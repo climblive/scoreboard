@@ -1,6 +1,12 @@
 package se.scoreboard.engine
 
-class ContenderData constructor(private val id: Int, private val contest: ContestData, private var compClass: Int) {
+import se.scoreboard.dto.ScoringDto
+
+class ContenderData constructor(
+        private val id: Int,
+        private val contest: ContestData,
+        private var compClass: Int,
+        private val queueScoring: (contestId: Int, scoring: ScoringDto) -> Unit) {
     private var ticks: MutableList<TickData> = mutableListOf()
     private var score: Int = 0
     private var placement: Int = 0
@@ -23,13 +29,22 @@ class ContenderData constructor(private val id: Int, private val contest: Contes
         recalculateScoring()
     }
 
-    fun onPlacementChange(placement: Int) {
-        this.placement = placement
+    fun onPlacementChange(updatedPlacement: Int) {
+        if (updatedPlacement != placement) {
+            this.placement = updatedPlacement
+            queueScoring(contest.id, makeScoring())
+        }
     }
 
     fun getScore() = score
 
     fun getPlacement() = placement
+
+    fun makeScoring() = ScoringDto(id,
+        0,
+        0,
+        score,
+        placement)
 
     fun recalculateScoring(recalculateTicks: Boolean = false) {
         if (recalculateTicks) {
@@ -42,7 +57,7 @@ class ContenderData constructor(private val id: Int, private val contest: Contes
         if (updatedScore != score) {
             score = updatedScore
             contest.recalculatePlacements(compClass)
-            println("Contender ${id} has a new score of ${score} and placement ${placement}")
+            queueScoring(contest.id, makeScoring())
         }
     }
 }

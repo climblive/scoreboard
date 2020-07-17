@@ -1,6 +1,6 @@
 package se.scoreboard.engine
 
-class ContestData(id: Int) {
+class ContestData(val id: Int) {
     private var contendersMap: MutableMap<Int, MutableList<ContenderData>> = mutableMapOf()
 
     fun linkContender(contender: ContenderData) {

@@ -1,9 +1,12 @@
 package se.scoreboard.engine
 
+import se.scoreboard.dto.ProblemPointValueDto
+import se.scoreboard.service.BroadcastService
 import kotlin.math.max
 
 class ProblemData constructor(
         private val id: Int,
+        private val contest: ContestData,
         private var points: Int,
         private var pointsShared: Boolean,
         private var flashBonus: Int?,
@@ -11,27 +14,35 @@ class ProblemData constructor(
     private var ticks: MutableList<TickData> = mutableListOf()
     private var compClassValues: MutableMap<Int, ProblemValue> = mutableMapOf()
 
+    companion object {
+        var broadcastService: BroadcastService? = null
+    }
+
     fun linkTick(tick: TickData) {
         ticks.add(tick)
         if (pointsShared) {
-            recalculateValues(tick.getCompClass())
-        }
-
-        for (tick in ticks) {
-            tick.onProblemValueChange()
+            recalculateValuesAndUpdateTicks(tick)
         }
     }
 
     fun unlinkTick(tick: TickData) {
         ticks.removeAll { it === tick }
         if (pointsShared) {
-            recalculateValues(tick.getCompClass())
+            recalculateValuesAndUpdateTicks(tick)
         }
     }
 
     fun onTickUpdated(tick: TickData) {
         if (flashBonusShared) {
-            recalculateValues(tick.getCompClass())
+            recalculateValuesAndUpdateTicks(tick)
+        }
+    }
+
+    private fun recalculateValuesAndUpdateTicks(tick: TickData) {
+        recalculateValues(tick.getCompClass())
+
+        for (tick in ticks) {
+            tick.onProblemValueChange()
         }
     }
 
@@ -71,8 +82,14 @@ class ProblemData constructor(
             counter.flashes += if (tick.isFlash()) 1 else 0
         }
 
-        compClassValues.put(affectedCompClass, ProblemValue(
+        val pv = ProblemValue(
                 calcValue(points, counter.ticks)!!,
-                calcValue(flashBonus, counter.flashes)))
+                calcValue(flashBonus, counter.flashes))
+        val oldPv = compClassValues[affectedCompClass]
+        compClassValues.put(affectedCompClass, pv)
+
+        if (pv != oldPv) {
+            broadcastService?.broadcast(contest.id, ProblemPointValueDto(id, pv.points, pv.flashBonus))
+        }
     }
 }

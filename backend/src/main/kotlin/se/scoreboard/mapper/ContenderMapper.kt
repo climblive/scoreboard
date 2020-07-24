@@ -6,9 +6,7 @@ import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.dto.ContenderDto
-import se.scoreboard.dto.ScoringDto
 import se.scoreboard.engine.ScoringEngine
-import kotlin.random.Random
 
 @Mapper(componentModel = "spring")
 abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
@@ -35,6 +33,6 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
 
     @AfterMapping
     fun afterMapping(source: Contender, @MappingTarget target: ContenderDto) {
-        target.scoring = scoringEngine.getScoring(source.id!!)
+        target.scorings = scoringEngine.getScorings(source.id!!)
     }
 }

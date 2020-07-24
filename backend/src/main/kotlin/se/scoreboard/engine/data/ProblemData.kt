@@ -1,6 +1,8 @@
-package se.scoreboard.engine
+package se.scoreboard.engine.data
 
-import se.scoreboard.dto.ProblemPointValueDto
+import se.scoreboard.dto.CurrentPointsDto
+import se.scoreboard.engine.PointsMode
+import se.scoreboard.engine.ProblemValue
 import se.scoreboard.service.BroadcastService
 import kotlin.math.max
 
@@ -8,33 +10,50 @@ class ProblemData constructor(
         private val id: Int,
         private val contest: ContestData,
         private var points: Int,
-        private var pointsShared: Boolean,
+        private var pointsMode: PointsMode,
         private var flashBonus: Int?,
-        private var flashBonusShared: Boolean) {
-    private var ticks: MutableList<TickData> = mutableListOf()
-    private var compClassValues: MutableMap<Int, ProblemValue> = mutableMapOf()
+        private var flashBonusMode: PointsMode) {
+    val ticks: MutableList<TickData> = mutableListOf()
+    private var pointsByCompClass: MutableMap<Int, ProblemValue> = mutableMapOf()
 
     companion object {
         var broadcastService: BroadcastService? = null
     }
 
+    private fun sharedPointsMode(): Boolean {
+        return pointsMode == PointsMode.SHARED || flashBonusMode == PointsMode.SHARED
+    }
+
     fun linkTick(tick: TickData) {
         ticks.add(tick)
-        if (pointsShared) {
+        if (sharedPointsMode()) {
             recalculateValuesAndUpdateTicks(tick)
         }
     }
 
     fun unlinkTick(tick: TickData) {
         ticks.removeAll { it === tick }
-        if (pointsShared) {
+        if (sharedPointsMode()) {
             recalculateValuesAndUpdateTicks(tick)
         }
     }
 
     fun onTickUpdated(tick: TickData) {
-        if (flashBonusShared) {
+        if (sharedPointsMode()) {
             recalculateValuesAndUpdateTicks(tick)
+        }
+    }
+
+    fun updatePoints(points: Int, pointsMode: PointsMode,
+                     flashBonus: Int?, flashBonusMode: PointsMode) {
+        this.points = points
+        this.pointsMode = pointsMode
+        this.flashBonus = flashBonus
+        this.flashBonusMode = flashBonusMode
+
+        recalculateAllValues()
+        for (tick in ticks) {
+            tick.onProblemValueChange()
         }
     }
 
@@ -47,11 +66,11 @@ class ProblemData constructor(
     }
 
     fun getProblemValue(compClass: Int): ProblemValue {
-        return compClassValues[compClass] ?: ProblemValue(points, flashBonus)
+        return pointsByCompClass[compClass] ?: ProblemValue(points, flashBonus)
     }
 
     fun recalculateAllValues() {
-        for (compClass in compClassValues.keys) {
+        for (compClass in pointsByCompClass.keys) {
             recalculateValues(compClass)
         }
     }
@@ -79,17 +98,26 @@ class ProblemData constructor(
             }
 
             counter.ticks += 1
-            counter.flashes += if (tick.isFlash()) 1 else 0
+            counter.flashes += if (tick.flash) 1 else 0
         }
 
         val pv = ProblemValue(
                 calcValue(points, counter.ticks)!!,
                 calcValue(flashBonus, counter.flashes))
-        val oldPv = compClassValues[affectedCompClass]
-        compClassValues.put(affectedCompClass, pv)
 
-        if (pv != oldPv) {
-            broadcastService?.broadcast(contest.id, ProblemPointValueDto(id, pv.points, pv.flashBonus))
+        if (pv != pointsByCompClass[affectedCompClass]) {
+            pointsByCompClass.put(affectedCompClass, pv)
+            broadcastService?.broadcast(contest.id, CurrentPointsDto(id, affectedCompClass, pv.points, pv.flashBonus))
         }
+    }
+
+    fun getCurrentPoints(): List<CurrentPointsDto> {
+        val values: MutableList<CurrentPointsDto> = mutableListOf()
+
+        for ((compClassId, value) in pointsByCompClass) {
+            values.add(CurrentPointsDto(id, compClassId, value.points, value.flashBonus))
+        }
+
+        return values
     }
 }

@@ -1,11 +1,15 @@
 package se.scoreboard.engine
 
-import se.scoreboard.data.domain.Tick
+import org.springframework.scheduling.annotation.Async
 import se.scoreboard.dto.ScoringDto
+import se.scoreboard.dto.CurrentPointsDto
+import se.scoreboard.engine.params.ActionParam
 
 interface ScoringEngine {
-    fun registerTick(tick: Tick)
-    fun unregisterTick(tickId: Int)
+    @Async
+    fun dispatch(action: ActionType, parameter: ActionParam)
+    fun await(action: ActionType, parameter: ActionParam)
 
-    fun getScoring(contenderId: Int): ScoringDto?
+    fun getScorings(contenderId: Int): List<ScoringDto>?
+    fun getCurrentPoints(problemId: Int): List<CurrentPointsDto>?
 }

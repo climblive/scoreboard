@@ -1,11 +1,18 @@
-package se.scoreboard.engine
+package se.scoreboard.engine.data
 
-class TickData constructor(
-        private val id: Int,
+class TickData (
+        val id: Int,
         private val contender: ContenderData,
         private val problem: ProblemData,
-        private var flash: Boolean) {
-    private var value: Int = 0
+        _flash: Boolean) {
+    var value: Int = 0
+        private set
+
+    var flash: Boolean = _flash
+        set(value) {
+            field = value
+            problem.onTickUpdated(this)
+        }
 
     init {
         contender.linkTick(this)
@@ -15,24 +22,20 @@ class TickData constructor(
     fun purge() {
         problem.unlinkTick(this)
         contender.unlinkTick(this)
+        contender.recalculateScoring()
     }
 
-    fun updateFlash(flash: Boolean) {
-        this.flash = flash
-        problem.onTickUpdated(this)
-    }
-
-    fun getCompClass() = contender.getCompClass()
+    fun getCompClass() = contender.compClass
 
     fun onProblemValueChange() {
         if (recalculateValue()) {
-            contender.onTickValueChange(this)
+            contender.onTickValueChange()
         }
     }
 
     fun recalculateValue(): Boolean {
-        val problemValue = problem.getProblemValue(contender.getCompClass())
-        problemValue?.let {
+        val problemValue = problem.getProblemValue(contender.compClass)
+        problemValue.let {
             var updatedValue = it.points
             if (flash) {
                 updatedValue += it.flashBonus ?: 0
@@ -46,10 +49,4 @@ class TickData constructor(
 
         return false
     }
-
-    fun getValue() = value
-
-    fun isFlash() = flash
-
-    fun getContender() = contender
 }

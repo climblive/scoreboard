@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.SlackNotifier
+import se.scoreboard.afterCommit
 import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.extension.getQualificationScore
@@ -16,6 +17,10 @@ import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.repo.*
 import se.scoreboard.dto.*
 import se.scoreboard.dto.scoreboard.RaffleWinnerPushItemDto
+import se.scoreboard.engine.ActionType
+import se.scoreboard.engine.ScoringEngine
+import se.scoreboard.engine.params.RegisterContestParam
+import se.scoreboard.engine.params.UnregisterContestParam
 import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
@@ -28,6 +33,7 @@ import java.time.ZoneOffset
 @Service
 class ContestService @Autowired constructor(
         contestRepository: ContestRepository,
+        private val scoreEngine: ScoringEngine,
         private val contenderRepository: ContenderRepository,
         private val tickRepository: TickRepository,
         private val raffleRepository: RaffleRepository,
@@ -47,7 +53,10 @@ class ContestService @Autowired constructor(
 
     override fun onCreate(phase: Phase, new: Contest) {
         when (phase) {
-            Phase.AFTER -> slackNotifier.newContest(new, getUserPrincipal())
+            Phase.AFTER -> {
+                afterCommit { scoreEngine.dispatch(ActionType.REGISTER_CONTEST, RegisterContestParam(new.id!!)) }
+                slackNotifier.newContest(new, getUserPrincipal())
+            }
             else -> {}
         }
     }
@@ -69,7 +78,7 @@ class ContestService @Autowired constructor(
 
                 problemRepository.deleteAll(old.problems)
             }
-            else -> {}
+            Phase.AFTER -> afterCommit { scoreEngine.dispatch(ActionType.UNREGISTER_CONTEST, UnregisterContestParam(old.id!!)) }
         }
     }
 

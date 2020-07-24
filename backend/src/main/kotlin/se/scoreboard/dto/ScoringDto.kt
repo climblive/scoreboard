@@ -1,8 +1,7 @@
 package se.scoreboard.dto
 
 data class ScoringDto (
-    var contenderId: Int,
-    var qualifyingScore: Int,
-    var qualifyingPlacement: Int,
-    var totalScore: Int,
-    var totalPlacement: Int)
+        var contenderId: Int,
+        var ruleId: Int,
+        var score: Int,
+        var placement: Int)

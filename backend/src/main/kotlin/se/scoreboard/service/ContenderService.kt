@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import se.scoreboard.Messages
+import se.scoreboard.afterCommit
 import se.scoreboard.createRegistrationCode
 import se.scoreboard.data.domain.CompClass
 import se.scoreboard.data.domain.Contender
@@ -11,6 +12,10 @@ import se.scoreboard.data.domain.Contest
 import se.scoreboard.data.domain.extension.allowedToAlterContender
 import se.scoreboard.data.repo.ContenderRepository
 import se.scoreboard.dto.ContenderDto
+import se.scoreboard.engine.ActionType
+import se.scoreboard.engine.ScoringEngine
+import se.scoreboard.engine.params.RegisterContenderParam
+import se.scoreboard.engine.params.UnregisterContenderParam
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.nowWithoutNanos
@@ -20,6 +25,7 @@ import javax.transaction.Transactional
 
 @Service
 class ContenderService @Autowired constructor(
+    private val scoreEngine: ScoringEngine,
     private var contenderRepository: ContenderRepository,
     private val broadcastService: BroadcastService,
     override var entityMapper: AbstractMapper<Contender, ContenderDto>) : AbstractDataService<Contender, ContenderDto, Int>(
@@ -51,7 +57,7 @@ class ContenderService @Autowired constructor(
                 checkMaximumContenderLimit(new.contest?.id!!, 1)
                 beforeCreateAndUpdate(null, new)
             }
-            else -> {}
+            else -> afterCreateAndUpdate(new)
         }
     }
 
@@ -68,15 +74,33 @@ class ContenderService @Autowired constructor(
             }
             Phase.AFTER -> {
                 broadcastService.broadcast(new)
+                afterCreateAndUpdate(new)
             }
         }
     }
 
+    override fun onDelete(phase: Phase, old: Contender) {
+        when (phase) {
+            Phase.AFTER -> afterCommit { afterCommit { scoreEngine.dispatch(ActionType.UNREGISTER_CONTENDER, UnregisterContenderParam(old.id!!)) } }
+            else -> {}
+        }
+    }
+
     private fun beforeCreateAndUpdate(old: Contender?, new: Contender) {
-        new.name = new.name?.trim()?.split("\\s+".toRegex())?.map { it.capitalize() }?.joinToString(" ")
+        new.name = new.name?.trim()?.split("\\s+".toRegex())?.map { if (it != "von") it.capitalize() else it }?.joinToString(" ")
 
         if (new.name != null && new.compClass != null && old?.entered == null) {
             new.entered = nowWithoutNanos()
+        }
+    }
+
+
+    private fun afterCreateAndUpdate(contender: Contender) {
+        if (contender.disqualified) {
+            scoreEngine.await(ActionType.UNREGISTER_CONTENDER, UnregisterContenderParam(contender.id!!))
+        }
+        else if (contender.compClass != null) {
+            scoreEngine.await(ActionType.REGISTER_CONTENDER, RegisterContenderParam(contender.id!!, contender.contest?.id!!, contender.compClass?.id!!))
         }
     }
 

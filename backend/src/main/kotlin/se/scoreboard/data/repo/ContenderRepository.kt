@@ -24,4 +24,7 @@ interface ContenderRepository : ScoreboardRepository<Contender, Int> {
     fun findByRegistrationCode(registrationCode: String) : Contender?
 
     fun countByContestId(contestId: Int): Int
+
+    @Query("SELECT c FROM Contender c WHERE c.compClass IS NOT NULL AND c.disqualified = false AND c.contest.id = :contestId")
+    fun findAllRegisteredByContestId(@Param("contestId") contestId: Int): List<Contender>
 }

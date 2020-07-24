@@ -10,7 +10,7 @@ import se.scoreboard.data.domain.RaffleWinner
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.data.domain.extension.isRegistered
-import se.scoreboard.dto.ProblemPointValueDto
+import se.scoreboard.dto.CurrentPointsDto
 import se.scoreboard.dto.ScoreboardListItemDto
 import se.scoreboard.dto.ScoringDto
 import se.scoreboard.dto.scoreboard.RafflePushItemDto
@@ -57,7 +57,7 @@ class BroadcastService @Autowired constructor(private val simpMessagingTemplate 
         send(contestId, "/updates/scoring", scoring)
     }
 
-    fun broadcast(contestId: Int, ppv: ProblemPointValueDto) {
+    fun broadcast(contestId: Int, ppv: CurrentPointsDto) {
         send(contestId, "/updates/problem", ppv)
     }
 

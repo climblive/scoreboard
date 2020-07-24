@@ -69,7 +69,11 @@ class ContenderData (
             }
         }
 
-        val updatedScore = ticks.map { it.value }.sum()
+        var counter = 1
+        ticks.sortBy { it.value }
+        ticks.map { it.order = counter++ }
+
+        val updatedScore = ticks.filter { contest.rule?.checkConstraints(it) ?: false }.map { it.value }.sum()
         if (updatedScore != score) {
             score = updatedScore
             contest.recalculatePlacements(compClass)

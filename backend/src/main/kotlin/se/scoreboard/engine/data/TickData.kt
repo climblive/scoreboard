@@ -8,6 +8,8 @@ class TickData (
     var value: Int = 0
         private set
 
+    var order: Int = Int.MAX_VALUE
+
     var flash: Boolean = _flash
         set(value) {
             field = value

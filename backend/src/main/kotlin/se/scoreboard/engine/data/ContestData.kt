@@ -1,7 +1,18 @@
 package se.scoreboard.engine.data
 
+import se.scoreboard.engine.ContestRule
+import se.scoreboard.engine.TopXConstraint
+
 class ContestData(val id: Int) {
+    var rule: ContestRule? = null
+        private set
     private var contendersByCompClass: MutableMap<Int, MutableList<ContenderData>> = mutableMapOf()
+
+    init {
+        // TODO: Test
+        rule = ContestRule(1)
+        rule?.constraints?.add(TopXConstraint(3))
+    }
 
     fun linkContender(contender: ContenderData) {
         var contenders = contendersByCompClass.getOrPut(contender.compClass, { mutableListOf() })

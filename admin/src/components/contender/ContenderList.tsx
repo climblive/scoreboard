@@ -49,11 +49,10 @@ import { ContenderScoring } from "src/model/contenderScoring";
 interface Props {
   contestId?: number;
   contest?: Contest;
-  finalEnabled?: boolean;
   contenders?: ContenderData[];
-  compClasses?: CompClass[];
   problems?: Problem[];
   ticks?: Tick[];
+  compClasses?: CompClass[];
 
   loadContenders?: (contestId: number) => Promise<void>;
   resetContenders?: (contestId: number) => Promise<void>;
@@ -88,19 +87,9 @@ const ContenderList = (props: Props) => {
       );
     }
 
-    if (contenderSortBy == SortBy.BY_NUMBER_OF_TICKS) {
+    if (contenderSortBy == SortBy.BY_TOTAL_POINTS) {
       contenders?.sort(
-        (a, b) =>
-          (b.scoring?.numberOfTicks ?? 0) - (a.scoring?.numberOfTicks ?? 0)
-      );
-    } else if (contenderSortBy == SortBy.BY_TOTAL_POINTS) {
-      contenders?.sort(
-        (a, b) => (b.scoring?.totalScore ?? 0) - (a.scoring?.totalScore ?? 0)
-      );
-    } else if (contenderSortBy == SortBy.BY_QUALIFYING_POINTS) {
-      contenders?.sort(
-        (a, b) =>
-          (b.scoring?.qualifyingScore ?? 0) - (a.scoring?.qualifyingScore ?? 0)
+        (a, b) => (b.scorings?.[0]?.score ?? 0) - (a.scorings?.[0]?.score ?? 0)
       );
     } else {
       contenders?.sort((a, b) => {
@@ -266,27 +255,7 @@ const ContenderList = (props: Props) => {
               >
                 Total score
               </TableCell>
-              {props.finalEnabled && (
-                <>
-                  <TableCell
-                    style={{ minWidth: 110, cursor: "pointer" }}
-                    onClick={() =>
-                      setContenderSortBy(SortBy.BY_QUALIFYING_POINTS)
-                    }
-                  >
-                    Qualifying score
-                  </TableCell>
-                  <TableCell style={{ minWidth: 100 }}></TableCell>
-                </>
-              )}
-              <TableCell
-                style={{ minWidth: 110, cursor: "pointer" }}
-                onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}
-              >
-                # Ticks
-              </TableCell>
               <TableCell style={{ minWidth: 110 }}>Registration code</TableCell>
-              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>

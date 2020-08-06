@@ -3,6 +3,7 @@ import * as scoreboardActions from "../actions/actions";
 import { ActionType, getType } from "typesafe-actions";
 import { Problem } from "../model/problem";
 import { SortBy } from "../constants/sortBy";
+import { SharedPoints } from "src/model/sharedPoints";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -148,6 +149,39 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ...state,
         problems: deleteProblemAndRenumber(action.payload, state.problems),
       };
+
+    case getType(scoreboardActions.loadSharedPoints): {
+      let problems = state.problems?.map((problem) => {
+        if (problem.id == action.payload.problemId) {
+          let replaced = false;
+          let sharedPoints = problem.sharedPoints?.map((sp) => {
+            if (sp.compClassId == action.payload.compClassId) {
+              replaced = true;
+              return action.payload;
+            } else {
+              return sp;
+            }
+          });
+
+          if (!replaced) {
+            sharedPoints?.push(action.payload);
+          }
+
+          if (sharedPoints == null) {
+            sharedPoints = [action.payload];
+          }
+
+          return {
+            ...problem,
+            sharedPoints,
+          };
+        } else {
+          return problem;
+        }
+      });
+
+      return { ...state, problems };
+    }
 
     // -------------------------------------------------------------------------
     // Colors
@@ -357,6 +391,37 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       if (contenders == undefined) {
         contenders = [action.payload];
       }
+
+      return { ...state, contenders };
+    }
+
+    case getType(scoreboardActions.loadContenderScoring): {
+      let contenders = state.contenders?.map((contender) => {
+        if (contender.id == action.payload.contenderId) {
+          let replaced = false;
+
+          let scorings = contender.scorings?.map((scoring) => {
+            if (scoring.scoringId == action.payload.scoringId) {
+              replaced = true;
+              return action.payload;
+            } else {
+              return scoring;
+            }
+          });
+
+          if (!replaced) {
+            scorings?.push(action.payload);
+          }
+
+          if (scorings == undefined) {
+            scorings = [action.payload];
+          }
+
+          return { ...contender, scorings };
+        } else {
+          return contender;
+        }
+      });
 
       return { ...state, contenders };
     }

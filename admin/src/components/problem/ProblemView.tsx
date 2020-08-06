@@ -21,15 +21,17 @@ import {
   getTicksByProblem,
   getContenderMap,
   getCompClassMap,
+  getCompClassesForContest,
 } from "../../selectors/selector";
 import { Tick } from "src/model/tick";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import moment from "moment";
+import CompClassEdit from "../compClass/CompClassEdit";
 
 interface Props {
+  contestId?: number;
   problem?: Problem;
-  allowEdit?: boolean;
   ticksByProblem?: Map<number | undefined, Tick[]>;
   compClassMap: Map<number, CompClass>;
   contenderMap: Map<number, ContenderData>;
@@ -65,7 +67,6 @@ const ProblemView = (props: Props & StyledComponentProps) => {
   };
 
   const ticks = props.ticksByProblem?.get(props.problem!.id);
-
   return (
     <>
       <li style={props.getProblemStyle?.(props.problem!)}>
@@ -104,7 +105,7 @@ const ProblemView = (props: Props & StyledComponentProps) => {
               height: 33.25,
             }}
           >
-            {props.problem?.points}
+            {props.problem?.sharedPoints?.[0]?.points ?? props.problem?.points}
           </div>
         </div>
         <div
@@ -125,44 +126,39 @@ const ProblemView = (props: Props & StyledComponentProps) => {
               height: 33.25,
             }}
           >
-            {props.problem?.flashBonus}
+            {props.problem?.sharedPoints?.[0]?.flashBonus ??
+              props.problem?.flashBonus}
           </div>
         </div>
-        {props.allowEdit && (
-          <IconButton
-            className={props.classes?.menuButton}
-            color="inherit"
-            aria-label="Menu"
-            title="Edit"
-            disabled={deleting}
-            onClick={props.onBeginEdit}
-          >
-            <EditIcon />
-          </IconButton>
-        )}
-        {props.allowEdit && (
-          <IconButton
-            className={props.classes?.menuButton}
-            color="inherit"
-            aria-label="Menu"
-            title="Add"
-            onClick={() => props.onBeginCreate?.(props.problem?.number!)}
-          >
-            <AddIcon />
-          </IconButton>
-        )}
-        {props.allowEdit && (
-          <IconButton
-            className={props.classes?.menuButton}
-            color="inherit"
-            aria-label="Menu"
-            title="Delete"
-            disabled={deleting}
-            onClick={() => setDeleteRequested(true)}
-          >
-            {deleting ? <CircularProgress size={24} /> : <DeleteIcon />}
-          </IconButton>
-        )}
+        <IconButton
+          className={props.classes?.menuButton}
+          color="inherit"
+          aria-label="Menu"
+          title="Edit"
+          disabled={deleting}
+          onClick={props.onBeginEdit}
+        >
+          <EditIcon />
+        </IconButton>
+        <IconButton
+          className={props.classes?.menuButton}
+          color="inherit"
+          aria-label="Menu"
+          title="Add"
+          onClick={() => props.onBeginCreate?.(props.problem?.number!)}
+        >
+          <AddIcon />
+        </IconButton>
+        <IconButton
+          className={props.classes?.menuButton}
+          color="inherit"
+          aria-label="Menu"
+          title="Delete"
+          disabled={deleting}
+          onClick={() => setDeleteRequested(true)}
+        >
+          {deleting ? <CircularProgress size={24} /> : <DeleteIcon />}
+        </IconButton>
       </li>
       <ConfirmationDialog
         open={deleteRequested}

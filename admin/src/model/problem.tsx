@@ -1,3 +1,5 @@
+import { SharedPoints } from "./sharedPoints";
+
 export class Problem {
   id?: number;
   colorId?: number;
@@ -6,4 +8,5 @@ export class Problem {
   name?: string;
   points?: number;
   flashBonus?: number;
+  sharedPoints?: SharedPoints[];
 }

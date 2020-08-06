@@ -11,6 +11,9 @@ import { User } from "../model/user";
 import { Tick } from "../model/tick";
 import { Raffle } from "../model/raffle";
 import { RaffleWinner } from "../model/raffleWinner";
+import { create } from "domain";
+import { ContenderScoring } from "src/model/contenderScoring";
+import { SharedPoints } from "../model/sharedPoints";
 
 export const setErrorMessage = createStandardAction("SET_ERROR_MESSAGE")<
   string
@@ -119,6 +122,9 @@ export const updateProblemSuccess = createStandardAction(
 export const deleteProblemSuccess = createStandardAction(
   "DELETE_PROBLEM_SUCCESS"
 )<Problem>();
+export const loadSharedPoints = createStandardAction("LOAD_SHARED_POINTS")<
+  SharedPoints
+>();
 
 // =============================================================================
 // Raffles
@@ -150,6 +156,9 @@ export const receiveContenders = createStandardAction("RECEIVE_CONTENDERS")<
 export const updateContenderSuccess = createStandardAction(
   "UPDATE_CONTENDER_SUCCESS"
 )<ContenderData>();
+export const loadContenderScoring = createStandardAction(
+  "LOAD_CONTENDER_SCORING"
+)<ContenderScoring>();
 
 // =============================================================================
 // Ticks

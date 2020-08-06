@@ -1,5 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { StyledComponentProps } from "@material-ui/core";
+import {
+  StyledComponentProps,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -17,10 +23,12 @@ import {
   getColorMap,
   getProblemsForContestSorted,
   getTicksByProblem,
+  getCompClassesForContest,
 } from "../../selectors/selector";
 import * as Chroma from "chroma-js";
 import { Tick } from "src/model/tick";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import { CompClass } from "src/model/compClass";
 
 const styles = {
   menuButton: {
@@ -36,6 +44,7 @@ interface Props {
   colors?: Color[];
   colorMap: Map<number, Color>;
   ticksByProblem?: Map<number | undefined, Tick[]>;
+  compClasses?: CompClass[];
 
   loadProblems?: (contestId: number) => Promise<void>;
   loadColors?: () => Promise<void>;
@@ -47,6 +56,9 @@ const ProblemList = (props: Props & StyledComponentProps) => {
     number | undefined
   >(undefined);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [filterCompClassId, setFilterCompClassId] = useState<
+    number | undefined
+  >(props.compClasses?.[0]?.id);
 
   const createDone = () => {
     setInsertAfterNumber(undefined);
@@ -194,6 +206,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
     colorMap: getColorMap(state),
     selectedOrganizer: getSelectedOrganizer(state),
     ticksByProblem: getTicksByProblem(state),
+    compClasses: getCompClassesForContest(state, props.contestId),
   };
 }
 

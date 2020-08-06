@@ -9,5 +9,5 @@ export class ContenderData {
   entered?: string;
   disqualified: boolean;
   finalPlacing?: number;
-  scoring?: ContenderScoring;
+  scorings?: ContenderScoring[];
 }

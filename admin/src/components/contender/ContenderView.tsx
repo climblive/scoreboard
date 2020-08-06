@@ -29,7 +29,6 @@ import { Api } from "../../utils/Api";
 
 interface Props {
   contender?: ContenderData;
-  finalEnabled?: boolean;
   compClassMap: Map<number, CompClass>;
   problemMap: Map<number, Problem>;
   colorMap: Map<number, Color>;
@@ -72,7 +71,7 @@ const ContenderView = (props: Props) => {
     props.updateContender?.({ ...contender, disqualified: false });
   };
 
-  let scoring = props.contender?.scoring;
+  let scoring = props.contender?.scorings?.[0];
   let contender = props.contender!;
 
   return (
@@ -100,29 +99,11 @@ const ContenderView = (props: Props) => {
         </TableCell>
         <TableCell component="th" scope="row">
           <div style={{ width: 37, display: "inline-block" }}>
-            {contender.name ? scoring?.totalScore : "-"}
+            {scoring ? scoring?.score : "-"}
           </div>
           <div style={{ display: "inline-block" }}>
-            {contender.name ? "(" + scoring?.totalPlacement + ")" : ""}
+            {scoring ? "(" + scoring?.placement + ")" : ""}
           </div>
-        </TableCell>
-        {props.finalEnabled && (
-          <>
-            <TableCell component="th" scope="row">
-              <div style={{ width: 37, display: "inline-block" }}>
-                {contender.name ? scoring?.qualifyingScore : "-"}
-              </div>
-              <div style={{ display: "inline-block" }}>
-                {contender.name ? "(" + scoring?.qualifyingPlacement + ")" : ""}
-              </div>
-            </TableCell>
-            <TableCell component="th" scope="row">
-              {scoring?.isFinalist ? "finalist" : ""}
-            </TableCell>
-          </>
-        )}
-        <TableCell component="th" scope="row">
-          {contender.name ? scoring?.numberOfTicks : "-"}
         </TableCell>
         <TableCell component="th" scope="row">
           <Button

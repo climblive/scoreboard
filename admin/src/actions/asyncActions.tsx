@@ -432,7 +432,7 @@ export function resetContenders(contestId: number): any {
 export function updateContender(contender: ContenderData): any {
   return (dispatch: Dispatch<any>): Promise<ContenderData> => {
     return Api.saveContender(contender)
-      .then(() => {
+      .then((contender) => {
         dispatch(actions.updateContenderSuccess(contender));
         return Promise.resolve(contender);
       })

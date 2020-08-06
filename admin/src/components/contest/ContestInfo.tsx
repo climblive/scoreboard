@@ -20,8 +20,12 @@ import {
   loadTicks,
   loadRaffles,
 } from "../../actions/asyncActions";
+import { loadSharedPoints, loadContenderScoring } from "../../actions/actions";
 import { Color } from "../../model/color";
 import { RouteComponentProps, withRouter } from "react-router";
+import { Client, Message } from "@stomp/stompjs";
+import { ContenderScoring } from "src/model/contenderScoring";
+import { SharedPoints } from "src/model/sharedPoints";
 
 interface Props {
   match: {
@@ -37,11 +41,60 @@ interface Props {
   loadContenders?: (contestId: number) => Promise<void>;
   loadTicks?: (contestId: number) => Promise<void>;
   loadRaffles?: (contestId: number) => Promise<void>;
+  loadContenderScoring?: (scoring: ContenderScoring) => void;
+  loadSharedPoints?: (sharedPoints: SharedPoints) => void;
 }
 
 const ContestInfo = (props: Props & RouteComponentProps) => {
   let selectedPath = useLocation().pathname;
   let [contestId, setContestId] = useState<number | undefined>(undefined);
+  let [stompClient, setStompClient] = useState<any>(undefined);
+
+  useEffect(() => {
+    if (contestId) {
+      let client = new Client({
+        brokerURL: "ws://localhost:8080/api/live/websocket",
+        //brokerURL: "wss://api.climblive.app/live/websocket",
+        debug: function (str) {
+          console.log(str);
+        },
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+      });
+
+      client.onConnect = function (frame) {
+        // Do something, all subscribes must be done is this callback
+        // This is needed because this will be executed after a (re)connect
+        console.log("subscribe " + contestId);
+        client.subscribe(
+          "/topic/contest/" + contestId + "/updates/scoring",
+          (message) => {
+            console.log(JSON.parse(message.body));
+            props.loadContenderScoring?.(JSON.parse(message.body));
+          }
+        );
+        client.subscribe(
+          "/topic/contest/" + contestId + "/updates/problem",
+          (message) => {
+            console.log(JSON.parse(message.body));
+            props.loadSharedPoints?.(JSON.parse(message.body));
+          }
+        );
+      };
+
+      client.onStompError = function (frame) {
+        // Will be invoked in case of error encountered at Broker
+        // Bad login/passcode typically will cause an error
+        // Complaint brokers will set `message` header with a brief message. Body may contain details.
+        // Compliant brokers will terminate the connection after any error
+        console.log("Broker reported error: " + frame.headers["message"]);
+        console.log("Additional details: " + frame.body);
+      };
+
+      client.activate();
+    }
+  }, [contestId]);
 
   useEffect(() => {
     let id: string = props.match.params.contestId;
@@ -178,6 +231,8 @@ const mapDispatchToProps = {
   loadContenders,
   loadTicks,
   loadRaffles,
+  loadContenderScoring,
+  loadSharedPoints,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContestInfo);

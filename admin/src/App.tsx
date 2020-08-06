@@ -40,100 +40,92 @@ export interface Props {
   selectOrganizer?: (organizerId: number) => void;
 }
 
-class App extends React.Component<Props> {
-  theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: "#5f524a",
-      },
-      secondary: {
-        main: "#eb0708",
-      },
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#5f524a",
     },
-  });
+    secondary: {
+      main: "#eb0708",
+    },
+  },
+});
 
-  handleClose = (event: any, reason?: any) => {
-    this.props.clearErrorMessage!!();
+const App = (props: Props) => {
+  const handleClose = (event: any, reason?: any) => {
+    props.clearErrorMessage!!();
   };
 
-  public render() {
-    return (
-      <Router>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
-          <MuiThemeProvider theme={this.theme}>
-            <div className="App">
-              <SideMenuComp loggedInUser={this.props.loggedInUser} />
-              <div
-                style={{
-                  flexGrow: 1,
-                  flexBasis: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <TopMenuComp
-                  login={this.props.login}
-                  logout={this.props.logout}
-                  loggingIn={this.props.loggingIn}
-                  loggedInUser={this.props.loggedInUser}
-                  organizers={this.props.organizers}
-                  selectedOrganizer={this.props.selectedOrganizer}
-                  selectOrganizer={this.props.selectOrganizer}
-                  title={this.props.title}
-                />
-                <div className="mainView">
-                  {this.props.loggedInUser && (
-                    <Switch>
-                      <Route path="/" exact component={WelcomeView} />
-                      <Route path="/start" exact component={WelcomeView} />
-                      <Route path="/contests" exact component={ContestList} />
-                      <Route
-                        path="/contests/:contestId"
-                        component={ContestInfo}
-                      />
-                      <Route path="/colors" exact component={ColorList} />
-                      <Route path="/series" exact component={SeriesList} />
-                      <Route
-                        path="/organizers"
-                        exact
-                        component={OrganizerList}
-                      />
-                      <Route path="/locations" exact component={LocationList} />
-                    </Switch>
-                  )}
-                  {!this.props.loggedInUser && <WelcomeView />}
-                </div>
+  return (
+    <Router>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <MuiThemeProvider theme={theme}>
+          <div className="App">
+            <SideMenuComp loggedInUser={props.loggedInUser} />
+            <div
+              style={{
+                flexGrow: 1,
+                flexBasis: 0,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <TopMenuComp
+                login={props.login}
+                logout={props.logout}
+                loggingIn={props.loggingIn}
+                loggedInUser={props.loggedInUser}
+                organizers={props.organizers}
+                selectedOrganizer={props.selectedOrganizer}
+                selectOrganizer={props.selectOrganizer}
+                title={props.title}
+              />
+              <div className="mainView">
+                {props.loggedInUser && (
+                  <Switch>
+                    <Route path="/" exact component={WelcomeView} />
+                    <Route path="/start" exact component={WelcomeView} />
+                    <Route path="/contests" exact component={ContestList} />
+                    <Route
+                      path="/contests/:contestId"
+                      component={ContestInfo}
+                    />
+                    <Route path="/colors" exact component={ColorList} />
+                    <Route path="/series" exact component={SeriesList} />
+                    <Route path="/organizers" exact component={OrganizerList} />
+                    <Route path="/locations" exact component={LocationList} />
+                  </Switch>
+                )}
+                {!props.loggedInUser && <WelcomeView />}
               </div>
             </div>
-            <Snackbar
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              style={{ bottom: 15 }}
-              open={this.props.errorMessage != undefined}
-              autoHideDuration={6000}
-              onClose={this.handleClose}
-              message={
-                <span id="message-id">{"" + this.props.errorMessage}</span>
-              }
-              action={[
-                <IconButton
-                  key="close"
-                  aria-label="Close"
-                  color="inherit"
-                  onClick={this.handleClose}
-                >
-                  <Close />
-                </IconButton>,
-              ]}
-            />
-          </MuiThemeProvider>
-        </MuiPickersUtilsProvider>
-      </Router>
-    );
-  }
-}
+          </div>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            style={{ bottom: 15 }}
+            open={props.errorMessage != undefined}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            message={<span id="message-id">{"" + props.errorMessage}</span>}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="Close"
+                color="inherit"
+                onClick={handleClose}
+              >
+                <Close />
+              </IconButton>,
+            ]}
+          />
+        </MuiThemeProvider>
+      </MuiPickersUtilsProvider>
+    </Router>
+  );
+};
 
 export function mapStateToProps(state: StoreState, props: any): Props {
   return {

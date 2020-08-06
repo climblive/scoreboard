@@ -11,7 +11,7 @@ import ExploreIcon from "@material-ui/icons/Explore";
 import PeopleIcon from "@material-ui/icons/People";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 
-export interface SideMenuCompProps {
+export interface Props {
   loggedInUser?: User;
 }
 
@@ -41,10 +41,7 @@ const styles = ({ spacing }: Theme) =>
     },
   });
 
-function SideMenuComp({
-  classes,
-  loggedInUser,
-}: SideMenuCompProps & StyledComponentProps) {
+function SideMenu({ classes, loggedInUser }: Props & StyledComponentProps) {
   return (
     <div className={classes!!.sideMenu}>
       <div style={{ textAlign: "center" }}>
@@ -112,4 +109,4 @@ function SideMenuComp({
   );
 }
 
-export default withStyles(styles)(SideMenuComp);
+export default withStyles(styles)(SideMenu);

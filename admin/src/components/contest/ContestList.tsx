@@ -19,7 +19,7 @@ import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import ContestLineItemView from "./ContestLineItemView";
 
-const styles = ({ spacing }: Theme) =>
+const styles = () =>
   createStyles({
     root: {
       margin: 10,

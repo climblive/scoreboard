@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
-import createStyles from "@material-ui/core/styles/createStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
@@ -24,16 +22,6 @@ import {
   getCompClassesForContest,
   getSelectedOrganizer,
 } from "../../selectors/selector";
-
-const styles = ({ spacing }: Theme) =>
-  createStyles({
-    root: {
-      margin: 10,
-    },
-    table: {
-      minWidth: 700,
-    },
-  });
 
 interface Props {
   contestId?: number;
@@ -137,4 +125,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(withRouter(CompClassList)));
+)(withRouter(CompClassList));

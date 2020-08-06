@@ -16,7 +16,7 @@ import Chip from "@material-ui/core/Chip";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
-export interface TopMenuCompProps {
+export interface Props {
   title: string;
   loggingIn: boolean;
   loggedInUser?: User;
@@ -29,21 +29,12 @@ export interface TopMenuCompProps {
 }
 
 const styles = {
-  root: {
-    flexGrow: 1,
-  },
   grow: {
     flexGrow: 1,
   },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
 };
 
-const TopMenuComp = (
-  props: TopMenuCompProps & RouteComponentProps & StyledComponentProps
-) => {
+const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
   useEffect(() => {
     let query = qs.parse(props.location.hash, {
       ignoreQueryPrefix: true,
@@ -94,7 +85,6 @@ const TopMenuComp = (
   const title = props.title;
   const loggingIn = props.loggingIn;
   const loggedInUser = props.loggedInUser;
-  const classes = props.classes!;
   const organizers = props.organizers;
   return (
     <div>
@@ -123,7 +113,7 @@ const TopMenuComp = (
           <Typography
             variant="h6"
             style={{ marginTop: 11 }}
-            className={classes.grow}
+            className={props.classes?.grow}
           >
             {title}
           </Typography>
@@ -167,4 +157,4 @@ const TopMenuComp = (
   );
 };
 
-export default withStyles(styles)(withRouter(TopMenuComp));
+export default withStyles(styles)(withRouter(TopMenu));

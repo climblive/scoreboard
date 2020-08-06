@@ -19,7 +19,7 @@ import RaffleView from "./RaffleView";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { getRafflesForContest } from "src/selectors/selector";
 
-const styles = ({ spacing }: Theme) =>
+const styles = () =>
   createStyles({
     root: {
       margin: 10,

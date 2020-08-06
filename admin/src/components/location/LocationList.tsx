@@ -21,7 +21,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
 
-const styles = ({ spacing }: Theme) =>
+const styles = () =>
   createStyles({
     root: {
       margin: 10,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { StyledComponentProps } from "@material-ui/core";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { StoreState } from "../../model/storeState";
@@ -21,13 +20,6 @@ import {
 import * as Chroma from "chroma-js";
 import { Tick } from "src/model/tick";
 import { getSelectedOrganizer } from "src/selectors/selector";
-
-const styles = {
-  menuButton: {
-    marginLeft: 0,
-    marginRight: 0,
-  },
-};
 
 interface Props {
   contestId?: number;
@@ -203,7 +195,4 @@ const mapDispatchToProps = {
   setTitle,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(ProblemList));
+export default connect(mapStateToProps, mapDispatchToProps)(ProblemList);

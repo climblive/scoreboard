@@ -3,8 +3,8 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import SideMenuComp from "./components/SideMenuComp";
-import TopMenuComp from "./components/TopMenuComp";
+import SideMenu from "./components/SideMenu";
+import TopMenu from "./components/TopMenu";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
@@ -21,7 +21,7 @@ import ColorList from "./components/color/ColorList";
 import SeriesList from "./components/series/SeriesList";
 import { User } from "./model/user";
 import { Organizer } from "./model/organizer";
-import WelcomeView from "./views/WelcomeView";
+import WelcomeView from "./components/WelcomeView";
 import OrganizerList from "./components/organizer/OrganizerList";
 import LocationList from "./components/location/LocationList";
 import { getSelectedOrganizer } from "src/selectors/selector";
@@ -61,7 +61,7 @@ const App = (props: Props) => {
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <MuiThemeProvider theme={theme}>
           <div className="App">
-            <SideMenuComp loggedInUser={props.loggedInUser} />
+            <SideMenu loggedInUser={props.loggedInUser} />
             <div
               style={{
                 flexGrow: 1,
@@ -70,7 +70,7 @@ const App = (props: Props) => {
                 flexDirection: "column",
               }}
             >
-              <TopMenuComp
+              <TopMenu
                 login={props.login}
                 logout={props.logout}
                 loggingIn={props.loggingIn}

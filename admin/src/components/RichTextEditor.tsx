@@ -22,11 +22,6 @@ interface Props {
   onChange?: (newValue: string) => void;
 }
 
-type State = {
-  editorState: EditorState;
-  lastHtml?: string;
-};
-
 const RichTextEditor = (props: Props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [lastHtml, setLastHtml] = useState<string | undefined>(undefined);

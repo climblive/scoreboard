@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Contest } from "../../model/contest";
@@ -260,7 +259,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     "https://" + Environment.siteDomain + "/scoreboard/" + contest.id;
 
   return (
-    <Paper>
+    <>
       {contestIssues.map((issue) => (
         <div key={issue.link}>
           <Link
@@ -461,7 +460,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
         message={`Do you really wish to delete the contest ${contest.name} together with all its classes, problems, contenders, raffles and results? This action is irreversible and cannot be undone!`}
         onClose={onDeleteConfirmed}
       />
-    </Paper>
+    </>
   );
 };
 

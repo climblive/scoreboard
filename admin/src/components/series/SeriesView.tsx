@@ -29,7 +29,7 @@ const SeriesView = (props: Props) => {
       <TableCell component="th" scope="row">
         {props.series?.name}
       </TableCell>
-      <TableCell className={"icon-cell"}>
+      <TableCell align="right" className={"icon-cell"}>
         <IconButton
           color="inherit"
           aria-label="Menu"

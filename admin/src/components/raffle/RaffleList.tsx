@@ -3,7 +3,6 @@ import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -57,50 +56,44 @@ const RaffleList = (
 
   return (
     <>
-      <Paper style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ minWidth: 120 }}>Id</TableCell>
-              <TableCell style={{ width: "100%" }}>Winners</TableCell>
-              <TableCell className={"icon-cell"} style={{ minWidth: 146 }}>
-                <IconButton
-                  color="inherit"
-                  aria-label="Menu"
-                  title="Add"
-                  disabled={creating}
-                  onClick={createRaffle}
-                >
-                  {creating ? <CircularProgress size={24} /> : <AddIcon />}
-                </IconButton>
-                <IconButton
-                  color="inherit"
-                  aria-label="Menu"
-                  title="Refresh"
-                  onClick={refreshRaffles}
-                >
-                  {refreshing ? (
-                    <CircularProgress size={24} />
-                  ) : (
-                    <RefreshIcon />
-                  )}
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {props.raffles?.map((raffle) => (
-              <RaffleView key={raffle.id!} raffle={raffle} />
-            ))}
-          </TableBody>
-        </Table>
-        {(props.raffles?.length ?? 0) === 0 && (
-          <div className={"emptyText"}>
-            <div>You have no raffles.</div>
-            <div>Please create a raffle by clicking the plus button above.</div>
-          </div>
-        )}
-      </Paper>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell style={{ minWidth: 120 }}>Id</TableCell>
+            <TableCell style={{ width: "100%" }}>Winners</TableCell>
+            <TableCell className={"icon-cell"} style={{ minWidth: 146 }}>
+              <IconButton
+                color="inherit"
+                aria-label="Menu"
+                title="Add"
+                disabled={creating}
+                onClick={createRaffle}
+              >
+                {creating ? <CircularProgress size={24} /> : <AddIcon />}
+              </IconButton>
+              <IconButton
+                color="inherit"
+                aria-label="Menu"
+                title="Refresh"
+                onClick={refreshRaffles}
+              >
+                {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
+              </IconButton>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {props.raffles?.map((raffle) => (
+            <RaffleView key={raffle.id!} raffle={raffle} />
+          ))}
+        </TableBody>
+      </Table>
+      {(props.raffles?.length ?? 0) === 0 && (
+        <div className={"emptyText"}>
+          <div>You have no raffles.</div>
+          <div>Please create a raffle by clicking the plus button above.</div>
+        </div>
+      )}
     </>
   );
 };

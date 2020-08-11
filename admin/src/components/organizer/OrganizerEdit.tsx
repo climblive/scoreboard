@@ -47,10 +47,10 @@ const OrganizerEdit = (props: Props) => {
       <TableCell component="th" scope="row">
         <TextField value={organizer.name} onChange={onNameChange} />
       </TableCell>
-      <TableCell component="th" scope="row">
+      <TableCell>
         <TextField value={organizer.homepage} onChange={onHomepageChange} />
       </TableCell>
-      <TableCell>
+      <TableCell align="right">
         <IconButton
           color="inherit"
           aria-label="Menu"

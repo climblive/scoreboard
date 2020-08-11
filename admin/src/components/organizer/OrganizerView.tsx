@@ -48,10 +48,8 @@ const OrganizerView = (props: Props) => {
           />
         )}
       </TableCell>
-      <TableCell component="th" scope="row">
-        {props.organizer?.homepage}
-      </TableCell>
-      <TableCell className={"icon-cell"}>
+      <TableCell>{props.organizer?.homepage}</TableCell>
+      <TableCell align="right" className={"icon-cell"}>
         <IconButton
           color="inherit"
           aria-label="Menu"

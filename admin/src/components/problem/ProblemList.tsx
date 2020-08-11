@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { StyledComponentProps } from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
@@ -20,6 +19,7 @@ import {
 import * as Chroma from "chroma-js";
 import { Tick } from "src/model/tick";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import Grid from "@material-ui/core/Grid";
 
 interface Props {
   contestId?: number;
@@ -100,12 +100,12 @@ const ProblemList = (props: Props & StyledComponentProps) => {
       display: "flex",
       border: borderWidth + "px solid " + borderColor,
       padding: "2px 10px",
-      marginBottom: 5,
       color: textColor,
       borderRadius: 5,
       alignItems: "center",
       opacity,
       background: background,
+      margin: 0,
     };
   };
 
@@ -129,25 +129,16 @@ const ProblemList = (props: Props & StyledComponentProps) => {
   let allowEdit = (props.ticksByProblem?.size ?? 0) === 0;
 
   return (
-    <Paper style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-      <div
-        style={{
-          flexBasis: 0,
-          overflowY: "auto",
-          flexGrow: 1,
-          paddingLeft: "10px",
-          paddingRight: "10px",
-        }}
+    <>
+      <IconButton
+        color="inherit"
+        aria-label="Menu"
+        title="Refresh"
+        onClick={refreshProblems}
       >
-        <IconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Refresh"
-          onClick={refreshProblems}
-        >
-          {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-        </IconButton>
-        <ul style={{ padding: 10, margin: 0 }}></ul>
+        {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
+      </IconButton>
+      <Grid container direction="column">
         {!refreshing &&
           (props.problems?.length ?? 0) === 0 &&
           makeCreateView(1, false)}
@@ -155,7 +146,10 @@ const ProblemList = (props: Props & StyledComponentProps) => {
           return (
             <Fragment key={problem.id!}>
               <span
-                style={{ opacity: insertAfterNumber != undefined ? 0.1 : 1 }}
+                style={{
+                  padding: 5,
+                  opacity: insertAfterNumber != undefined ? 0.1 : 1,
+                }}
               >
                 <ProblemListItem
                   getColorName={getColorName}
@@ -174,8 +168,8 @@ const ProblemList = (props: Props & StyledComponentProps) => {
             </Fragment>
           );
         })}
-      </div>
-    </Paper>
+      </Grid>
+    </>
   );
 };
 

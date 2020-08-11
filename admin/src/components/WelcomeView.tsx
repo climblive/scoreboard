@@ -2,8 +2,10 @@ import * as React from "react";
 import { StyledComponentProps, Theme } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import { connect } from "react-redux";
+import { StoreState } from "../model/storeState";
 
-export interface Props {}
+interface Props {}
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -27,7 +29,7 @@ const styles = ({ spacing }: Theme) =>
     },
   });
 
-function WelcomeView({ classes }: Props & StyledComponentProps) {
+const WelcomeView = ({ classes }: Props & StyledComponentProps) => {
   return (
     <div style={{ flexBasis: 0, flexGrow: 1, overflowY: "auto" }}>
       <div style={{ maxWidth: 600, margin: "20px auto" }}>
@@ -94,6 +96,15 @@ function WelcomeView({ classes }: Props & StyledComponentProps) {
       </div>
     </div>
   );
+};
+
+export function mapStateToProps(state: StoreState, props: any): Props {
+  return {};
 }
 
-export default withStyles(styles)(WelcomeView);
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(WelcomeView));

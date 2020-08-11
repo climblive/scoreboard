@@ -43,7 +43,7 @@ const SeriesEdit = (props: Props) => {
       <TableCell component="th" scope="row">
         <TextField style={{}} value={series.name} onChange={onNameChange} />
       </TableCell>
-      <TableCell>
+      <TableCell align="right">
         <IconButton
           color="inherit"
           aria-label="Menu"

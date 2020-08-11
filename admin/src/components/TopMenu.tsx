@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Button, InputLabel, StyledComponentProps } from "@material-ui/core";
+import {
+  Button,
+  InputLabel,
+  StyledComponentProps,
+  Box,
+  Hidden,
+} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
@@ -15,9 +21,19 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Chip from "@material-ui/core/Chip";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { connect } from "react-redux";
+import { login, selectOrganizer } from "../actions/asyncActions";
+import { logout } from "../actions/actions";
+import { getSelectedOrganizer } from "src/selectors/selector";
+import { StoreState } from "../model/storeState";
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  createStyles,
+} from "@material-ui/core/styles";
 
 export interface Props {
-  title: string;
   loggingIn: boolean;
   loggedInUser?: User;
   organizers?: Organizer[];
@@ -28,13 +44,22 @@ export interface Props {
   selectOrganizer?: (organizerId: number) => void;
 }
 
-const styles = {
-  grow: {
-    flexGrow: 1,
-  },
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    authControl: {
+      marginLeft: "auto",
+    },
+    adminLabel: {
+      marginRight: theme.spacing(1),
+      marginLeft: theme.spacing(1),
+    },
+  })
+);
 
 const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
+  const classes = useStyles();
+  const theme = useTheme();
+
   useEffect(() => {
     let query = qs.parse(props.location.hash, {
       ignoreQueryPrefix: true,
@@ -82,79 +107,86 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     props.logout!();
   };
 
-  const title = props.title;
   const loggingIn = props.loggingIn;
   const loggedInUser = props.loggedInUser;
   const organizers = props.organizers;
   return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          {organizers && organizers.length > 1 && (
-            <FormControl style={{ minWidth: 200, marginRight: 10 }}>
-              <InputLabel shrink htmlFor="series-select">
-                Organizer
-              </InputLabel>
-              {props.selectedOrganizer != undefined && (
-                <Select
-                  id="series-select"
-                  value={props.selectedOrganizer.id}
-                  onChange={onOrganizerChange}
-                >
-                  {organizers!.map((organizer) => (
-                    <MenuItem key={organizer.id} value={organizer.id}>
-                      {organizer.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
-            </FormControl>
-          )}
-          <Typography
-            variant="h6"
-            style={{ marginTop: 11 }}
-            className={props.classes?.grow}
+    <>
+      <Hidden smDown implementation="css">
+        {organizers && organizers.length > 1 && (
+          <FormControl
+            variant="outlined"
+            style={{ minWidth: 200 }}
+            size="small"
           >
-            {title}
-          </Typography>
-          {loggingIn && (
-            <CircularProgress
-              style={{ color: "white", width: 20, height: 20 }}
-            />
-          )}
-          {!loggingIn && !loggedInUser && (
-            <div>
-              <Button color="inherit" onClick={login}>
-                Login
-              </Button>
-              <Button color="inherit" onClick={signup}>
-                Sign up
-              </Button>
-            </div>
-          )}
-          {loggedInUser && (
-            <div>
-              <span style={{ marginRight: 10 }}>
-                {loggedInUser.name}
-                {loggedInUser.admin && (
-                  <Chip
-                    style={{ marginLeft: "5px" }}
-                    icon={<AccountCircleIcon />}
-                    label="Admin"
-                    color="secondary"
-                    size="small"
-                  />
-                )}
-              </span>
-              <Button variant="contained" onClick={logout} size="small">
-                <ExitToAppIcon /> Logout
-              </Button>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
-    </div>
+            {props.selectedOrganizer != undefined && (
+              <Select
+                id="series-select"
+                value={props.selectedOrganizer.id}
+                onChange={onOrganizerChange}
+                style={{ color: theme.palette.primary.contrastText }}
+              >
+                {organizers!.map((organizer) => (
+                  <MenuItem key={organizer.id} value={organizer.id}>
+                    {organizer.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          </FormControl>
+        )}
+      </Hidden>
+
+      <div className={classes.authControl}>
+        {loggingIn && <CircularProgress size={20} style={{ color: "white" }} />}
+        {!loggingIn && !loggedInUser && (
+          <div>
+            <Button color="inherit" onClick={login}>
+              Login
+            </Button>
+            <Button color="inherit" onClick={signup}>
+              Sign up
+            </Button>
+          </div>
+        )}
+        {loggedInUser && (
+          <div>
+            {loggedInUser.name}
+            {loggedInUser.admin && (
+              <Chip
+                className={classes.adminLabel}
+                icon={<AccountCircleIcon />}
+                label="Admin"
+                color="secondary"
+                size="small"
+              />
+            )}
+            <Button variant="contained" onClick={logout} size="small">
+              <ExitToAppIcon /> Logout
+            </Button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
-export default withStyles(styles)(withRouter(TopMenu));
+export function mapStateToProps(state: StoreState, props: any): Props {
+  return {
+    loggingIn: state.loggingIn,
+    loggedInUser: state.loggedInUser,
+    organizers: state.organizers,
+    selectedOrganizer: getSelectedOrganizer(state),
+  };
+}
+
+const mapDispatchToProps = {
+  login,
+  logout,
+  selectOrganizer,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(TopMenu));

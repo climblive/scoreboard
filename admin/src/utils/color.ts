@@ -13,7 +13,6 @@ export const getColorStyle = (color?: string, editable?: boolean) => {
     textColor = luminance < 0.5 ? "#FFF" : "#333";
   }
   return {
-    width: 100,
     border: "1px solid " + borderColor,
     borderRadius: "8px",
     background: color,

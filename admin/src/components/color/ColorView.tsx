@@ -35,7 +35,7 @@ const ColorView = (props: Props) => {
 
   return (
     <TableRow>
-      <TableCell component="th" scope="row">
+      <TableCell style={{ width: 200 }} component="th" scope="row">
         {props.color?.name}
       </TableCell>
       <TableCell component="th" scope="row">
@@ -43,16 +43,20 @@ const ColorView = (props: Props) => {
           {props.color?.rgbPrimary}
         </div>
       </TableCell>
-      <TableCell component="th" scope="row">
-        <div style={getColorStyle(props.color?.rgbSecondary)}>
-          {props.color?.rgbSecondary || "None"}
-        </div>
+      <TableCell>
+        {props.color?.rgbSecondary ? (
+          <div style={getColorStyle(props.color?.rgbSecondary)}>
+            {props.color?.rgbSecondary}
+          </div>
+        ) : (
+          "None"
+        )}
       </TableCell>
-      <TableCell component="th" scope="row">
+      <TableCell align="right">
         {props.color?.shared && <PeopleIcon />}
       </TableCell>
 
-      <TableCell className={"icon-cell"}>
+      <TableCell align="right" className={"icon-cell"}>
         <IconButton
           color="inherit"
           aria-label="Menu"

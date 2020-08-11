@@ -131,14 +131,7 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
   }
 
   return (
-    <div
-      style={{
-        margin: 10,
-        display: "flex",
-        flexDirection: "column",
-        flexGrow: 1,
-      }}
-    >
+    <>
       <Tabs key="tabs" value={selectedPath} onChange={selectTab}>
         {tabs}
       </Tabs>
@@ -160,7 +153,7 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
           <RaffleList key="raffles" contestId={contestId} />
         </Route>
       </Switch>
-    </div>
+    </>
   );
 };
 

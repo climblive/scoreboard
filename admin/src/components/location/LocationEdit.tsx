@@ -51,13 +51,13 @@ const LocationEdit = (props: Props) => {
       <TableCell component="th" scope="row">
         <TextField value={location.name} onChange={onNameChange} />
       </TableCell>
-      <TableCell component="th" scope="row">
+      <TableCell>
         <TextField value={location.longitude} onChange={onLongitudeChange} />
       </TableCell>
-      <TableCell component="th" scope="row">
+      <TableCell>
         <TextField value={location.latitude} onChange={onLatitudeChange} />
       </TableCell>
-      <TableCell>
+      <TableCell align="right">
         <IconButton
           color="inherit"
           aria-label="Menu"

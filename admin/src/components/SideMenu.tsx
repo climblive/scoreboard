@@ -1,97 +1,119 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Palette, TableChart } from "@material-ui/icons";
-import { Button, StyledComponentProps, Theme } from "@material-ui/core";
-import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles from "@material-ui/core/styles/withStyles";
+import { Divider, Typography } from "@material-ui/core";
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  createStyles,
+} from "@material-ui/core/styles";
 import { User } from "../model/user";
 import { Environment } from "src/environment";
 import HomeIcon from "@material-ui/icons/Home";
 import ExploreIcon from "@material-ui/icons/Explore";
 import PeopleIcon from "@material-ui/icons/People";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import { connect } from "react-redux";
+import { StoreState } from "../model/storeState";
+import Chip from "@material-ui/core/Chip";
 
 export interface Props {
   loggedInUser?: User;
 }
 
-const styles = ({ spacing }: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    sideMenu: {
-      background: "white",
-      width: 150,
-      boxShadow: "2px 0px 3px rgba(0,0,0,0.14)",
-      zIndex: 2,
-      backgroundImage: "url('/sideMenuBackground.jpg')",
-      backgroundSize: "contain",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "bottom",
-      display: "flex",
-      flexDirection: "column",
-    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
     menuItem: {
-      width: "100%",
-      display: "flex",
+      color: theme.palette.primary.contrastText,
     },
-    menuText: {
-      flexGrow: 1,
-      textAlign: "left",
-      marginLeft: spacing(1),
-      textDecoration: "none",
-    },
-  });
+  })
+);
 
-function SideMenu({ classes, loggedInUser }: Props & StyledComponentProps) {
+function SideMenu({ loggedInUser }: Props) {
+  const classes = useStyles();
+
+  const items = [
+    {
+      name: "Contests",
+      icon: <TableChart />,
+      path: "/contests",
+      condition: loggedInUser != undefined,
+    },
+    {
+      name: "Colors",
+      icon: <Palette />,
+      path: "/colors",
+      condition: loggedInUser != undefined,
+      divider: true,
+    },
+    {
+      name: "Locations",
+      icon: <ExploreIcon />,
+      path: "/locations",
+      condition: loggedInUser != undefined,
+    },
+    {
+      name: "Organizers",
+      icon: <PeopleIcon />,
+      path: "/organizers",
+      condition: loggedInUser != undefined,
+    },
+    {
+      name: "Series",
+      icon: <LibraryBooksIcon />,
+      path: "/series",
+      condition: loggedInUser != undefined,
+    },
+  ];
+
   return (
-    <div className={classes!!.sideMenu}>
-      <div style={{ textAlign: "center" }}>
-        <img
-          style={{ width: 120, marginTop: 20 }}
-          src="/clmb_MainLogo_NoShadow.png"
-        />
-      </div>
-      {loggedInUser && (
-        <div>
-          <Link to="/start">
-            <Button className={classes!!.menuItem}>
-              <HomeIcon />
-              <span className={classes!!.menuText}>Start</span>
-            </Button>
-          </Link>
-          <Link to="/contests">
-            <Button className={classes!!.menuItem}>
-              <TableChart />
-              <span className={classes!!.menuText}>Contests</span>
-            </Button>
-          </Link>
-          <Link to="/colors">
-            <Button className={classes!!.menuItem}>
-              <Palette />
-              <span className={classes!!.menuText}>Colors</span>
-            </Button>
-          </Link>
-          {loggedInUser.admin && (
-            <Link to="/locations">
-              <Button className={classes!!.menuItem}>
-                <ExploreIcon />
-                <span className={classes!!.menuText}>Locations</span>
-              </Button>
-            </Link>
-          )}
-          <Link to="/organizers">
-            <Button className={classes!!.menuItem}>
-              <PeopleIcon />
-              <span className={classes!!.menuText}>Organizers</span>
-            </Button>
-          </Link>
-          <Link to="/series">
-            <Button className={classes!!.menuItem}>
-              <LibraryBooksIcon />
-              <span className={classes!!.menuText}>Series</span>
-            </Button>
-          </Link>
+    <>
+      <div className={classes.toolbar}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <img
+            style={{
+              width: 65,
+            }}
+            src="/clmb_MainLogo_NoShadow.png"
+          />
         </div>
-      )}
+      </div>
+      <Divider />
+      <List>
+        {items
+          .filter(({ condition }) => condition ?? true)
+          .map(({ name, icon, path, divider }) => {
+            return (
+              <React.Fragment key={path}>
+                <ListItem
+                  button
+                  component={Link}
+                  to={path}
+                  className={classes.menuItem}
+                >
+                  <ListItemIcon>{icon}</ListItemIcon>
+                  <ListItemText primary={name} />
+                </ListItem>
+                {divider && <Divider />}
+              </React.Fragment>
+            );
+          })}
+      </List>
+
       <div style={{ margin: "auto 10px 20px 10px", textAlign: "center" }}>
         <div>Questions, requests or just want to chat?</div>
         <div style={{ marginTop: 5 }}>
@@ -101,12 +123,23 @@ function SideMenu({ classes, loggedInUser }: Props & StyledComponentProps) {
           </a>{" "}
           to visit us on Facebook
         </div>
-        <div>
-          <pre>v.{Environment.projectVersion}</pre>
-        </div>
+        <Chip
+          style={{ marginTop: "1rem" }}
+          label={`v.${Environment.projectVersion}`}
+          color="primary"
+          size="small"
+        />
       </div>
-    </div>
+    </>
   );
 }
 
-export default withStyles(styles)(SideMenu);
+export function mapStateToProps(state: StoreState, props: any): Props {
+  return {
+    loggedInUser: state.loggedInUser,
+  };
+}
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);

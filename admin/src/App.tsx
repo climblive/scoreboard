@@ -1,5 +1,4 @@
 import * as React from "react";
-import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
@@ -25,19 +24,12 @@ import WelcomeView from "./components/WelcomeView";
 import OrganizerList from "./components/organizer/OrganizerList";
 import LocationList from "./components/location/LocationList";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import MainLayout from "./components/MainLayout";
+import Alert from "@material-ui/lab/Alert";
 
 export interface Props {
-  title: string;
   errorMessage?: string;
-  loggedInUser?: User;
-  loggingIn: boolean;
-  organizers?: Organizer[];
-  selectedOrganizer?: Organizer;
   clearErrorMessage?: () => void;
-  changeOrganizer?: (organizer: Organizer) => void;
-  login?: (code: string) => void;
-  logout?: () => void;
-  selectOrganizer?: (organizerId: number) => void;
 }
 
 const theme = createMuiTheme({
@@ -60,46 +52,7 @@ const App = (props: Props) => {
     <Router>
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <MuiThemeProvider theme={theme}>
-          <div className="App">
-            <SideMenu loggedInUser={props.loggedInUser} />
-            <div
-              style={{
-                flexGrow: 1,
-                flexBasis: 0,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <TopMenu
-                login={props.login}
-                logout={props.logout}
-                loggingIn={props.loggingIn}
-                loggedInUser={props.loggedInUser}
-                organizers={props.organizers}
-                selectedOrganizer={props.selectedOrganizer}
-                selectOrganizer={props.selectOrganizer}
-                title={props.title}
-              />
-              <div className="mainView">
-                {props.loggedInUser && (
-                  <Switch>
-                    <Route path="/" exact component={WelcomeView} />
-                    <Route path="/start" exact component={WelcomeView} />
-                    <Route path="/contests" exact component={ContestList} />
-                    <Route
-                      path="/contests/:contestId"
-                      component={ContestInfo}
-                    />
-                    <Route path="/colors" exact component={ColorList} />
-                    <Route path="/series" exact component={SeriesList} />
-                    <Route path="/organizers" exact component={OrganizerList} />
-                    <Route path="/locations" exact component={LocationList} />
-                  </Switch>
-                )}
-                {!props.loggedInUser && <WelcomeView />}
-              </div>
-            </div>
-          </div>
+          <MainLayout />
           <Snackbar
             anchorOrigin={{
               vertical: "bottom",
@@ -109,7 +62,6 @@ const App = (props: Props) => {
             open={props.errorMessage != undefined}
             autoHideDuration={6000}
             onClose={handleClose}
-            message={<span id="message-id">{"" + props.errorMessage}</span>}
             action={[
               <IconButton
                 key="close"
@@ -120,7 +72,11 @@ const App = (props: Props) => {
                 <Close />
               </IconButton>,
             ]}
-          />
+          >
+            <Alert onClose={handleClose} severity="error">
+              {props.errorMessage}
+            </Alert>
+          </Snackbar>
         </MuiThemeProvider>
       </MuiPickersUtilsProvider>
     </Router>
@@ -130,19 +86,11 @@ const App = (props: Props) => {
 export function mapStateToProps(state: StoreState, props: any): Props {
   return {
     errorMessage: state.errorMessage,
-    title: state.title,
-    loggingIn: state.loggingIn,
-    loggedInUser: state.loggedInUser,
-    organizers: state.organizers,
-    selectedOrganizer: getSelectedOrganizer(state),
   };
 }
 
 const mapDispatchToProps = {
   clearErrorMessage,
-  login,
-  logout,
-  selectOrganizer,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

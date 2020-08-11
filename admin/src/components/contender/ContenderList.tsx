@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -206,7 +205,7 @@ const ContenderList = (props: Props) => {
   }
 
   return (
-    <Paper style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+    <>
       <div style={{ display: "flex", marginTop: 14, alignItems: "center" }}>
         <div style={{ marginLeft: 16, marginRight: "auto" }}>
           {props.contenders?.length} contenders:
@@ -271,7 +270,7 @@ const ContenderList = (props: Props) => {
           <ClearIcon />
         </IconButton>
       </div>
-      <div style={{ flexBasis: 0, flexGrow: 1, overflowY: "auto" }}>
+      <div>
         <Table>
           <TableHead>
             <TableRow>
@@ -367,7 +366,7 @@ const ContenderList = (props: Props) => {
         message="Do you really want to reset all contenders? All ticks and data will be lost."
         onClose={resetContendersConfirmed}
       />
-    </Paper>
+    </>
   );
 };
 

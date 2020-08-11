@@ -26,6 +26,7 @@ import { Tick } from "src/model/tick";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import moment from "moment";
+import Grid from "@material-ui/core/Grid";
 
 interface Props {
   problem?: Problem;
@@ -67,8 +68,8 @@ const ProblemView = (props: Props & StyledComponentProps) => {
   const ticks = props.ticksByProblem?.get(props.problem!.id);
 
   return (
-    <>
-      <li style={props.getProblemStyle?.(props.problem!)}>
+    <Grid item>
+      <div style={props.getProblemStyle?.(props.problem!)}>
         <div style={{ width: 20, fontSize: 16 }}>{props.problem?.number}</div>
         <div
           style={{
@@ -163,7 +164,7 @@ const ProblemView = (props: Props & StyledComponentProps) => {
             {deleting ? <CircularProgress size={24} /> : <DeleteIcon />}
           </IconButton>
         )}
-      </li>
+      </div>
       <ConfirmationDialog
         open={deleteRequested}
         title={"Delete problem"}
@@ -209,7 +210,7 @@ const ProblemView = (props: Props & StyledComponentProps) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Grid>
   );
 };
 

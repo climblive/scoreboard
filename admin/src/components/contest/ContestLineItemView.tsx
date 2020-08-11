@@ -5,26 +5,17 @@ import TableRow from "@material-ui/core/TableRow";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
-import { getLocationMap, getSeriesMap } from "../../selectors/selector";
+import { getSeriesMap } from "../../selectors/selector";
 import { CompLocation } from "../../model/compLocation";
 import { Series } from "src/model/series";
 import moment from "moment";
 
 interface Props {
   contest?: Contest;
-  locationMap: Map<number, CompLocation>;
   seriesMap: Map<number, Series>;
 }
 
 const ContestLineItemView = (props: Props & RouteComponentProps) => {
-  const getLocationName = (id?: number) => {
-    if (id) {
-      return props.locationMap.get(id)?.name;
-    } else {
-      return undefined;
-    }
-  };
-
   const getSeriesName = (id?: number) => {
     if (id) {
       return props.seriesMap.get(id)?.name;
@@ -43,7 +34,6 @@ const ContestLineItemView = (props: Props & RouteComponentProps) => {
       <TableCell component="th" scope="row">
         {props.contest?.name}
       </TableCell>
-      <TableCell>{getLocationName(props.contest?.locationId)}</TableCell>
       <TableCell>{getSeriesName(props.contest?.seriesId)}</TableCell>
       <TableCell>
         {props.contest?.timeBegin
@@ -61,7 +51,6 @@ const ContestLineItemView = (props: Props & RouteComponentProps) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    locationMap: getLocationMap(state),
     seriesMap: getSeriesMap(state),
   };
 }

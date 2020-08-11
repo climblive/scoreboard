@@ -37,7 +37,7 @@ const CompClassView = (props: Props) => {
       <TableCell>{props.compClass?.description}</TableCell>
       <TableCell>{moment(props.compClass?.timeBegin).format(format)}</TableCell>
       <TableCell>{moment(props.compClass?.timeEnd).format(format)}</TableCell>
-      <TableCell className={"icon-cell"}>
+      <TableCell align="right" className={"icon-cell"}>
         <IconButton
           color="inherit"
           aria-label="Menu"

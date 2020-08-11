@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
-import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -50,15 +49,15 @@ const CompClassList = (
   };
 
   return (
-    <Paper style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+    <>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{ minWidth: 120 }}>Name</TableCell>
-            <TableCell style={{ width: "100%" }}>Description</TableCell>
-            <TableCell style={{ minWidth: 130 }}>Start time</TableCell>
-            <TableCell style={{ minWidth: 130 }}>End time</TableCell>
-            <TableCell className={"icon-cell"} style={{ minWidth: 96 }}>
+            <TableCell>Name</TableCell>
+            <TableCell>Description</TableCell>
+            <TableCell>Start time</TableCell>
+            <TableCell>End time</TableCell>
+            <TableCell align="right" className={"icon-cell"}>
               <IconButton
                 color="inherit"
                 aria-label="Menu"
@@ -106,7 +105,7 @@ const CompClassList = (
           </div>
         </div>
       )}
-    </Paper>
+    </>
   );
 };
 

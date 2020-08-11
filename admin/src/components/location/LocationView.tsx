@@ -31,13 +31,9 @@ const LocationView = (props: Props) => {
       <TableCell component="th" scope="row">
         {props.location?.name}
       </TableCell>
-      <TableCell component="th" scope="row">
-        {props.location?.longitude}
-      </TableCell>
-      <TableCell component="th" scope="row">
-        {props.location?.latitude}
-      </TableCell>
-      <TableCell className={"icon-cell"}>
+      <TableCell>{props.location?.longitude}</TableCell>
+      <TableCell>{props.location?.latitude}</TableCell>
+      <TableCell align="right" className={"icon-cell"}>
         <IconButton
           color="inherit"
           aria-label="Menu"

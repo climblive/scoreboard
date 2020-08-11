@@ -100,7 +100,7 @@ const CompClassEdit = (props: Props) => {
           onChange={onTimeEndChange}
         />
       </TableCell>
-      <TableCell>
+      <TableCell align="right">
         <IconButton
           color="inherit"
           aria-label="Menu"

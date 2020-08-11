@@ -92,7 +92,12 @@ const ColorEdit = (props: Props) => {
     <>
       <TableRow>
         <TableCell component="th" scope="row">
-          <TextField style={{}} value={color?.name} onChange={onNameChange} />
+          <TextField
+            size="small"
+            style={{ width: 200 }}
+            value={color?.name}
+            onChange={onNameChange}
+          />
         </TableCell>
         <TableCell>
           <div
@@ -103,14 +108,18 @@ const ColorEdit = (props: Props) => {
           </div>
         </TableCell>
         <TableCell>
-          <div
-            style={getColorStyle(color?.rgbSecondary, true)}
-            onClick={showPopupSecondary}
-          >
-            {color?.rgbSecondary ?? "None"}
-          </div>
+          {color?.rgbSecondary ? (
+            <div
+              style={getColorStyle(color?.rgbSecondary, true)}
+              onClick={showPopupSecondary}
+            >
+              {color?.rgbSecondary}
+            </div>
+          ) : (
+            "None"
+          )}
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell align="right">
           <Switch
             disabled={!props.loggedInUser?.admin}
             checked={color.shared}
@@ -118,7 +127,7 @@ const ColorEdit = (props: Props) => {
           />
         </TableCell>
 
-        <TableCell>
+        <TableCell align="right">
           <IconButton
             color="inherit"
             aria-label="Menu"

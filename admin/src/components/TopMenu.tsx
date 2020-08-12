@@ -64,10 +64,10 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     let query = qs.parse(props.location.hash, {
       ignoreQueryPrefix: true,
     });
-    let credentials = query.access_token;
+    let credentials: string | null = query.access_token as string;
 
     if (credentials) {
-      props.login!(credentials);
+      props.login?.(credentials);
       props.history.push("/contests");
     } else {
       credentials = localStorage.getItem("credentials");

@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
+import {
+  StyledComponentProps,
+  TableCell,
+  Theme,
+  Button,
+} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
@@ -17,6 +22,8 @@ import OrganizerListItem from "./OrganizerListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { OrderedMap } from "immutable";
+import ContentLayout from "../ContentLayout";
+import { ProgressButton } from "../ProgressButton";
 
 interface Props {
   organizers?: OrderedMap<number, Organizer>;
@@ -45,32 +52,37 @@ const OrganizerList = (
     props.loadOrganizers?.().finally(() => setRefreshing(false));
   };
 
+  const buttons = [
+    <Button
+      variant="contained"
+      color="secondary"
+      size="small"
+      disabled={showCreate}
+      onClick={() => setShowCreate(true)}
+      startIcon={<AddIcon />}
+    >
+      Add
+    </Button>,
+    <ProgressButton
+      variant="contained"
+      color="secondary"
+      size="small"
+      onClick={refreshOrganizers}
+      startIcon={<RefreshIcon />}
+      loading={refreshing}
+    >
+      Refresh
+    </ProgressButton>,
+  ];
+
   return (
-    <>
+    <ContentLayout buttons={buttons}>
       <Table className={props.classes?.table}>
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Homepage</TableCell>
-            <TableCell align="right" className={"icon-cell"}>
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Add"
-                disabled={showCreate}
-                onClick={() => setShowCreate(true)}
-              >
-                <AddIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Refresh"
-                onClick={refreshOrganizers}
-              >
-                {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-              </IconButton>
-            </TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -85,7 +97,7 @@ const OrganizerList = (
           ))}
         </TableBody>
       </Table>
-    </>
+    </ContentLayout>
   );
 };
 

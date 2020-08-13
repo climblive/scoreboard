@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
+import {
+  StyledComponentProps,
+  TableCell,
+  Theme,
+  Button,
+} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
@@ -19,6 +24,8 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { OrderedMap } from "immutable";
+import ContentLayout from "../ContentLayout";
+import { ProgressButton } from "../ProgressButton";
 
 interface Props {
   locations?: OrderedMap<number, CompLocation>;
@@ -53,37 +60,38 @@ const LocationList = (
     props.loadLocations?.().finally(() => setRefreshing(false));
   };
 
+  const buttons = [
+    <Button
+      variant="contained"
+      color="secondary"
+      size="small"
+      disabled={showCreate}
+      onClick={() => setShowCreate(true)}
+      startIcon={<AddIcon />}
+    >
+      Add
+    </Button>,
+    <ProgressButton
+      variant="contained"
+      color="secondary"
+      size="small"
+      onClick={refreshLocations}
+      startIcon={<RefreshIcon />}
+      loading={refreshing}
+    >
+      Refresh
+    </ProgressButton>,
+  ];
+
   return (
-    <>
+    <ContentLayout buttons={buttons}>
       <Table className={props.classes?.table}>
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Longitude</TableCell>
             <TableCell>Latitude</TableCell>
-            <TableCell
-              align="right"
-              className={"icon-cell"}
-              style={{ minWidth: 96 }}
-            >
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Add"
-                disabled={showCreate}
-                onClick={() => setShowCreate(true)}
-              >
-                <AddIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Refresh"
-                onClick={refreshLocations}
-              >
-                {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-              </IconButton>
-            </TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -101,7 +109,7 @@ const LocationList = (
           ))}
         </TableBody>
       </Table>
-    </>
+    </ContentLayout>
   );
 };
 

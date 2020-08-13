@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
+import {
+  StyledComponentProps,
+  TableCell,
+  Theme,
+  Button,
+} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
@@ -18,6 +23,8 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { OrderedMap } from "immutable";
+import ContentLayout from "../ContentLayout";
+import { ProgressButton } from "../ProgressButton";
 
 interface Props {
   colors?: OrderedMap<number, Color>;
@@ -52,53 +59,60 @@ const ColorList = (
     props.loadColors?.().finally(() => setRefreshing(false));
   };
 
+  const buttons = [
+    <Button
+      variant="contained"
+      color="secondary"
+      size="small"
+      disabled={showCreate}
+      onClick={() => setShowCreate(true)}
+      startIcon={<AddIcon />}
+    >
+      Add
+    </Button>,
+    <ProgressButton
+      variant="contained"
+      color="secondary"
+      size="small"
+      onClick={refreshColors}
+      startIcon={<RefreshIcon />}
+      loading={refreshing}
+    >
+      Refresh
+    </ProgressButton>,
+  ];
+
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Primary</TableCell>
-          <TableCell>Secondary</TableCell>
-          <TableCell align="right">Shared</TableCell>
-          <TableCell align="right" className={"icon-cell"}>
-            <IconButton
-              color="inherit"
-              aria-label="Menu"
-              title="Add"
-              disabled={showCreate}
-              onClick={() => setShowCreate(true)}
-            >
-              <AddIcon />
-            </IconButton>
-            <IconButton
-              color="inherit"
-              aria-label="Menu"
-              title="Refresh"
-              onClick={refreshColors}
-            >
-              {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {showCreate && (
-          <ColorListItem
-            onCreateDone={onCreateDone}
-            color={{
-              organizerId: props.selectedOrganizer?.id!,
-              name: "",
-              rgbPrimary: "#ffffff",
-              rgbSecondary: "#ffffff",
-              shared: false,
-            }}
-          />
-        )}
-        {props.colors?.toArray()?.map((color: Color) => (
-          <ColorListItem key={color.id!} color={color} />
-        ))}
-      </TableBody>
-    </Table>
+    <ContentLayout buttons={buttons}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Primary</TableCell>
+            <TableCell>Secondary</TableCell>
+            <TableCell align="right">Shared</TableCell>
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {showCreate && (
+            <ColorListItem
+              onCreateDone={onCreateDone}
+              color={{
+                organizerId: props.selectedOrganizer?.id!,
+                name: "",
+                rgbPrimary: "#ffffff",
+                rgbSecondary: "#ffffff",
+                shared: false,
+              }}
+            />
+          )}
+          {props.colors?.toArray()?.map((color: Color) => (
+            <ColorListItem key={color.id!} color={color} />
+          ))}
+        </TableBody>
+      </Table>
+    </ContentLayout>
   );
 };
 

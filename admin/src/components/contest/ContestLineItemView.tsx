@@ -1,6 +1,6 @@
 import React from "react";
 import { Contest } from "../../model/contest";
-import { TableCell } from "@material-ui/core";
+import { TableCell, Hidden } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
@@ -33,17 +33,19 @@ const ContestLineItemView = (props: Props & RouteComponentProps) => {
       <TableCell component="th" scope="row">
         {props.contest?.name}
       </TableCell>
-      <TableCell>{getSeriesName(props.contest?.seriesId)}</TableCell>
-      <TableCell>
-        {props.contest?.timeBegin
-          ? moment(props.contest?.timeBegin).format("YYYY-MM-DD HH:mm")
-          : undefined}
-      </TableCell>
-      <TableCell>
-        {props.contest?.timeEnd
-          ? moment(props.contest?.timeEnd).format("YYYY-MM-DD HH:mm")
-          : undefined}
-      </TableCell>
+      <Hidden smDown>
+        <TableCell>
+          {props.contest?.timeBegin
+            ? moment(props.contest?.timeBegin).format("YYYY-MM-DD HH:mm")
+            : undefined}
+        </TableCell>
+        <TableCell>
+          {props.contest?.timeEnd
+            ? moment(props.contest?.timeEnd).format("YYYY-MM-DD HH:mm")
+            : undefined}
+        </TableCell>
+        <TableCell>{getSeriesName(props.contest?.seriesId)}</TableCell>
+      </Hidden>
     </TableRow>
   );
 };

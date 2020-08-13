@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Contest } from "../../model/contest";
-import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
+import {
+  StyledComponentProps,
+  TableCell,
+  Theme,
+  Hidden,
+  Button,
+} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
@@ -16,6 +22,8 @@ import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import ContestLineItemView from "./ContestLineItemView";
 import { OrderedMap } from "immutable";
+import ContentLayout from "../ContentLayout";
+import { ProgressButton } from "../ProgressButton";
 
 interface Props {
   contests?: OrderedMap<number, Contest>;
@@ -43,33 +51,39 @@ const ContestList = (
     props.loadContests?.().finally(() => setRefreshing(false));
   };
 
+  const buttons = [
+    <Button
+      variant="contained"
+      color="secondary"
+      size="small"
+      onClick={() => props.history.push("/contests/new")}
+      startIcon={<AddIcon />}
+    >
+      Add
+    </Button>,
+    <ProgressButton
+      variant="contained"
+      color="secondary"
+      size="small"
+      onClick={refreshContests}
+      startIcon={<RefreshIcon />}
+      loading={refreshing}
+    >
+      Refresh
+    </ProgressButton>,
+  ];
+
   return (
-    <>
+    <ContentLayout buttons={buttons}>
       <Table className={props.classes?.table}>
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Series</TableCell>
-            <TableCell>Start time</TableCell>
-            <TableCell>End time</TableCell>
-            <TableCell className={"icon-cell"}>
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Add"
-                onClick={() => props.history.push("/contests/new")}
-              >
-                <AddIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Refresh"
-                onClick={refreshContests}
-              >
-                {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-              </IconButton>
-            </TableCell>
+            <Hidden smDown>
+              <TableCell>End time</TableCell>
+              <TableCell>Start time</TableCell>
+              <TableCell>Series</TableCell>
+            </Hidden>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -85,7 +99,7 @@ const ContestList = (
           </div>
         </div>
       )}
-    </>
+    </ContentLayout>
   );
 };
 

@@ -138,23 +138,15 @@ const MainLayout = (props: Props) => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {props.isLoggedIn && (
-          <>
-            <Typography variant="h6" noWrap style={{ marginBottom: "1rem" }}>
-              {props.title}
-            </Typography>
-            <Divider />
-            <Paper style={{ marginTop: "1rem" }}>
-              <Switch>
-                <Route path="(/|/contests)" exact component={ContestList} />
-                <Route path="/contests/:contestId" component={ContestInfo} />
-                <Route path="/colors" exact component={ColorList} />
-                <Route path="/series" exact component={SeriesList} />
-                <Route path="/organizers" exact component={OrganizerList} />
-                <Route path="/locations" exact component={LocationList} />
-                <Route path="/" component={NotFound} />
-              </Switch>
-            </Paper>
-          </>
+          <Switch>
+            <Route path="(/|/contests)" exact component={ContestList} />
+            <Route path="/contests/:contestId" component={ContestInfo} />
+            <Route path="/colors" exact component={ColorList} />
+            <Route path="/series" exact component={SeriesList} />
+            <Route path="/organizers" exact component={OrganizerList} />
+            <Route path="/locations" exact component={LocationList} />
+            <Route path="/" component={NotFound} />
+          </Switch>
         )}
       </main>
     </div>

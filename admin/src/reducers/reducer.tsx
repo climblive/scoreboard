@@ -3,6 +3,17 @@ import * as scoreboardActions from "../actions/actions";
 import { ActionType, getType } from "typesafe-actions";
 import { Problem } from "../model/problem";
 import { SortBy } from "../constants/sortBy";
+import { Map, OrderedMap } from "immutable";
+import { Color } from "../model/color";
+import { Series } from "../model/series";
+import { Organizer } from "../model/organizer";
+import { CompLocation } from "../model/compLocation";
+import { Contest } from "../model/contest";
+import { CompClass } from "src/model/compClass";
+import { Tick } from "src/model/tick";
+import initialState from "../initialState";
+import { ContenderData } from "src/model/contenderData";
+import { Raffle } from "src/model/raffle";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -15,12 +26,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       return { ...state, loggedInUser: action.payload };
 
     case getType(scoreboardActions.logout):
-      return {
-        title: "",
-        loggingIn: false,
-        creatingPdf: false,
-        contenderSortBy: SortBy.BY_NAME,
-      };
+      return initialState;
 
     case getType(scoreboardActions.clearErrorMessage):
       return { ...state, errorMessage: undefined };
@@ -36,39 +42,30 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.replaceContests):
-      return { ...state, contests: action.payload };
+      return {
+        ...state,
+        contests: OrderedMap<number, Contest>(
+          action.payload.map((contest) => [contest.id, contest])
+        ),
+      };
 
     case getType(scoreboardActions.updateContestSuccess): {
-      let replaced = false;
-      let contests = state.contests?.map((contest) => {
-        if (contest.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return contest;
-        }
-      });
-
-      if (!replaced) {
-        contests = contests?.concat(action.payload);
-      }
+      let contests = state.contests;
 
       if (contests == undefined) {
-        contests = [action.payload];
+        contests = OrderedMap<number, Contest>();
       }
 
       return {
         ...state,
-        contests,
+        contests: contests.set(action.payload.id!, action.payload),
       };
     }
 
     case getType(scoreboardActions.deleteContestSuccess):
       return {
         ...state,
-        contests: state.contests?.filter(
-          (contests) => contests.id != action.payload.id
-        ),
+        contests: state.contests?.delete(action.payload.id!),
       };
 
     // -------------------------------------------------------------------------
@@ -78,37 +75,34 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveCompClasses):
       return {
         ...state,
-        compClasses: dedupeMerge(state.compClasses, action.payload),
+        compClassesByContest: state.compClassesByContest.withMutations((map) =>
+          action.payload.reduce(
+            (compClasses, compClass) =>
+              compClasses.mergeIn(
+                [compClass.contestId],
+                OrderedMap<number, CompClass>([[compClass.id, compClass]])
+              ),
+            map as any
+          )
+        ),
       };
 
-    case getType(scoreboardActions.updateCompClassSuccess): {
-      let replaced = false;
-      let compClasses = state.compClasses?.map((compClass) => {
-        if (compClass.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return compClass;
-        }
-      });
-
-      if (!replaced) {
-        compClasses = compClasses?.concat(action.payload);
-      }
-
-      if (compClasses == undefined) {
-        compClasses = [action.payload];
-      }
-
-      return { ...state, compClasses };
-    }
+    case getType(scoreboardActions.updateCompClassSuccess):
+      return {
+        ...state,
+        compClassesByContest: state.compClassesByContest.setIn(
+          [action.payload.contestId, action.payload.id],
+          action.payload
+        ),
+      };
 
     case getType(scoreboardActions.deleteCompClassSuccess):
       return {
         ...state,
-        compClasses: state.compClasses?.filter(
-          (compClass) => compClass.id != action.payload.id
-        ),
+        compClassesByContest: state.compClassesByContest.deleteIn([
+          action.payload.contestId,
+          action.payload.id,
+        ]),
       };
 
     // -------------------------------------------------------------------------
@@ -118,35 +112,34 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveProblems):
       return {
         ...state,
-        problems: dedupeMerge(state.problems, action.payload),
+        problemsByContest: state.problemsByContest.withMutations((map) =>
+          action.payload.reduce(
+            (problems, problem) =>
+              problems.mergeIn(
+                [problem.contestId],
+                OrderedMap<number, Problem>([[problem.id, problem]])
+              ),
+            map as any
+          )
+        ),
       };
 
-    case getType(scoreboardActions.updateProblemSuccess): {
-      let replaced = false;
-      let problems = state.problems?.map((problem) => {
-        if (problem.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return problem;
-        }
-      });
-
-      if (!replaced) {
-        problems = insertProblemAndRenumber(action.payload, problems);
-      }
-
-      if (problems == undefined) {
-        problems = [action.payload];
-      }
-
-      return { ...state, problems };
-    }
+    case getType(scoreboardActions.updateProblemSuccess):
+      return {
+        ...state,
+        problemsByContest: state.problemsByContest.setIn(
+          [action.payload.contestId, action.payload.id],
+          action.payload
+        ),
+      };
 
     case getType(scoreboardActions.deleteProblemSuccess):
       return {
         ...state,
-        problems: deleteProblemAndRenumber(action.payload, state.problems),
+        problemsByContest: state.problemsByContest.deleteIn([
+          action.payload.contestId,
+          action.payload.id,
+        ]),
       };
 
     // -------------------------------------------------------------------------
@@ -154,39 +147,30 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.replaceColors):
-      return { ...state, colors: action.payload };
+      return {
+        ...state,
+        colors: OrderedMap<number, Color>(
+          action.payload.map((color) => [color.id, color])
+        ),
+      };
 
     case getType(scoreboardActions.updateColorSuccess): {
-      let replaced = false;
-      let colors = state.colors?.map((color) => {
-        if (color.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return color;
-        }
-      });
-
-      if (!replaced) {
-        colors = colors?.concat(action.payload);
-      }
+      let colors = state.colors;
 
       if (colors == undefined) {
-        colors = [action.payload];
+        colors = OrderedMap<number, Color>();
       }
 
       return {
         ...state,
-        colors,
+        colors: state.colors?.set(action.payload.id!, action.payload),
       };
     }
 
     case getType(scoreboardActions.deleteColorSuccess):
       return {
         ...state,
-        colors: state.colors?.filter(
-          (colors) => colors.id != action.payload.id
-        ),
+        colors: state.colors?.delete(action.payload.id!),
       };
 
     // -------------------------------------------------------------------------
@@ -194,37 +178,30 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.replaceSeries):
-      return { ...state, series: action.payload };
+      return {
+        ...state,
+        series: OrderedMap<number, Series>(
+          action.payload.map((series) => [series.id, series])
+        ),
+      };
 
     case getType(scoreboardActions.updateSeriesSuccess): {
-      let replaced = false;
-      let series = state.series?.map((s) => {
-        if (s.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return s;
-        }
-      });
-
-      if (!replaced) {
-        series = series?.concat(action.payload);
-      }
+      let series = state.series;
 
       if (series == undefined) {
-        series = [action.payload];
+        series = OrderedMap<number, Series>();
       }
 
       return {
         ...state,
-        series,
+        series: series.set(action.payload.id!, action.payload),
       };
     }
 
     case getType(scoreboardActions.deleteSeriesSuccess):
       return {
         ...state,
-        series: state.series?.filter((s) => s.id != action.payload.id),
+        series: state.series?.delete(action.payload.id!),
       };
 
     // -------------------------------------------------------------------------
@@ -232,39 +209,30 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.replaceLocations):
-      return { ...state, locations: action.payload };
+      return {
+        ...state,
+        locations: OrderedMap<number, CompLocation>(
+          action.payload.map((location) => [location.id, location])
+        ),
+      };
 
     case getType(scoreboardActions.updateLocationSuccess): {
-      let replaced = false;
-      let locations = state.locations?.map((location) => {
-        if (location.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return location;
-        }
-      });
-
-      if (!replaced) {
-        locations = locations?.concat(action.payload);
-      }
+      let locations = state.locations;
 
       if (locations == undefined) {
-        locations = [action.payload];
+        locations = OrderedMap<number, CompLocation>();
       }
 
       return {
         ...state,
-        locations,
+        locations: locations.set(action.payload.id!, action.payload),
       };
     }
 
     case getType(scoreboardActions.deleteLocationSuccess):
       return {
         ...state,
-        locations: state.locations?.filter(
-          (locations) => locations.id != action.payload.id
-        ),
+        locations: state.locations?.delete(action.payload.id!),
       };
 
     // -------------------------------------------------------------------------
@@ -272,39 +240,30 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.replaceOrganizers):
-      return { ...state, organizers: action.payload };
+      return {
+        ...state,
+        organizers: OrderedMap<number, Organizer>(
+          action.payload.map((organizer) => [organizer.id, organizer])
+        ),
+      };
 
     case getType(scoreboardActions.updateOrganizerSuccess): {
-      let replaced = false;
-      let organizers = state.organizers?.map((organizer) => {
-        if (organizer.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return organizer;
-        }
-      });
-
-      if (!replaced) {
-        organizers = organizers?.concat(action.payload);
-      }
+      let organizers = state.organizers;
 
       if (organizers == undefined) {
-        organizers = [action.payload];
+        organizers = OrderedMap<number, Organizer>();
       }
 
       return {
         ...state,
-        organizers,
+        organizers: organizers.set(action.payload.id!, action.payload),
       };
     }
 
     case getType(scoreboardActions.deleteOrganizerSuccess):
       return {
         ...state,
-        organizers: state.organizers?.filter(
-          (organizer) => organizer.id != action.payload.id
-        ),
+        organizers: state.organizers?.delete(action.payload.id!),
       };
 
     case getType(scoreboardActions.selectOrganizer):
@@ -327,7 +286,19 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveTicks):
-      return { ...state, ticks: dedupeMerge(state.ticks, action.payload) };
+      return {
+        ...state,
+        ticksByContest: state.ticksByContest.withMutations((map) =>
+          action.payload.reduce(
+            (ticks, tick) =>
+              ticks.mergeIn(
+                [tick.contestId],
+                OrderedMap<number, Tick>([[tick.id, tick]])
+              ),
+            map as any
+          )
+        ),
+      };
 
     // -------------------------------------------------------------------------
     // Contenders
@@ -336,122 +307,92 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.receiveContenders):
       return {
         ...state,
-        contenders: dedupeMerge(state.contenders, action.payload),
+        contendersByContest: state.contendersByContest.withMutations((map) =>
+          action.payload.reduce(
+            (contenders, contender) =>
+              contenders.mergeIn(
+                [contender.contestId],
+                OrderedMap<number, ContenderData>([[contender.id, contender]])
+              ),
+            map as any
+          )
+        ),
       };
 
-    case getType(scoreboardActions.updateContenderSuccess): {
-      let replaced = false;
-      let contenders = state.contenders?.map((contender) => {
-        if (contender.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return contender;
-        }
-      });
-
-      if (!replaced) {
-        contenders = contenders?.concat(action.payload);
-      }
-
-      if (contenders == undefined) {
-        contenders = [action.payload];
-      }
-
-      return { ...state, contenders };
-    }
+    case getType(scoreboardActions.updateContenderSuccess):
+      return {
+        ...state,
+        contendersByContest: state.contendersByContest.setIn(
+          [action.payload.contestId, action.payload.id],
+          action.payload
+        ),
+      };
 
     // -------------------------------------------------------------------------
     // Raffles
     // -------------------------------------------------------------------------
 
     case getType(scoreboardActions.receiveRaffles):
-      return { ...state, raffles: dedupeMerge(state.raffles, action.payload) };
+      return {
+        ...state,
+        rafflesByContest: state.rafflesByContest.withMutations((map) =>
+          action.payload.reduce(
+            (raffles, raffle) =>
+              raffles.mergeIn(
+                [raffle.contestId],
+                OrderedMap<number, Raffle>([[raffle.id, raffle]])
+              ),
+            map as any
+          )
+        ),
+      };
 
-    case getType(scoreboardActions.updateRaffleSuccess): {
-      let replaced = false;
-      let raffles = state.raffles?.map((raffle) => {
-        if (raffle.id == action.payload.id) {
-          replaced = true;
-          return action.payload;
-        } else {
-          return raffle;
-        }
-      });
-
-      if (!replaced) {
-        raffles = raffles?.concat(action.payload);
-      }
-
-      if (raffles == undefined) {
-        raffles = [action.payload];
-      }
-
-      return { ...state, raffles };
-    }
+    case getType(scoreboardActions.updateRaffleSuccess):
+      return {
+        ...state,
+        rafflesByContest: state.rafflesByContest.setIn(
+          [action.payload.contestId, action.payload.id],
+          action.payload
+        ),
+      };
 
     case getType(scoreboardActions.deleteRaffleSuccess):
       return {
         ...state,
-        raffles: state.raffles?.filter(
-          (raffle) => raffle.id != action.payload.id
+        rafflesByContest: state.rafflesByContest.deleteIn([
+          action.payload.contestId,
+          action.payload.id,
+        ]),
+      };
+
+    case getType(scoreboardActions.receiveRaffleWinners):
+      return {
+        ...state,
+        raffleWinnersByRaffle: state.raffleWinnersByRaffle.withMutations(
+          (map) =>
+            action.payload.reduce(
+              (raffleWinners, raffleWinner) =>
+                raffleWinners.mergeIn(
+                  [raffleWinner.raffleId],
+                  OrderedMap<number, Raffle>([[raffleWinner.id, raffleWinner]])
+                ),
+              map as any
+            )
         ),
       };
 
-    case getType(scoreboardActions.receiveRaffleWinners): {
-      let raffles = state.raffles?.map((raffle) => {
-        if ((raffle.id = action.payload.raffle.id)) {
-          let winners = dedupeMerge(
-            raffle.winners ?? [],
-            action.payload.winners
-          );
-          return { ...raffle, winners };
-        } else {
-          return raffle;
-        }
-      });
-
-      return { ...state, raffles };
-    }
-
-    case getType(scoreboardActions.receiveRaffleWinner): {
-      let raffles = state.raffles?.map((raffle) => {
-        if ((raffle.id = action.payload.raffleId)) {
-          let winners = dedupeMerge(raffle.winners ?? [], [action.payload]);
-          return { ...raffle, winners };
-        } else {
-          return raffle;
-        }
-      });
-
-      return { ...state, raffles };
-    }
+    case getType(scoreboardActions.receiveRaffleWinner):
+      return {
+        ...state,
+        raffleWinnersByRaffle: state.raffleWinnersByRaffle.setIn(
+          [action.payload.raffleId, action.payload.id],
+          action.payload
+        ),
+      };
 
     default:
       return state;
   }
-};
-
-const dedupeMerge = <T extends unknown>(
-  arr1: T[] | undefined,
-  arr2: T[],
-  property: string = "id"
-): T[] => {
-  if (arr1 == undefined) {
-    return arr2;
-  }
-
-  let map = {};
-
-  arr1?.forEach((object) => {
-    map[object[property]] = object;
-  });
-
-  arr2.forEach((object) => {
-    map[object[property]] = object;
-  });
-
-  return Object.values(map);
 };
 
 const insertProblemAndRenumber = (

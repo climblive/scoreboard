@@ -15,9 +15,10 @@ import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import ContestLineItemView from "./ContestLineItemView";
+import { OrderedMap } from "immutable";
 
 interface Props {
-  contests?: Contest[];
+  contests?: OrderedMap<number, Contest>;
   loadContests?: () => Promise<void>;
   setTitle?: (title: string) => void;
 }
@@ -72,12 +73,12 @@ const ContestList = (
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.contests?.map((contest) => (
+          {props.contests?.toArray()?.map((contest: Contest) => (
             <ContestLineItemView key={contest.id} contest={contest} />
           ))}
         </TableBody>
       </Table>
-      {(props.contests?.length ?? 0) === 0 && (
+      {(props.contests?.size ?? 0) === 0 && (
         <div className={"emptyText"}>
           <div>
             Create your first contest by clicking the plus button above.

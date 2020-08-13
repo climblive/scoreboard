@@ -18,9 +18,10 @@ import LocationListItem from "./LocationListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import { OrderedMap } from "immutable";
 
 interface Props {
-  locations?: CompLocation[];
+  locations?: OrderedMap<number, CompLocation>;
   selectedOrganizer?: Organizer;
 
   loadLocations?: () => Promise<void>;
@@ -95,7 +96,7 @@ const LocationList = (
               }}
             />
           )}
-          {props.locations?.map((location) => (
+          {props.locations?.toArray()?.map((location: CompLocation) => (
             <LocationListItem key={location.id!} location={location} />
           ))}
         </TableBody>

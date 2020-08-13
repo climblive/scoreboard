@@ -9,19 +9,20 @@ import { TableCell } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import { CircularProgress } from "@material-ui/core";
 import { ContenderData } from "src/model/contenderData";
-import { getContenderMap } from "../../selectors/selector";
 import StopIcon from "@material-ui/icons/Stop";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { saveRaffle, drawWinner } from "../../actions/asyncActions";
 import { RaffleWinner } from "src/model/raffleWinner";
+import { OrderedMap } from "immutable";
 
 interface Props {
   raffle?: Raffle;
+  raffleWinners?: OrderedMap<number, RaffleWinner>;
   deleteRaffle?: (raffle: Raffle) => Promise<void>;
   saveRaffle?: (raffle: Raffle) => Promise<Raffle>;
   drawWinner?: (raffle: Raffle) => Promise<RaffleWinner>;
-  contenderMap: Map<number, ContenderData>;
+  contenders?: OrderedMap<number, ContenderData>;
 }
 
 const RaffleView = (props: Props) => {
@@ -31,7 +32,7 @@ const RaffleView = (props: Props) => {
   let [deleteRequested, setDeleteRequested] = useState<boolean>(false);
 
   const getContenderName = (contenderId: number) => {
-    let contender = props.contenderMap.get(contenderId);
+    let contender = props.contenders?.get(contenderId);
     return contender
       ? contender.name
       : "Unknown contender with id " + contenderId;
@@ -69,7 +70,7 @@ const RaffleView = (props: Props) => {
           {props.raffle?.id}
         </TableCell>
         <TableCell component="th" scope="row">
-          {(props.raffle?.winners! || []).map((winner) => {
+          {props.raffleWinners?.toArray()?.map((winner: RaffleWinner) => {
             return (
               <div className="raffleWinner" key={winner.id}>
                 {getContenderName(winner.contenderId)}
@@ -131,7 +132,7 @@ const RaffleView = (props: Props) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    contenderMap: getContenderMap(state),
+    raffleWinners: state.raffleWinnersByRaffle.get(props.raffle.id),
   };
 }
 

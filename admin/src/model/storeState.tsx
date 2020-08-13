@@ -1,14 +1,16 @@
-import { ContenderData } from "./contenderData";
 import { Contest } from "./contest";
-import { Problem } from "./problem";
-import { CompClass } from "./compClass";
 import { Color } from "./color";
 import { Organizer } from "./organizer";
 import { CompLocation } from "./compLocation";
 import { Series } from "./series";
 import { User } from "./user";
+import { OrderedMap, Map } from "immutable";
+import { ContenderData } from "./contenderData";
+import { Problem } from "./problem";
+import { CompClass } from "./compClass";
 import { Tick } from "./tick";
 import { Raffle } from "./raffle";
+import { RaffleWinner } from "./raffleWinner";
 
 export interface StoreState {
   title: string;
@@ -16,26 +18,24 @@ export interface StoreState {
   loggingIn: boolean;
   loggedInUser?: User;
 
-  contests?: Contest[];
+  contests?: OrderedMap<number, Contest>;
 
-  problems?: Problem[];
+  compClassesByContest: Map<number, OrderedMap<number, CompClass>>;
+  rafflesByContest: Map<number, OrderedMap<number, Raffle>>;
+  contendersByContest: Map<number, OrderedMap<number, ContenderData>>;
+  problemsByContest: Map<number, OrderedMap<number, Problem>>;
+  ticksByContest: Map<number, OrderedMap<number, Tick>>;
 
-  compClasses?: CompClass[];
+  raffleWinnersByRaffle: Map<number, OrderedMap<number, RaffleWinner>>;
 
-  contenders?: ContenderData[];
+  colors?: OrderedMap<number, Color>;
 
-  raffles?: Raffle[];
+  series?: OrderedMap<number, Series>;
 
-  colors?: Color[];
+  locations?: OrderedMap<number, CompLocation>;
 
-  series?: Series[];
-
-  locations?: CompLocation[];
-
-  organizers?: Organizer[];
+  organizers?: OrderedMap<number, Organizer>;
   selectedOrganizerId?: number;
-
-  ticks?: Tick[];
 
   errorMessage?: string;
 }

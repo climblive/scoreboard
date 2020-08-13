@@ -16,9 +16,10 @@ import { Organizer } from "../../model/organizer";
 import OrganizerListItem from "./OrganizerListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import { OrderedMap } from "immutable";
 
 interface Props {
-  organizers?: Organizer[];
+  organizers?: OrderedMap<number, Organizer>;
   selectedOrganizer?: Organizer;
 
   loadOrganizers?: () => Promise<void>;
@@ -79,7 +80,7 @@ const OrganizerList = (
               organizer={{ name: "" }}
             />
           )}
-          {props.organizers?.map((organizer) => (
+          {props.organizers?.toArray()?.map((organizer: Organizer) => (
             <OrganizerListItem key={organizer.id!} organizer={organizer} />
           ))}
         </TableBody>

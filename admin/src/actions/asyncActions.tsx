@@ -12,6 +12,7 @@ import { CompLocation } from "../model/compLocation";
 import { Raffle } from "../model/raffle";
 import { ContenderData } from "src/model/contenderData";
 import { RaffleWinner } from "src/model/raffleWinner";
+import { OrderedMap } from "immutable";
 
 export function login(code: string): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
@@ -472,9 +473,7 @@ export function loadRaffles(contestId: number): any {
         dispatch(actions.receiveRaffles(raffles));
         for (let raffle of raffles) {
           Api.getRaffleWinners(raffle).then((winners) => {
-            dispatch(
-              actions.receiveRaffleWinners({ raffle: raffle, winners: winners })
-            );
+            dispatch(actions.receiveRaffleWinners(winners));
           });
         }
         return Promise.resolve();
@@ -528,7 +527,7 @@ export function deleteRaffle(raffle: Raffle): any {
   };
 }
 
-function pickOrganizer(organizers: Organizer[]): Organizer {
+function pickOrganizer(organizers: OrderedMap<number, Organizer>): Organizer {
   let organizer: Organizer | undefined;
 
   let previousOrganizerId = parseInt(
@@ -537,11 +536,11 @@ function pickOrganizer(organizers: Organizer[]): Organizer {
   );
 
   if (previousOrganizerId != null) {
-    organizer = organizers.find((o) => o.id === previousOrganizerId);
+    organizer = organizers.get(previousOrganizerId);
   }
 
   if (organizer == null) {
-    organizer = organizers[0];
+    organizer = organizers.first();
     localStorage.setItem("organizerId", organizer.id!.toString());
   }
 

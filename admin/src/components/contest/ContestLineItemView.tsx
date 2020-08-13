@@ -5,20 +5,19 @@ import TableRow from "@material-ui/core/TableRow";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
-import { getSeriesMap } from "../../selectors/selector";
-import { CompLocation } from "../../model/compLocation";
 import { Series } from "src/model/series";
 import moment from "moment";
+import { OrderedMap } from "immutable";
 
 interface Props {
   contest?: Contest;
-  seriesMap: Map<number, Series>;
+  series?: OrderedMap<number, Series>;
 }
 
 const ContestLineItemView = (props: Props & RouteComponentProps) => {
   const getSeriesName = (id?: number) => {
     if (id) {
-      return props.seriesMap.get(id)?.name;
+      return props.series?.get(id)?.name;
     } else {
       return undefined;
     }
@@ -51,7 +50,7 @@ const ContestLineItemView = (props: Props & RouteComponentProps) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    seriesMap: getSeriesMap(state),
+    series: state.series,
   };
 }
 

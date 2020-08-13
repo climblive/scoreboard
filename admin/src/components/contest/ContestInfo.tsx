@@ -22,6 +22,7 @@ import {
 } from "../../actions/asyncActions";
 import { Color } from "../../model/color";
 import { RouteComponentProps, withRouter } from "react-router";
+import { OrderedMap } from "immutable";
 
 interface Props {
   match: {
@@ -30,7 +31,7 @@ interface Props {
     };
   };
 
-  colors?: Color[];
+  colors?: OrderedMap<number, Color>;
   loadColors?: () => Promise<void>;
   loadCompClasses?: (contestId: number) => Promise<void>;
   loadProblems?: (contestId: number) => Promise<void>;

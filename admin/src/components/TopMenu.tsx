@@ -32,11 +32,12 @@ import {
   Theme,
   createStyles,
 } from "@material-ui/core/styles";
+import { OrderedMap } from "immutable";
 
 export interface Props {
   loggingIn: boolean;
   loggedInUser?: User;
-  organizers?: Organizer[];
+  organizers?: OrderedMap<number, Organizer>;
   selectedOrganizer?: Organizer;
 
   login?: (code: string) => void;
@@ -80,8 +81,10 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
 
   const onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = parseInt(e.target.value);
-    let organizer = props.organizers!.find((o) => o.id == id)!;
-    props.selectOrganizer?.(organizer.id!);
+    let organizer = props.organizers?.get(id);
+    if (organizer != undefined) {
+      props.selectOrganizer?.(organizer.id!);
+    }
   };
 
   const getUrl = (command: string) => {
@@ -107,13 +110,10 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     props.logout!();
   };
 
-  const loggingIn = props.loggingIn;
-  const loggedInUser = props.loggedInUser;
-  const organizers = props.organizers;
   return (
     <>
       <Hidden smDown implementation="css">
-        {organizers && organizers.length > 1 && (
+        {(props.organizers?.size ?? 0) > 1 && (
           <FormControl
             variant="outlined"
             style={{ minWidth: 200 }}
@@ -126,7 +126,7 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
                 onChange={onOrganizerChange}
                 style={{ color: theme.palette.primary.contrastText }}
               >
-                {organizers!.map((organizer) => (
+                {props.organizers?.toArray()?.map((organizer: Organizer) => (
                   <MenuItem key={organizer.id} value={organizer.id}>
                     {organizer.name}
                   </MenuItem>
@@ -138,8 +138,10 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
       </Hidden>
 
       <div className={classes.authControl}>
-        {loggingIn && <CircularProgress size={20} style={{ color: "white" }} />}
-        {!loggingIn && !loggedInUser && (
+        {props.loggingIn && (
+          <CircularProgress size={20} style={{ color: "white" }} />
+        )}
+        {!props.loggingIn && !props.loggedInUser && (
           <div>
             <Button color="inherit" onClick={login}>
               Login
@@ -149,10 +151,10 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
             </Button>
           </div>
         )}
-        {loggedInUser && (
+        {props.loggedInUser && (
           <div>
-            {loggedInUser.name}
-            {loggedInUser.admin && (
+            {props.loggedInUser.name}
+            {props.loggedInUser.admin && (
               <Chip
                 className={classes.adminLabel}
                 icon={<AccountCircleIcon />}

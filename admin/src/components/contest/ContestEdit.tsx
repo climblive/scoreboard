@@ -33,24 +33,20 @@ import { saveAs } from "file-saver";
 import { Api } from "src/utils/Api";
 import { Problem } from "src/model/problem";
 import { CompClass } from "src/model/compClass";
-import {
-  getProblemsForContestSorted,
-  getCompClassesForContest,
-  getContendersForContest,
-  getSelectedOrganizer,
-} from "../../selectors/selector";
+import { getSelectedOrganizer } from "../../selectors/selector";
 import { ContenderData } from "src/model/contenderData";
 import { Link } from "react-router-dom";
+import { OrderedMap } from "immutable";
 
 interface Props {
   contestId?: number;
-  contests?: Contest[];
-  series?: Series[];
-  locations?: CompLocation[];
+  contests?: OrderedMap<number, Contest>;
+  series?: OrderedMap<number, Series>;
+  locations?: OrderedMap<number, CompLocation>;
   selectedOrganizer?: Organizer;
-  problems?: Problem[];
-  compClasses?: CompClass[];
-  contenders?: ContenderData[];
+  problems?: OrderedMap<number, Problem>;
+  compClasses?: OrderedMap<number, CompClass>;
+  contenders?: OrderedMap<number, ContenderData>;
   setTitle?: (title: string) => void;
   saveContest?: (contest: Contest) => Promise<Contest>;
   deleteContest?: (contest: Contest) => Promise<void>;
@@ -90,9 +86,8 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
 
   useEffect(() => {
     if (props.contestId != undefined) {
-      let contest = props.contests?.find(
-        (contest) => contest.id === props.contestId
-      );
+      let contest = props.contests?.get(props.contestId);
+
       if (contest != undefined) {
         setContest(contest);
       } else {
@@ -114,19 +109,19 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
 
   const contestIssues = useMemo(() => {
     let issues: any[] = [];
-    if ((props.problems?.length ?? 0) == 0) {
+    if ((props.problems?.size ?? 0) == 0) {
       issues.push({
         description: "Please add problems",
         link: `/contests/${props.contestId}/problems`,
       });
     }
-    if ((props.compClasses?.length ?? 0) == 0) {
+    if ((props.compClasses?.size ?? 0) == 0) {
       issues.push({
         description: "Please add at least one competition class",
         link: `/contests/${props.contestId}/classes`,
       });
     }
-    if ((props.contenders?.length ?? 0) == 0) {
+    if ((props.contenders?.size ?? 0) == 0) {
       issues.push({
         description: "Please add contenders",
         link: `/contests/${props.contestId}/contenders`,
@@ -322,7 +317,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               onChange={onDescriptionChange}
               disabled={loading}
             />
-            {(props.locations?.length ?? 0) > 0 && (
+            {(props.locations?.size ?? 0) > 0 && (
               <FormControl style={{ marginTop: 10 }}>
                 <InputLabel shrink htmlFor="location-select">
                   Location
@@ -336,7 +331,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   <MenuItem value="None">
                     <em>None</em>
                   </MenuItem>
-                  {props.locations?.map((location) => (
+                  {props.locations?.toArray()?.map((location: CompLocation) => (
                     <MenuItem key={location.id} value={location.id}>
                       {location.name}
                     </MenuItem>
@@ -344,7 +339,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                 </Select>
               </FormControl>
             )}
-            {(props.series?.length ?? 0) > 0 && (
+            {(props.series?.size ?? 0) > 0 && (
               <FormControl style={{ marginTop: 10 }}>
                 <InputLabel shrink htmlFor="series-select">
                   Series
@@ -358,7 +353,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   <MenuItem value="None">
                     <em>None</em>
                   </MenuItem>
-                  {props.series?.map((series) => (
+                  {props.series?.toArray()?.map((series: Series) => (
                     <MenuItem key={series.id} value={series.id}>
                       {series.name}
                     </MenuItem>
@@ -470,9 +465,9 @@ function mapStateToProps(state: StoreState, props: any): Props {
     series: state.series,
     locations: state.locations,
     selectedOrganizer: getSelectedOrganizer(state),
-    problems: getProblemsForContestSorted(state, props.contestId),
-    compClasses: getCompClassesForContest(state, props.contestId),
-    contenders: getContendersForContest(state, props.contestId),
+    problems: state.problemsByContest.get(props.contestId),
+    compClasses: state.compClassesByContest.get(props.contestId),
+    contenders: state.contendersByContest.get(props.contestId),
   };
 }
 

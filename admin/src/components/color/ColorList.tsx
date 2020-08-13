@@ -17,9 +17,10 @@ import ColorListItem from "./ColorListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import { OrderedMap } from "immutable";
 
 interface Props {
-  colors?: Color[];
+  colors?: OrderedMap<number, Color>;
   selectedOrganizer?: Organizer;
 
   loadColors?: () => Promise<void>;
@@ -93,7 +94,7 @@ const ColorList = (
             }}
           />
         )}
-        {props.colors?.map((color) => (
+        {props.colors?.toArray()?.map((color: Color) => (
           <ColorListItem key={color.id!} color={color} />
         ))}
       </TableBody>

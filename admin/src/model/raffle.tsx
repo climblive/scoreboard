@@ -1,5 +1,3 @@
-import { RaffleWinner } from "./raffleWinner";
-
 export class Raffle {
   id?: number;
   contestId: number;
@@ -12,10 +10,4 @@ export class Raffle {
       active: raffle.active,
     };
   };
-
-  // ---------------------------------------------------------------------------
-  // Internal properties
-  // ---------------------------------------------------------------------------
-
-  winners?: RaffleWinner[];
 }

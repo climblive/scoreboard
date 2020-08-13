@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useMemo } from "react";
 import { StyledComponentProps } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { StoreState } from "../../model/storeState";
@@ -11,23 +11,25 @@ import ProblemListItem from "./ProblemListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import { Color } from "../../model/color";
-import {
-  getColorMap,
-  getProblemsForContestSorted,
-  getTicksByProblem,
-} from "../../selectors/selector";
 import * as Chroma from "chroma-js";
-import { Tick } from "src/model/tick";
-import { getSelectedOrganizer } from "src/selectors/selector";
+import { Tick } from "../../model/tick";
+import { ContenderData } from "../../model/contenderData";
+import { CompClass } from "../../model/compClass";
+import {
+  getSelectedOrganizer,
+  groupTicksByProblem,
+} from "src/selectors/selector";
 import Grid from "@material-ui/core/Grid";
+import { OrderedMap } from "immutable";
 
 interface Props {
   contestId?: number;
-  problems?: Problem[];
+  problems?: OrderedMap<number, Problem>;
   selectedOrganizer?: Organizer;
-  colors?: Color[];
-  colorMap: Map<number, Color>;
-  ticksByProblem?: Map<number | undefined, Tick[]>;
+  colors?: OrderedMap<number, Color>;
+  ticks?: OrderedMap<number, Tick>;
+  contenders?: OrderedMap<number, ContenderData>;
+  compClasses?: OrderedMap<number, CompClass>;
 
   loadProblems?: (contestId: number) => Promise<void>;
   loadColors?: () => Promise<void>;
@@ -39,6 +41,15 @@ const ProblemList = (props: Props & StyledComponentProps) => {
     number | undefined
   >(undefined);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const problemsSorted = useMemo(() => {
+    return props.problems?.toArray()?.sort((p1, p2) => p1.number - p2.number);
+  }, [props.problems]);
+
+  const ticksByProblem = useMemo(() => {
+    let ticks = props.ticks?.toArray();
+    return ticks != undefined ? groupTicksByProblem(ticks) : undefined;
+  }, [props.ticks]);
 
   const createDone = () => {
     setInsertAfterNumber(undefined);
@@ -55,13 +66,13 @@ const ProblemList = (props: Props & StyledComponentProps) => {
 
   const getColorName = (problem: Problem): string => {
     return problem.colorId
-      ? props.colorMap.get(problem.colorId)?.name ?? "UNDEFINED"
+      ? props.colors?.get(problem.colorId)?.name ?? "UNDEFINED"
       : "UNDEFINED";
   };
 
   const getProblemStyle = (problem: Problem, opacity: number = 1) => {
     let color = problem.colorId
-      ? props.colorMap.get(problem.colorId)
+      ? props.colors?.get(problem.colorId)
       : undefined;
     if (!color) {
       color = {
@@ -126,7 +137,7 @@ const ProblemList = (props: Props & StyledComponentProps) => {
     );
   };
 
-  let allowEdit = (props.ticksByProblem?.size ?? 0) === 0;
+  let allowEdit = (ticksByProblem?.size ?? 0) === 0;
 
   return (
     <>
@@ -140,9 +151,9 @@ const ProblemList = (props: Props & StyledComponentProps) => {
       </IconButton>
       <Grid container direction="column">
         {!refreshing &&
-          (props.problems?.length ?? 0) === 0 &&
+          (props.problems?.size ?? 0) === 0 &&
           makeCreateView(1, false)}
-        {props.problems?.map((problem) => {
+        {problemsSorted?.map((problem: Problem) => {
           return (
             <Fragment key={problem.id!}>
               <span
@@ -158,12 +169,15 @@ const ProblemList = (props: Props & StyledComponentProps) => {
                   allowCancel={true}
                   onBeginCreate={beginCreate}
                   problem={problem}
+                  contenders={props.contenders}
+                  compClasses={props.compClasses}
+                  ticks={ticksByProblem?.get(problem.id!)}
                 />
               </span>
               {problem.number == insertAfterNumber &&
                 makeCreateView(
                   problem.number + 1,
-                  (props.problems?.length ?? 0) > 0
+                  (props.problems?.size ?? 0) > 0
                 )}
             </Fragment>
           );
@@ -175,11 +189,12 @@ const ProblemList = (props: Props & StyledComponentProps) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    problems: getProblemsForContestSorted(state, props.contestId),
+    problems: state.problemsByContest.get(props.contestId),
+    ticks: state.ticksByContest.get(props.contestId),
+    contenders: state.contendersByContest.get(props.contestId),
+    compClasses: state.compClassesByContest.get(props.contestId),
     colors: state.colors,
-    colorMap: getColorMap(state),
     selectedOrganizer: getSelectedOrganizer(state),
-    ticksByProblem: getTicksByProblem(state),
   };
 }
 

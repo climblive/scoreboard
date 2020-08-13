@@ -135,7 +135,7 @@ export const deleteRaffleSuccess = createStandardAction(
 )<Raffle>();
 export const receiveRaffleWinners = createStandardAction(
   "RECEIVE_RAFFLE_WINNERS"
-)<{ raffle: Raffle; winners: RaffleWinner[] }>();
+)<RaffleWinner[]>();
 export const receiveRaffleWinner = createStandardAction(
   "RECEIVE_RAFFLE_WINNER"
 )<RaffleWinner>();

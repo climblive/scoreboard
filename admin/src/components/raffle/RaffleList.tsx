@@ -16,7 +16,8 @@ import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { Raffle } from "../../model/raffle";
 import RaffleView from "./RaffleView";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { getRafflesForContest } from "src/selectors/selector";
+import { OrderedMap } from "immutable";
+import { ContenderData } from "../../model/contenderData";
 
 const styles = () =>
   createStyles({
@@ -30,7 +31,8 @@ const styles = () =>
 
 interface Props {
   contestId?: number;
-  raffles?: Raffle[];
+  raffles?: OrderedMap<number, Raffle>;
+  contenders?: OrderedMap<number, ContenderData>;
 
   loadRaffles?: (contestId: number) => Promise<void>;
   saveRaffle?: (raffle: Raffle) => Promise<Raffle>;
@@ -83,12 +85,16 @@ const RaffleList = (
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.raffles?.map((raffle) => (
-            <RaffleView key={raffle.id!} raffle={raffle} />
+          {props.raffles?.toArray()?.map((raffle: Raffle) => (
+            <RaffleView
+              key={raffle.id!}
+              raffle={raffle}
+              contenders={props.contenders}
+            />
           ))}
         </TableBody>
       </Table>
-      {(props.raffles?.length ?? 0) === 0 && (
+      {(props.raffles?.size ?? 0) === 0 && (
         <div className={"emptyText"}>
           <div>You have no raffles.</div>
           <div>Please create a raffle by clicking the plus button above.</div>
@@ -100,7 +106,8 @@ const RaffleList = (
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    raffles: getRafflesForContest(state, props.contestId),
+    contenders: state.contendersByContest.get(props.contestId),
+    raffles: state.rafflesByContest.get(props.contestId),
   };
 }
 

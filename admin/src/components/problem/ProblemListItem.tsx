@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import { Problem } from "src/model/problem";
 import ProblemView from "./ProblemView";
 import ProblemEdit from "./ProblemEdit";
+import { Tick } from "src/model/tick";
+import { CompClass } from "src/model/compClass";
+import { ContenderData } from "src/model/contenderData";
+import { OrderedMap } from "immutable";
 
 interface Props {
   problem?: Problem;
   allowEdit?: boolean;
   allowCancel?: boolean;
+  ticks?: Tick[];
+  compClasses?: OrderedMap<number, CompClass>;
+  contenders?: OrderedMap<number, ContenderData>;
   onCreateDone?: () => void;
   getColorName?: (problem: Problem) => string;
   getProblemStyle?: (problem: Problem) => object;
@@ -37,6 +44,9 @@ const ProblemListItem = (props: Props) => {
       problem={props.problem}
       onBeginEdit={() => setEditing(true)}
       onBeginCreate={props.onBeginCreate}
+      contenders={props.contenders}
+      compClasses={props.compClasses}
+      ticks={props.ticks}
     />
   );
 };

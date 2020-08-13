@@ -17,14 +17,12 @@ import CompClassListItem from "./CompClassListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import moment from "moment";
-import {
-  getCompClassesForContest,
-  getSelectedOrganizer,
-} from "../../selectors/selector";
+import { getSelectedOrganizer } from "../../selectors/selector";
+import { OrderedMap } from "immutable";
 
 interface Props {
   contestId?: number;
-  compClasses?: CompClass[];
+  compClasses?: OrderedMap<number, CompClass>;
   selectedOrganizer?: Organizer;
 
   loadCompClasses?: (contestId: number) => Promise<void>;
@@ -91,12 +89,12 @@ const CompClassList = (
               }}
             />
           )}
-          {props.compClasses?.map((compClass) => (
+          {props.compClasses?.toArray()?.map((compClass: CompClass) => (
             <CompClassListItem key={compClass.id!} compClass={compClass} />
           ))}
         </TableBody>
       </Table>
-      {(props.compClasses?.length ?? 0) == 0 && (
+      {(props.compClasses?.size ?? 0) == 0 && (
         <div className={"emptyText"}>
           <div>You have no contest classes.</div>
           <div>
@@ -112,7 +110,7 @@ const CompClassList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     selectedOrganizer: getSelectedOrganizer(state),
-    compClasses: getCompClassesForContest(state, props.contestId),
+    compClasses: state.compClassesByContest.get(props.contestId),
   };
 }
 

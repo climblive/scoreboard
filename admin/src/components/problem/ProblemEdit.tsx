@@ -18,10 +18,11 @@ import { StoreState } from "../../model/storeState";
 import { saveProblem } from "../../actions/asyncActions";
 import { CircularProgress } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
+import { OrderedMap } from "immutable";
 
 interface Props {
   problem?: Problem;
-  colors?: Color[];
+  colors?: OrderedMap<number, Color>;
   allowCancel?: boolean;
   onDone?: () => void;
   saveProblem?: (problem: Problem) => Promise<Problem>;
@@ -81,7 +82,7 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
           value={problem.colorId ?? ""}
           onChange={onColorChange}
         >
-          {props.colors?.map((color) => (
+          {props.colors?.map((color: Color) => (
             <MenuItem key={color.id} value={color.id}>
               {color.name}
             </MenuItem>

@@ -17,9 +17,10 @@ import SeriesListItem from "./SeriesListItem";
 import { Organizer } from "src/model/organizer";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import { OrderedMap } from "immutable";
 
 interface Props {
-  series?: Series[];
+  series?: OrderedMap<number, Series>;
   selectedOrganizer?: Organizer;
 
   loadSeries?: () => Promise<void>;
@@ -85,7 +86,7 @@ const SeriesList = (
               series={{ organizerId: props.selectedOrganizer?.id!, name: "" }}
             />
           )}
-          {props.series?.map((s) => (
+          {props.series?.toArray()?.map((s: Series) => (
             <SeriesListItem key={s.id!} series={s} />
           ))}
         </TableBody>

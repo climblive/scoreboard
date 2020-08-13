@@ -12,11 +12,6 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import Tooltip from "@material-ui/core/Tooltip";
 import { updateContender } from "../../actions/asyncActions";
-import {
-  getCompClassMap,
-  getProblemMap,
-  getColorMap,
-} from "../../selectors/selector";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -24,14 +19,15 @@ import DialogActions from "@material-ui/core/DialogActions";
 import moment from "moment";
 import { Problem } from "../../model/problem";
 import { Color } from "../../model/color";
+import { OrderedMap } from "immutable";
 
 interface Props {
   contender?: ContenderData;
   scoring?: ContenderScoringInfo;
   finalEnabled?: boolean;
-  compClassMap: Map<number, CompClass>;
-  problemMap: Map<number, Problem>;
-  colorMap: Map<number, Color>;
+  compClasses?: OrderedMap<number, CompClass>;
+  problems?: OrderedMap<number, Problem>;
+  colors?: OrderedMap<number, Color>;
   saveContender?: (contender: ContenderData) => Promise<void>;
   onBeginEdit?: () => void;
   updateContender?: (contender: ContenderData) => Promise<ContenderData>;
@@ -49,7 +45,7 @@ const ContenderView = (props: Props) => {
   };
 
   const getCompClassName = (id?: number) => {
-    let compClass = id ? props.compClassMap?.get(id!) : undefined;
+    let compClass = id ? props.compClasses?.get(id!) : undefined;
     return compClass ? compClass.name : "-";
   };
 
@@ -182,8 +178,8 @@ const ContenderView = (props: Props) => {
         </div>
         <DialogContent>
           {scoring?.ticks?.map((tick) => {
-            let problem = props.problemMap.get(tick.problemId);
-            let color = props.colorMap.get(problem!.colorId!);
+            let problem = props.problems?.get(tick.problemId);
+            let color = props.colors?.get(problem?.colorId!);
             let points = problem!.points!;
             if (tick.flash && problem!.flashBonus) {
               points += problem!.flashBonus;
@@ -215,9 +211,7 @@ const ContenderView = (props: Props) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    compClassMap: getCompClassMap(state),
-    problemMap: getProblemMap(state),
-    colorMap: getColorMap(state),
+    colors: state.colors,
   };
 }
 

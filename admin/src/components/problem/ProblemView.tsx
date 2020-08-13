@@ -17,23 +17,19 @@ import IconButton from "@material-ui/core/IconButton";
 import { CircularProgress } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { ConfirmationDialog } from "../ConfirmationDialog";
-import {
-  getTicksByProblem,
-  getContenderMap,
-  getCompClassMap,
-} from "../../selectors/selector";
 import { Tick } from "src/model/tick";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import moment from "moment";
 import Grid from "@material-ui/core/Grid";
+import { OrderedMap } from "immutable";
 
 interface Props {
   problem?: Problem;
   allowEdit?: boolean;
-  ticksByProblem?: Map<number | undefined, Tick[]>;
-  compClassMap: Map<number, CompClass>;
-  contenderMap: Map<number, ContenderData>;
+  ticks?: Tick[];
+  compClasses?: OrderedMap<number, CompClass>;
+  contenders?: OrderedMap<number, ContenderData>;
   deleteProblem?: (problem: Problem) => Promise<void>;
   onBeginEdit?: () => void;
   getColorName?: (problem: Problem) => string;
@@ -65,8 +61,6 @@ const ProblemView = (props: Props & StyledComponentProps) => {
     }
   };
 
-  const ticks = props.ticksByProblem?.get(props.problem!.id);
-
   return (
     <Grid item>
       <div style={props.getProblemStyle?.(props.problem!)}>
@@ -84,9 +78,9 @@ const ProblemView = (props: Props & StyledComponentProps) => {
             ? props.problem!.name
             : props.getColorName?.(props.problem!)}
         </div>
-        {(ticks?.length ?? 0) > 0 && (
+        {(props.ticks?.length ?? 0) > 0 && (
           <Button style={{ color: "inherit" }} onClick={showTicksDialog}>
-            {ticks!.length} ticks
+            {props.ticks!.length} ticks
           </Button>
         )}
         <div
@@ -189,9 +183,9 @@ const ProblemView = (props: Props & StyledComponentProps) => {
           <div style={{ width: 100 }}>Flash</div>
         </div>
         <DialogContent>
-          {ticks?.map((tick) => {
-            let contender = props.contenderMap.get(tick.contenderId);
-            let compClass = props.compClassMap.get(contender?.compClassId!);
+          {props.ticks?.map((tick) => {
+            let contender = props.contenders?.get(tick.contenderId);
+            let compClass = props.compClasses?.get(contender?.compClassId!);
             return (
               <div key={tick.id} style={{ display: "flex", marginBottom: 2 }}>
                 <div style={{ width: 300 }}>{contender?.name}</div>
@@ -215,11 +209,7 @@ const ProblemView = (props: Props & StyledComponentProps) => {
 };
 
 function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    ticksByProblem: getTicksByProblem(state),
-    compClassMap: getCompClassMap(state),
-    contenderMap: getContenderMap(state),
-  };
+  return {};
 }
 
 const mapDispatchToProps = {

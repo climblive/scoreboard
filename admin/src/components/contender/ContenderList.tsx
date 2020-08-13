@@ -25,13 +25,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { SortBy } from "../../constants/sortBy";
-import {
-  getCompClassesForContest,
-  getContendersForContest,
-  getProblemsForContestSorted,
-  getTicksForContest,
-  calculateContenderScoringInfo,
-} from "../../selectors/selector";
+import { calculateContenderScoringInfo } from "../../selectors/selector";
 import { connect } from "react-redux";
 import {
   loadContenders,
@@ -45,15 +39,16 @@ import { Api } from "src/utils/Api";
 import { Tick } from "src/model/tick";
 import ContenderView from "./ContenderView";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { OrderedMap } from "immutable";
 
 interface Props {
   contestId?: number;
   contest?: Contest;
   finalEnabled?: boolean;
-  contenders?: ContenderData[];
-  compClasses?: CompClass[];
-  problems?: Problem[];
-  ticks?: Tick[];
+  contenders?: OrderedMap<number, ContenderData>;
+  compClasses?: OrderedMap<number, CompClass>;
+  problems?: OrderedMap<number, Problem>;
+  ticks?: OrderedMap<number, Tick>;
 
   loadContenders?: (contestId: number) => Promise<void>;
   resetContenders?: (contestId: number) => Promise<void>;
@@ -85,19 +80,20 @@ const ContenderList = (props: Props) => {
     }
 
     return calculateContenderScoringInfo(
-      props.contenders ?? [],
-      props.ticks ?? [],
-      props.problems ?? [],
+      props.contenders?.toArray() ?? [],
+      props.ticks?.toArray() ?? [],
+      props.problems?.toArray() ?? [],
       props.contest
     );
   }, [props.contenders, props.ticks, props.problems, props.contest]);
 
   const contendersSortedAndFiltered = useMemo(() => {
-    let contenders = props.contenders;
+    let contenders = props.contenders?.toArray();
 
     if (contenderFilterCompClassId != undefined) {
       contenders = contenders?.filter(
-        (contender) => contender.compClassId === contenderFilterCompClassId
+        (contender: ContenderData) =>
+          contender.compClassId === contenderFilterCompClassId
       );
     }
 
@@ -190,7 +186,7 @@ const ContenderList = (props: Props) => {
     const filterCompClass =
       e.target.value == "All"
         ? undefined
-        : props.compClasses?.find((o) => o.id == parseInt(e.target.value));
+        : props.compClasses?.get(parseInt(e.target.value));
     setContenderFilterCompClassId(filterCompClass?.id);
   };
 
@@ -208,9 +204,9 @@ const ContenderList = (props: Props) => {
     <>
       <div style={{ display: "flex", marginTop: 14, alignItems: "center" }}>
         <div style={{ marginLeft: 16, marginRight: "auto" }}>
-          {props.contenders?.length} contenders:
+          {props.contenders?.size} contenders:
         </div>
-        {(props.compClasses?.length ?? 0) > 0 && (
+        {(props.compClasses?.size ?? 0) > 0 && (
           <FormControl style={{ minWidth: 200, marginRight: 10 }}>
             <InputLabel shrink htmlFor="compClass-select">
               Contest class
@@ -227,7 +223,7 @@ const ContenderList = (props: Props) => {
               <MenuItem value="All">
                 <em>All</em>
               </MenuItem>
-              {props.compClasses?.map((compClass) => (
+              {props.compClasses?.toArray()?.map((compClass: CompClass) => (
                 <MenuItem key={compClass.id} value={compClass.id}>
                   {compClass.name}
                 </MenuItem>
@@ -315,7 +311,9 @@ const ContenderList = (props: Props) => {
               <ContenderView
                 key={contender.id}
                 contender={contender}
-                scoring={scoringByContender?.get(contender?.id!)}
+                scoring={scoringByContender?.get(contender.id!)}
+                compClasses={props.compClasses}
+                problems={props.problems}
               />
             ))}
           </TableBody>
@@ -337,8 +335,7 @@ const ContenderList = (props: Props) => {
             for all contenders.
           </div>
           <div style={{ marginTop: 5 }}>
-            Currently you have {props.contenders?.length ?? 0} registration
-            codes.
+            Currently you have {props.contenders?.size ?? 0} registration codes.
           </div>
           <div style={{ marginTop: 5, marginBottom: 20 }}>
             You can create a maximum of {MAX_CONTENDER_COUNT} activation codes
@@ -372,11 +369,11 @@ const ContenderList = (props: Props) => {
 
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
-    contenders: getContendersForContest(state, props.contestId),
-    compClasses: getCompClassesForContest(state, props.contestId),
-    problems: getProblemsForContestSorted(state, props.contestId),
-    ticks: getTicksForContest(state, props.contestId),
-    contest: state.contests?.find((contest) => (contest.id = props.contestId)),
+    contenders: state.contendersByContest.get(props.contestId),
+    compClasses: state.compClassesByContest.get(props.contestId),
+    problems: state.problemsByContest.get(props.contestId),
+    ticks: state.ticksByContest.get(props.contestId),
+    contest: state.contests?.get(props.contestId),
   };
 }
 

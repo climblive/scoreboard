@@ -154,6 +154,7 @@ const ContenderView = (props: Props) => {
             ) : (
               <Tooltip title="Disqualify" placement="top-start">
                 <Button
+                  disabled={contender.entered == undefined}
                   variant="contained"
                   color="secondary"
                   onClick={(event) => onDisqualify(event, contender)}

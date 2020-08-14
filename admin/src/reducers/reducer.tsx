@@ -32,7 +32,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       return { ...state, errorMessage: undefined };
 
     case getType(scoreboardActions.setErrorMessage):
-      return { ...state, errorMessage: action.payload };
+      return { ...state, errorMessage: action.payload.toString() };
 
     case getType(scoreboardActions.setTitle):
       return { ...state, title: action.payload };

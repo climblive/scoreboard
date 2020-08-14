@@ -13,7 +13,7 @@ import { Raffle } from "../model/raffle";
 import { RaffleWinner } from "../model/raffleWinner";
 
 export const setErrorMessage = createStandardAction("SET_ERROR_MESSAGE")<
-  string
+  Object
 >();
 export const clearErrorMessage = createStandardAction("CLEAR_ERROR_MESSAGE")();
 export const setTitle = createStandardAction("SET_TITLE")<string>();

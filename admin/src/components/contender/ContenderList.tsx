@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { InputLabel, TableCell, Hidden } from "@material-ui/core";
+import { InputLabel, TableCell, Hidden, Grid } from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
@@ -40,6 +40,15 @@ import { Tick } from "src/model/tick";
 import ContenderView from "./ContenderView";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { OrderedMap } from "immutable";
+import Pagination from "@material-ui/lab/Pagination";
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  createStyles,
+} from "@material-ui/core/styles";
+
+const CONTENDERS_PER_PAGE = 10;
 
 interface Props {
   contestId?: number;
@@ -57,7 +66,17 @@ interface Props {
   loadTicks?: (contestId: number) => Promise<void>;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paginationControl: {
+      margin: theme.spacing(2, 0, 1, 0),
+    },
+  })
+);
+
 const ContenderList = (props: Props) => {
+  const classes = useStyles();
+
   const [numberOfNewContenders, setNumberOfNewContenders] = useState<string>();
   const [showAddContendersPopup, setShowAddContendersPopup] = useState<boolean>(
     false
@@ -73,6 +92,7 @@ const ContenderList = (props: Props) => {
     SortBy.BY_NAME
   );
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [page, setPage] = React.useState(1);
 
   const scoringByContender = useMemo(() => {
     if (props.contest == undefined) {
@@ -129,6 +149,10 @@ const ContenderList = (props: Props) => {
 
     return contenders;
   }, [props.contenders, contenderFilterCompClassId, contenderSortBy]);
+
+  const numPages = Math.ceil(
+    (contendersSortedAndFiltered?.length ?? 0) / CONTENDERS_PER_PAGE
+  );
 
   const MAX_CONTENDER_COUNT = 500;
 
@@ -199,6 +223,13 @@ const ContenderList = (props: Props) => {
         setErrorMessage(error);
       });
   }
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
 
   return (
     <>
@@ -308,17 +339,34 @@ const ContenderList = (props: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {contendersSortedAndFiltered?.map((contender) => (
-              <ContenderView
-                key={contender.id}
-                contender={contender}
-                scoring={scoringByContender?.get(contender.id!)}
-                compClasses={props.compClasses}
-                problems={props.problems}
-              />
-            ))}
+            {contendersSortedAndFiltered
+              ?.slice(
+                (page - 1) * CONTENDERS_PER_PAGE,
+                page * CONTENDERS_PER_PAGE
+              )
+              ?.map((contender) => (
+                <ContenderView
+                  key={contender.id}
+                  contender={contender}
+                  scoring={scoringByContender?.get(contender.id!)}
+                  compClasses={props.compClasses}
+                  problems={props.problems}
+                />
+              ))}
           </TableBody>
         </Table>
+        {numPages > 1 && (
+          <div className={classes.paginationControl}>
+            <Grid container justify="center">
+              <Pagination
+                count={numPages}
+                page={page}
+                onChange={handlePageChange}
+                showLastButton
+              />
+            </Grid>
+          </div>
+        )}
       </div>
       <Dialog
         open={showAddContendersPopup}

@@ -2,7 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Contest } from "../../model/contest";
-import { InputLabel, TextField, Grid } from "@material-ui/core";
+import {
+  InputLabel,
+  TextField,
+  Grid,
+  useTheme,
+} from "@material-ui/core";
 import { RouteComponentProps, withRouter } from "react-router";
 import RichTextEditor from "../RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
@@ -68,6 +73,11 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: theme.spacing(0.5),
       },
     },
+    inputFields: {
+      "& > *": {
+        margin: theme.spacing(0.5),
+      },
+    },
   })
 );
 
@@ -124,6 +134,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   }, [contest.name]);
 
   const classes = useStyles();
+  const theme = useTheme();
 
   const contestIssues = useMemo(() => {
     let issues: any[] = [];
@@ -311,13 +322,19 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
             </Button>
           </div>
         )}
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div
+          style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+        >
           <div
+            className={classes.inputFields}
             style={{
+              minWidth: 400,
+              maxWidth: 400,
               display: "flex",
               flexDirection: "column",
               flexGrow: 1,
               flexBasis: 0,
+              marginRight: theme.spacing(0.5),
             }}
           >
             <TextField
@@ -327,14 +344,13 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               disabled={loading}
             />
             <TextField
-              style={{ marginTop: 10 }}
               label="Description"
               value={contest.description}
               onChange={onDescriptionChange}
               disabled={loading}
             />
             {(props.locations?.size ?? 0) > 0 && (
-              <FormControl style={{ marginTop: 10 }}>
+              <FormControl>
                 <InputLabel shrink htmlFor="location-select">
                   Location
                 </InputLabel>
@@ -356,7 +372,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               </FormControl>
             )}
             {(props.series?.size ?? 0) > 0 && (
-              <FormControl style={{ marginTop: 10 }}>
+              <FormControl>
                 <InputLabel shrink htmlFor="series-select">
                   Series
                 </InputLabel>
@@ -391,14 +407,12 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
             {contest.finalEnabled && (
               <>
                 <TextField
-                  style={{ marginTop: 10 }}
                   label="Number of qualifying problems"
                   value={contest.qualifyingProblems}
                   onChange={onQualifyingProblemsChange}
                   disabled={loading}
                 />
                 <TextField
-                  style={{ marginTop: 10 }}
                   label="Number of finalists"
                   value={contest.finalists}
                   onChange={onFinalistsChange}
@@ -407,7 +421,6 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               </>
             )}
             <TextField
-              style={{ marginTop: 10 }}
               label="Grace period (minutes)"
               value={contest.gracePeriod}
               onChange={onGracePeriodChange}
@@ -415,8 +428,11 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
             />
           </div>
           <div
+            className={classes.inputFields}
             style={{
-              marginLeft: 10,
+              minWidth: 400,
+              maxWidth: 400,
+              minHeight: 400,
               display: "flex",
               flexDirection: "column",
               flexGrow: 1,
@@ -424,7 +440,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
             }}
           >
             <RichTextEditor
-              title="Rules:"
+              title="Rules"
               value={contest.rules}
               onChange={onRulesChange}
             />

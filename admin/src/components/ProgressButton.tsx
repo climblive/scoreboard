@@ -1,12 +1,13 @@
 import React from "react";
-import { Button, CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { ButtonProps } from "@material-ui/core/Button";
+import Button, { ButtonProps } from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wrapper: {
       position: "relative",
+      display: "inline-block",
     },
     buttonProgress: {
       position: "absolute",

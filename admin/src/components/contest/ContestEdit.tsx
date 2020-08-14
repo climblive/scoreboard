@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Contest } from "../../model/contest";
-import { InputLabel, TextField } from "@material-ui/core";
+import { InputLabel, TextField, Grid } from "@material-ui/core";
 import { RouteComponentProps, withRouter } from "react-router";
 import RichTextEditor from "../RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
@@ -25,6 +25,7 @@ import {
   loadContest,
   reloadLocations,
   reloadSeries,
+  loadCompClasses,
 } from "../../actions/asyncActions";
 import { setTitle, setErrorMessage } from "../../actions/actions";
 import { Organizer } from "src/model/organizer";
@@ -37,6 +38,9 @@ import { getSelectedOrganizer } from "../../selectors/selector";
 import { ContenderData } from "src/model/contenderData";
 import { Link } from "react-router-dom";
 import { OrderedMap } from "immutable";
+import { ProgressButton } from "../ProgressButton";
+import DescriptionIcon from "@material-ui/icons/Description";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 
 interface Props {
   contestId?: number;
@@ -54,6 +58,18 @@ interface Props {
   loadLocations?: () => Promise<void>;
   loadSeries?: () => Promise<void>;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    buttons: {
+      marginTop: theme.spacing(1.5),
+      marginBottom: theme.spacing(1.5),
+      "& > *": {
+        marginRight: theme.spacing(0.5),
+      },
+    },
+  })
+);
 
 const ContestEdit = (props: Props & RouteComponentProps) => {
   let [loading, setLoading] = useState<boolean>(false);
@@ -106,6 +122,8 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     let title = contest?.id == undefined ? "Add contest" : contest.name;
     props.setTitle?.(title);
   }, [contest.name]);
+
+  const classes = useStyles();
 
   const contestIssues = useMemo(() => {
     let issues: any[] = [];
@@ -176,7 +194,6 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   };
 
   const onSave = () => {
-    let isNew = contest.id == undefined;
     setSaving(true);
     props
       .saveContest?.(contest)
@@ -212,9 +229,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     setShowPopup(false);
   };
 
-  const isNew = () => {
-    return contest.id == undefined;
-  };
+  const isNew = contest.id == undefined;
 
   const createPdfFromTemplate = (file: Blob) => {
     let reader = new FileReader();
@@ -273,23 +288,24 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
         </div>
       ))}
       <div style={{ padding: 10 }}>
-        {!isNew() && contestIssues.length == 0 && (
-          <div style={{ marginBottom: 10 }}>
-            <Button
-              style={{ marginRight: 10 }}
-              variant="outlined"
-              color="primary"
+        {!isNew && contestIssues.length == 0 && (
+          <div className={classes.buttons}>
+            <ProgressButton
+              size="small"
+              variant="contained"
+              color="secondary"
               onClick={startPdfCreate}
-              disabled={compilingPdf}
-              startIcon={compilingPdf && <CircularProgress size={24} />}
+              loading={compilingPdf}
+              startIcon={<DescriptionIcon />}
             >
               Create PDF
-            </Button>
+            </ProgressButton>
             <Button
+              size="small"
               href={scoreboardUrl}
               target="_blank"
-              variant="outlined"
-              color="primary"
+              variant="contained"
+              color="secondary"
             >
               Open scoreboard
             </Button>
@@ -414,33 +430,29 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
             />
           </div>
         </div>
-        <Button
-          style={{ marginTop: 10 }}
-          variant="outlined"
-          color="primary"
-          onClick={onSave}
-          startIcon={saving ? <CircularProgress size={24} /> : <SaveIcon />}
-        >
-          {isNew() ? "Create" : "Save"}
-        </Button>
-        {!isNew() && (
-          <Button
-            style={{ marginLeft: 10, marginTop: 10 }}
+        <div className={classes.buttons}>
+          <ProgressButton
             variant="contained"
             color="secondary"
-            disabled={contest.protected}
-            onClick={onDelete}
-            startIcon={
-              deleting ? (
-                <CircularProgress size={24} />
-              ) : (
-                <DeleteForeverRoundedIcon />
-              )
-            }
+            onClick={onSave}
+            loading={saving}
+            startIcon={<SaveIcon />}
           >
-            Delete
-          </Button>
-        )}
+            {isNew ? "Create" : "Save"}
+          </ProgressButton>
+          {!isNew && (
+            <ProgressButton
+              variant="contained"
+              color="primary"
+              disabled={contest.protected}
+              onClick={onDelete}
+              loading={deleting}
+              startIcon={<DeleteForeverRoundedIcon />}
+            >
+              Delete
+            </ProgressButton>
+          )}
+        </div>
       </div>
       <CreatePdfDialog
         open={showPopup}

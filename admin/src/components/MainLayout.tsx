@@ -70,8 +70,9 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.light,
     },
     content: {
-      flexGrow: 1,
       padding: theme.spacing(2),
+      overflow: "hidden",
+      width: "100%",
     },
   })
 );

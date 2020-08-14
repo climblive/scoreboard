@@ -2,12 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Contest } from "../../model/contest";
-import {
-  InputLabel,
-  TextField,
-  Grid,
-  useTheme,
-} from "@material-ui/core";
+import { InputLabel, TextField, Grid, useTheme } from "@material-ui/core";
 import { RouteComponentProps, withRouter } from "react-router";
 import RichTextEditor from "../RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
@@ -46,6 +41,7 @@ import { ProgressButton } from "../ProgressButton";
 import DescriptionIcon from "@material-ui/icons/Description";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import LockIcon from "@material-ui/icons/Lock";
+import Alert from "@material-ui/lab/Alert";
 
 interface Props {
   contestId?: number;
@@ -282,19 +278,14 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   return (
     <>
       {contestIssues.map((issue) => (
-        <div key={issue.link}>
-          <Link
-            to={issue.link}
-            style={{
-              padding: 10,
-              display: "flex",
-              alignItems: "center",
-              fontWeight: "bold",
-              color: "#e49c3b",
-            }}
-          >
-            <WarningIcon style={{ marginRight: 10 }} />
-            {issue.description}
+        <div
+          key={issue.link}
+          style={{
+            marginTop: theme.spacing(1),
+          }}
+        >
+          <Link to={issue.link}>
+            <Alert severity="warning">{issue.description}</Alert>
           </Link>
         </div>
       ))}
@@ -328,8 +319,8 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
           <div
             className={classes.inputFields}
             style={{
-              minWidth: 400,
-              maxWidth: 400,
+              minWidth: 360,
+              maxWidth: 360,
               display: "flex",
               flexDirection: "column",
               flexGrow: 1,
@@ -430,9 +421,9 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
           <div
             className={classes.inputFields}
             style={{
-              minWidth: 400,
-              maxWidth: 400,
-              minHeight: 400,
+              minWidth: 360,
+              maxWidth: 360,
+              minHeight: 360,
               display: "flex",
               flexDirection: "column",
               flexGrow: 1,

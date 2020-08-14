@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
-import withStyles from "@material-ui/core/styles/withStyles";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
-import createStyles from "@material-ui/core/styles/createStyles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
@@ -18,16 +16,6 @@ import RaffleView from "./RaffleView";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { OrderedMap } from "immutable";
 import { ContenderData } from "../../model/contenderData";
-
-const styles = () =>
-  createStyles({
-    root: {
-      margin: 10,
-    },
-    table: {
-      minWidth: 700,
-    },
-  });
 
 interface Props {
   contestId?: number;
@@ -61,9 +49,9 @@ const RaffleList = (
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{ minWidth: 120 }}>Id</TableCell>
-            <TableCell style={{ width: "100%" }}>Winners</TableCell>
-            <TableCell className={"icon-cell"} style={{ minWidth: 146 }}>
+            <TableCell>Id</TableCell>
+            <TableCell>Winners</TableCell>
+            <TableCell className={"icon-cell"}>
               <IconButton
                 color="inherit"
                 aria-label="Menu"
@@ -119,4 +107,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(withRouter(RaffleList)));
+)(withRouter(RaffleList));

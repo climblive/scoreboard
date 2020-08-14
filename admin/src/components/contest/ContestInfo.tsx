@@ -133,7 +133,13 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
 
   return (
     <>
-      <Tabs key="tabs" value={selectedPath} onChange={selectTab}>
+      <Tabs
+        key="tabs"
+        value={selectedPath}
+        onChange={selectTab}
+        variant="scrollable"
+        scrollButtons="auto"
+      >
         {tabs}
       </Tabs>
 

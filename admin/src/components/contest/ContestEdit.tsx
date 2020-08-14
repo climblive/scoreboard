@@ -289,7 +289,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
           </Link>
         </div>
       ))}
-      <div style={{ padding: 10 }}>
+      <div>
         {!isNew && contestIssues.length == 0 && (
           <div className={classes.buttons}>
             <ProgressButton
@@ -319,7 +319,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
           <div
             className={classes.inputFields}
             style={{
-              minWidth: 320,
+              minWidth: 304,
               maxWidth: 600,
               display: "flex",
               flexDirection: "column",
@@ -421,7 +421,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
           <div
             className={classes.inputFields}
             style={{
-              minWidth: 320,
+              minWidth: 304,
               maxWidth: 600,
               minHeight: 360,
               display: "flex",

@@ -5,6 +5,7 @@ import {
   StyledComponentProps,
   Box,
   Hidden,
+  Grid,
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -50,9 +51,11 @@ const useStyles = makeStyles((theme: Theme) =>
     authControl: {
       marginLeft: "auto",
     },
-    adminLabel: {
+    userName: {
       marginRight: theme.spacing(1),
-      marginLeft: theme.spacing(1),
+    },
+    adminChip: {
+      marginRight: theme.spacing(1),
     },
   })
 );
@@ -153,19 +156,43 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
         )}
         {props.loggedInUser && (
           <div>
-            {props.loggedInUser.name}
-            {props.loggedInUser.admin && (
-              <Chip
-                className={classes.adminLabel}
-                icon={<AccountCircleIcon />}
-                label="Admin"
-                color="secondary"
-                size="small"
-              />
-            )}
-            <Button variant="contained" onClick={logout} size="small">
-              <ExitToAppIcon /> Logout
-            </Button>
+            <Grid container direction="row" alignItems="center">
+              <Grid item>
+                <div>
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="flex-end"
+                    wrap="wrap"
+                  >
+                    <Grid item>
+                      <div className={classes.userName}>
+                        {props.loggedInUser.name}
+                      </div>
+                    </Grid>
+                    {props.loggedInUser.admin && (
+                      <Hidden xsDown>
+                        <Grid item>
+                          <div className={classes.adminChip}>
+                            <Chip
+                              icon={<AccountCircleIcon />}
+                              label="Admin"
+                              color="secondary"
+                              size="small"
+                            />
+                          </div>
+                        </Grid>
+                      </Hidden>
+                    )}
+                  </Grid>
+                </div>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" onClick={logout} size="small">
+                  <ExitToAppIcon /> Logout
+                </Button>
+              </Grid>
+            </Grid>
           </div>
         )}
       </div>

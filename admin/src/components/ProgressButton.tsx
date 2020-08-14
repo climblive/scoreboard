@@ -25,10 +25,11 @@ interface Props {
 
 export const ProgressButton = (props: Props & ButtonProps) => {
   const classes = useStyles();
+  const { loading, ...rest } = props;
 
   return (
     <div className={classes.wrapper}>
-      <Button {...props} disabled={props.disabled || props.loading}>
+      <Button {...rest} disabled={props.disabled || props.loading}>
         {props.children}
       </Button>
       {props.loading && (

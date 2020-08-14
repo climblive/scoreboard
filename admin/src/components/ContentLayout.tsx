@@ -47,8 +47,8 @@ const ContentLayout = (props: Props) => {
             justify="flex-end"
             alignItems="center"
           >
-            {props.buttons?.map((button) => (
-              <Grid item className={classes.buttons}>
+            {props.buttons?.map((button, index) => (
+              <Grid key={index} item className={classes.buttons}>
                 {button}
               </Grid>
             ))}

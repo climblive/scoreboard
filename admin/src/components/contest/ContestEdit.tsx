@@ -25,7 +25,6 @@ import {
   loadContest,
   reloadLocations,
   reloadSeries,
-  loadCompClasses,
 } from "../../actions/asyncActions";
 import { setTitle, setErrorMessage } from "../../actions/actions";
 import { Organizer } from "src/model/organizer";
@@ -41,6 +40,7 @@ import { OrderedMap } from "immutable";
 import { ProgressButton } from "../ProgressButton";
 import DescriptionIcon from "@material-ui/icons/Description";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import LockIcon from "@material-ui/icons/Lock";
 
 interface Props {
   contestId?: number;
@@ -447,7 +447,9 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               disabled={contest.protected}
               onClick={onDelete}
               loading={deleting}
-              startIcon={<DeleteForeverRoundedIcon />}
+              startIcon={
+                contest.protected ? <LockIcon /> : <DeleteForeverRoundedIcon />
+              }
             >
               Delete
             </ProgressButton>

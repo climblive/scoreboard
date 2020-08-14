@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { InputLabel, TableCell } from "@material-ui/core";
+import { InputLabel, TableCell, Hidden } from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
@@ -203,9 +203,6 @@ const ContenderList = (props: Props) => {
   return (
     <>
       <div style={{ display: "flex", marginTop: 14, alignItems: "center" }}>
-        <div style={{ marginLeft: 16, marginRight: "auto" }}>
-          {props.contenders?.size} contenders:
-        </div>
         {(props.compClasses?.size ?? 0) > 0 && (
           <FormControl style={{ minWidth: 200, marginRight: 10 }}>
             <InputLabel shrink htmlFor="compClass-select">
@@ -277,33 +274,37 @@ const ContenderList = (props: Props) => {
                 Name
               </TableCell>
               <TableCell style={{ minWidth: 110 }}>Class</TableCell>
-              <TableCell
-                style={{ minWidth: 110, cursor: "pointer" }}
-                onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}
-              >
-                Total score
-              </TableCell>
-              {props.finalEnabled && (
-                <>
-                  <TableCell
-                    style={{ minWidth: 110, cursor: "pointer" }}
-                    onClick={() =>
-                      setContenderSortBy(SortBy.BY_QUALIFYING_POINTS)
-                    }
-                  >
-                    Qualifying score
-                  </TableCell>
-                  <TableCell style={{ minWidth: 100 }}></TableCell>
-                </>
-              )}
-              <TableCell
-                style={{ minWidth: 110, cursor: "pointer" }}
-                onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}
-              >
-                # Ticks
-              </TableCell>
-              <TableCell style={{ minWidth: 110 }}>Registration code</TableCell>
-              <TableCell />
+              <Hidden smDown>
+                <TableCell
+                  style={{ minWidth: 110, cursor: "pointer" }}
+                  onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}
+                >
+                  Total score
+                </TableCell>
+                {props.finalEnabled && (
+                  <>
+                    <TableCell
+                      style={{ minWidth: 110, cursor: "pointer" }}
+                      onClick={() =>
+                        setContenderSortBy(SortBy.BY_QUALIFYING_POINTS)
+                      }
+                    >
+                      Qualifying score
+                    </TableCell>
+                    <TableCell style={{ minWidth: 100 }}></TableCell>
+                  </>
+                )}
+                <TableCell
+                  style={{ minWidth: 110, cursor: "pointer" }}
+                  onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}
+                >
+                  # Ticks
+                </TableCell>
+              </Hidden>
+              <TableCell style={{ minWidth: 110 }}>Regcode</TableCell>
+              <Hidden smDown>
+                <TableCell />
+              </Hidden>
             </TableRow>
           </TableHead>
           <TableBody>

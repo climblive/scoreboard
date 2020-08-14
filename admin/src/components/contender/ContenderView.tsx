@@ -3,7 +3,7 @@ import { ContenderData } from "src/model/contenderData";
 import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
 import TableRow from "@material-ui/core/TableRow";
-import { TableCell } from "@material-ui/core";
+import { TableCell, Hidden } from "@material-ui/core";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { Environment } from "../../environment";
 import Button from "@material-ui/core/Button";
@@ -91,32 +91,36 @@ const ContenderView = (props: Props) => {
         <TableCell component="th" scope="row">
           {getCompClassName(contender.compClassId)}
         </TableCell>
-        <TableCell component="th" scope="row">
-          <div style={{ width: 37, display: "inline-block" }}>
-            {contender.name ? scoring?.totalScore : "-"}
-          </div>
-          <div style={{ display: "inline-block" }}>
-            {contender.name ? "(" + scoring?.totalPosition + ")" : ""}
-          </div>
-        </TableCell>
-        {props.finalEnabled && (
-          <>
-            <TableCell component="th" scope="row">
-              <div style={{ width: 37, display: "inline-block" }}>
-                {contender.name ? scoring?.qualifyingScore : "-"}
-              </div>
-              <div style={{ display: "inline-block" }}>
-                {contender.name ? "(" + scoring?.qualifyingPosition + ")" : ""}
-              </div>
-            </TableCell>
-            <TableCell component="th" scope="row">
-              {scoring?.isFinalist ? "finalist" : ""}
-            </TableCell>
-          </>
-        )}
-        <TableCell component="th" scope="row">
-          {contender.name ? scoring?.ticks?.length : "-"}
-        </TableCell>
+        <Hidden smDown>
+          <TableCell component="th" scope="row">
+            <div style={{ width: 37, display: "inline-block" }}>
+              {contender.name ? scoring?.totalScore : "-"}
+            </div>
+            <div style={{ display: "inline-block" }}>
+              {contender.name ? "(" + scoring?.totalPosition + ")" : ""}
+            </div>
+          </TableCell>
+          {props.finalEnabled && (
+            <>
+              <TableCell component="th" scope="row">
+                <div style={{ width: 37, display: "inline-block" }}>
+                  {contender.name ? scoring?.qualifyingScore : "-"}
+                </div>
+                <div style={{ display: "inline-block" }}>
+                  {contender.name
+                    ? "(" + scoring?.qualifyingPosition + ")"
+                    : ""}
+                </div>
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {scoring?.isFinalist ? "finalist" : ""}
+              </TableCell>
+            </>
+          )}
+          <TableCell component="th" scope="row">
+            {contender.name ? scoring?.ticks?.length : "-"}
+          </TableCell>
+        </Hidden>
         <TableCell component="th" scope="row">
           <Button
             href={
@@ -135,29 +139,31 @@ const ContenderView = (props: Props) => {
             {contender.registrationCode}
           </Button>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {contender.disqualified ? (
-            <Tooltip title="Reenter" placement="top-start">
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={(event) => onReenter(event, contender)}
-              >
-                {<ThumbUpIcon />}
-              </Button>
-            </Tooltip>
-          ) : (
-            <Tooltip title="Disqualify" placement="top-start">
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={(event) => onDisqualify(event, contender)}
-              >
-                {<ThumbDownIcon />}
-              </Button>
-            </Tooltip>
-          )}
-        </TableCell>
+        <Hidden smDown>
+          <TableCell component="th" scope="row">
+            {contender.disqualified ? (
+              <Tooltip title="Reenter" placement="top-start">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={(event) => onReenter(event, contender)}
+                >
+                  {<ThumbUpIcon />}
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Disqualify" placement="top-start">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={(event) => onDisqualify(event, contender)}
+                >
+                  {<ThumbDownIcon />}
+                </Button>
+              </Tooltip>
+            )}
+          </TableCell>
+        </Hidden>
       </TableRow>
       <Dialog open={scoreDialogOpen} aria-labelledby="contender-dialog-title">
         <DialogTitle id="contender-dialog-title">

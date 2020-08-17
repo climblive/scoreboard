@@ -17,7 +17,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { ConfirmationDialog } from "../ConfirmationDialog";
 import { CompClass } from "../../model/compClass";
 import { Contest } from "../../model/contest";
 import { Problem } from "../../model/problem";
@@ -29,7 +28,6 @@ import { calculateContenderScoringInfo } from "../../selectors/selector";
 import { connect } from "react-redux";
 import {
   loadContenders,
-  resetContenders,
   createContenders,
   loadTicks,
 } from "../../actions/asyncActions";
@@ -60,7 +58,6 @@ interface Props {
   ticks?: OrderedMap<number, Tick>;
 
   loadContenders?: (contestId: number) => Promise<void>;
-  resetContenders?: (contestId: number) => Promise<void>;
   createContenders?: (contestId: number, nContenders: number) => Promise<void>;
   setErrorMessage?: (message: string) => void;
   loadTicks?: (contestId: number) => Promise<void>;
@@ -76,14 +73,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ContenderList = (props: Props) => {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [numberOfNewContenders, setNumberOfNewContenders] = useState<string>();
   const [showAddContendersPopup, setShowAddContendersPopup] = useState<boolean>(
     false
   );
-  const [showResetConfirmationPopup, setShowResetConfirmationPopup] = useState<
-    boolean
-  >(false);
 
   const [contenderFilterCompClassId, setContenderFilterCompClassId] = useState<
     number | undefined
@@ -169,7 +164,6 @@ const ContenderList = (props: Props) => {
 
   const closePopups = () => {
     setShowAddContendersPopup(false);
-    setShowResetConfirmationPopup(false);
   };
 
   const onNewContendersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,17 +185,6 @@ const ContenderList = (props: Props) => {
       .createContenders?.(props.contestId!, number)
       .finally(() => setRefreshing(false));
     setShowAddContendersPopup(false);
-  };
-
-  const resetAllContenders = () => {
-    setShowResetConfirmationPopup(true);
-  };
-
-  const resetContendersConfirmed = (confirmed: boolean) => {
-    setShowResetConfirmationPopup(false);
-    if (confirmed) {
-      props.resetContenders?.(props.contestId!);
-    }
   };
 
   const onContenderFilterCompClassChange = (
@@ -233,11 +216,16 @@ const ContenderList = (props: Props) => {
 
   return (
     <>
-      <div style={{ display: "flex", marginTop: 14, alignItems: "center" }}>
+      <div style={{ display: "flex", alignItems: "right" }}>
         {(props.compClasses?.size ?? 0) > 0 && (
-          <FormControl style={{ minWidth: 200, marginRight: 10 }}>
+          <FormControl
+            style={{
+              width: "100%",
+              marginLeft: theme.spacing(1),
+            }}
+          >
             <InputLabel shrink htmlFor="compClass-select">
-              Contest class
+              Class
             </InputLabel>
             <Select
               id="compClass-select"
@@ -285,14 +273,6 @@ const ContenderList = (props: Props) => {
         >
           <SaveIcon />
         </IconButton>
-        <IconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Reset all contenders"
-          onClick={resetAllContenders}
-        >
-          <ClearIcon />
-        </IconButton>
       </div>
       <div>
         <Table>
@@ -304,8 +284,8 @@ const ContenderList = (props: Props) => {
               >
                 Name
               </TableCell>
-              <TableCell style={{ minWidth: 110 }}>Class</TableCell>
               <Hidden smDown>
+                <TableCell style={{ minWidth: 110 }}>Class</TableCell>
                 <TableCell
                   style={{ minWidth: 110, cursor: "pointer" }}
                   onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}
@@ -333,9 +313,6 @@ const ContenderList = (props: Props) => {
                 </TableCell>
               </Hidden>
               <TableCell style={{ minWidth: 110 }}>Regcode</TableCell>
-              <Hidden smDown>
-                <TableCell />
-              </Hidden>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -406,12 +383,6 @@ const ContenderList = (props: Props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <ConfirmationDialog
-        open={showResetConfirmationPopup}
-        title="Reset all contenders"
-        message="Do you really want to reset all contenders? All ticks and data will be lost."
-        onClose={resetContendersConfirmed}
-      />
     </>
   );
 };
@@ -428,7 +399,6 @@ function mapStateToProps(state: StoreState, props: any): Props {
 
 const mapDispatchToProps = {
   loadContenders,
-  resetContenders,
   createContenders,
   loadTicks,
   setErrorMessage,

@@ -3,23 +3,33 @@ import { ContenderData } from "src/model/contenderData";
 import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
 import TableRow from "@material-ui/core/TableRow";
-import { TableCell, Hidden } from "@material-ui/core";
+import {
+  TableCell,
+  Hidden,
+  Collapse,
+  Divider,
+  Typography,
+  Grid,
+} from "@material-ui/core";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { Environment } from "../../environment";
 import Button from "@material-ui/core/Button";
 import { CompClass } from "../../model/compClass";
-import ThumbDownIcon from "@material-ui/icons/ThumbDown";
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import Tooltip from "@material-ui/core/Tooltip";
 import { updateContender } from "../../actions/asyncActions";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import moment from "moment";
 import { Problem } from "../../model/problem";
 import { Color } from "../../model/color";
 import { OrderedMap } from "immutable";
+import {
+  makeStyles,
+  createStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
+import ContenderScoring from "./ContenderScoring";
+import ContenderEdit from "./ContenderEdit";
+import { ProgressButton } from "../ProgressButton";
+import Alert from "@material-ui/lab/Alert";
+import ContenderTickList from "./ContenderTickList";
 
 interface Props {
   contender?: ContenderData;
@@ -33,15 +43,31 @@ interface Props {
   updateContender?: (contender: ContenderData) => Promise<ContenderData>;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    tableRow: {
+      cursor: "pointer",
+      "& > *": {
+        border: 0,
+      },
+    },
+    inputFields: {
+      "& > *": {
+        margin: theme.spacing(1, 0),
+      },
+    },
+  })
+);
+
 const ContenderView = (props: Props) => {
-  const [scoreDialogOpen, setScoreDialogOpen] = useState<boolean>(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
+  const [saving, setSaving] = useState<boolean>(false);
 
-  const showContenderDialog = () => {
-    setScoreDialogOpen(true);
-  };
+  const classes = useStyles();
+  const theme = useTheme();
 
-  const hideContenderDialog = () => {
-    setScoreDialogOpen(false);
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
   };
 
   const getCompClassName = (id?: number) => {
@@ -49,20 +75,19 @@ const ContenderView = (props: Props) => {
     return compClass ? compClass.name : "-";
   };
 
-  const onDisqualify = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    contender: ContenderData
-  ) => {
+  const onDisqualify = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    props.updateContender?.({ ...contender, disqualified: true });
+    setSaving(true);
+    props
+      .updateContender?.({ ...props.contender!, disqualified: true })
+      .finally(() => setSaving(false));
   };
 
-  const onReenter = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    contender: ContenderData
-  ) => {
-    e.stopPropagation();
-    props.updateContender?.({ ...contender, disqualified: false });
+  const onReenter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setSaving(true);
+    props
+      .updateContender?.({ ...props.contender!, disqualified: false })
+      .finally(() => setSaving(false));
   };
 
   let scoring = props.scoring;
@@ -71,12 +96,11 @@ const ContenderView = (props: Props) => {
   return (
     <>
       <TableRow
-        style={{ cursor: "pointer" }}
+        selected={expanded}
+        className={classes.tableRow}
         hover
         onClick={() => {
-          if (!contender.disqualified) {
-            showContenderDialog();
-          }
+          toggleExpanded();
         }}
       >
         <TableCell
@@ -88,39 +112,42 @@ const ContenderView = (props: Props) => {
         >
           {contender.name}
         </TableCell>
-        <TableCell component="th" scope="row">
-          {getCompClassName(contender.compClassId)}
-        </TableCell>
-        <Hidden smDown>
-          <TableCell component="th" scope="row">
-            <div style={{ width: 37, display: "inline-block" }}>
-              {contender.name ? scoring?.totalScore : "-"}
-            </div>
-            <div style={{ display: "inline-block" }}>
-              {contender.name ? "(" + scoring?.totalPosition + ")" : ""}
-            </div>
-          </TableCell>
-          {props.finalEnabled && (
-            <>
+        {!expanded ? (
+          <>
+            <Hidden smDown>
               <TableCell component="th" scope="row">
-                <div style={{ width: 37, display: "inline-block" }}>
-                  {contender.name ? scoring?.qualifyingScore : "-"}
-                </div>
+                {getCompClassName(contender.compClassId)}
+              </TableCell>
+              <TableCell component="th" scope="row">
                 <div style={{ display: "inline-block" }}>
-                  {contender.name
-                    ? "(" + scoring?.qualifyingPosition + ")"
-                    : ""}
+                  {contender.name ? scoring?.totalScore : "-"}{" "}
+                  {contender.name && "(" + scoring?.totalPosition + ")"}
                 </div>
               </TableCell>
+              {props.finalEnabled && (
+                <>
+                  <TableCell component="th" scope="row">
+                    <div style={{ width: 37, display: "inline-block" }}>
+                      {contender.name ? scoring?.qualifyingScore : "-"}{" "}
+                      {contender.name &&
+                        "(" + scoring?.qualifyingPosition + ")"}
+                    </div>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {scoring?.isFinalist ? "finalist" : ""}
+                  </TableCell>
+                </>
+              )}
               <TableCell component="th" scope="row">
-                {scoring?.isFinalist ? "finalist" : ""}
+                {contender.name ? scoring?.ticks?.length : "-"}
               </TableCell>
-            </>
-          )}
-          <TableCell component="th" scope="row">
-            {contender.name ? scoring?.ticks?.length : "-"}
-          </TableCell>
-        </Hidden>
+            </Hidden>
+          </>
+        ) : (
+          <Hidden smDown>
+            <TableCell colSpan={3} />
+          </Hidden>
+        )}
         <TableCell component="th" scope="row">
           <Button
             href={
@@ -139,79 +166,123 @@ const ContenderView = (props: Props) => {
             {contender.registrationCode}
           </Button>
         </TableCell>
-        <Hidden smDown>
-          <TableCell component="th" scope="row">
-            {contender.disqualified ? (
-              <Tooltip title="Reenter" placement="top-start">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={(event) => onReenter(event, contender)}
-                >
-                  {<ThumbUpIcon />}
-                </Button>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Disqualify" placement="top-start">
-                <Button
-                  disabled={contender.entered == undefined}
-                  variant="contained"
-                  color="secondary"
-                  onClick={(event) => onDisqualify(event, contender)}
-                >
-                  {<ThumbDownIcon />}
-                </Button>
-              </Tooltip>
-            )}
-          </TableCell>
-        </Hidden>
       </TableRow>
-      <Dialog open={scoreDialogOpen} aria-labelledby="contender-dialog-title">
-        <DialogTitle id="contender-dialog-title">
-          {props.contender?.name}
-        </DialogTitle>
-        <div
-          style={{
-            display: "flex",
-            fontWeight: "bold",
-            margin: "0px 24px",
-            borderBottom: "1px solid grey",
-          }}
+
+      <TableRow selected={expanded}>
+        <TableCell
+          padding="none"
+          colSpan={6}
+          style={{ paddingBottom: 0, paddingTop: 0 }}
         >
-          <div style={{ width: 200 }}>Problem</div>
-          <div style={{ width: 100, textAlign: "right" }}>Points</div>
-          <div style={{ width: 150, marginLeft: 10 }}>Time</div>
-          <div style={{ width: 100, marginLeft: 10 }}>Flash</div>
-        </div>
-        <DialogContent>
-          {scoring?.ticks?.map((tick) => {
-            let problem = props.problems?.get(tick.problemId);
-            let color = props.colors?.get(problem?.colorId!);
-            let points = problem!.points!;
-            if (tick.flash && problem!.flashBonus) {
-              points += problem!.flashBonus;
-            }
-            return (
-              <div key={tick.id} style={{ display: "flex", marginBottom: 2 }}>
-                <div style={{ width: 50 }}>{problem!.number}</div>
-                <div style={{ width: 150 }}>{color!.name}</div>
-                <div style={{ width: 100, textAlign: "right" }}>{points}</div>
-                <div style={{ width: 150, marginLeft: 10 }}>
-                  {moment(tick.timestamp).format("HH:mm")}
-                </div>
-                <div style={{ width: 100, marginLeft: 10 }}>
-                  {tick.flash && "Flash"}
-                </div>
-              </div>
-            );
-          })}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={hideContenderDialog} color="primary">
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <div
+              className={classes.inputFields}
+              style={{
+                minWidth: 304,
+                maxWidth: 600,
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: 1,
+                flexBasis: 0,
+                padding: theme.spacing(2),
+              }}
+            >
+              <Typography
+                color="textSecondary"
+                display="block"
+                variant="caption"
+              >
+                Info
+              </Typography>
+
+              <ContenderEdit
+                contender={props.contender}
+                compClasses={props.compClasses}
+              />
+
+              <Divider />
+
+              <Typography
+                color="textSecondary"
+                display="block"
+                variant="caption"
+              >
+                Results
+              </Typography>
+
+              {contender.disqualified ? (
+                <Alert severity="warning">Contender is disqualified</Alert>
+              ) : (
+                <>
+                  {scoring && (
+                    <>
+                      <Grid
+                        container
+                        direction="row"
+                        spacing={1}
+                        justify="flex-start"
+                      >
+                        <Grid item style={{ paddingLeft: 0 }}>
+                          <ContenderScoring
+                            title="Total"
+                            score={scoring.totalScore ?? 0}
+                            placement={scoring.totalPosition ?? 0}
+                          ></ContenderScoring>
+                        </Grid>
+                        <Grid item>
+                          <ContenderScoring
+                            title="Qualifying"
+                            score={scoring.qualifyingScore ?? 0}
+                            placement={scoring.qualifyingPosition ?? 0}
+                          ></ContenderScoring>
+                        </Grid>
+                      </Grid>
+                      <ContenderTickList
+                        scoring={props.scoring!}
+                        problems={props.problems}
+                        colors={props.colors}
+                      />
+                    </>
+                  )}
+                </>
+              )}
+
+              <Divider />
+
+              <Typography
+                color="textSecondary"
+                display="block"
+                variant="caption"
+              >
+                Advanced
+              </Typography>
+
+              <>
+                {contender.disqualified ? (
+                  <ProgressButton
+                    variant="contained"
+                    color="secondary"
+                    onClick={onReenter}
+                    loading={saving}
+                  >
+                    Reenter
+                  </ProgressButton>
+                ) : (
+                  <ProgressButton
+                    disabled={contender.entered == undefined}
+                    variant="contained"
+                    color="secondary"
+                    onClick={onDisqualify}
+                    loading={saving}
+                  >
+                    Disqualify
+                  </ProgressButton>
+                )}
+              </>
+            </div>
+          </Collapse>
+        </TableCell>
+      </TableRow>
     </>
   );
 };

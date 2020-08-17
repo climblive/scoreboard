@@ -19,10 +19,12 @@ import {
   loadContenders,
   loadTicks,
   loadRaffles,
+  loadContest,
 } from "../../actions/asyncActions";
 import { Color } from "../../model/color";
 import { RouteComponentProps, withRouter } from "react-router";
 import { OrderedMap } from "immutable";
+import { Contest } from "../../model/contest";
 
 interface Props {
   match: {
@@ -32,12 +34,14 @@ interface Props {
   };
 
   colors?: OrderedMap<number, Color>;
+  contests?: OrderedMap<number, Contest>;
   loadColors?: () => Promise<void>;
   loadCompClasses?: (contestId: number) => Promise<void>;
   loadProblems?: (contestId: number) => Promise<void>;
   loadContenders?: (contestId: number) => Promise<void>;
   loadTicks?: (contestId: number) => Promise<void>;
   loadRaffles?: (contestId: number) => Promise<void>;
+  loadContest?: (contestId: number) => Promise<Contest>;
 }
 
 const ContestInfo = (props: Props & RouteComponentProps) => {
@@ -54,6 +58,12 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
   useEffect(() => {
     if (contestId == undefined) {
       return;
+    }
+
+    let contest = props.contests?.get(contestId);
+
+    if (contest == undefined) {
+      props.loadContest?.(contestId);
     }
 
     Promise.all([
@@ -168,6 +178,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
   return {
     match: props.match,
     colors: state.colors,
+    contests: state.contests,
   };
 }
 
@@ -178,6 +189,7 @@ const mapDispatchToProps = {
   loadContenders,
   loadTicks,
   loadRaffles,
+  loadContest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContestInfo);

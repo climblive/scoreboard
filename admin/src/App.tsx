@@ -7,7 +7,7 @@ import TopMenu from "./components/TopMenu";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import { Snackbar } from "@material-ui/core";
+import { Snackbar, TableCell } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { StoreState } from "./model/storeState";
 import { connect } from "react-redux";

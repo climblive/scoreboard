@@ -23,14 +23,6 @@ button:focus {
   width: 300px !important;
 }
 
-.MuiTableCell-root {
-  padding: 10px 15px !important;
-}
-
-.MuiTableCell-root.icon-cell {
-  padding: 2px 15px !important;
-}
-
 .textfield-inherited .MuiInputBase-root {
   color: inherit;
   font-size: inherit;

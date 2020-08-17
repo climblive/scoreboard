@@ -55,7 +55,6 @@ interface Props {
   setTitle?: (title: string) => void;
   saveContest?: (contest: Contest) => Promise<Contest>;
   deleteContest?: (contest: Contest) => Promise<void>;
-  loadContest?: (contestId: number) => Promise<Contest>;
   loadLocations?: () => Promise<void>;
   loadSeries?: () => Promise<void>;
 }
@@ -109,17 +108,8 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   useEffect(() => {
     if (props.contestId != undefined) {
       let contest = props.contests?.get(props.contestId);
-
       if (contest != undefined) {
         setContest(contest);
-      } else {
-        setLoading(true);
-        props
-          .loadContest?.(props.contestId)
-          .then((contest) => {
-            setContest(contest);
-          })
-          .finally(() => setLoading(false));
       }
     }
   }, [props.contestId]);

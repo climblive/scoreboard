@@ -41,6 +41,15 @@ const theme = createMuiTheme({
       main: "#eb0708",
     },
   },
+  overrides: {
+    MuiTableRow: {
+      root: {
+        "&:last-child td": {
+          borderBottom: 0,
+        },
+      },
+    },
+  },
 });
 
 const App = (props: Props) => {

@@ -1,14 +1,11 @@
 import React, { useState, useMemo } from "react";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import { InputLabel, TableCell, Hidden, Grid } from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import SaveIcon from "@material-ui/icons/SaveAlt";
-import ClearIcon from "@material-ui/icons/Clear";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { ContenderData } from "../../model/contenderData";
 import Dialog from "@material-ui/core/Dialog";
@@ -45,8 +42,14 @@ import {
   Theme,
   createStyles,
 } from "@material-ui/core/styles";
+import ResponsiveTableHead from "../ResponsiveTableHead";
 
 const CONTENDERS_PER_PAGE = 10;
+
+const breakpoints = new Map<number, string>()
+  .set(1, "smDown")
+  .set(2, "xsDown")
+  .set(3, "smDown");
 
 interface Props {
   contestId?: number;
@@ -214,6 +217,29 @@ const ContenderList = (props: Props) => {
     setPage(value);
   };
 
+  const headings = [
+    <TableCell
+      style={{ cursor: "pointer" }}
+      onClick={() => setContenderSortBy(SortBy.BY_NAME)}
+    >
+      Name
+    </TableCell>,
+    <TableCell>Class</TableCell>,
+    <TableCell
+      style={{ cursor: "pointer" }}
+      onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}
+    >
+      Total score
+    </TableCell>,
+    <TableCell
+      style={{ cursor: "pointer" }}
+      onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}
+    >
+      # Ticks
+    </TableCell>,
+    <TableCell style={{ minWidth: 110 }}>Regcode</TableCell>,
+  ];
+
   return (
     <>
       <div style={{ display: "flex", alignItems: "right" }}>
@@ -276,45 +302,7 @@ const ContenderList = (props: Props) => {
       </div>
       <div>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                style={{ width: "100%", cursor: "pointer" }}
-                onClick={() => setContenderSortBy(SortBy.BY_NAME)}
-              >
-                Name
-              </TableCell>
-              <Hidden smDown>
-                <TableCell style={{ minWidth: 110 }}>Class</TableCell>
-                <TableCell
-                  style={{ minWidth: 110, cursor: "pointer" }}
-                  onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}
-                >
-                  Total score
-                </TableCell>
-                {props.finalEnabled && (
-                  <>
-                    <TableCell
-                      style={{ minWidth: 110, cursor: "pointer" }}
-                      onClick={() =>
-                        setContenderSortBy(SortBy.BY_QUALIFYING_POINTS)
-                      }
-                    >
-                      Qualifying score
-                    </TableCell>
-                    <TableCell style={{ minWidth: 100 }}></TableCell>
-                  </>
-                )}
-                <TableCell
-                  style={{ minWidth: 110, cursor: "pointer" }}
-                  onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}
-                >
-                  # Ticks
-                </TableCell>
-              </Hidden>
-              <TableCell style={{ minWidth: 110 }}>Regcode</TableCell>
-            </TableRow>
-          </TableHead>
+          <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
           <TableBody>
             {contendersSortedAndFiltered
               ?.slice(
@@ -328,6 +316,7 @@ const ContenderList = (props: Props) => {
                   scoring={scoringByContender?.get(contender.id!)}
                   compClasses={props.compClasses}
                   problems={props.problems}
+                  breakpoints={breakpoints}
                 />
               ))}
           </TableBody>

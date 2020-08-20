@@ -1,24 +1,24 @@
 import React, { useState } from "react";
-import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
+import { StyledComponentProps, TableCell, useTheme } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
 import { loadCompClasses } from "../../actions/asyncActions";
-import { setTitle } from "../../actions/actions";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { CompClass } from "../../model/compClass";
-import CompClassListItem from "./CompClassListItem";
+import CompClassView from "./CompClassView";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import moment from "moment";
 import { getSelectedOrganizer } from "../../selectors/selector";
 import { OrderedMap } from "immutable";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import CompClassEdit from "./CompClassEdit";
 
 interface Props {
   contestId?: number;
@@ -26,14 +26,17 @@ interface Props {
   selectedOrganizer?: Organizer;
 
   loadCompClasses?: (contestId: number) => Promise<void>;
-  setTitle?: (title: string) => void;
 }
+
+const breakpoints = new Map<number, string>().set(1, "smDown").set(2, "smDown");
 
 const CompClassList = (
   props: Props & RouteComponentProps & StyledComponentProps
 ) => {
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const theme = useTheme();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -46,51 +49,68 @@ const CompClassList = (
       .finally(() => setRefreshing(false));
   };
 
+  const headings = [
+    <TableCell>Name</TableCell>,
+    <TableCell>Start time</TableCell>,
+    <TableCell>End time</TableCell>,
+  ];
+
+  const toolbar = (
+    <>
+      <IconButton
+        color="inherit"
+        aria-label="Menu"
+        title="Add"
+        disabled={showCreate}
+        onClick={() => setShowCreate(true)}
+      >
+        <AddIcon />
+      </IconButton>
+      <IconButton
+        color="inherit"
+        aria-label="Menu"
+        title="Refresh"
+        onClick={refreshCompClasses}
+      >
+        {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
+      </IconButton>
+    </>
+  );
+
   return (
     <>
       <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Start time</TableCell>
-            <TableCell>End time</TableCell>
-            <TableCell align="right" className={"icon-cell"}>
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Add"
-                disabled={showCreate}
-                onClick={() => setShowCreate(true)}
-              >
-                <AddIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Refresh"
-                onClick={refreshCompClasses}
-              >
-                {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-              </IconButton>
-            </TableCell>
-          </TableRow>
-        </TableHead>
+        <ResponsiveTableHead
+          cells={headings}
+          breakpoints={breakpoints}
+          toolbar={toolbar}
+        />
         <TableBody>
           {showCreate && (
-            <CompClassListItem
-              onCreateDone={onCreateDone}
-              compClass={{
-                name: "",
-                description: "",
-                contestId: props.contestId!,
-                timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-              }}
-            />
+            <TableRow selected>
+              <TableCell padding="none" colSpan={4}>
+                <div style={{ padding: theme.spacing(0, 2) }}>
+                  <CompClassEdit
+                    cancellable
+                    onDone={onCreateDone}
+                    compClass={{
+                      name: "",
+                      description: "",
+                      contestId: props.contestId!,
+                      timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                      timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                    }}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
           )}
           {props.compClasses?.toArray()?.map((compClass: CompClass) => (
-            <CompClassListItem key={compClass.id!} compClass={compClass} />
+            <CompClassView
+              key={compClass.id!}
+              compClass={compClass}
+              breakpoints={breakpoints}
+            />
           ))}
         </TableBody>
       </Table>
@@ -116,7 +136,6 @@ function mapStateToProps(state: StoreState, props: any): Props {
 
 const mapDispatchToProps = {
   loadCompClasses,
-  setTitle,
 };
 
 export default connect(

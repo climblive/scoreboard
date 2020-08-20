@@ -62,15 +62,14 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     buttons: {
-      marginTop: theme.spacing(1.5),
-      marginBottom: theme.spacing(1.5),
+      margin: theme.spacing(2, 0),
       "& > *": {
-        marginRight: theme.spacing(0.5),
+        marginRight: theme.spacing(1),
       },
     },
     inputFields: {
       "& > *": {
-        margin: theme.spacing(0.5),
+        margin: theme.spacing(1),
       },
     },
   })

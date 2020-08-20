@@ -1,21 +1,14 @@
 import React, { useState } from "react";
-import {
-  StyledComponentProps,
-  TableCell,
-  Theme,
-  Button,
-} from "@material-ui/core";
+import { StyledComponentProps, TableCell, Button } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
 import { reloadSeries } from "../../actions/asyncActions";
 import { setTitle } from "../../actions/actions";
-import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { Series } from "../../model/series";
 import SeriesListItem from "./SeriesListItem";

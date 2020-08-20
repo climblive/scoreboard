@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import Table from "@material-ui/core/Table";
 import { InputLabel, TableCell, Hidden, Grid } from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import SaveIcon from "@material-ui/icons/SaveAlt";
@@ -43,6 +42,7 @@ import {
   createStyles,
 } from "@material-ui/core/styles";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ProgressIconButton from "../ProgressIconButton";
 
 const CONTENDERS_PER_PAGE = 10;
 
@@ -274,15 +274,16 @@ const ContenderList = (props: Props) => {
           </FormControl>
         )}
 
-        <IconButton
+        <ProgressIconButton
           color="inherit"
           aria-label="Menu"
           title="Refresh"
           disabled={refreshing}
           onClick={refreshContenders}
+          loading={refreshing}
         >
-          {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-        </IconButton>
+          <RefreshIcon />
+        </ProgressIconButton>
         <IconButton
           color="inherit"
           aria-label="Menu"

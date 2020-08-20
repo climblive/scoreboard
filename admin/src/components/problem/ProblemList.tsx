@@ -1,11 +1,9 @@
 import React, { useState, useEffect, Fragment, useMemo } from "react";
 import { StyledComponentProps } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
 import { loadProblems, reloadColors } from "../../actions/asyncActions";
 import { setTitle } from "../../actions/actions";
-import IconButton from "@material-ui/core/IconButton";
 import { Problem } from "../../model/problem";
 import ProblemListItem from "./ProblemListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
@@ -21,6 +19,7 @@ import {
 } from "src/selectors/selector";
 import Grid from "@material-ui/core/Grid";
 import { OrderedMap } from "immutable";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   contestId?: number;
@@ -141,14 +140,15 @@ const ProblemList = (props: Props & StyledComponentProps) => {
 
   return (
     <>
-      <IconButton
+      <ProgressIconButton
         color="inherit"
         aria-label="Menu"
         title="Refresh"
         onClick={refreshProblems}
+        loading={refreshing}
       >
-        {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-      </IconButton>
+        <RefreshIcon />
+      </ProgressIconButton>
       <Grid container direction="column">
         {!refreshing &&
           (props.problems?.size ?? 0) === 0 &&

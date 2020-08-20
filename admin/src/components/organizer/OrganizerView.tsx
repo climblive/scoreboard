@@ -8,10 +8,10 @@ import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import TableRow from "@material-ui/core/TableRow";
 import { TableCell } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import { CircularProgress } from "@material-ui/core";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
 import Chip from "@material-ui/core/Chip";
 import { getSelectedOrganizer } from "src/selectors/selector";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   isSelectedOrganizer: boolean;
@@ -59,15 +59,16 @@ const OrganizerView = (props: Props) => {
         >
           <EditIcon />
         </IconButton>
-        <IconButton
+        <ProgressIconButton
           color="inherit"
           aria-label="Menu"
           title="Delete"
           onClick={onDelete}
-          disabled={deleting || props.isSelectedOrganizer}
+          disabled={props.isSelectedOrganizer}
+          loading={deleting}
         >
-          {deleting ? <CircularProgress size={24} /> : <DeleteIcon />}
-        </IconButton>
+          <DeleteIcon />
+        </ProgressIconButton>
         <IconButton
           color="inherit"
           aria-label="Menu"

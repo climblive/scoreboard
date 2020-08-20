@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Contest } from "../../model/contest";
 import { InputLabel, TextField, Grid, useTheme } from "@material-ui/core";
@@ -7,7 +6,6 @@ import { RouteComponentProps, withRouter } from "react-router";
 import RichTextEditor from "../RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import WarningIcon from "@material-ui/icons/Warning";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Series } from "../../model/series";
 import { CompLocation } from "../../model/compLocation";

@@ -19,6 +19,7 @@ import { ChromePicker } from "react-color";
 import DialogActions from "@material-ui/core/DialogActions";
 import Switch from "@material-ui/core/Switch";
 import { User } from "src/model/user";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   color?: Color;
@@ -128,15 +129,15 @@ const ColorEdit = (props: Props) => {
         </TableCell>
 
         <TableCell align="right">
-          <IconButton
+          <ProgressIconButton
             color="inherit"
             aria-label="Menu"
             title={color.id == undefined ? "Create" : "Save"}
             onClick={onSave}
-            disabled={saving}
+            loading={saving}
           >
-            {saving ? <CircularProgress size={24} /> : <SaveIcon />}
-          </IconButton>
+            <SaveIcon />
+          </ProgressIconButton>
           <IconButton
             color="inherit"
             aria-label="Menu"

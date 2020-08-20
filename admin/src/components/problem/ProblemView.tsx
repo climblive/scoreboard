@@ -14,8 +14,6 @@ import {
   DialogActions,
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import { CircularProgress } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { Tick } from "src/model/tick";
 import { CompClass } from "src/model/compClass";
@@ -23,6 +21,8 @@ import { ContenderData } from "src/model/contenderData";
 import moment from "moment";
 import Grid from "@material-ui/core/Grid";
 import { OrderedMap } from "immutable";
+import ProgressIconButton from "../ProgressIconButton";
+import AddIcon from "@material-ui/icons/AddCircleOutline";
 
 interface Props {
   problem?: Problem;
@@ -147,16 +147,16 @@ const ProblemView = (props: Props & StyledComponentProps) => {
           </IconButton>
         )}
         {props.allowEdit && (
-          <IconButton
+          <ProgressIconButton
             className={props.classes?.menuButton}
             color="inherit"
             aria-label="Menu"
             title="Delete"
-            disabled={deleting}
+            loading={deleting}
             onClick={() => setDeleteRequested(true)}
           >
-            {deleting ? <CircularProgress size={24} /> : <DeleteIcon />}
-          </IconButton>
+            <DeleteIcon />
+          </ProgressIconButton>
         )}
       </div>
       <ConfirmationDialog

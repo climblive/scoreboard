@@ -9,7 +9,7 @@ import { Organizer } from "../../model/organizer";
 import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
 import { saveOrganizer } from "../../actions/asyncActions";
-import { CircularProgress } from "@material-ui/core";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   organizer?: Organizer;
@@ -51,15 +51,15 @@ const OrganizerEdit = (props: Props) => {
         <TextField value={organizer.homepage} onChange={onHomepageChange} />
       </TableCell>
       <TableCell align="right">
-        <IconButton
+        <ProgressIconButton
           color="inherit"
           aria-label="Menu"
           title={organizer.id == undefined ? "Create" : "Save"}
           onClick={onSave}
-          disabled={saving}
+          loading={saving}
         >
-          {saving ? <CircularProgress size={24} /> : <SaveIcon />}
-        </IconButton>
+          <SaveIcon />
+        </ProgressIconButton>
         <IconButton
           color="inherit"
           aria-label="Menu"

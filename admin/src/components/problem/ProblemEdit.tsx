@@ -16,9 +16,8 @@ import { Color } from "../../model/color";
 import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
 import { saveProblem } from "../../actions/asyncActions";
-import { CircularProgress } from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
 import { OrderedMap } from "immutable";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   problem?: Problem;
@@ -153,16 +152,16 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
         />
       </div>
       <div style={{ width: 48 }}></div>
-      <IconButton
+      <ProgressIconButton
         className={props.classes?.menuButton}
         color="inherit"
         aria-label="Menu"
         title={problem.id == undefined ? "Create" : "Save"}
-        disabled={saving}
+        loading={saving}
         onClick={onSave}
       >
-        {saving ? <CircularProgress size={24} /> : <SaveIcon />}
-      </IconButton>
+        <SaveIcon />
+      </ProgressIconButton>
       <IconButton
         className={props.classes?.menuButton}
         color="inherit"

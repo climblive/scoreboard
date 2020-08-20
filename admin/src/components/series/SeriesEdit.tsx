@@ -9,7 +9,7 @@ import { Series } from "../../model/series";
 import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
 import { saveSeries } from "../../actions/asyncActions";
-import { CircularProgress } from "@material-ui/core";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   series?: Series;
@@ -44,15 +44,15 @@ const SeriesEdit = (props: Props) => {
         <TextField style={{}} value={series.name} onChange={onNameChange} />
       </TableCell>
       <TableCell align="right">
-        <IconButton
+        <ProgressIconButton
           color="inherit"
           aria-label="Menu"
           title={series.id == undefined ? "Create" : "Save"}
           onClick={onSave}
-          disabled={saving}
+          loading={saving}
         >
-          {saving ? <CircularProgress size={24} /> : <SaveIcon />}
-        </IconButton>
+          <SaveIcon />
+        </ProgressIconButton>
         <IconButton
           color="inherit"
           aria-label="Menu"

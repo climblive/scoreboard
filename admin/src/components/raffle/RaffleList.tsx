@@ -4,18 +4,17 @@ import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
 import { loadRaffles, saveRaffle } from "../../actions/asyncActions";
-import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import { Raffle } from "../../model/raffle";
 import RaffleView from "./RaffleView";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { OrderedMap } from "immutable";
 import { ContenderData } from "../../model/contenderData";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   contestId?: number;
@@ -52,23 +51,24 @@ const RaffleList = (
             <TableCell>Id</TableCell>
             <TableCell>Winners</TableCell>
             <TableCell className={"icon-cell"}>
-              <IconButton
+              <ProgressIconButton
                 color="inherit"
                 aria-label="Menu"
                 title="Add"
-                disabled={creating}
+                loading={creating}
                 onClick={createRaffle}
               >
-                {creating ? <CircularProgress size={24} /> : <AddIcon />}
-              </IconButton>
-              <IconButton
+                <AddIcon />
+              </ProgressIconButton>
+              <ProgressIconButton
                 color="inherit"
                 aria-label="Menu"
                 title="Refresh"
                 onClick={refreshRaffles}
+                loading={refreshing}
               >
-                {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-              </IconButton>
+                <RefreshIcon />
+              </ProgressIconButton>
             </TableCell>
           </TableRow>
         </TableHead>

@@ -15,6 +15,7 @@ import { ConfirmationDialog } from "../ConfirmationDialog";
 import { saveRaffle, drawWinner } from "../../actions/asyncActions";
 import { RaffleWinner } from "src/model/raffleWinner";
 import { OrderedMap } from "immutable";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   raffle?: Raffle;
@@ -80,44 +81,47 @@ const RaffleView = (props: Props) => {
         </TableCell>
         <TableCell className={"icon-cell"}>
           {props.raffle?.active && (
-            <IconButton
+            <ProgressIconButton
               color="inherit"
               aria-label="Menu"
               title="Draw winner"
               onClick={drawWinner}
+              loading={drawingWinner}
             >
-              {drawingWinner ? <CircularProgress size={24} /> : <PlayIcon />}
-            </IconButton>
+              <PlayIcon />
+            </ProgressIconButton>
           )}
           {props.raffle?.active && (
-            <IconButton
+            <ProgressIconButton
               color="inherit"
               aria-label="Menu"
               title="Deactivate"
               onClick={() => changeActiveStatus(false)}
+              loading={updating}
             >
-              {updating ? <CircularProgress size={24} /> : <StopIcon />}
-            </IconButton>
+              <StopIcon />
+            </ProgressIconButton>
           )}
           {!props.raffle?.active && (
-            <IconButton
+            <ProgressIconButton
               color="inherit"
               aria-label="Menu"
               title="Activate"
               onClick={() => changeActiveStatus(true)}
+              loading={updating}
             >
-              {updating ? <CircularProgress size={24} /> : <PlayIcon />}
-            </IconButton>
+              <PlayIcon />
+            </ProgressIconButton>
           )}
-          <IconButton
+          <ProgressIconButton
             color="inherit"
             aria-label="Menu"
             title="Delete"
             onClick={deleteRaffle}
-            disabled={deleting}
+            loading={deleting}
           >
-            {deleting ? <CircularProgress size={24} /> : <DeleteIcon />}
-          </IconButton>
+            <DeleteIcon />
+          </ProgressIconButton>
         </TableCell>
       </TableRow>
       <ConfirmationDialog

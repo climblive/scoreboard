@@ -11,8 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { CircularProgress } from "@material-ui/core";
 import { User } from "src/model/user";
 import PeopleIcon from "@material-ui/icons/People";
-
 import { getColorStyle } from "../../utils/color";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   color?: Color;
@@ -66,15 +66,16 @@ const ColorView = (props: Props) => {
         >
           <EditIcon />
         </IconButton>
-        <IconButton
+        <ProgressIconButton
           color="inherit"
           aria-label="Menu"
           title="Delete"
           onClick={onDelete}
           disabled={!isEditable() || deleting}
+          loading={deleting}
         >
-          {deleting ? <CircularProgress size={24} /> : <DeleteIcon />}
-        </IconButton>
+          <DeleteIcon />
+        </ProgressIconButton>
       </TableCell>
     </TableRow>
   );

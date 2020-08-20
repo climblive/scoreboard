@@ -12,6 +12,7 @@ import { DateTimePicker } from "@material-ui/pickers";
 import { ProgressButton } from "../ProgressButton";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { ConfirmationDialog } from "../ConfirmationDialog";
 
 interface Props {
   compClass?: CompClass;
@@ -50,6 +51,7 @@ const CompClassEdit = (props: Props) => {
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
+  let [deleteRequested, setDeleteRequested] = useState<boolean>(false);
 
   const classes = useStyles();
 
@@ -95,78 +97,90 @@ const CompClassEdit = (props: Props) => {
       .finally(() => setSaving(false));
   };
 
-  const onDelete = () => {
-    setDeleting(true);
-    props.deleteCompClass?.(compClass).finally(() => setDeleting(false));
+  const confirmDelete = (result: boolean) => {
+    setDeleteRequested(false);
+
+    if (result) {
+      setDeleting(true);
+      props.deleteCompClass?.(compClass).finally(() => setDeleting(false));
+    }
   };
 
   let timeBegin = Date.parse(compClass.timeBegin);
   let timeEnd = Date.parse(compClass.timeEnd);
 
   return (
-    <div className={classes.form}>
-      <TextField
-        label="Name"
-        style={{}}
-        value={compClass.name}
-        onChange={onNameChange}
-      />
-      <TextField
-        label="Description"
-        style={{}}
-        value={compClass.description}
-        onChange={onDescriptionChange}
-      />
-      <DateTimePicker
-        label="Start time"
-        ampm={false}
-        format={format}
-        value={timeBegin}
-        onChange={onTimeBeginChange}
-      />
-      <DateTimePicker
-        label="End time"
-        ampm={false}
-        format={format}
-        value={timeEnd}
-        onChange={onTimeEndChange}
-      />
-      <div className={classes.buttons}>
-        <ProgressButton
-          color="secondary"
-          variant="contained"
-          onClick={onSave}
-          disabled={deleting}
-          loading={saving}
-          startIcon={<SaveIcon />}
-        >
-          {compClass.id == undefined ? "Create" : "Save"}
-        </ProgressButton>
-        {props.removable && (
+    <>
+      <div className={classes.form}>
+        <TextField
+          label="Name"
+          style={{}}
+          value={compClass.name}
+          onChange={onNameChange}
+        />
+        <TextField
+          label="Description"
+          style={{}}
+          value={compClass.description}
+          onChange={onDescriptionChange}
+        />
+        <DateTimePicker
+          label="Start time"
+          ampm={false}
+          format={format}
+          value={timeBegin}
+          onChange={onTimeBeginChange}
+        />
+        <DateTimePicker
+          label="End time"
+          ampm={false}
+          format={format}
+          value={timeEnd}
+          onChange={onTimeEndChange}
+        />
+        <div className={classes.buttons}>
           <ProgressButton
             color="secondary"
             variant="contained"
-            disabled={saving}
-            loading={deleting}
-            onClick={onDelete}
-            startIcon={<DeleteForeverIcon />}
+            onClick={onSave}
+            disabled={deleting}
+            loading={saving}
+            startIcon={<SaveIcon />}
           >
-            Delete
+            {compClass.id == undefined ? "Create" : "Save"}
           </ProgressButton>
-        )}
-        {props.cancellable && (
-          <Button
-            color="secondary"
-            variant="contained"
-            disabled={saving}
-            onClick={props.onDone}
-            startIcon={<CancelIcon />}
-          >
-            Cancel
-          </Button>
-        )}
+          {props.removable && (
+            <ProgressButton
+              color="secondary"
+              variant="contained"
+              disabled={saving}
+              loading={deleting}
+              onClick={() => setDeleteRequested(true)}
+              startIcon={<DeleteForeverIcon />}
+            >
+              Delete
+            </ProgressButton>
+          )}
+          {props.cancellable && (
+            <Button
+              color="secondary"
+              variant="contained"
+              disabled={saving}
+              onClick={props.onDone}
+              startIcon={<CancelIcon />}
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
+      <ConfirmationDialog
+        open={deleteRequested}
+        title={`Delete comp class`}
+        message={"Do you wish to delete the selected comp class?"}
+        onClose={confirmDelete}
+      />
+    </>
   );
 };
 

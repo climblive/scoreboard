@@ -3,7 +3,6 @@ import { StyledComponentProps, TableCell, useTheme } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
@@ -19,6 +18,7 @@ import { getSelectedOrganizer } from "../../selectors/selector";
 import { OrderedMap } from "immutable";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import CompClassEdit from "./CompClassEdit";
+import ProgressIconButton from "../ProgressIconButton";
 
 interface Props {
   contestId?: number;
@@ -66,14 +66,15 @@ const CompClassList = (
       >
         <AddIcon />
       </IconButton>
-      <IconButton
+      <ProgressIconButton
         color="inherit"
         aria-label="Menu"
         title="Refresh"
         onClick={refreshCompClasses}
+        loading={refreshing}
       >
-        {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
-      </IconButton>
+        <RefreshIcon />
+      </ProgressIconButton>
     </>
   );
 

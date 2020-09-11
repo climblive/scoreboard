@@ -1,39 +1,82 @@
 import React, { useState } from "react";
 import SaveIcon from "@material-ui/icons/Save";
-import CancelIcon from "@material-ui/icons/Cancel";
 import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
-import TableRow from "@material-ui/core/TableRow";
 import {
-  TableCell,
   FormControl,
   Select,
   MenuItem,
   StyledComponentProps,
+  Grid,
+  InputLabel,
 } from "@material-ui/core";
 import { Problem } from "../../model/problem";
 import { Color } from "../../model/color";
 import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
-import { saveProblem } from "../../actions/asyncActions";
+import { saveProblem, loadCompClasses } from "../../actions/asyncActions";
 import { OrderedMap } from "immutable";
-import ProgressIconButton from "../ProgressIconButton";
+import { ProgressButton } from "../ProgressButton";
+import DeleteIcon from "@material-ui/icons/DeleteOutline";
+import { ConfirmationDialog } from "../ConfirmationDialog";
+import { deleteProblem } from "../../actions/asyncActions";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { Button } from "@material-ui/core";
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  createStyles,
+} from "@material-ui/core/styles";
 
 interface Props {
   problem?: Problem;
   colors?: OrderedMap<number, Color>;
-  allowCancel?: boolean;
+  cancellable?: boolean;
+  removable?: boolean;
   onDone?: () => void;
   saveProblem?: (problem: Problem) => Promise<Problem>;
   getColorName?: (problem: Problem) => string;
-  getProblemStyle?: (problem: Problem) => object;
+  getProblemStyle?: (colorId: number) => object;
+  deleteProblem?: (problem: Problem) => Promise<void>;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    colorBox: {
+      padding: theme.spacing(1, 0, 1, 1),
+      height: 24,
+      width: 24,
+    },
+    form: {
+      "& > *": {
+        margin: theme.spacing(1, 0),
+      },
+      minWidth: 304,
+      maxWidth: 600,
+      display: "flex",
+      flexDirection: "column",
+      flexGrow: 1,
+      flexBasis: 0,
+    },
+    buttons: {
+      margin: theme.spacing(2, 0),
+      "& > *": {
+        marginRight: theme.spacing(1),
+      },
+    },
+  })
+);
+
 const ProblemEdit = (props: Props & StyledComponentProps) => {
+  let [deleteRequested, setDeleteRequested] = useState<boolean>(false);
   const [problem, setProblem] = useState<Problem>({
     ...props.problem!,
   });
   let [saving, setSaving] = useState<boolean>(false);
+  let [deleting, setDeleting] = useState<boolean>(false);
+
+  const classes = useStyles();
+  const theme = useTheme();
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let name = e.target.value;
@@ -53,6 +96,17 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
     setProblem({ ...problem, colorId: parseInt(e.target.value) });
   };
 
+  const onDeleteConfirmed = (result: boolean) => {
+    setDeleteRequested(false);
+
+    if (result) {
+      setDeleting(true);
+      props
+        .deleteProblem?.(props.problem!)
+        .catch((error) => setDeleting(false));
+    }
+  };
+
   const onSave = () => {
     setSaving(true);
     props
@@ -65,114 +119,81 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
   };
 
   return (
-    <li style={props.getProblemStyle?.(problem)}>
-      <div style={{ width: 20, fontSize: 16 }}>{problem.number}</div>
-      <FormControl
-        style={{
-          width: 100,
-          textAlign: "left",
-          marginLeft: 15,
-          marginRight: "auto",
-          fontSize: 16,
-        }}
-      >
-        <Select
-          style={{ color: "inherit" }}
-          value={problem.colorId ?? ""}
-          onChange={onColorChange}
-        >
+    <div className={classes.form}>
+      <FormControl>
+        <InputLabel shrink htmlFor="compClass-select">
+          Color
+        </InputLabel>
+        <Select value={problem.colorId ?? ""} onChange={onColorChange}>
           {props.colors?.map((color: Color) => (
             <MenuItem key={color.id} value={color.id}>
-              {color.name}
+              <Grid container direction="row" alignItems="center">
+                <Grid style={{ marginRight: theme.spacing(1) }}>
+                  <div
+                    style={props.getProblemStyle?.(color.id!)}
+                    className={classes.colorBox}
+                  ></div>
+                </Grid>
+                <Grid>{color.name}</Grid>
+              </Grid>
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginRight: 15,
-        }}
-      >
-        <div style={{ fontSize: 10, textAlign: "left" }}>Name</div>
-        <TextField
-          className="textfield-inherited"
-          style={{
-            textAlign: "right",
-            width: 200,
-            fontSize: 28,
-            paddingTop: 0,
-            color: "inherit",
-          }}
-          value={problem.name}
-          onChange={onNameChange}
-        />
+      <TextField label="Name" value={problem.name} onChange={onNameChange} />
+      <TextField
+        label="Points"
+        value={problem.points == undefined ? "" : problem.points}
+        onChange={onPointsChange}
+      />
+      <TextField
+        label="Flash bonus"
+        value={problem.flashBonus == undefined ? "" : problem.flashBonus}
+        onChange={onFlashBonusChange}
+      />
+      <div className={classes.buttons}>
+        <ProgressButton
+          variant="contained"
+          color="secondary"
+          loading={saving}
+          onClick={onSave}
+          disabled={deleting}
+          startIcon={<SaveIcon />}
+        >
+          {problem.id == undefined ? "Create" : "Save"}
+        </ProgressButton>
+        {props.removable && (
+          <ProgressButton
+            variant="contained"
+            color="secondary"
+            title="Delete"
+            loading={deleting}
+            disabled={saving}
+            onClick={() => setDeleteRequested(true)}
+            startIcon={<DeleteIcon />}
+          >
+            Delete
+          </ProgressButton>
+        )}
+        {props.cancellable && (
+          <Button
+            color="secondary"
+            variant="contained"
+            disabled={saving || deleting}
+            onClick={props.onDone}
+            startIcon={<CancelIcon />}
+          >
+            Cancel
+          </Button>
+        )}
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginRight: 15,
-        }}
-      >
-        <div style={{ fontSize: 10, textAlign: "right" }}>Points</div>
-        <TextField
-          className="textfield-inherited"
-          style={{
-            textAlign: "right",
-            width: 60,
-            fontSize: 28,
-            paddingTop: 0,
-            color: "inherit",
-          }}
-          value={problem.points == undefined ? "" : problem.points}
-          onChange={onPointsChange}
-        />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginRight: 15,
-        }}
-      >
-        <div style={{ fontSize: 10, textAlign: "right" }}>Flash bonus</div>
-        <TextField
-          className="textfield-inherited"
-          style={{
-            textAlign: "right",
-            width: 60,
-            fontSize: 28,
-            paddingTop: 0,
-            color: "inherit",
-          }}
-          value={problem.flashBonus == undefined ? "" : problem.flashBonus}
-          onChange={onFlashBonusChange}
-        />
-      </div>
-      <div style={{ width: 48 }}></div>
-      <ProgressIconButton
-        className={props.classes?.menuButton}
-        color="inherit"
-        aria-label="Menu"
-        title={problem.id == undefined ? "Create" : "Save"}
-        loading={saving}
-        onClick={onSave}
-      >
-        <SaveIcon />
-      </ProgressIconButton>
-      <IconButton
-        className={props.classes?.menuButton}
-        color="inherit"
-        aria-label="Menu"
-        title="Cancel"
-        disabled={saving || !props.allowCancel}
-        onClick={props.onDone}
-      >
-        <CancelIcon />
-      </IconButton>
-    </li>
+      <ConfirmationDialog
+        open={deleteRequested}
+        title={"Delete problem"}
+        message={"Do you wish to delete the selected problem?"}
+        onClose={onDeleteConfirmed}
+      />
+    </div>
   );
 };
 
@@ -184,6 +205,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
 
 const mapDispatchToProps = {
   saveProblem,
+  deleteProblem,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProblemEdit);

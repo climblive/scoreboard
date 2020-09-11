@@ -1,11 +1,11 @@
-import React, { useState, useEffect, Fragment, useMemo } from "react";
-import { StyledComponentProps } from "@material-ui/core";
+import React, { useState, useMemo } from "react";
+import { TableCell, TableRow } from "@material-ui/core";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
 import { loadProblems, reloadColors } from "../../actions/asyncActions";
-import { setTitle } from "../../actions/actions";
 import { Problem } from "../../model/problem";
-import ProblemListItem from "./ProblemListItem";
+import ProblemView from "./ProblemView";
+import ProblemEdit from "./ProblemEdit";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { Organizer } from "src/model/organizer";
 import { Color } from "../../model/color";
@@ -17,9 +17,12 @@ import {
   getSelectedOrganizer,
   groupTicksByProblem,
 } from "src/selectors/selector";
-import Grid from "@material-ui/core/Grid";
 import { OrderedMap } from "immutable";
 import ProgressIconButton from "../ProgressIconButton";
+import TableBody from "@material-ui/core/TableBody";
+import Table from "@material-ui/core/Table";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import { useTheme } from "@material-ui/core/styles";
 
 interface Props {
   contestId?: number;
@@ -32,13 +35,15 @@ interface Props {
 
   loadProblems?: (contestId: number) => Promise<void>;
   loadColors?: () => Promise<void>;
-  setTitle?: (title: string) => void;
 }
 
-const ProblemList = (props: Props & StyledComponentProps) => {
+const breakpoints = new Map<number, string>().set(2, "smDown").set(3, "smDown");
+
+const ProblemList = (props: Props) => {
   const [insertAfterNumber, setInsertAfterNumber] = useState<
     number | undefined
   >(undefined);
+  const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const problemsSorted = useMemo(() => {
@@ -49,6 +54,8 @@ const ProblemList = (props: Props & StyledComponentProps) => {
     let ticks = props.ticks?.toArray();
     return ticks != undefined ? groupTicksByProblem(ticks) : undefined;
   }, [props.ticks]);
+
+  const theme = useTheme();
 
   const createDone = () => {
     setInsertAfterNumber(undefined);
@@ -69,10 +76,8 @@ const ProblemList = (props: Props & StyledComponentProps) => {
       : "UNDEFINED";
   };
 
-  const getProblemStyle = (problem: Problem, opacity: number = 1) => {
-    let color = problem.colorId
-      ? props.colors?.get(problem.colorId)
-      : undefined;
+  const getProblemStyle = (colorId: number, opacity: number = 1) => {
+    let color = colorId ? props.colors?.get(colorId) : undefined;
     if (!color) {
       color = {
         id: undefined,
@@ -107,9 +112,7 @@ const ProblemList = (props: Props & StyledComponentProps) => {
         " 30px)";
     }
     return {
-      display: "flex",
       border: borderWidth + "px solid " + borderColor,
-      padding: "2px 10px",
       color: textColor,
       borderRadius: 5,
       alignItems: "center",
@@ -121,68 +124,80 @@ const ProblemList = (props: Props & StyledComponentProps) => {
 
   const makeCreateView = (number: number, allowCancel: boolean) => {
     return (
-      <ProblemListItem
-        getColorName={getColorName}
-        getProblemStyle={getProblemStyle}
-        allowEdit={true}
-        allowCancel={allowCancel}
-        onCreateDone={createDone}
-        problem={{
-          name: undefined,
-          number,
-          contestId: props.contestId!,
-        }}
-      />
+      <TableRow selected>
+        <TableCell padding="none" colSpan={5}>
+          <div style={{ padding: theme.spacing(0, 2) }}>
+            <ProblemEdit
+              getColorName={getColorName}
+              getProblemStyle={getProblemStyle}
+              allowEdit={true}
+              allowCancel={allowCancel}
+              onCreateDone={createDone}
+              problem={{
+                name: undefined,
+                number,
+                contestId: props.contestId!,
+              }}
+            />
+          </div>
+        </TableCell>
+      </TableRow>
     );
   };
 
   let allowEdit = (ticksByProblem?.size ?? 0) === 0;
 
-  return (
+  const headings = [
+    <TableCell>Number</TableCell>,
+    <TableCell>Name</TableCell>,
+    <TableCell>Points</TableCell>,
+    <TableCell>Flash bonus</TableCell>,
+  ];
+
+  const toolbar = (
     <>
       <ProgressIconButton
         color="inherit"
-        aria-label="Menu"
         title="Refresh"
         onClick={refreshProblems}
         loading={refreshing}
       >
         <RefreshIcon />
       </ProgressIconButton>
-      <Grid container direction="column">
-        {!refreshing &&
-          (props.problems?.size ?? 0) === 0 &&
-          makeCreateView(1, false)}
-        {problemsSorted?.map((problem: Problem) => {
-          return (
-            <Fragment key={problem.id!}>
-              <span
-                style={{
-                  padding: 5,
-                  opacity: insertAfterNumber != undefined ? 0.1 : 1,
-                }}
-              >
-                <ProblemListItem
-                  getColorName={getColorName}
-                  getProblemStyle={getProblemStyle}
-                  allowEdit={allowEdit}
-                  allowCancel={true}
-                  onBeginCreate={beginCreate}
-                  problem={problem}
-                  contenders={props.contenders}
-                  compClasses={props.compClasses}
-                  ticks={ticksByProblem?.get(problem.id!)}
-                />
-              </span>
-              {problem.number == insertAfterNumber &&
-                makeCreateView(
-                  problem.number + 1,
-                  (props.problems?.size ?? 0) > 0
-                )}
-            </Fragment>
-          );
-        })}
-      </Grid>
+    </>
+  );
+
+  return (
+    <>
+      <Table>
+        <ResponsiveTableHead
+          cells={headings}
+          breakpoints={breakpoints}
+          toolbar={toolbar}
+        />
+        <TableBody>
+          {showCreate && makeCreateView(1, true)}
+          {problemsSorted?.map((problem: Problem) => {
+            return (
+              <ProblemView
+                key={problem.id!}
+                getColorName={getColorName}
+                getProblemStyle={getProblemStyle}
+                allowEdit={allowEdit}
+                onBeginCreate={beginCreate}
+                problem={problem}
+                contenders={props.contenders}
+                compClasses={props.compClasses}
+                ticks={ticksByProblem?.get(problem.id!)}
+                breakpoints={breakpoints}
+              />
+            );
+          })}
+          {!refreshing &&
+            (props.problems?.size ?? 0) === 0 &&
+            makeCreateView(1, false)}
+        </TableBody>
+      </Table>
     </>
   );
 };
@@ -201,7 +216,6 @@ function mapStateToProps(state: StoreState, props: any): Props {
 const mapDispatchToProps = {
   loadProblems,
   loadColors: reloadColors,
-  setTitle,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProblemList);

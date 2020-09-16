@@ -31,8 +31,10 @@ import {
 interface Props {
   problem?: Problem;
   colors?: OrderedMap<number, Color>;
+  editable?: boolean;
   cancellable?: boolean;
   removable?: boolean;
+  orderable?: boolean;
   onDone?: () => void;
   saveProblem?: (problem: Problem) => Promise<Problem>;
   getColorName?: (problem: Problem) => string;
@@ -78,6 +80,10 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
   const classes = useStyles();
   const theme = useTheme();
 
+  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProblem({ ...problem, number: parseInt(e.target.value) || 0 });
+  };
+
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let name = e.target.value;
     setProblem({ ...problem, name: name != "" ? name : undefined });
@@ -120,12 +126,20 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
 
   return (
     <div className={classes.form}>
-      <FormControl>
+      <TextField
+        label="Number"
+        type="number"
+        required
+        value={problem.number}
+        onChange={onNumberChange}
+        disabled={!props.editable || !props.orderable}
+      />
+      <FormControl required disabled={!props.editable}>
         <InputLabel shrink htmlFor="compClass-select">
           Color
         </InputLabel>
         <Select value={problem.colorId ?? ""} onChange={onColorChange}>
-          {props.colors?.map((color: Color) => (
+          {props.colors?.toArray()?.map((color: Color) => (
             <MenuItem key={color.id} value={color.id}>
               <Grid container direction="row" alignItems="center">
                 <Grid style={{ marginRight: theme.spacing(1) }}>
@@ -140,15 +154,26 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
           ))}
         </Select>
       </FormControl>
-      <TextField label="Name" value={problem.name} onChange={onNameChange} />
+      <TextField
+        label="Name"
+        disabled={!props.editable}
+        value={problem.name}
+        onChange={onNameChange}
+      />
       <TextField
         label="Points"
-        value={problem.points == undefined ? "" : problem.points}
+        type="number"
+        required
+        disabled={!props.editable}
+        value={problem.points}
         onChange={onPointsChange}
       />
       <TextField
         label="Flash bonus"
-        value={problem.flashBonus == undefined ? "" : problem.flashBonus}
+        type="number"
+        required
+        disabled={!props.editable}
+        value={problem.flashBonus}
         onChange={onFlashBonusChange}
       />
       <div className={classes.buttons}>
@@ -157,7 +182,7 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
           color="secondary"
           loading={saving}
           onClick={onSave}
-          disabled={deleting}
+          disabled={!props?.editable || deleting}
           startIcon={<SaveIcon />}
         >
           {problem.id == undefined ? "Create" : "Save"}
@@ -168,7 +193,7 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
             color="secondary"
             title="Delete"
             loading={deleting}
-            disabled={saving}
+            disabled={!props?.editable || saving}
             onClick={() => setDeleteRequested(true)}
             startIcon={<DeleteIcon />}
           >

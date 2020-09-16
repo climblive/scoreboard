@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { TableCell, TableRow } from "@material-ui/core";
+import { Grid, IconButton, TableCell, TableRow } from "@material-ui/core";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
 import { loadProblems, reloadColors } from "../../actions/asyncActions";
@@ -23,6 +23,7 @@ import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import { useTheme } from "@material-ui/core/styles";
+import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
 
 interface Props {
   contestId?: number;
@@ -40,9 +41,6 @@ interface Props {
 const breakpoints = new Map<number, string>().set(2, "smDown").set(3, "smDown");
 
 const ProblemList = (props: Props) => {
-  const [insertAfterNumber, setInsertAfterNumber] = useState<
-    number | undefined
-  >(undefined);
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -58,11 +56,11 @@ const ProblemList = (props: Props) => {
   const theme = useTheme();
 
   const createDone = () => {
-    setInsertAfterNumber(undefined);
+    setShowCreate(false);
   };
 
-  const beginCreate = (problemNumber: number) => {
-    setInsertAfterNumber(problemNumber);
+  const beginCreate = () => {
+    setShowCreate(true);
   };
 
   const refreshProblems = () => {
@@ -122,50 +120,92 @@ const ProblemList = (props: Props) => {
     };
   };
 
-  const makeCreateView = (number: number, allowCancel: boolean) => {
-    return (
-      <TableRow selected>
-        <TableCell padding="none" colSpan={5}>
-          <div style={{ padding: theme.spacing(0, 2) }}>
-            <ProblemEdit
-              getColorName={getColorName}
-              getProblemStyle={getProblemStyle}
-              allowEdit={true}
-              allowCancel={allowCancel}
-              onCreateDone={createDone}
-              problem={{
-                name: undefined,
-                number,
-                contestId: props.contestId!,
-              }}
-            />
-          </div>
-        </TableCell>
-      </TableRow>
-    );
+  const nextNumber = () => {
+    if (problemsSorted == undefined || problemsSorted.length == 0) {
+      return 1;
+    } else {
+      const max = problemsSorted?.[problemsSorted?.length - 1].number ?? 0;
+      return max + 1;
+    }
   };
 
-  let allowEdit = (ticksByProblem?.size ?? 0) === 0;
+  let editable = (ticksByProblem?.size ?? 0) === 0;
 
   const headings = [
-    <TableCell>Number</TableCell>,
+    <TableCell>Nº</TableCell>,
     <TableCell>Name</TableCell>,
     <TableCell>Points</TableCell>,
     <TableCell>Flash bonus</TableCell>,
   ];
 
   const toolbar = (
-    <>
-      <ProgressIconButton
-        color="inherit"
-        title="Refresh"
-        onClick={refreshProblems}
-        loading={refreshing}
-      >
-        <RefreshIcon />
-      </ProgressIconButton>
-    </>
+    <Grid container direction="row" wrap="nowrap" justify="flex-end">
+      <Grid item>
+        <ProgressIconButton
+          color="inherit"
+          title="Refresh"
+          onClick={refreshProblems}
+          loading={refreshing}
+        >
+          <RefreshIcon />
+        </ProgressIconButton>
+      </Grid>
+      <Grid item>
+        <IconButton
+          color="inherit"
+          title="Add"
+          onClick={beginCreate}
+          disabled={showCreate}
+        >
+          <AddCircleOutline />
+        </IconButton>
+      </Grid>
+    </Grid>
   );
+
+  let rows =
+    problemsSorted?.map((problem: Problem) => {
+      return (
+        <ProblemView
+          key={problem.id!}
+          getColorName={getColorName}
+          getProblemStyle={getProblemStyle}
+          problem={problem}
+          contenders={props.contenders}
+          compClasses={props.compClasses}
+          ticks={ticksByProblem?.get(problem.id!)}
+          breakpoints={breakpoints}
+          editable={editable}
+        />
+      );
+    }) ?? [];
+
+  if (showCreate) {
+    const component = (
+      <TableRow key="new" selected>
+        <TableCell padding="none" colSpan={5}>
+          <div style={{ padding: theme.spacing(0, 2) }}>
+            <ProblemEdit
+              getColorName={getColorName}
+              getProblemStyle={getProblemStyle}
+              cancellable
+              editable
+              onDone={createDone}
+              orderable
+              problem={{
+                name: undefined,
+                number: nextNumber(),
+                colorId: props.colors?.toArray()?.[0]?.id,
+                contestId: props.contestId!,
+                points: 1,
+              }}
+            />
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+    rows = [component, ...rows];
+  }
 
   return (
     <>
@@ -175,28 +215,7 @@ const ProblemList = (props: Props) => {
           breakpoints={breakpoints}
           toolbar={toolbar}
         />
-        <TableBody>
-          {showCreate && makeCreateView(1, true)}
-          {problemsSorted?.map((problem: Problem) => {
-            return (
-              <ProblemView
-                key={problem.id!}
-                getColorName={getColorName}
-                getProblemStyle={getProblemStyle}
-                allowEdit={allowEdit}
-                onBeginCreate={beginCreate}
-                problem={problem}
-                contenders={props.contenders}
-                compClasses={props.compClasses}
-                ticks={ticksByProblem?.get(problem.id!)}
-                breakpoints={breakpoints}
-              />
-            );
-          })}
-          {!refreshing &&
-            (props.problems?.size ?? 0) === 0 &&
-            makeCreateView(1, false)}
-        </TableBody>
+        <TableBody>{rows}</TableBody>
       </Table>
     </>
   );

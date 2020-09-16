@@ -6,7 +6,7 @@ import { Tick } from "src/model/tick";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import { OrderedMap } from "immutable";
-import { TableCell, useTheme } from "@material-ui/core";
+import { Button, TableCell, useTheme } from "@material-ui/core";
 import ResponsiveTableRow from "../ResponsiveTableRow";
 import ProblemEdit from "./ProblemEdit";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -15,10 +15,10 @@ import ProblemTickList from "./ProblemTickList";
 
 interface Props {
   problem?: Problem;
-  allowEdit?: boolean;
   ticks?: Tick[];
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
+  editable?: boolean;
   onBeginEdit?: () => void;
   getColorName?: (problem: Problem) => string;
   getProblemStyle?: (colorId: number) => object;
@@ -29,7 +29,7 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     colorBox: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(1, 2),
     },
     collapsableBody: {
       "& > *": {
@@ -66,36 +66,35 @@ const ProblemView = (props: Props) => {
   ];
 
   return (
-    <>
-      <ResponsiveTableRow cells={cells} breakpoints={props.breakpoints}>
-        <div className={classes.collapsableBody}>
-          <Typography color="textSecondary" display="block" variant="caption">
-            Info
-          </Typography>
+    <ResponsiveTableRow cells={cells} breakpoints={props.breakpoints}>
+      <div className={classes.collapsableBody}>
+        <Typography color="textSecondary" display="block" variant="caption">
+          Info
+        </Typography>
 
-          <ProblemEdit
+        <ProblemEdit
+          problem={props.problem}
+          getProblemStyle={props.getProblemStyle}
+          removable
+          editable={props.editable}
+        />
+
+        <Divider />
+
+        <Typography color="textSecondary" display="block" variant="caption">
+          Ticks
+        </Typography>
+
+        <div style={{ padding: theme.spacing(1, 0) }}>
+          <ProblemTickList
             problem={props.problem}
-            getProblemStyle={props.getProblemStyle}
-            removable
+            ticks={props.ticks}
+            compClasses={props.compClasses}
+            contenders={props.contenders}
           />
-
-          <Divider />
-
-          <Typography color="textSecondary" display="block" variant="caption">
-            Ticks
-          </Typography>
-
-          <div style={{ padding: theme.spacing(1, 0) }}>
-            <ProblemTickList
-              problem={props.problem}
-              ticks={props.ticks}
-              compClasses={props.compClasses}
-              contenders={props.contenders}
-            />
-          </div>
         </div>
-      </ResponsiveTableRow>
-    </>
+      </div>
+    </ResponsiveTableRow>
   );
 };
 

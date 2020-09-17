@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SaveIcon from "@material-ui/icons/Save";
 import CancelIcon from "@material-ui/icons/Cancel";
 import TextField from "@material-ui/core/TextField";
-import { Button } from "@material-ui/core";
+import { Button, useTheme } from "@material-ui/core";
 import { CompClass } from "../../model/compClass";
 import { connect } from "react-redux";
 import { StoreState } from "../../model/storeState";
@@ -13,6 +13,10 @@ import { ProgressButton } from "../ProgressButton";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { ConfirmationDialog } from "../ConfirmationDialog";
+import { TwitterPicker, ColorResult } from "react-color";
+import { IconButton } from "@material-ui/core";
+import ClearIcon from "@material-ui/icons/Clear";
+import ColorSquare from "../ColorSquare";
 
 interface Props {
   compClass?: CompClass;
@@ -52,6 +56,7 @@ const CompClassEdit = (props: Props) => {
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
   let [deleteRequested, setDeleteRequested] = useState<boolean>(false);
+  let [colorPickerVisible, setColorPickerVisible] = useState<boolean>(false);
 
   const classes = useStyles();
 
@@ -63,6 +68,14 @@ const CompClassEdit = (props: Props) => {
 
   const onDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompClass({ ...compClass, description: e.target.value });
+  };
+
+  const onColorChange = (
+    color: ColorResult,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCompClass({ ...compClass, color: color.hex });
+    setColorPickerVisible(false);
   };
 
   const onTimeBeginChange = (newTimeBegin: any) => {
@@ -106,6 +119,12 @@ const CompClassEdit = (props: Props) => {
     }
   };
 
+  const clearColor = (e: React.MouseEvent<HTMLElement>) => {
+    setColorPickerVisible(false);
+    setCompClass({ ...compClass, color: undefined });
+    e.stopPropagation();
+  };
+
   let timeBegin = Date.parse(compClass.timeBegin);
   let timeEnd = Date.parse(compClass.timeEnd);
 
@@ -114,18 +133,57 @@ const CompClassEdit = (props: Props) => {
       <div className={classes.form}>
         <TextField
           label="Name"
-          style={{}}
+          required
           value={compClass.name}
           onChange={onNameChange}
         />
         <TextField
           label="Description"
-          style={{}}
           value={compClass.description}
           onChange={onDescriptionChange}
         />
+        <TextField
+          label="Color"
+          value={compClass.color ?? ""}
+          onClick={() => setColorPickerVisible(true)}
+          InputProps={{
+            startAdornment: compClass.color && (
+              <ColorSquare color={compClass.color} />
+            ),
+            endAdornment: compClass.color != undefined && (
+              <IconButton onClick={clearColor}>
+                <ClearIcon />
+              </IconButton>
+            ),
+          }}
+        />
+        {colorPickerVisible && (
+          <TwitterPicker
+            onChange={onColorChange}
+            colors={[
+              "#f44336",
+              "#e91e63",
+              "#9c27b0",
+              "#673ab7",
+              "#3f51b5",
+              "#2196f3",
+              "#03a9f4",
+              "#00bcd4",
+              "#009688",
+              "#4caf50",
+              "#8bc34a",
+              "#cddc39",
+              "#ffeb3b",
+              "#ffc107",
+              "#ff5722",
+              "#795548",
+              "#607d8b",
+            ]}
+          />
+        )}
         <DateTimePicker
           label="Start time"
+          required
           ampm={false}
           format={format}
           value={timeBegin}
@@ -133,6 +191,7 @@ const CompClassEdit = (props: Props) => {
         />
         <DateTimePicker
           label="End time"
+          required
           ampm={false}
           format={format}
           value={timeEnd}

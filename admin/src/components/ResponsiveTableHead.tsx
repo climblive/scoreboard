@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { TableCell, Hidden } from "@material-ui/core";
@@ -17,11 +17,15 @@ const ResponsiveTableHead = (props: Props) => {
           const breakpoint = props.breakpoints?.get(index);
 
           if (breakpoint == undefined) {
-            return cell;
+            return <Fragment key={index}>{cell}</Fragment>;
           } else {
             const props = { [breakpoint]: true };
 
-            return <Hidden {...props}>{cell}</Hidden>;
+            return (
+              <Hidden key={index} {...props}>
+                {cell}
+              </Hidden>
+            );
           }
         })}
         <TableCell align="right">{props.toolbar}</TableCell>

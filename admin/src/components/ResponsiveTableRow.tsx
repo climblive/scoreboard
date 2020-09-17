@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import TableRow from "@material-ui/core/TableRow";
 import { TableCell, Hidden, Collapse } from "@material-ui/core";
 import {
@@ -51,16 +51,18 @@ const ResponsiveTableRow = (props: Props) => {
           const breakpoint = props.breakpoints?.get(index);
 
           if (breakpoint == undefined) {
-            return cell;
+            return <Fragment key={index}>{cell}</Fragment>;
           } else {
             const props = { [breakpoint]: true };
 
             return expanded ? (
-              <Hidden {...props}>
+              <Hidden key={index} {...props}>
                 <TableCell colSpan={1} />
               </Hidden>
             ) : (
-              <Hidden {...props}>{cell}</Hidden>
+              <Hidden key={index} {...props}>
+                {cell}
+              </Hidden>
             );
           }
         })}

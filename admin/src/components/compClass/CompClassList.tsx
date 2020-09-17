@@ -19,14 +19,24 @@ import { OrderedMap } from "immutable";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import CompClassEdit from "./CompClassEdit";
 import ProgressIconButton from "../ProgressIconButton";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface Props {
   contestId?: number;
   compClasses?: OrderedMap<number, CompClass>;
   selectedOrganizer?: Organizer;
-
   loadCompClasses?: (contestId: number) => Promise<void>;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    toolbar: {
+      "& > *": {
+        padding: theme.spacing(0, 0, 0, 1),
+      },
+    },
+  })
+);
 
 const breakpoints = new Map<number, string>().set(1, "smDown").set(2, "smDown");
 
@@ -37,6 +47,7 @@ const CompClassList = (
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const theme = useTheme();
+  const classes = useStyles();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -56,7 +67,7 @@ const CompClassList = (
   ];
 
   const toolbar = (
-    <>
+    <div className={classes.toolbar}>
       <IconButton
         color="inherit"
         aria-label="Menu"
@@ -75,7 +86,7 @@ const CompClassList = (
       >
         <RefreshIcon />
       </ProgressIconButton>
-    </>
+    </div>
   );
 
   return (

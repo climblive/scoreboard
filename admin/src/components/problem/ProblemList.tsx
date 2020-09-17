@@ -24,6 +24,7 @@ import Table from "@material-ui/core/Table";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import { useTheme } from "@material-ui/core/styles";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface Props {
   contestId?: number;
@@ -33,10 +34,19 @@ interface Props {
   ticks?: OrderedMap<number, Tick>;
   contenders?: OrderedMap<number, ContenderData>;
   compClasses?: OrderedMap<number, CompClass>;
-
   loadProblems?: (contestId: number) => Promise<void>;
   loadColors?: () => Promise<void>;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    toolbar: {
+      "& > *": {
+        padding: theme.spacing(0, 0, 0, 1),
+      },
+    },
+  })
+);
 
 const breakpoints = new Map<number, string>().set(2, "smDown").set(3, "smDown");
 
@@ -54,6 +64,7 @@ const ProblemList = (props: Props) => {
   }, [props.ticks]);
 
   const theme = useTheme();
+  const classes = useStyles();
 
   const createDone = () => {
     setShowCreate(false);
@@ -139,28 +150,24 @@ const ProblemList = (props: Props) => {
   ];
 
   const toolbar = (
-    <Grid container direction="row" wrap="nowrap" justify="flex-end">
-      <Grid item>
-        <ProgressIconButton
-          color="inherit"
-          title="Refresh"
-          onClick={refreshProblems}
-          loading={refreshing}
-        >
-          <RefreshIcon />
-        </ProgressIconButton>
-      </Grid>
-      <Grid item>
-        <IconButton
-          color="inherit"
-          title="Add"
-          onClick={beginCreate}
-          disabled={showCreate}
-        >
-          <AddCircleOutline />
-        </IconButton>
-      </Grid>
-    </Grid>
+    <div className={classes.toolbar}>
+      <ProgressIconButton
+        color="inherit"
+        title="Refresh"
+        onClick={refreshProblems}
+        loading={refreshing}
+      >
+        <RefreshIcon />
+      </ProgressIconButton>
+      <IconButton
+        color="inherit"
+        title="Add"
+        onClick={beginCreate}
+        disabled={showCreate}
+      >
+        <AddCircleOutline />
+      </IconButton>
+    </div>
   );
 
   let rows =

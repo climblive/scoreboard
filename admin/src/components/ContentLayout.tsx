@@ -17,8 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: theme.spacing(0.5),
       },
     },
-    toolbar: {
-      marginBottom: theme.spacing(2),
+    toolbar: {},
+    divider: {
+      margin: theme.spacing(1, 0, 2, 0),
     },
   })
 );
@@ -55,8 +56,8 @@ const ContentLayout = (props: Props) => {
           </Grid>
         </Grid>
       </Grid>
-      <Divider />
-      <Paper style={{ marginTop: "1rem" }}>{props.children}</Paper>
+      <Divider className={classes.divider} />
+      <Paper>{props.children}</Paper>
     </>
   );
 };

@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: -12,
       marginLeft: -12,
     },
+    button: {
+      width: "100%",
+    },
   })
 );
 
@@ -29,7 +32,11 @@ export const ProgressButton = (props: Props & ButtonProps) => {
 
   return (
     <div className={classes.wrapper}>
-      <Button {...rest} disabled={props.disabled || props.loading}>
+      <Button
+        {...rest}
+        disabled={props.disabled || props.loading}
+        className={classes.button}
+      >
         {props.children}
       </Button>
       {props.loading && (

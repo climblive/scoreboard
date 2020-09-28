@@ -1,85 +1,88 @@
-import React, { useState } from "react";
-import { Organizer } from "src/model/organizer";
-import { connect } from "react-redux";
-import { StoreState } from "../../model/storeState";
-import { deleteOrganizer, selectOrganizer } from "../../actions/asyncActions";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/DeleteOutline";
-import TableRow from "@material-ui/core/TableRow";
-import { TableCell } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import SyncAltIcon from "@material-ui/icons/SyncAlt";
+import { Divider, TableCell, Typography } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import SyncAltIcon from "@material-ui/icons/SyncAlt";
+import React from "react";
+import { connect } from "react-redux";
+import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
-import ProgressIconButton from "../ProgressIconButton";
+import { selectOrganizer } from "../../actions/asyncActions";
+import { StoreState } from "../../model/storeState";
+import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableRow from "../ResponsiveTableRow";
+import OrganizerEdit from "./OrganizerEdit";
 
 interface Props {
   isSelectedOrganizer: boolean;
   organizer?: Organizer;
-  deleteOrganizer?: (organizer: Organizer) => Promise<void>;
-  selectOrganizer?: (organizerId: number) => Promise<void>;
+  breakpoints?: Map<number, string>;
   onBeginEdit?: () => void;
+  selectOrganizer?: (organizerId: number) => void;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    collapsableBody: {
+      "& > *": {
+        margin: theme.spacing(1, 0),
+      },
+      minWidth: 304,
+      maxWidth: 600,
+      display: "flex",
+      flexDirection: "column",
+      flexGrow: 1,
+      flexBasis: 0,
+    },
+  })
+);
+
 const OrganizerView = (props: Props) => {
-  let [deleting, setDeleting] = useState<boolean>(false);
+  const classes = useStyles();
 
-  const onDelete = () => {
-    setDeleting(true);
-    props
-      .deleteOrganizer?.(props.organizer!)
-      .catch((error) => setDeleting(false));
-  };
-
-  const onSwitchOrganizer = () => {
+  const switchOrganizer = () => {
     props.selectOrganizer?.(props.organizer?.id!);
   };
 
+  const cells = [
+    <TableCell component="th" scope="row">
+      {props.organizer?.name}
+      {props.isSelectedOrganizer && (
+        <Chip
+          style={{ marginLeft: "5px" }}
+          label="Selected"
+          color="primary"
+          size="small"
+        />
+      )}
+    </TableCell>,
+    <TableCell>{props.organizer?.homepage}</TableCell>,
+  ];
+
   return (
-    <TableRow>
-      <TableCell component="th" scope="row">
-        {props.organizer?.name}
-        {props.isSelectedOrganizer && (
-          <Chip
-            style={{ marginLeft: "5px" }}
-            label="Selected"
-            color="primary"
-            size="small"
-          />
-        )}
-      </TableCell>
-      <TableCell>{props.organizer?.homepage}</TableCell>
-      <TableCell align="right" className={"icon-cell"}>
-        <IconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Edit"
-          disabled={deleting}
-          onClick={props.onBeginEdit}
-        >
-          <EditIcon />
-        </IconButton>
-        <ProgressIconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Delete"
-          onClick={onDelete}
+    <ResponsiveTableRow cells={cells} breakpoints={props.breakpoints}>
+      <div className={classes.collapsableBody}>
+        <Typography color="textSecondary" display="block" variant="caption">
+          Info
+        </Typography>
+        <OrganizerEdit organizer={props.organizer} removable editable />
+
+        <Divider />
+
+        <Typography color="textSecondary" display="block" variant="caption">
+          Options
+        </Typography>
+
+        <ProgressButton
+          color="secondary"
+          variant="contained"
+          onClick={switchOrganizer}
+          startIcon={<SyncAltIcon />}
           disabled={props.isSelectedOrganizer}
-          loading={deleting}
         >
-          <DeleteIcon />
-        </ProgressIconButton>
-        <IconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Switch"
-          disabled={deleting || props.isSelectedOrganizer}
-          onClick={onSwitchOrganizer}
-        >
-          <SyncAltIcon />
-        </IconButton>
-      </TableCell>
-    </TableRow>
+          Switch
+        </ProgressButton>
+      </div>
+    </ResponsiveTableRow>
   );
 };
 
@@ -91,7 +94,6 @@ function mapStateToProps(state: StoreState, props: any): Props {
 }
 
 const mapDispatchToProps = {
-  deleteOrganizer,
   selectOrganizer,
 };
 

@@ -1,45 +1,41 @@
-import React, { useState } from "react";
-import {
-  StyledComponentProps,
-  TableCell,
-  Theme,
-  Button,
-} from "@material-ui/core";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
+import { Button, TableCell } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { reloadOrganizers } from "../../actions/asyncActions";
-import { setTitle } from "../../actions/actions";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
-import { Organizer } from "../../model/organizer";
-import OrganizerListItem from "./OrganizerListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { getSelectedOrganizer } from "src/selectors/selector";
 import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { setTitle } from "../../actions/actions";
+import { reloadOrganizers } from "../../actions/asyncActions";
+import { Organizer } from "../../model/organizer";
+import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import OrganizerEdit from "./OrganizerEdit";
+import OrganizerView from "./OrganizerView";
 
 interface Props {
   organizers?: OrderedMap<number, Organizer>;
-  selectedOrganizer?: Organizer;
 
   loadOrganizers?: () => Promise<void>;
   setTitle?: (title: string) => void;
 }
 
-const OrganizerList = (
-  props: Props & RouteComponentProps & StyledComponentProps
-) => {
+const breakpoints = new Map<number, string>().set(1, "smDown");
+
+const OrganizerList = (props: Props) => {
   React.useEffect(() => {
     props.setTitle?.("Organizers");
   }, []);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const theme = useTheme();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -73,25 +69,37 @@ const OrganizerList = (
     </ProgressButton>,
   ];
 
+  const headings = [
+    <TableCell>Name</TableCell>,
+    <TableCell>Homepage</TableCell>,
+  ];
+
   return (
     <ContentLayout buttons={buttons}>
-      <Table className={props.classes?.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Homepage</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
+      <Table>
+        <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <OrganizerListItem
-              onCreateDone={onCreateDone}
-              organizer={{ name: "" }}
-            />
+            <TableRow selected>
+              <TableCell padding="none" colSpan={3}>
+                <div style={{ padding: theme.spacing(0, 2) }}>
+                  <OrganizerEdit
+                    onDone={onCreateDone}
+                    editable
+                    cancellable
+                    organizer={{ name: "" }}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
           )}
+
           {props.organizers?.toArray()?.map((organizer: Organizer) => (
-            <OrganizerListItem key={organizer.id!} organizer={organizer} />
+            <OrganizerView
+              key={organizer.id!}
+              organizer={organizer}
+              breakpoints={breakpoints}
+            />
           ))}
         </TableBody>
       </Table>
@@ -102,7 +110,6 @@ const OrganizerList = (
 function mapStateToProps(state: StoreState, props: any): Props {
   return {
     organizers: state.organizers,
-    selectedOrganizer: getSelectedOrganizer(state),
   };
 }
 
@@ -111,7 +118,4 @@ const mapDispatchToProps = {
   setTitle,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(OrganizerList));
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizerList);

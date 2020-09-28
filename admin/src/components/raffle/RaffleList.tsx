@@ -1,26 +1,24 @@
-import React, { useState, useEffect } from "react";
 import {
   Paper,
   StyledComponentProps,
   TableCell,
   TableContainer,
-  Theme,
 } from "@material-ui/core";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { loadRaffles, saveRaffle } from "../../actions/asyncActions";
+import TableBody from "@material-ui/core/TableBody";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
-import { Raffle } from "../../model/raffle";
-import RaffleView from "./RaffleView";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { loadRaffles, saveRaffle } from "../../actions/asyncActions";
 import { ContenderData } from "../../model/contenderData";
+import { Raffle } from "../../model/raffle";
+import { StoreState } from "../../model/storeState";
 import ProgressIconButton from "../ProgressIconButton";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import RaffleView from "./RaffleView";
 
 interface Props {
   contestId?: number;
@@ -30,6 +28,8 @@ interface Props {
   loadRaffles?: (contestId: number) => Promise<void>;
   saveRaffle?: (raffle: Raffle) => Promise<Raffle>;
 }
+
+const breakpoints = new Map<number, string>();
 
 const RaffleList = (
   props: Props & RouteComponentProps & StyledComponentProps
@@ -49,42 +49,49 @@ const RaffleList = (
     props.loadRaffles?.(props.contestId!).finally(() => setRefreshing(false));
   };
 
+  const toolbar = (
+    <>
+      <ProgressIconButton
+        color="inherit"
+        aria-label="Menu"
+        title="Add"
+        loading={creating}
+        onClick={createRaffle}
+      >
+        <AddIcon />
+      </ProgressIconButton>
+
+      <ProgressIconButton
+        color="inherit"
+        aria-label="Menu"
+        title="Refresh"
+        onClick={refreshRaffles}
+        loading={refreshing}
+      >
+        <RefreshIcon />
+      </ProgressIconButton>
+    </>
+  );
+
+  const headings = [<TableCell>Raffle</TableCell>];
+
   return (
     <>
       <TableContainer component={Paper}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Winners</TableCell>
-              <TableCell className={"icon-cell"}>
-                <ProgressIconButton
-                  color="inherit"
-                  aria-label="Menu"
-                  title="Add"
-                  loading={creating}
-                  onClick={createRaffle}
-                >
-                  <AddIcon />
-                </ProgressIconButton>
-                <ProgressIconButton
-                  color="inherit"
-                  aria-label="Menu"
-                  title="Refresh"
-                  onClick={refreshRaffles}
-                  loading={refreshing}
-                >
-                  <RefreshIcon />
-                </ProgressIconButton>
-              </TableCell>
-            </TableRow>
-          </TableHead>
+          <ResponsiveTableHead
+            cells={headings}
+            breakpoints={breakpoints}
+            toolbar={toolbar}
+          />
+
           <TableBody>
             {props.raffles?.toArray()?.map((raffle: Raffle) => (
               <RaffleView
                 key={raffle.id!}
                 raffle={raffle}
                 contenders={props.contenders}
+                breakpoints={breakpoints}
               />
             ))}
           </TableBody>

@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyledComponentProps, TableCell, Theme } from "@material-ui/core";
+import {
+  Paper,
+  StyledComponentProps,
+  TableCell,
+  TableContainer,
+  Theme,
+} from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import Table from "@material-ui/core/Table";
@@ -45,43 +51,45 @@ const RaffleList = (
 
   return (
     <>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Id</TableCell>
-            <TableCell>Winners</TableCell>
-            <TableCell className={"icon-cell"}>
-              <ProgressIconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Add"
-                loading={creating}
-                onClick={createRaffle}
-              >
-                <AddIcon />
-              </ProgressIconButton>
-              <ProgressIconButton
-                color="inherit"
-                aria-label="Menu"
-                title="Refresh"
-                onClick={refreshRaffles}
-                loading={refreshing}
-              >
-                <RefreshIcon />
-              </ProgressIconButton>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {props.raffles?.toArray()?.map((raffle: Raffle) => (
-            <RaffleView
-              key={raffle.id!}
-              raffle={raffle}
-              contenders={props.contenders}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Id</TableCell>
+              <TableCell>Winners</TableCell>
+              <TableCell className={"icon-cell"}>
+                <ProgressIconButton
+                  color="inherit"
+                  aria-label="Menu"
+                  title="Add"
+                  loading={creating}
+                  onClick={createRaffle}
+                >
+                  <AddIcon />
+                </ProgressIconButton>
+                <ProgressIconButton
+                  color="inherit"
+                  aria-label="Menu"
+                  title="Refresh"
+                  onClick={refreshRaffles}
+                  loading={refreshing}
+                >
+                  <RefreshIcon />
+                </ProgressIconButton>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {props.raffles?.toArray()?.map((raffle: Raffle) => (
+              <RaffleView
+                key={raffle.id!}
+                raffle={raffle}
+                contenders={props.contenders}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       {(props.raffles?.size ?? 0) === 0 && (
         <div className={"emptyText"}>
           <div>You have no raffles.</div>

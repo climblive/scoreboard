@@ -1,6 +1,13 @@
 import React, { useState, useMemo } from "react";
 import Table from "@material-ui/core/Table";
-import { InputLabel, TableCell, Hidden, Grid } from "@material-ui/core";
+import {
+  InputLabel,
+  TableCell,
+  Hidden,
+  Grid,
+  TableContainer,
+  Paper,
+} from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
@@ -70,6 +77,11 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paginationControl: {
       margin: theme.spacing(2, 0, 1, 0),
+    },
+    toolbar: {
+      display: "flex",
+      alignItems: "right",
+      margin: theme.spacing(2, 0),
     },
   })
 );
@@ -198,6 +210,7 @@ const ContenderList = (props: Props) => {
         ? undefined
         : props.compClasses?.get(parseInt(e.target.value));
     setContenderFilterCompClassId(filterCompClass?.id);
+    setPage(1);
   };
 
   function exportResults(): any {
@@ -242,7 +255,7 @@ const ContenderList = (props: Props) => {
 
   return (
     <>
-      <div style={{ display: "flex", alignItems: "right" }}>
+      <div className={classes.toolbar}>
         {(props.compClasses?.size ?? 0) > 0 && (
           <FormControl
             style={{
@@ -302,32 +315,35 @@ const ContenderList = (props: Props) => {
         </IconButton>
       </div>
       <div>
-        <Table>
-          <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
-          <TableBody>
-            {contendersSortedAndFiltered
-              ?.slice(
-                (page - 1) * CONTENDERS_PER_PAGE,
-                page * CONTENDERS_PER_PAGE
-              )
-              ?.map((contender) => (
-                <ContenderView
-                  key={contender.id}
-                  contender={contender}
-                  scoring={scoringByContender?.get(contender.id!)}
-                  compClasses={props.compClasses}
-                  problems={props.problems}
-                  breakpoints={breakpoints}
-                />
-              ))}
-          </TableBody>
-        </Table>
+        <TableContainer component={Paper}>
+          <Table>
+            <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
+            <TableBody>
+              {contendersSortedAndFiltered
+                ?.slice(
+                  (page - 1) * CONTENDERS_PER_PAGE,
+                  page * CONTENDERS_PER_PAGE
+                )
+                ?.map((contender) => (
+                  <ContenderView
+                    key={contender.id}
+                    contender={contender}
+                    scoring={scoringByContender?.get(contender.id!)}
+                    compClasses={props.compClasses}
+                    problems={props.problems}
+                    breakpoints={breakpoints}
+                  />
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
         {numPages > 1 && (
           <div className={classes.paginationControl}>
             <Grid container justify="center">
               <Pagination
                 count={numPages}
                 page={page}
+                size="small"
                 onChange={handlePageChange}
                 showLastButton
               />

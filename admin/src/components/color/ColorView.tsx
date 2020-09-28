@@ -25,13 +25,13 @@ const ColorView = (props: Props) => {
     </TableCell>,
     <TableCell component="th" scope="row">
       <div style={getColorStyle(props.color?.rgbPrimary)}>
-        {props.color?.rgbPrimary}
+        {props.color?.rgbPrimary.substr(1)}
       </div>
     </TableCell>,
     <TableCell>
       {props.color?.rgbSecondary ? (
         <div style={getColorStyle(props.color?.rgbSecondary)}>
-          {props.color?.rgbSecondary}
+          {props.color?.rgbSecondary.substr(1)}
         </div>
       ) : (
         "None"

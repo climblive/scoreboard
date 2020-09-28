@@ -1,5 +1,12 @@
 import React, { useState, useMemo } from "react";
-import { Grid, IconButton, TableCell, TableRow } from "@material-ui/core";
+import {
+  Grid,
+  IconButton,
+  Paper,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@material-ui/core";
 import { StoreState } from "../../model/storeState";
 import { connect } from "react-redux";
 import { loadProblems, reloadColors } from "../../actions/asyncActions";
@@ -216,14 +223,16 @@ const ProblemList = (props: Props) => {
 
   return (
     <>
-      <Table>
-        <ResponsiveTableHead
-          cells={headings}
-          breakpoints={breakpoints}
-          toolbar={toolbar}
-        />
-        <TableBody>{rows}</TableBody>
-      </Table>
+      <TableContainer component={Paper}>
+        <Table>
+          <ResponsiveTableHead
+            cells={headings}
+            breakpoints={breakpoints}
+            toolbar={toolbar}
+          />
+          <TableBody>{rows}</TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 };

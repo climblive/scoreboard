@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       "& > *": {
         margin: theme.spacing(1, 0),
       },
-      minWidth: 304,
+      minWidth: 296,
       maxWidth: 600,
       display: "flex",
       flexDirection: "column",

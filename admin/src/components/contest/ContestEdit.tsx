@@ -306,7 +306,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
           <div
             className={classes.inputFields}
             style={{
-              minWidth: 304,
+              minWidth: 296,
               maxWidth: 600,
               display: "flex",
               flexDirection: "column",
@@ -408,7 +408,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
           <div
             className={classes.inputFields}
             style={{
-              minWidth: 304,
+              minWidth: 296,
               maxWidth: 600,
               minHeight: 360,
               display: "flex",

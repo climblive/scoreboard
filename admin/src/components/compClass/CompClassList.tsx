@@ -1,25 +1,31 @@
-import React, { useState } from "react";
-import { StyledComponentProps, TableCell, useTheme } from "@material-ui/core";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import Table from "@material-ui/core/Table";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { loadCompClasses } from "../../actions/asyncActions";
+import {
+  Paper,
+  StyledComponentProps,
+  TableCell,
+  TableContainer,
+  useTheme,
+} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
-import { CompClass } from "../../model/compClass";
-import CompClassView from "./CompClassView";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { Organizer } from "src/model/organizer";
-import moment from "moment";
-import { getSelectedOrganizer } from "../../selectors/selector";
 import { OrderedMap } from "immutable";
+import moment from "moment";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { Organizer } from "src/model/organizer";
+import { loadCompClasses } from "../../actions/asyncActions";
+import { CompClass } from "../../model/compClass";
+import { StoreState } from "../../model/storeState";
+import { getSelectedOrganizer } from "../../selectors/selector";
+import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import CompClassEdit from "./CompClassEdit";
-import ProgressIconButton from "../ProgressIconButton";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import CompClassView from "./CompClassView";
 
 interface Props {
   contestId?: number;
@@ -91,41 +97,43 @@ const CompClassList = (
 
   return (
     <>
-      <Table>
-        <ResponsiveTableHead
-          cells={headings}
-          breakpoints={breakpoints}
-          toolbar={toolbar}
-        />
-        <TableBody>
-          {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={4}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <CompClassEdit
-                    cancellable
-                    onDone={onCreateDone}
-                    compClass={{
-                      name: "",
-                      description: "",
-                      contestId: props.contestId!,
-                      timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                      timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                    }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-          {props.compClasses?.toArray()?.map((compClass: CompClass) => (
-            <CompClassView
-              key={compClass.id!}
-              compClass={compClass}
-              breakpoints={breakpoints}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <TableContainer component={Paper}>
+        <Table>
+          <ResponsiveTableHead
+            cells={headings}
+            breakpoints={breakpoints}
+            toolbar={toolbar}
+          />
+          <TableBody>
+            {showCreate && (
+              <TableRow selected>
+                <TableCell padding="none" colSpan={4}>
+                  <div style={{ padding: theme.spacing(0, 2) }}>
+                    <CompClassEdit
+                      cancellable
+                      onDone={onCreateDone}
+                      compClass={{
+                        name: "",
+                        description: "",
+                        contestId: props.contestId!,
+                        timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                        timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                      }}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+            {props.compClasses?.toArray()?.map((compClass: CompClass) => (
+              <CompClassView
+                key={compClass.id!}
+                compClass={compClass}
+                breakpoints={breakpoints}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       {(props.compClasses?.size ?? 0) == 0 && (
         <div className={"emptyText"}>
           <div>You have no contest classes.</div>

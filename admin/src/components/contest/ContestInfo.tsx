@@ -25,6 +25,12 @@ import { Color } from "../../model/color";
 import { RouteComponentProps, withRouter } from "react-router";
 import { OrderedMap } from "immutable";
 import { Contest } from "../../model/contest";
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  createStyles,
+} from "@material-ui/core/styles";
 
 interface Props {
   match: {
@@ -44,9 +50,19 @@ interface Props {
   loadContest?: (contestId: number) => Promise<Contest>;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    page: {
+      marginTop: theme.spacing(2),
+    },
+  })
+);
+
 const ContestInfo = (props: Props & RouteComponentProps) => {
   let selectedPath = useLocation().pathname;
   let [contestId, setContestId] = useState<number | undefined>(undefined);
+
+  const classes = useStyles();
 
   useEffect(() => {
     let id: string = props.match.params.contestId;
@@ -153,23 +169,25 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
         {tabs}
       </Tabs>
 
-      <Switch>
-        <Route path="/contests/:contestId" exact>
-          <ContestEdit key="general" contestId={contestId} />
-        </Route>
-        <Route path="/contests/:contestId/classes">
-          <CompClassList key="compClasses" contestId={contestId} />
-        </Route>
-        <Route path="/contests/:contestId/problems">
-          <ProblemList key="problems" contestId={contestId} />
-        </Route>
-        <Route path="/contests/:contestId/contenders">
-          <ContenderList key="contenders" contestId={contestId} />
-        </Route>
-        <Route path="/contests/:contestId/raffles">
-          <RaffleList key="raffles" contestId={contestId} />
-        </Route>
-      </Switch>
+      <div className={classes.page}>
+        <Switch>
+          <Route path="/contests/:contestId" exact>
+            <ContestEdit key="general" contestId={contestId} />
+          </Route>
+          <Route path="/contests/:contestId/classes">
+            <CompClassList key="compClasses" contestId={contestId} />
+          </Route>
+          <Route path="/contests/:contestId/problems">
+            <ProblemList key="problems" contestId={contestId} />
+          </Route>
+          <Route path="/contests/:contestId/contenders">
+            <ContenderList key="contenders" contestId={contestId} />
+          </Route>
+          <Route path="/contests/:contestId/raffles">
+            <RaffleList key="raffles" contestId={contestId} />
+          </Route>
+        </Switch>
+      </div>
     </>
   );
 };

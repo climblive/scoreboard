@@ -22,7 +22,7 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     collapsableBody: {
-      minWidth: 304,
+      minWidth: 296,
       maxWidth: 600,
       display: "flex",
       flexDirection: "column",

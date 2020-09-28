@@ -16,22 +16,24 @@ interface Props {
   isSelectedOrganizer: boolean;
   organizer?: Organizer;
   breakpoints?: Map<number, string>;
-  onBeginEdit?: () => void;
   selectOrganizer?: (organizerId: number) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     collapsableBody: {
-      "& > *": {
-        margin: theme.spacing(1, 0),
-      },
       minWidth: 304,
       maxWidth: 600,
       display: "flex",
       flexDirection: "column",
       flexGrow: 1,
       flexBasis: 0,
+    },
+    divider: {
+      margin: theme.spacing(1, 0),
+    },
+    buttons: {
+      margin: theme.spacing(2, 0),
     },
   })
 );
@@ -66,21 +68,23 @@ const OrganizerView = (props: Props) => {
         </Typography>
         <OrganizerEdit organizer={props.organizer} removable editable />
 
-        <Divider />
+        <Divider className={classes.divider} />
 
         <Typography color="textSecondary" display="block" variant="caption">
           Options
         </Typography>
 
-        <ProgressButton
-          color="secondary"
-          variant="contained"
-          onClick={switchOrganizer}
-          startIcon={<SyncAltIcon />}
-          disabled={props.isSelectedOrganizer}
-        >
-          Switch
-        </ProgressButton>
+        <div className={classes.buttons}>
+          <ProgressButton
+            color="secondary"
+            variant="contained"
+            onClick={switchOrganizer}
+            startIcon={<SyncAltIcon />}
+            disabled={props.isSelectedOrganizer}
+          >
+            Switch
+          </ProgressButton>
+        </div>
       </div>
     </ResponsiveTableRow>
   );

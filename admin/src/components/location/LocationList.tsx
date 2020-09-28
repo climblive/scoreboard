@@ -1,60 +1,58 @@
-import React, { useState } from "react";
-import {
-  StyledComponentProps,
-  TableCell,
-  Theme,
-  Button,
-} from "@material-ui/core";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
+import { Button, TableCell } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { reloadLocations } from "../../actions/asyncActions";
-import { setTitle } from "../../actions/actions";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
-import { CompLocation } from "../../model/compLocation";
-import LocationListItem from "./LocationListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { Organizer } from "src/model/organizer";
-import { getSelectedOrganizer } from "src/selectors/selector";
 import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { getSelectedOrganizer } from "src/selectors/selector";
+import { setTitle } from "../../actions/actions";
+import { reloadLocations } from "../../actions/asyncActions";
+import { CompLocation } from "../../model/compLocation";
+import { Organizer } from "../../model/organizer";
+import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import LocationEdit from "./LocationEdit";
+import LocationView from "./LocationView";
 
 interface Props {
   locations?: OrderedMap<number, CompLocation>;
   selectedOrganizer?: Organizer;
 
-  loadLocations?: () => Promise<void>;
+  loadLocation?: () => Promise<void>;
   setTitle?: (title: string) => void;
 }
 
-const LocationList = (
-  props: Props & RouteComponentProps & StyledComponentProps
-) => {
+const breakpoints = new Map<number, string>().set(1, "smDown").set(2, "smDown");
+
+const LocationList = (props: Props) => {
   React.useEffect(() => {
-    props.setTitle?.("Locations");
+    props.setTitle?.("Location");
   }, []);
 
   React.useEffect(() => {
     if (props.locations == undefined) {
-      refreshLocations();
+      refreshLocation();
     }
   }, [props.locations]);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
+  const theme = useTheme();
+
   const onCreateDone = () => {
     setShowCreate(false);
   };
 
-  const refreshLocations = () => {
+  const refreshLocation = () => {
     setRefreshing(true);
-    props.loadLocations?.().finally(() => setRefreshing(false));
+    props.loadLocation?.().finally(() => setRefreshing(false));
   };
 
   const buttons = [
@@ -72,7 +70,7 @@ const LocationList = (
       variant="contained"
       color="secondary"
       size="small"
-      onClick={refreshLocations}
+      onClick={refreshLocation}
       startIcon={<RefreshIcon />}
       loading={refreshing}
     >
@@ -80,29 +78,41 @@ const LocationList = (
     </ProgressButton>,
   ];
 
+  const headings = [
+    <TableCell>Name</TableCell>,
+    <TableCell>Latitude</TableCell>,
+    <TableCell>Longitude</TableCell>,
+  ];
+
   return (
     <ContentLayout buttons={buttons}>
-      <Table className={props.classes?.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Longitude</TableCell>
-            <TableCell>Latitude</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
+      <Table>
+        <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <LocationListItem
-              onCreateDone={onCreateDone}
-              location={{
-                name: "",
-                organizerId: props.selectedOrganizer?.id!,
-              }}
-            />
+            <TableRow selected>
+              <TableCell padding="none" colSpan={4}>
+                <div style={{ padding: theme.spacing(0, 2) }}>
+                  <LocationEdit
+                    onDone={onCreateDone}
+                    editable
+                    cancellable
+                    location={{
+                      name: "",
+                      organizerId: props.selectedOrganizer?.id,
+                    }}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
           )}
+
           {props.locations?.toArray()?.map((location: CompLocation) => (
-            <LocationListItem key={location.id!} location={location} />
+            <LocationView
+              key={location.id!}
+              location={location}
+              breakpoints={breakpoints}
+            />
           ))}
         </TableBody>
       </Table>
@@ -118,11 +128,8 @@ function mapStateToProps(state: StoreState, props: any): Props {
 }
 
 const mapDispatchToProps = {
-  loadLocations: reloadLocations,
+  loadLocation: reloadLocations,
   setTitle,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(LocationList));
+export default connect(mapStateToProps, mapDispatchToProps)(LocationList);

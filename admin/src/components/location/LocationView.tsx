@@ -1,60 +1,32 @@
-import React, { useState } from "react";
-import { CompLocation } from "src/model/compLocation";
+import { TableCell, Typography } from "@material-ui/core";
+import React from "react";
 import { connect } from "react-redux";
+import { CompLocation } from "src/model/compLocation";
 import { StoreState } from "../../model/storeState";
-import { deleteLocation } from "../../actions/asyncActions";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/DeleteOutline";
-import TableRow from "@material-ui/core/TableRow";
-import { TableCell } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import { CircularProgress } from "@material-ui/core";
-import ProgressIconButton from "../ProgressIconButton";
+import ResponsiveTableRow from "../ResponsiveTableRow";
+import LocationEdit from "./LocationEdit";
 
 interface Props {
   location?: CompLocation;
-  deleteLocation?: (location: CompLocation) => Promise<void>;
-  onBeginEdit?: () => void;
+  breakpoints?: Map<number, string>;
 }
 
 const LocationView = (props: Props) => {
-  let [deleting, setDeleting] = useState<boolean>(false);
-
-  const onDelete = () => {
-    setDeleting(true);
-    props
-      .deleteLocation?.(props.location!)
-      .catch((error) => setDeleting(false));
-  };
+  const cells = [
+    <TableCell component="th" scope="row">
+      {props.location?.name}
+    </TableCell>,
+    <TableCell>{props.location?.latitude}</TableCell>,
+    <TableCell>{props.location?.longitude}</TableCell>,
+  ];
 
   return (
-    <TableRow>
-      <TableCell component="th" scope="row">
-        {props.location?.name}
-      </TableCell>
-      <TableCell>{props.location?.longitude}</TableCell>
-      <TableCell>{props.location?.latitude}</TableCell>
-      <TableCell align="right" className={"icon-cell"}>
-        <IconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Edit"
-          disabled={deleting}
-          onClick={props.onBeginEdit}
-        >
-          <EditIcon />
-        </IconButton>
-        <ProgressIconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Delete"
-          onClick={onDelete}
-          loading={deleting}
-        >
-          <DeleteIcon />
-        </ProgressIconButton>
-      </TableCell>
-    </TableRow>
+    <ResponsiveTableRow cells={cells} breakpoints={props.breakpoints}>
+      <Typography color="textSecondary" display="block" variant="caption">
+        Info
+      </Typography>
+      <LocationEdit location={props.location} removable editable />
+    </ResponsiveTableRow>
   );
 };
 
@@ -62,8 +34,6 @@ function mapStateToProps(state: StoreState, props: any): Props {
   return {};
 }
 
-const mapDispatchToProps = {
-  deleteLocation,
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LocationView);

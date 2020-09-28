@@ -29,7 +29,7 @@ const ContenderTickList = (props: Props) => {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Problem</TableCell>
+            <TableCell>Nº</TableCell>
             <Hidden smDown>
               <TableCell>Color</TableCell>
             </Hidden>

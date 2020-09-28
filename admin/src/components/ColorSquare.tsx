@@ -1,9 +1,10 @@
+import { StyledComponentProps, useTheme } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { ReactElement } from "react";
-import { useTheme } from "@material-ui/core";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface Props {
   color: string;
+  className?: string;
 }
 
 const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
@@ -15,16 +16,15 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
       backgroundColor: ({ color }) => color,
       display: "inline-block",
       flexShrink: 0,
-      marginRight: theme.spacing(1),
     },
   })
 );
 
-function ColorSquare(props: Props): ReactElement {
+function ColorSquare(props: Props & StyledComponentProps): ReactElement {
   const classes = useStyles(props);
   const theme = useTheme();
 
-  return <div className={classes.box}></div>;
+  return <div className={`${classes.box} ${props.className}`}></div>;
 }
 
 export default ColorSquare;

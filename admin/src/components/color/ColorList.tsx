@@ -1,28 +1,30 @@
-import React, { useState } from "react";
+import { Button, TableCell } from "@material-ui/core";
 import {
-  StyledComponentProps,
-  TableCell,
+  createStyles,
+  makeStyles,
   Theme,
-  Button,
-} from "@material-ui/core";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
+  useTheme,
+} from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { reloadColors } from "../../actions/asyncActions";
-import { setTitle } from "../../actions/actions";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
-import { Color } from "../../model/color";
-import ColorListItem from "./ColorListItem";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
-import { OrderedMap } from "immutable";
+import { setTitle } from "../../actions/actions";
+import { reloadColors } from "../../actions/asyncActions";
+import { Color } from "../../model/color";
+import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import ColorEdit from "./ColorEdit";
+import ColorView from "./ColorView";
 
 interface Props {
   colors?: OrderedMap<number, Color>;
@@ -32,9 +34,11 @@ interface Props {
   setTitle?: (title: string) => void;
 }
 
-const ColorList = (
-  props: Props & RouteComponentProps & StyledComponentProps
-) => {
+const useStyles = makeStyles((theme: Theme) => createStyles({}));
+
+const breakpoints = new Map<number, string>().set(3, "smDown");
+
+const ColorList = (props: Props & RouteComponentProps) => {
   React.useEffect(() => {
     props.setTitle?.("Colors");
   }, []);
@@ -48,9 +52,7 @@ const ColorList = (
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const onCreateDone = () => {
-    setShowCreate(false);
-  };
+  const theme = useTheme();
 
   const refreshColors = () => {
     setRefreshing(true);
@@ -80,33 +82,44 @@ const ColorList = (
     </ProgressButton>,
   ];
 
+  const headings = [
+    <TableCell>Name</TableCell>,
+    <TableCell>Primary</TableCell>,
+    <TableCell>Secondary</TableCell>,
+    <TableCell align="right">Shared</TableCell>,
+  ];
+
   return (
     <ContentLayout buttons={buttons}>
       <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Primary</TableCell>
-            <TableCell>Secondary</TableCell>
-            <TableCell align="right">Shared</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
+        <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <ColorListItem
-              onCreateDone={onCreateDone}
-              color={{
-                organizerId: props.selectedOrganizer?.id!,
-                name: "",
-                rgbPrimary: "#ffffff",
-                rgbSecondary: "#ffffff",
-                shared: false,
-              }}
-            />
+            <TableRow selected>
+              <TableCell padding="none" colSpan={5}>
+                <div style={{ padding: theme.spacing(0, 2) }}>
+                  <ColorEdit
+                    onDone={() => setShowCreate(false)}
+                    editable
+                    cancellable
+                    color={{
+                      organizerId: props.selectedOrganizer?.id!,
+                      name: "",
+                      rgbPrimary: "#ffffff",
+                      rgbSecondary: undefined,
+                      shared: false,
+                    }}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
           )}
           {props.colors?.toArray()?.map((color: Color) => (
-            <ColorListItem key={color.id!} color={color} />
+            <ColorView
+              key={color.id!}
+              color={color}
+              breakpoints={breakpoints}
+            />
           ))}
         </TableBody>
       </Table>

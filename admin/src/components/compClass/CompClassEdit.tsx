@@ -1,22 +1,21 @@
-import React, { useState } from "react";
-import SaveIcon from "@material-ui/icons/Save";
-import CancelIcon from "@material-ui/icons/Cancel";
+import { Button, IconButton } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { Button, useTheme } from "@material-ui/core";
-import { CompClass } from "../../model/compClass";
-import { connect } from "react-redux";
-import { StoreState } from "../../model/storeState";
-import { saveCompClass, deleteCompClass } from "../../actions/asyncActions";
-import moment from "moment";
-import { DateTimePicker } from "@material-ui/pickers";
-import { ProgressButton } from "../ProgressButton";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { ConfirmationDialog } from "../ConfirmationDialog";
-import { TwitterPicker, ColorResult } from "react-color";
-import { IconButton } from "@material-ui/core";
+import CancelIcon from "@material-ui/icons/Cancel";
 import ClearIcon from "@material-ui/icons/Clear";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import SaveIcon from "@material-ui/icons/Save";
+import { DateTimePicker } from "@material-ui/pickers";
+import moment from "moment";
+import React, { useState } from "react";
+import { ColorResult, TwitterPicker } from "react-color";
+import { connect } from "react-redux";
+import { deleteCompClass, saveCompClass } from "../../actions/asyncActions";
+import { CompClass } from "../../model/compClass";
+import { StoreState } from "../../model/storeState";
 import ColorSquare from "../ColorSquare";
+import { ConfirmationDialog } from "../ConfirmationDialog";
+import { ProgressButton } from "../ProgressButton";
 
 interface Props {
   compClass?: CompClass;
@@ -45,6 +44,9 @@ const useStyles = makeStyles((theme: Theme) =>
       "& > *": {
         marginRight: theme.spacing(1),
       },
+    },
+    colorSquare: {
+      margin: theme.spacing(1.5, 1, 1.5, 0),
     },
   })
 );
@@ -148,7 +150,10 @@ const CompClassEdit = (props: Props) => {
           onClick={() => setColorPickerVisible(true)}
           InputProps={{
             startAdornment: compClass.color && (
-              <ColorSquare color={compClass.color} />
+              <ColorSquare
+                color={compClass.color}
+                className={classes.colorSquare}
+              />
             ),
             endAdornment: compClass.color != undefined && (
               <IconButton onClick={clearColor}>

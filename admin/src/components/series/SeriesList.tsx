@@ -1,23 +1,24 @@
-import React, { useState } from "react";
-import { StyledComponentProps, TableCell, Button } from "@material-ui/core";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
+import { Button, TableCell } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { reloadSeries } from "../../actions/asyncActions";
-import { setTitle } from "../../actions/actions";
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
-import { Series } from "../../model/series";
-import SeriesListItem from "./SeriesListItem";
-import { Organizer } from "src/model/organizer";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { getSelectedOrganizer } from "src/selectors/selector";
 import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { getSelectedOrganizer } from "src/selectors/selector";
+import { setTitle } from "../../actions/actions";
+import { reloadSeries } from "../../actions/asyncActions";
+import { Organizer } from "../../model/organizer";
+import { Series } from "../../model/series";
+import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import SeriesEdit from "./SeriesEdit";
+import SeriesView from "./SeriesView";
 
 interface Props {
   series?: OrderedMap<number, Series>;
@@ -27,9 +28,9 @@ interface Props {
   setTitle?: (title: string) => void;
 }
 
-const SeriesList = (
-  props: Props & RouteComponentProps & StyledComponentProps
-) => {
+const breakpoints = new Map<number, string>();
+
+const SeriesList = (props: Props) => {
   React.useEffect(() => {
     props.setTitle?.("Series");
   }, []);
@@ -42,6 +43,8 @@ const SeriesList = (
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const theme = useTheme();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -75,24 +78,37 @@ const SeriesList = (
     </ProgressButton>,
   ];
 
+  const headings = [<TableCell>Name</TableCell>];
+
   return (
     <ContentLayout buttons={buttons}>
-      <Table className={props.classes?.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
+      <Table>
+        <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <SeriesListItem
-              onCreateDone={onCreateDone}
-              series={{ organizerId: props.selectedOrganizer?.id!, name: "" }}
-            />
+            <TableRow selected>
+              <TableCell padding="none" colSpan={3}>
+                <div style={{ padding: theme.spacing(0, 2) }}>
+                  <SeriesEdit
+                    onDone={onCreateDone}
+                    editable
+                    cancellable
+                    series={{
+                      name: "",
+                      organizerId: props.selectedOrganizer?.id,
+                    }}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
           )}
-          {props.series?.toArray()?.map((s: Series) => (
-            <SeriesListItem key={s.id!} series={s} />
+
+          {props.series?.toArray()?.map((series: Series) => (
+            <SeriesView
+              key={series.id!}
+              series={series}
+              breakpoints={breakpoints}
+            />
           ))}
         </TableBody>
       </Table>
@@ -112,7 +128,4 @@ const mapDispatchToProps = {
   setTitle,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(SeriesList));
+export default connect(mapStateToProps, mapDispatchToProps)(SeriesList);

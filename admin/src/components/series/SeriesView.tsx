@@ -1,56 +1,30 @@
-import React, { useState } from "react";
-import { Series } from "src/model/series";
+import { TableCell, Typography } from "@material-ui/core";
+import React from "react";
 import { connect } from "react-redux";
+import { Series } from "src/model/series";
 import { StoreState } from "../../model/storeState";
-import { deleteSeries } from "../../actions/asyncActions";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/DeleteOutline";
-import TableRow from "@material-ui/core/TableRow";
-import { TableCell } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import { CircularProgress } from "@material-ui/core";
-import ProgressIconButton from "../ProgressIconButton";
+import ResponsiveTableRow from "../ResponsiveTableRow";
+import SeriesEdit from "./SeriesEdit";
 
 interface Props {
   series?: Series;
-  deleteSeries?: (series: Series) => Promise<void>;
-  onBeginEdit?: () => void;
+  breakpoints?: Map<number, string>;
 }
 
 const SeriesView = (props: Props) => {
-  let [deleting, setDeleting] = useState<boolean>(false);
-
-  const onDelete = () => {
-    setDeleting(true);
-    props.deleteSeries?.(props.series!).catch((error) => setDeleting(false));
-  };
+  const cells = [
+    <TableCell component="th" scope="row">
+      {props.series?.name}
+    </TableCell>,
+  ];
 
   return (
-    <TableRow>
-      <TableCell component="th" scope="row">
-        {props.series?.name}
-      </TableCell>
-      <TableCell align="right" className={"icon-cell"}>
-        <IconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Edit"
-          disabled={deleting}
-          onClick={props.onBeginEdit}
-        >
-          <EditIcon />
-        </IconButton>
-        <ProgressIconButton
-          color="inherit"
-          aria-label="Menu"
-          title="Delete"
-          onClick={onDelete}
-          loading={deleting}
-        >
-          <DeleteIcon />
-        </ProgressIconButton>
-      </TableCell>
-    </TableRow>
+    <ResponsiveTableRow cells={cells} breakpoints={props.breakpoints}>
+      <Typography color="textSecondary" display="block" variant="caption">
+        Info
+      </Typography>
+      <SeriesEdit series={props.series} removable editable />
+    </ResponsiveTableRow>
   );
 };
 
@@ -58,8 +32,6 @@ function mapStateToProps(state: StoreState, props: any): Props {
   return {};
 }
 
-const mapDispatchToProps = {
-  deleteSeries,
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SeriesView);

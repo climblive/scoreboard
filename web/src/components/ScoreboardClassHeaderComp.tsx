@@ -10,7 +10,7 @@ export function ScoreboardClassHeaderComp({
   compClass,
 }: ScoreboardClassHeaderCompProps) {
   return (
-    <div className="compClassHeader">
+    <div className="compClassHeader" style={{ color: compClass.color }}>
       <div
         className={
           "compClass-" + compClass.scoreboardIndex + " showLarge compClass"

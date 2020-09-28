@@ -3,6 +3,7 @@ import "./ScoreboardListComp.css";
 import { ScoreboardListItem } from "../model/scoreboardListItem";
 import { CompClass } from "../model/compClass";
 import { RefObject } from "react";
+import * as Chroma from "chroma-js";
 
 export interface ScoreboardListCompProps {
   compClass: CompClass;
@@ -83,28 +84,60 @@ export class ScoreboardListComp extends React.Component<
     let listClass = this.props.isPaging
       ? "scoreboardListContenders scoreboardListContendersPaging"
       : "scoreboardListContenders";
-    let list = this.props.totalList!.map((contender) => (
-      <div
-        key={contender.contenderId}
-        className={
-          "placement-" +
-          contender.position +
-          " listIndex-all listIndex-" +
-          contender.uiPosition +
-          " contenderRow" +
-          (contender[this.props.animationPropertyName] ? " highlight" : "")
-        }
-        style={{
-          position: "absolute",
-          top: contender.uiPosition! * this.ITEM_HEIGHT,
-          transition: "top 1s ease 1s",
-        }}
-      >
-        <div className="position">{contender.position}</div>
-        <div className="name">{contender.contenderName}</div>
-        <div className="score">{contender.score}</div>
-      </div>
-    ));
+    let list = this.props.totalList!.map((contender) => {
+      let color = this.props.compClass.color;
+      if (color === undefined) {
+        color = "#ffffff";
+      }
+
+      let style: React.CSSProperties = {
+        position: "absolute",
+        top: contender.uiPosition! * this.ITEM_HEIGHT,
+        transition: "top 1s ease 1s",
+      };
+
+      if (
+        contender.uiPosition !== undefined &&
+        contender.uiPosition >= 0 &&
+        contender.uiPosition <= 6
+      ) {
+        style = {
+          ...style,
+          color: Chroma(color)
+            .brighten(6 - contender.uiPosition)
+            .hex(),
+          fontWeight: 400 + (6 - contender.uiPosition) * 100,
+        };
+      } else {
+        style = {
+          ...style,
+          color: color,
+        };
+      }
+
+      if (contender.position === 1) {
+        style = {
+          ...style,
+          backgroundColor: Chroma(color).darken(1).hex(),
+          color: "#ffffff",
+        };
+      }
+
+      return (
+        <div
+          key={contender.contenderId}
+          className={
+            "contenderRow" +
+            (contender[this.props.animationPropertyName] ? " highlight" : "")
+          }
+          style={style}
+        >
+          <div className="position">{contender.position}</div>
+          <div className="name">{contender.contenderName}</div>
+          <div className="score">{contender.score}</div>
+        </div>
+      );
+    });
 
     let pagerItems = [];
     for (let i = 0; i < nPages; i++) {

@@ -4,6 +4,7 @@ export interface CompClass {
   description: string;
   timeBegin: string;
   timeEnd: string;
+  color: string;
 
   inProgress: boolean;
   statusString?: string;

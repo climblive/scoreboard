@@ -122,7 +122,7 @@ const RaffleView = (props: Props) => {
               fullWidth
               disabled={!props.raffle?.active}
             >
-              Draw next winner
+              Draw
             </ProgressButton>
             {props.raffle?.active && (
               <ProgressButton
@@ -175,6 +175,7 @@ const RaffleView = (props: Props) => {
                         <TableCell>
                           {moment(winner.timestamp).format("HH:mm")}
                         </TableCell>
+                        <TableCell />
                       </TableRow>
                     );
                   })}

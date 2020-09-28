@@ -19,6 +19,7 @@ import { StoreState } from "../../model/storeState";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import RaffleView from "./RaffleView";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 interface Props {
   contestId?: number;
@@ -29,6 +30,16 @@ interface Props {
   saveRaffle?: (raffle: Raffle) => Promise<Raffle>;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    toolbar: {
+      "& > *": {
+        padding: theme.spacing(0, 0, 0, 1),
+      },
+    },
+  })
+);
+
 const breakpoints = new Map<number, string>();
 
 const RaffleList = (
@@ -36,6 +47,8 @@ const RaffleList = (
 ) => {
   const [creating, setCreating] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const classes = useStyles();
 
   const createRaffle = () => {
     setCreating(true);
@@ -50,7 +63,7 @@ const RaffleList = (
   };
 
   const toolbar = (
-    <>
+    <div className={classes.toolbar}>
       <ProgressIconButton
         color="inherit"
         aria-label="Menu"
@@ -70,7 +83,7 @@ const RaffleList = (
       >
         <RefreshIcon />
       </ProgressIconButton>
-    </>
+    </div>
   );
 
   const headings = [<TableCell>Raffle</TableCell>];

@@ -121,7 +121,7 @@ const SeriesList = (props: Props) => {
           ))}
         </TableBody>
       </Table>
-      {props.series?.size === 0 && (
+      {!showCreate && props.series?.size === 0 && (
         <div className={classes.emptyText}>
           Use the plus button to create your first series.
         </div>

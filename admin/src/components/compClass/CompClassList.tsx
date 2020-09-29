@@ -133,7 +133,7 @@ const CompClassList = (
           ))}
         </TableBody>
       </Table>
-      {(props.compClasses?.size ?? 0) == 0 && (
+      {!showCreate && (props.compClasses?.size ?? 0) == 0 && (
         <div className={classes.emptyText}>
           Use the plus button to setup your first competition class.
         </div>

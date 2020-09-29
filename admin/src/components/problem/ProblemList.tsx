@@ -159,6 +159,14 @@ const ProblemList = (props: Props) => {
 
   const toolbar = (
     <div className={classes.toolbar}>
+      <IconButton
+        color="inherit"
+        title="Add"
+        onClick={beginCreate}
+        disabled={!editable || showCreate}
+      >
+        <AddCircleOutline />
+      </IconButton>
       <ProgressIconButton
         color="inherit"
         title="Refresh"
@@ -167,14 +175,6 @@ const ProblemList = (props: Props) => {
       >
         <RefreshIcon />
       </ProgressIconButton>
-      <IconButton
-        color="inherit"
-        title="Add"
-        onClick={beginCreate}
-        disabled={showCreate}
-      >
-        <AddCircleOutline />
-      </IconButton>
     </div>
   );
 
@@ -232,7 +232,7 @@ const ProblemList = (props: Props) => {
         />
         <TableBody>{rows}</TableBody>
       </Table>
-      {(props.problems?.size ?? 0) === 0 && (
+      {!showCreate && (props.problems?.size ?? 0) === 0 && (
         <div className={classes.emptyText}>
           Use the plus button to add your first boulder problem.
         </div>

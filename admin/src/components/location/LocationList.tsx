@@ -125,7 +125,7 @@ const LocationList = (props: Props) => {
           ))}
         </TableBody>
       </Table>
-      {props.locations?.size === 0 && (
+      {!showCreate && props.locations?.size === 0 && (
         <div className={classes.emptyText}>
           Use the plus button to create your first location.
         </div>

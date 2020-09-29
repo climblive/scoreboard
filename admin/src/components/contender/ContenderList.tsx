@@ -89,6 +89,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "right",
       margin: theme.spacing(2, 0),
     },
+    emptyText: { padding: theme.spacing(2) },
   })
 );
 
@@ -339,7 +340,7 @@ const ContenderList = (props: Props) => {
         </IconButton>
       </div>
       <div>
-        <TableContainer component={Paper}>
+        <Paper>
           <Table>
             <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
             <TableBody>
@@ -360,7 +361,13 @@ const ContenderList = (props: Props) => {
                 ))}
             </TableBody>
           </Table>
-        </TableContainer>
+          {(props.contenders?.size ?? 0) === 0 && (
+            <div className={classes.emptyText}>
+              Use the plus button to create registration codes for your
+              contenders.
+            </div>
+          )}
+        </Paper>
         {numPages > 1 && (
           <div className={classes.paginationControl}>
             <Grid container justify="center">

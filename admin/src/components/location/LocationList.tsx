@@ -19,6 +19,7 @@ import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import LocationEdit from "./LocationEdit";
 import LocationView from "./LocationView";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface Props {
   locations?: OrderedMap<number, CompLocation>;
@@ -27,6 +28,12 @@ interface Props {
   loadLocation?: () => Promise<void>;
   setTitle?: (title: string) => void;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    emptyText: { padding: theme.spacing(2) },
+  })
+);
 
 const breakpoints = new Map<number, string>().set(1, "smDown").set(2, "smDown");
 
@@ -40,6 +47,8 @@ const LocationList = (props: Props) => {
       refreshLocation();
     }
   }, [props.locations]);
+
+  const classes = useStyles();
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -116,6 +125,11 @@ const LocationList = (props: Props) => {
           ))}
         </TableBody>
       </Table>
+      {props.locations?.size === 0 && (
+        <div className={classes.emptyText}>
+          Use the plus button to create your first location.
+        </div>
+      )}
     </ContentLayout>
   );
 };

@@ -42,6 +42,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       flexBasis: 0,
     },
+    buttons: {
+      "& > *": {
+        margin: theme.spacing(1, 0),
+      },
+    },
   })
 );
 
@@ -171,7 +176,7 @@ const ContenderView = (props: Props) => {
           Advanced
         </Typography>
 
-        <>
+        <div className={classes.buttons}>
           {contender.disqualified ? (
             <ProgressButton
               variant="contained"
@@ -192,7 +197,7 @@ const ContenderView = (props: Props) => {
               Disqualify
             </ProgressButton>
           )}
-        </>
+        </div>
       </div>
     </ResponsiveTableRow>
   );

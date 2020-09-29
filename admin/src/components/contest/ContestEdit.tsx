@@ -145,7 +145,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
       });
     }
     return issues;
-  }, [props.problems, props.compClasses, props.contenders]);
+  }, [contest, props.problems, props.compClasses, props.contenders]);
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContest({ ...contest, name: e.target.value });
@@ -465,7 +465,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
       <ConfirmationDialog
         open={requestingDelete}
         title={"Delete contest"}
-        message={`Do you really wish to delete the contest ${contest.name} together with all its classes, problems, contenders, raffles and results? This action is irreversible and cannot be undone!`}
+        message={`Do you really wish to delete the contest together with all its classes, problems, contenders, raffles and results? This action is irreversible and cannot be undone!`}
         onClose={onDeleteConfirmed}
       />
     </>

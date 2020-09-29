@@ -19,6 +19,7 @@ import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import SeriesEdit from "./SeriesEdit";
 import SeriesView from "./SeriesView";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface Props {
   series?: OrderedMap<number, Series>;
@@ -27,6 +28,12 @@ interface Props {
   loadSeries?: () => Promise<void>;
   setTitle?: (title: string) => void;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    emptyText: { padding: theme.spacing(2) },
+  })
+);
 
 const breakpoints = new Map<number, string>();
 
@@ -40,6 +47,8 @@ const SeriesList = (props: Props) => {
       refreshSeries();
     }
   }, [props.series]);
+
+  const classes = useStyles();
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -112,6 +121,11 @@ const SeriesList = (props: Props) => {
           ))}
         </TableBody>
       </Table>
+      {props.series?.size === 0 && (
+        <div className={classes.emptyText}>
+          Use the plus button to create your first series.
+        </div>
+      )}
     </ContentLayout>
   );
 };

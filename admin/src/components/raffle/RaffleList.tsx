@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(0, 0, 0, 1),
       },
     },
+    emptyText: { padding: theme.spacing(2) },
   })
 );
 
@@ -89,34 +90,31 @@ const RaffleList = (
   const headings = [<TableCell>Raffle</TableCell>];
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table>
-          <ResponsiveTableHead
-            cells={headings}
-            breakpoints={breakpoints}
-            toolbar={toolbar}
-          />
+    <Paper>
+      <Table>
+        <ResponsiveTableHead
+          cells={headings}
+          breakpoints={breakpoints}
+          toolbar={toolbar}
+        />
 
-          <TableBody>
-            {props.raffles?.toArray()?.map((raffle: Raffle) => (
-              <RaffleView
-                key={raffle.id!}
-                raffle={raffle}
-                contenders={props.contenders}
-                breakpoints={breakpoints}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+        <TableBody>
+          {props.raffles?.toArray()?.map((raffle: Raffle) => (
+            <RaffleView
+              key={raffle.id!}
+              raffle={raffle}
+              contenders={props.contenders}
+              breakpoints={breakpoints}
+            />
+          ))}
+        </TableBody>
+      </Table>
       {(props.raffles?.size ?? 0) === 0 && (
-        <div className={"emptyText"}>
-          <div>You have no raffles.</div>
-          <div>Please create a raffle by clicking the plus button above.</div>
+        <div className={classes.emptyText}>
+          Use the plus button to create your first raffle.
         </div>
       )}
-    </>
+    </Paper>
   );
 };
 

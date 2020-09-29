@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(0, 0, 0, 1),
       },
     },
+    emptyText: { padding: theme.spacing(2) },
   })
 );
 
@@ -222,18 +223,21 @@ const ProblemList = (props: Props) => {
   }
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table>
-          <ResponsiveTableHead
-            cells={headings}
-            breakpoints={breakpoints}
-            toolbar={toolbar}
-          />
-          <TableBody>{rows}</TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    <Paper>
+      <Table>
+        <ResponsiveTableHead
+          cells={headings}
+          breakpoints={breakpoints}
+          toolbar={toolbar}
+        />
+        <TableBody>{rows}</TableBody>
+      </Table>
+      {(props.problems?.size ?? 0) === 0 && (
+        <div className={classes.emptyText}>
+          Use the plus button to add your first boulder problem.
+        </div>
+      )}
+    </Paper>
   );
 };
 

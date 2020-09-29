@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(0, 0, 0, 1),
       },
     },
+    emptyText: { padding: theme.spacing(2) },
   })
 );
 
@@ -96,54 +97,48 @@ const CompClassList = (
   );
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table>
-          <ResponsiveTableHead
-            cells={headings}
-            breakpoints={breakpoints}
-            toolbar={toolbar}
-          />
-          <TableBody>
-            {showCreate && (
-              <TableRow selected>
-                <TableCell padding="none" colSpan={4}>
-                  <div style={{ padding: theme.spacing(0, 2) }}>
-                    <CompClassEdit
-                      cancellable
-                      onDone={onCreateDone}
-                      compClass={{
-                        name: "",
-                        description: "",
-                        contestId: props.contestId!,
-                        timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                        timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                      }}
-                    />
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-            {props.compClasses?.toArray()?.map((compClass: CompClass) => (
-              <CompClassView
-                key={compClass.id!}
-                compClass={compClass}
-                breakpoints={breakpoints}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <Paper>
+      <Table>
+        <ResponsiveTableHead
+          cells={headings}
+          breakpoints={breakpoints}
+          toolbar={toolbar}
+        />
+        <TableBody>
+          {showCreate && (
+            <TableRow selected>
+              <TableCell padding="none" colSpan={4}>
+                <div style={{ padding: theme.spacing(0, 2) }}>
+                  <CompClassEdit
+                    cancellable
+                    onDone={onCreateDone}
+                    compClass={{
+                      name: "",
+                      description: "",
+                      contestId: props.contestId!,
+                      timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                      timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                    }}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+          {props.compClasses?.toArray()?.map((compClass: CompClass) => (
+            <CompClassView
+              key={compClass.id!}
+              compClass={compClass}
+              breakpoints={breakpoints}
+            />
+          ))}
+        </TableBody>
+      </Table>
       {(props.compClasses?.size ?? 0) == 0 && (
-        <div className={"emptyText"}>
-          <div>You have no contest classes.</div>
-          <div>
-            Please create at least one contest class by clicking the plus button
-            above.
-          </div>
+        <div className={classes.emptyText}>
+          Use the plus button to setup your first competition class.
         </div>
       )}
-    </>
+    </Paper>
   );
 };
 

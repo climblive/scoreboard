@@ -10,9 +10,6 @@ server {
 	location / {
 		proxy_pass http://127.0.0.1:8080/admin/;
 		
-		proxy_intercept_errors on;
-		error_page 404 = /index.html;
-		
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "Upgrade";

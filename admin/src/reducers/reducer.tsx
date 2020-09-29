@@ -393,39 +393,3 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       return state;
   }
 };
-
-const insertProblemAndRenumber = (
-  problem: Problem,
-  problems: Problem[] | undefined
-) => {
-  const renumberingCondition = (subject: Problem) =>
-    subject.contestId == problem.contestId && subject.number >= problem.number;
-
-  return problems
-    ?.map((problem) => {
-      if (renumberingCondition(problem)) {
-        return { ...problem, number: problem.number + 1 };
-      } else {
-        return problem;
-      }
-    })
-    .concat(problem);
-};
-
-const deleteProblemAndRenumber = (
-  problem: Problem,
-  problems: Problem[] | undefined
-) => {
-  const renumberingCondition = (subject: Problem) =>
-    subject.contestId == problem.contestId && subject.number > problem.number;
-
-  return problems
-    ?.filter((p) => p.id != problem.id)
-    ?.map((problem) => {
-      if (renumberingCondition(problem)) {
-        return { ...problem, number: problem.number - 1 };
-      } else {
-        return problem;
-      }
-    });
-};

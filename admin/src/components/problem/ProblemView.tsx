@@ -77,6 +77,7 @@ const ProblemView = (props: Props) => {
           getProblemStyle={props.getProblemStyle}
           removable
           editable={props.editable}
+          orderable
         />
 
         <Divider />

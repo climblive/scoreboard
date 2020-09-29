@@ -58,6 +58,12 @@ const breakpoints = new Map<number, string>()
   .set(2, "xsDown")
   .set(3, "smDown");
 
+enum StaticFilter {
+  All = "All",
+  Registered = "Registered",
+  Unregistered = "Unregistered",
+}
+
 interface Props {
   contestId?: number;
   contest?: Contest;
@@ -95,9 +101,11 @@ const ContenderList = (props: Props) => {
     false
   );
 
-  const [contenderFilterCompClassId, setContenderFilterCompClassId] = useState<
-    number | undefined
-  >(undefined);
+  const [contenderFilter, setContenderFilter] = useState<string>(
+    StaticFilter[StaticFilter.All]
+  );
+
+  const [selectedContenders, setSelectedContenders] = useState<number[]>([]);
   const [contenderSortBy, setContenderSortBy] = useState<string>(
     SortBy.BY_NAME
   );
@@ -120,12 +128,21 @@ const ContenderList = (props: Props) => {
   const contendersSortedAndFiltered = useMemo(() => {
     let contenders = props.contenders?.toArray();
 
-    if (contenderFilterCompClassId != undefined) {
-      contenders = contenders?.filter(
-        (contender: ContenderData) =>
-          contender.compClassId === contenderFilterCompClassId
-      );
-    }
+    contenders = contenders?.filter((contender: ContenderData) => {
+      switch (contenderFilter) {
+        case StaticFilter.All:
+          return true;
+        case StaticFilter.Registered:
+          return contender.compClassId != null;
+        case StaticFilter.Unregistered:
+          return contender.compClassId == null;
+        default:
+          return (
+            contender.compClassId !== undefined &&
+            selectedContenders.includes(contender.compClassId)
+          );
+      }
+    });
 
     const getScore = (
       contender: ContenderData
@@ -158,7 +175,7 @@ const ContenderList = (props: Props) => {
     }
 
     return contenders;
-  }, [props.contenders, contenderFilterCompClassId, contenderSortBy]);
+  }, [props.contenders, selectedContenders, contenderFilter, contenderSortBy]);
 
   const numPages = Math.ceil(
     (contendersSortedAndFiltered?.length ?? 0) / CONTENDERS_PER_PAGE
@@ -205,11 +222,13 @@ const ContenderList = (props: Props) => {
   const onContenderFilterCompClassChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const filterCompClass =
-      e.target.value == "All"
-        ? undefined
-        : props.compClasses?.get(parseInt(e.target.value));
-    setContenderFilterCompClassId(filterCompClass?.id);
+    setContenderFilter(e.target.value);
+
+    if (StaticFilter[e.target.value] === undefined) {
+      const filterCompClass = props.compClasses?.get(parseInt(e.target.value));
+      setSelectedContenders([filterCompClass?.id!]);
+    }
+
     setPage(1);
   };
 
@@ -268,16 +287,21 @@ const ContenderList = (props: Props) => {
             </InputLabel>
             <Select
               id="compClass-select"
-              value={
-                contenderFilterCompClassId == undefined
-                  ? "All"
-                  : contenderFilterCompClassId
-              }
+              value={contenderFilter}
               onChange={onContenderFilterCompClassChange}
             >
-              <MenuItem value="All">
-                <em>All</em>
-              </MenuItem>
+              {[
+                StaticFilter.All,
+                StaticFilter.Registered,
+                StaticFilter.Unregistered,
+              ].map((filter) => (
+                <MenuItem
+                  key={StaticFilter[filter]}
+                  value={StaticFilter[filter]}
+                >
+                  <em>{StaticFilter[filter]}</em>
+                </MenuItem>
+              ))}
               {props.compClasses?.toArray()?.map((compClass: CompClass) => (
                 <MenuItem key={compClass.id} value={compClass.id}>
                   {compClass.name}

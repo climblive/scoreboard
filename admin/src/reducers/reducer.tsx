@@ -1,19 +1,18 @@
-import { StoreState } from "../model/storeState";
-import * as scoreboardActions from "../actions/actions";
-import { ActionType, getType } from "typesafe-actions";
-import { Problem } from "../model/problem";
-import { SortBy } from "../constants/sortBy";
-import { Map, OrderedMap } from "immutable";
-import { Color } from "../model/color";
-import { Series } from "../model/series";
-import { Organizer } from "../model/organizer";
-import { CompLocation } from "../model/compLocation";
-import { Contest } from "../model/contest";
+import { OrderedMap } from "immutable";
 import { CompClass } from "src/model/compClass";
-import { Tick } from "src/model/tick";
-import initialState from "../initialState";
 import { ContenderData } from "src/model/contenderData";
 import { Raffle } from "src/model/raffle";
+import { Tick } from "src/model/tick";
+import { ActionType, getType } from "typesafe-actions";
+import * as scoreboardActions from "../actions/actions";
+import initialState from "../initialState";
+import { Color } from "../model/color";
+import { CompLocation } from "../model/compLocation";
+import { Contest } from "../model/contest";
+import { Organizer } from "../model/organizer";
+import { Problem } from "../model/problem";
+import { Series } from "../model/series";
+import { StoreState } from "../model/storeState";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 

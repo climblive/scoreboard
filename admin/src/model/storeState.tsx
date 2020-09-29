@@ -1,16 +1,16 @@
-import { Contest } from "./contest";
+import { Map, OrderedMap } from "immutable";
 import { Color } from "./color";
-import { Organizer } from "./organizer";
-import { CompLocation } from "./compLocation";
-import { Series } from "./series";
-import { User } from "./user";
-import { OrderedMap, Map } from "immutable";
-import { ContenderData } from "./contenderData";
-import { Problem } from "./problem";
 import { CompClass } from "./compClass";
-import { Tick } from "./tick";
+import { CompLocation } from "./compLocation";
+import { ContenderData } from "./contenderData";
+import { Contest } from "./contest";
+import { Organizer } from "./organizer";
+import { Problem } from "./problem";
 import { Raffle } from "./raffle";
 import { RaffleWinner } from "./raffleWinner";
+import { Series } from "./series";
+import { Tick } from "./tick";
+import { User } from "./user";
 
 export interface StoreState {
   title: string;

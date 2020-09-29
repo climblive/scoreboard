@@ -1,16 +1,16 @@
+import { Environment } from "../environment";
+import { Color } from "../model/color";
+import { CompClass } from "../model/compClass";
+import { CompLocation } from "../model/compLocation";
 import { ContenderData } from "../model/contenderData";
 import { Contest } from "../model/contest";
-import { Problem } from "../model/problem";
-import { CompClass } from "../model/compClass";
-import { Color } from "../model/color";
 import { Organizer } from "../model/organizer";
-import { CompLocation } from "../model/compLocation";
-import { Series } from "../model/series";
-import { User } from "../model/user";
-import { Tick } from "../model/tick";
+import { Problem } from "../model/problem";
 import { Raffle } from "../model/raffle";
 import { RaffleWinner } from "../model/raffleWinner";
-import { Environment } from "../environment";
+import { Series } from "../model/series";
+import { Tick } from "../model/tick";
+import { User } from "../model/user";
 
 export class Api {
   static credentials?: string;
@@ -99,6 +99,10 @@ export class Api {
 
   static getUser(): Promise<User> {
     return this.get("/user/me");
+  }
+
+  static getUsersForOrganizer(organizerId: number): Promise<User[]> {
+    return this.get(`/organizer/${organizerId}/user`);
   }
 
   // ---------------------------------------------------------------------------

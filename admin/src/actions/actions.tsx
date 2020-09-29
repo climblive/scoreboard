@@ -1,16 +1,16 @@
 import { createStandardAction } from "typesafe-actions";
-import { Problem } from "../model/problem";
-import { Contest } from "../model/contest";
-import { CompClass } from "../model/compClass";
 import { Color } from "../model/color";
-import { Organizer } from "../model/organizer";
+import { CompClass } from "../model/compClass";
 import { CompLocation } from "../model/compLocation";
 import { ContenderData } from "../model/contenderData";
-import { Series } from "../model/series";
-import { User } from "../model/user";
-import { Tick } from "../model/tick";
+import { Contest } from "../model/contest";
+import { Organizer } from "../model/organizer";
+import { Problem } from "../model/problem";
 import { Raffle } from "../model/raffle";
 import { RaffleWinner } from "../model/raffleWinner";
+import { Series } from "../model/series";
+import { Tick } from "../model/tick";
+import { User } from "../model/user";
 
 export const setErrorMessage = createStandardAction("SET_ERROR_MESSAGE")<
   Object

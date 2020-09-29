@@ -1,18 +1,18 @@
-import { Problem } from "../model/problem";
+import { OrderedMap } from "immutable";
 import { Dispatch } from "redux";
-import { Api } from "../utils/Api";
-import * as actions from "./actions";
-import { Contest } from "../model/contest";
-import { StoreState } from "../model/storeState";
-import { CompClass } from "../model/compClass";
-import { Color } from "../model/color";
-import { Series } from "../model/series";
-import { Organizer } from "../model/organizer";
-import { CompLocation } from "../model/compLocation";
-import { Raffle } from "../model/raffle";
 import { ContenderData } from "src/model/contenderData";
 import { RaffleWinner } from "src/model/raffleWinner";
-import { OrderedMap } from "immutable";
+import { Color } from "../model/color";
+import { CompClass } from "../model/compClass";
+import { CompLocation } from "../model/compLocation";
+import { Contest } from "../model/contest";
+import { Organizer } from "../model/organizer";
+import { Problem } from "../model/problem";
+import { Raffle } from "../model/raffle";
+import { Series } from "../model/series";
+import { StoreState } from "../model/storeState";
+import { Api } from "../utils/Api";
+import * as actions from "./actions";
 
 export function login(code: string): any {
   return (dispatch: Dispatch<any>, getState: () => StoreState) => {

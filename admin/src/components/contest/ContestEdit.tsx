@@ -109,7 +109,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
         setContest(contest);
       }
     }
-  }, [props.contestId]);
+  }, [props.contestId, props.contests]);
 
   useEffect(() => {
     let title = contest?.id == undefined ? "Add contest" : contest.name;

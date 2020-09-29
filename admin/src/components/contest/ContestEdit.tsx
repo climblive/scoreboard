@@ -121,6 +121,11 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
 
   const contestIssues = useMemo(() => {
     let issues: any[] = [];
+
+    if (contest.id == undefined) {
+      return issues;
+    }
+
     if ((props.problems?.size ?? 0) == 0) {
       issues.push({
         description: "Please add problems",

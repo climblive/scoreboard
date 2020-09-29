@@ -31,6 +31,7 @@ import {
   Theme,
   createStyles,
 } from "@material-ui/core/styles";
+import ContestStats from "./ContestStats";
 
 interface Props {
   match: {
@@ -128,27 +129,34 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
       ...tabs,
       <Tab
         key={1}
+        label="Statistics"
+        value={createLink("statistics")}
+        component={Link}
+        to={createLink("statistics")}
+      />,
+      <Tab
+        key={2}
         label="Classes"
         value={createLink("classes")}
         component={Link}
         to={createLink("classes")}
       />,
       <Tab
-        key={2}
+        key={3}
         label="Problems"
         value={createLink("problems")}
         component={Link}
         to={createLink("problems")}
       />,
       <Tab
-        key={3}
+        key={4}
         label="Contenders"
         value={createLink("contenders")}
         component={Link}
         to={createLink("contenders")}
       />,
       <Tab
-        key={4}
+        key={5}
         label="Raffles"
         value={createLink("raffles")}
         component={Link}
@@ -173,6 +181,9 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
         <Switch>
           <Route path="/contests/:contestId" exact>
             <ContestEdit key="general" contestId={contestId} />
+          </Route>
+          <Route path="/contests/:contestId/statistics">
+            <ContestStats key="statistics" contestId={contestId} />
           </Route>
           <Route path="/contests/:contestId/classes">
             <CompClassList key="compClasses" contestId={contestId} />

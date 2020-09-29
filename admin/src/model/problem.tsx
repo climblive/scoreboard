@@ -1,6 +1,6 @@
 export class Problem {
   id?: number;
-  colorId?: number;
+  colorId: number;
   contestId: number;
   number: number;
   name?: string;

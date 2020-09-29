@@ -158,7 +158,9 @@ const RaffleView = (props: Props) => {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>Contender</TableCell>
+                  <TableCell component="th" scope="row">
+                    Contender
+                  </TableCell>
                   <TableCell>Timestamp</TableCell>
                 </TableRow>
               </TableHead>
@@ -169,13 +171,12 @@ const RaffleView = (props: Props) => {
                   ?.map((winner: RaffleWinner) => {
                     return (
                       <TableRow key={winner.id}>
-                        <TableCell component="th" scope="row">
+                        <TableCell>
                           {getContenderName(winner.contenderId)}
                         </TableCell>
                         <TableCell>
                           {moment(winner.timestamp).format("HH:mm")}
                         </TableCell>
-                        <TableCell />
                       </TableRow>
                     );
                   })}

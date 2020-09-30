@@ -471,11 +471,13 @@ export function loadRaffles(contestId: number): any {
     return Api.getRaffles(contestId)
       .then((raffles) => {
         dispatch(actions.receiveRaffles(raffles));
-        for (let raffle of raffles) {
-          Api.getRaffleWinners(raffle).then((winners) => {
-            dispatch(actions.receiveRaffleWinners(winners));
-          });
-        }
+
+        return Promise.all(
+          raffles.map((raffle) => Api.getRaffleWinners(raffle))
+        );
+      })
+      .then((w: RaffleWinner[][]) => {
+        dispatch(actions.receiveRaffleWinners([].concat.apply([], w)));
         return Promise.resolve();
       })
       .catch((error) => {

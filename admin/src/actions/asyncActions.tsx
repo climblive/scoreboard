@@ -314,12 +314,7 @@ export function saveProblem(problem: Problem): any {
     return Api.saveProblem(problem)
       .then((problem) => {
         dispatch(actions.updateProblemSuccess(problem));
-        return loadProblems(problem.contestId)(dispatch)
-          .then(() => Promise.resolve(problem))
-          .catch((error) => {
-            dispatch(actions.setErrorMessage(error));
-            return Promise.reject(error);
-          });
+        return loadProblems(problem.contestId)(dispatch).then(() => problem);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -333,12 +328,7 @@ export function deleteProblem(problem: Problem): any {
     return Api.deleteProblem(problem)
       .then(() => {
         dispatch(actions.deleteProblemSuccess(problem));
-        return loadProblems(problem.contestId)(dispatch)
-          .then(() => Promise.resolve(problem))
-          .catch((error) => {
-            dispatch(actions.setErrorMessage(error));
-            return Promise.reject(error);
-          });
+        return loadProblems(problem.contestId)(dispatch);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));

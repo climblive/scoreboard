@@ -477,7 +477,11 @@ export function loadRaffles(contestId: number): any {
         );
       })
       .then((w: RaffleWinner[][]) => {
-        dispatch(actions.receiveRaffleWinners([].concat.apply([], w)));
+        dispatch(
+          actions.receiveRaffleWinners(
+            ([] as RaffleWinner[]).concat.apply([], w)
+          )
+        );
         return Promise.resolve();
       })
       .catch((error) => {
@@ -543,8 +547,11 @@ function pickOrganizer(organizers: OrderedMap<number, Organizer>): Organizer {
 
   if (organizer == null) {
     organizer = organizers.first();
+  }
+
+  if (organizer != null) {
     localStorage.setItem("organizerId", organizer.id!.toString());
   }
 
-  return organizer;
+  return organizer!;
 }

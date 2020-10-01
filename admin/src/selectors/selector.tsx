@@ -3,7 +3,6 @@ import { StoreState } from "../model/storeState";
 import { CompClass } from "../model/compClass";
 import { Problem } from "../model/problem";
 import { ContenderData } from "../model/contenderData";
-import { createCachedSelector } from "re-reselect";
 import { Tick } from "src/model/tick";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { Contest } from "src/model/contest";

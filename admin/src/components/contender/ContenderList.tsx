@@ -50,6 +50,7 @@ import {
 } from "@material-ui/core/styles";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import ProgressIconButton from "../ProgressIconButton";
+import { saveAs } from "file-saver";
 
 const CONTENDERS_PER_PAGE = 10;
 

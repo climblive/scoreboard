@@ -1,11 +1,11 @@
-import { StoreState } from "./model/storeState";
 import { Map, OrderedMap } from "immutable";
+import { CompClass } from "./model/compClass";
 import { ContenderData } from "./model/contenderData";
 import { Problem } from "./model/problem";
-import { CompClass } from "./model/compClass";
-import { Tick } from "./model/tick";
 import { Raffle } from "./model/raffle";
 import { RaffleWinner } from "./model/raffleWinner";
+import { StoreState } from "./model/storeState";
+import { Tick } from "./model/tick";
 
 const initialStore: StoreState = {
   title: "",

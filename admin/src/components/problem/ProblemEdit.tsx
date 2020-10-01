@@ -1,32 +1,31 @@
-import React, { useState } from "react";
-import SaveIcon from "@material-ui/icons/Save";
-import TextField from "@material-ui/core/TextField";
 import {
+  Button,
   FormControl,
-  Select,
-  MenuItem,
-  StyledComponentProps,
   Grid,
   InputLabel,
+  MenuItem,
+  Select,
+  StyledComponentProps,
 } from "@material-ui/core";
-import { Problem } from "../../model/problem";
-import { Color } from "../../model/color";
-import { connect } from "react-redux";
-import { StoreState } from "../../model/storeState";
-import { saveProblem, loadCompClasses } from "../../actions/asyncActions";
-import { OrderedMap } from "immutable";
-import { ProgressButton } from "../ProgressButton";
-import DeleteIcon from "@material-ui/icons/DeleteOutline";
-import { ConfirmationDialog } from "../ConfirmationDialog";
-import { deleteProblem } from "../../actions/asyncActions";
-import CancelIcon from "@material-ui/icons/Cancel";
-import { Button } from "@material-ui/core";
 import {
-  makeStyles,
-  useTheme,
-  Theme,
   createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
 } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import CancelIcon from "@material-ui/icons/Cancel";
+import DeleteIcon from "@material-ui/icons/DeleteOutline";
+import SaveIcon from "@material-ui/icons/Save";
+import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { deleteProblem, saveProblem } from "../../actions/asyncActions";
+import { Color } from "../../model/color";
+import { Problem } from "../../model/problem";
+import { StoreState } from "../../model/storeState";
+import { ConfirmationDialog } from "../ConfirmationDialog";
+import { ProgressButton } from "../ProgressButton";
 
 interface Props {
   problem?: Problem;
@@ -86,7 +85,7 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let name = e.target.value;
-    setProblem({ ...problem, name: name != "" ? name : undefined });
+    setProblem({ ...problem, name: name !== "" ? name : undefined });
   };
 
   const onPointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +94,7 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
 
   const onFlashBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let flashBonus = parseInt(e.target.value) || undefined;
-    setProblem({ ...problem, flashBonus: parseInt(e.target.value) || 0 });
+    setProblem({ ...problem, flashBonus });
   };
 
   const onColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -185,7 +184,7 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
           disabled={!props?.editable || deleting}
           startIcon={<SaveIcon />}
         >
-          {problem.id == undefined ? "Create" : "Save"}
+          {problem.id === undefined ? "Create" : "Save"}
         </ProgressButton>
         {props.removable && (
           <ProgressButton

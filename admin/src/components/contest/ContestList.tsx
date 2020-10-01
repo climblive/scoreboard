@@ -12,7 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { OrderedMap } from "immutable";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { setTitle } from "../../actions/actions";
@@ -43,19 +43,19 @@ const ContestList = (
   const classes = useStyles();
 
   useEffect(() => {
-    props.setTitle!("Contests");
-  }, []);
+    props.setTitle?.("Contests");
+  }, [props.setTitle]);
 
-  useEffect(() => {
-    if (props.contests == undefined) {
-      refreshContests();
-    }
-  }, [props.contests]);
-
-  const refreshContests = () => {
+  const refreshContests = useCallback(() => {
     setRefreshing(true);
     props.loadContests?.().finally(() => setRefreshing(false));
-  };
+  }, [props.loadContests]);
+
+  useEffect(() => {
+    if (props.contests === undefined) {
+      refreshContests();
+    }
+  }, [props.contests, refreshContests]);
 
   const buttons = [
     <Button

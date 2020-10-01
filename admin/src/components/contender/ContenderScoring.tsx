@@ -1,6 +1,6 @@
-import React from "react";
 import { Paper, Typography } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+import React from "react";
 
 interface Props {
   title: string;
@@ -9,11 +9,11 @@ interface Props {
 }
 
 const ordinal = (placement: number) => {
-  if (placement == 1) {
+  if (placement === 1) {
     return "st";
-  } else if (placement == 2) {
+  } else if (placement === 2) {
     return "nd";
-  } else if (placement == 3) {
+  } else if (placement === 3) {
     return "rd";
   } else {
     return "th";

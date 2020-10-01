@@ -99,7 +99,7 @@ const ColorEdit = (props: Props) => {
   const onPopupColorChange = (e: any) => {
     setColor({
       ...color,
-      [popupType == PopupType.PRIMARY ? "rgbPrimary" : "rgbSecondary"]: e.hex,
+      [popupType === PopupType.PRIMARY ? "rgbPrimary" : "rgbSecondary"]: e.hex,
     });
     setPopupColor(e.hex);
   };
@@ -212,7 +212,7 @@ const ColorEdit = (props: Props) => {
             loading={saving}
             startIcon={<SaveIcon />}
           >
-            {color.id == undefined ? "Create" : "Save"}
+            {color.id === undefined ? "Create" : "Save"}
           </ProgressButton>
           {props.removable && (
             <ProgressButton
@@ -264,7 +264,7 @@ const ColorEdit = (props: Props) => {
           <Button onClick={closePopup} color="primary">
             Cancel
           </Button>
-          {popupType == PopupType.SECONDARY && (
+          {popupType === PopupType.SECONDARY && (
             <Button onClick={deleteSecondaryColor} color="primary">
               Delete
             </Button>

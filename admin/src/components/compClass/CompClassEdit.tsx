@@ -155,7 +155,7 @@ const CompClassEdit = (props: Props) => {
                 className={classes.colorSquare}
               />
             ),
-            endAdornment: compClass.color != undefined && (
+            endAdornment: compClass.color !== undefined && (
               <IconButton onClick={clearColor}>
                 <ClearIcon />
               </IconButton>
@@ -211,7 +211,7 @@ const CompClassEdit = (props: Props) => {
             loading={saving}
             startIcon={<SaveIcon />}
           >
-            {compClass.id == undefined ? "Create" : "Save"}
+            {compClass.id === undefined ? "Create" : "Save"}
           </ProgressButton>
           {props.removable && (
             <ProgressButton

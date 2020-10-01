@@ -1,25 +1,25 @@
-import { Divider, Typography, Paper } from "@material-ui/core";
+import { Divider, Paper, Typography } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import SyncAltIcon from "@material-ui/icons/SyncAlt";
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { Organizer } from "src/model/organizer";
-import { getSelectedOrganizer } from "src/selectors/selector";
-import { selectOrganizer } from "../../actions/asyncActions";
-import { StoreState } from "../../model/storeState";
-import { ProgressButton } from "../ProgressButton";
-import ResponsiveTableRow from "../ResponsiveTableRow";
-import OrganizerEdit from "./OrganizerEdit";
-import { Api } from "../../utils/Api";
-import { User } from "../../model/user";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import SyncAltIcon from "@material-ui/icons/SyncAlt";
 import Alert from "@material-ui/lab/Alert";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { Organizer } from "src/model/organizer";
+import { getSelectedOrganizer } from "src/selectors/selector";
+import { selectOrganizer } from "../../actions/asyncActions";
+import { StoreState } from "../../model/storeState";
+import { User } from "../../model/user";
+import { Api } from "../../utils/Api";
+import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableRow from "../ResponsiveTableRow";
+import OrganizerEdit from "./OrganizerEdit";
 
 interface Props {
   isSelectedOrganizer: boolean;

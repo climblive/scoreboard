@@ -1,31 +1,17 @@
-import * as React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import SideMenu from "./components/SideMenu";
-import TopMenu from "./components/TopMenu";
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import { Snackbar } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import { Snackbar, TableCell } from "@material-ui/core";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import { Close } from "@material-ui/icons";
-import { StoreState } from "./model/storeState";
-import { connect } from "react-redux";
-import { clearErrorMessage, logout } from "./actions/actions";
-import { selectOrganizer } from "./actions/asyncActions";
-import { login } from "./actions/asyncActions";
-import ContestList from "./components/contest/ContestList";
-import ContestInfo from "./components/contest/ContestInfo";
-import ColorList from "./components/color/ColorList";
-import SeriesList from "./components/series/SeriesList";
-import { User } from "./model/user";
-import { Organizer } from "./model/organizer";
-import WelcomeView from "./components/WelcomeView";
-import OrganizerList from "./components/organizer/OrganizerList";
-import LocationList from "./components/location/LocationList";
-import { getSelectedOrganizer } from "src/selectors/selector";
-import MainLayout from "./components/MainLayout";
 import Alert from "@material-ui/lab/Alert";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import * as React from "react";
+import { connect } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
+import { clearErrorMessage } from "./actions/actions";
+import MainLayout from "./components/MainLayout";
+import { StoreState } from "./model/storeState";
 
 export interface Props {
   errorMessage?: string;
@@ -68,7 +54,7 @@ const App = (props: Props) => {
               horizontal: "center",
             }}
             style={{ bottom: 15 }}
-            open={props.errorMessage != undefined}
+            open={props.errorMessage !== undefined}
             autoHideDuration={6000}
             onClose={handleClose}
             action={[

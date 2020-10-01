@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
+import { DialogContentText } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import { DialogContentText } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
+import React, { useState } from "react";
 
 export interface CreatePdfDialogProps {
   open: boolean;
-  creatingPdf: boolean;
   onClose: () => void;
   createPdf?: () => void;
   createPdfFromTemplate?: (file: Blob) => void;
@@ -39,7 +37,7 @@ export const CreatePdfDialog = (props: CreatePdfDialogProps) => {
 
   return (
     <Dialog
-      open={props.open || props.creatingPdf}
+      open={props.open}
       disableBackdropClick
       disableEscapeKeyDown
       maxWidth="xs"
@@ -61,12 +59,12 @@ export const CreatePdfDialog = (props: CreatePdfDialogProps) => {
           <Tab label="PDF with codes" />
           <Tab label="Scoreboard from template" />
         </Tabs>
-        {selectedTab == 0 && (
+        {selectedTab === 0 && (
           <DialogContentText>
             Download the PDF, print it, cut it and hand out to the contenders.
           </DialogContentText>
         )}
-        {selectedTab == 1 && (
+        {selectedTab === 1 && (
           <DialogContentText>
             If you want to use ClimbLive together with a scoreboard on paper,
             you can generate scoreboards with a registration code on the top of
@@ -92,19 +90,12 @@ export const CreatePdfDialog = (props: CreatePdfDialogProps) => {
             </ul>
           </DialogContentText>
         )}
-        {props.creatingPdf && (
-          <div>
-            <div style={{ textAlign: "center", marginTop: 10 }}>
-              <CircularProgress />
-            </div>
-          </div>
-        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose} color="primary">
           Cancel
         </Button>
-        {selectedTab == 0 && (
+        {selectedTab === 0 && (
           <Button
             onClick={() => {
               props.onClose();
@@ -115,7 +106,7 @@ export const CreatePdfDialog = (props: CreatePdfDialogProps) => {
             Download PDF
           </Button>
         )}
-        {selectedTab == 1 && (
+        {selectedTab === 1 && (
           <Button onClick={createPdfFromTemplate} color="primary">
             Select template PDF
           </Button>

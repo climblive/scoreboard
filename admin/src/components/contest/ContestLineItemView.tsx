@@ -1,13 +1,13 @@
-import React from "react";
-import { Contest } from "../../model/contest";
-import { TableCell, Hidden } from "@material-ui/core";
+import { Hidden, TableCell } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { Series } from "src/model/series";
-import moment from "moment";
 import { OrderedMap } from "immutable";
+import moment from "moment";
+import React from "react";
+import { connect } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { Series } from "src/model/series";
+import { Contest } from "../../model/contest";
+import { StoreState } from "../../model/storeState";
 
 interface Props {
   contest?: Contest;

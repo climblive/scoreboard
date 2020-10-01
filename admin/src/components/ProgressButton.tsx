@@ -1,7 +1,7 @@
-import React from "react";
 import { CircularProgress } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Button, { ButtonProps } from "@material-ui/core/Button";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

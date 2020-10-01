@@ -1,17 +1,12 @@
 import { Button, TableCell } from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { OrderedMap } from "immutable";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { Organizer } from "src/model/organizer";
@@ -34,30 +29,28 @@ interface Props {
   setTitle?: (title: string) => void;
 }
 
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
-
 const breakpoints = new Map<number, string>().set(3, "smDown");
 
 const ColorList = (props: Props & RouteComponentProps) => {
   React.useEffect(() => {
     props.setTitle?.("Colors");
-  }, []);
+  }, [props.setTitle]);
+
+  const refreshColors = useCallback(() => {
+    setRefreshing(true);
+    props.loadColors?.().finally(() => setRefreshing(false));
+  }, [props.loadColors]);
 
   React.useEffect(() => {
-    if (props.colors == undefined) {
+    if (props.colors === undefined) {
       refreshColors();
     }
-  }, [props.colors]);
+  }, [props.colors, refreshColors]);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const theme = useTheme();
-
-  const refreshColors = () => {
-    setRefreshing(true);
-    props.loadColors?.().finally(() => setRefreshing(false));
-  };
 
   const buttons = [
     <Button

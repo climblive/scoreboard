@@ -1,37 +1,34 @@
-import React, { useState, useMemo } from "react";
+import { IconButton, Paper, TableCell, TableRow } from "@material-ui/core";
 import {
-  Grid,
-  IconButton,
-  Paper,
-  TableCell,
-  TableContainer,
-  TableRow,
-} from "@material-ui/core";
-import { StoreState } from "../../model/storeState";
-import { connect } from "react-redux";
-import { loadProblems, reloadColors } from "../../actions/asyncActions";
-import { Problem } from "../../model/problem";
-import ProblemView from "./ProblemView";
-import ProblemEdit from "./ProblemEdit";
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { Organizer } from "src/model/organizer";
-import { Color } from "../../model/color";
 import * as Chroma from "chroma-js";
-import { Tick } from "../../model/tick";
-import { ContenderData } from "../../model/contenderData";
-import { CompClass } from "../../model/compClass";
+import { OrderedMap } from "immutable";
+import React, { useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { Organizer } from "src/model/organizer";
 import {
   getSelectedOrganizer,
   groupTicksByProblem,
 } from "src/selectors/selector";
-import { OrderedMap } from "immutable";
+import { loadProblems, reloadColors } from "../../actions/asyncActions";
+import { Color } from "../../model/color";
+import { CompClass } from "../../model/compClass";
+import { ContenderData } from "../../model/contenderData";
+import { Problem } from "../../model/problem";
+import { StoreState } from "../../model/storeState";
+import { Tick } from "../../model/tick";
 import ProgressIconButton from "../ProgressIconButton";
-import TableBody from "@material-ui/core/TableBody";
-import Table from "@material-ui/core/Table";
 import ResponsiveTableHead from "../ResponsiveTableHead";
-import { useTheme } from "@material-ui/core/styles";
-import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import ProblemEdit from "./ProblemEdit";
+import ProblemView from "./ProblemView";
 
 interface Props {
   contestId?: number;
@@ -68,7 +65,7 @@ const ProblemList = (props: Props) => {
 
   const ticksByProblem = useMemo(() => {
     let ticks = props.ticks?.toArray();
-    return ticks != undefined ? groupTicksByProblem(ticks) : undefined;
+    return ticks !== undefined ? groupTicksByProblem(ticks) : undefined;
   }, [props.ticks]);
 
   const theme = useTheme();
@@ -140,7 +137,7 @@ const ProblemList = (props: Props) => {
   };
 
   const nextNumber = () => {
-    if (problemsSorted == undefined || problemsSorted.length == 0) {
+    if (problemsSorted === undefined || problemsSorted.length === 0) {
       return 1;
     } else {
       const max = problemsSorted?.[problemsSorted?.length - 1].number ?? 0;

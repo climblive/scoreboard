@@ -1,11 +1,10 @@
 import { createSelector } from "reselect";
-import { StoreState } from "../model/storeState";
-import { CompClass } from "../model/compClass";
-import { Problem } from "../model/problem";
-import { ContenderData } from "../model/contenderData";
-import { Tick } from "src/model/tick";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { Contest } from "src/model/contest";
+import { Tick } from "src/model/tick";
+import { ContenderData } from "../model/contenderData";
+import { Problem } from "../model/problem";
+import { StoreState } from "../model/storeState";
 
 const getSelectedOrganizerId = (state: StoreState) => state.selectedOrganizerId;
 const getOrganizers = (state: StoreState) => state.organizers;
@@ -13,7 +12,7 @@ const getOrganizers = (state: StoreState) => state.organizers;
 export const getSelectedOrganizer = createSelector(
   [getOrganizers, getSelectedOrganizerId],
   (organizers, selectedOrganizerId) => {
-    return selectedOrganizerId != undefined
+    return selectedOrganizerId !== undefined
       ? organizers?.get(selectedOrganizerId)
       : undefined;
   }
@@ -60,7 +59,7 @@ export const calculateContenderScoringInfo = (
       scorings.push(newContender);
       scoringsMap.set(contender.id!, newContender);
 
-      if (contender.compClassId != undefined) {
+      if (contender.compClassId !== undefined) {
         if (!scoringsPerClass.has(contender.compClassId!)) {
           scoringsPerClass.set(contender.compClassId, []);
         }
@@ -109,7 +108,7 @@ export const calculateContenderScoringInfo = (
     let lastScore = -1;
     let lastPos = 0;
     list.forEach((contender, index) => {
-      if (lastScore != contender.totalScore) {
+      if (lastScore !== contender.totalScore) {
         lastScore = contender.totalScore!;
         lastPos = index + 1;
       }
@@ -121,7 +120,7 @@ export const calculateContenderScoringInfo = (
     lastPos = 0;
     let isFinalist = true;
     list.forEach((contender, index) => {
-      if (lastScore != contender.qualifyingScore) {
+      if (lastScore !== contender.qualifyingScore) {
         lastScore = contender.qualifyingScore!;
         lastPos = index + 1;
         isFinalist = lastPos <= contest!.finalists && lastScore > 0;

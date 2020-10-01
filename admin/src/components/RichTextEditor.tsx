@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from "react";
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  ContentState,
-  convertFromHTML,
-} from "draft-js";
-import { RefObject } from "react";
-import UnderlineIcon from "@material-ui/icons/FormatUnderlined";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import BoldIcon from "@material-ui/icons/FormatBold";
 import ItalicIcon from "@material-ui/icons/FormatItalic";
 import UnorderedListIcon from "@material-ui/icons/FormatListBulleted";
 import OrderedListIcon from "@material-ui/icons/FormatListNumbered";
-import "draft-js/dist/Draft.css";
+import UnderlineIcon from "@material-ui/icons/FormatUnderlined";
+import {
+  ContentState,
+  convertFromHTML,
+  Editor,
+  EditorState,
+  RichUtils,
+} from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import "draft-js/dist/Draft.css";
+import React, { RefObject, useEffect, useState } from "react";
 
 interface Props {
   title: string;
@@ -48,12 +47,8 @@ const RichTextEditor = (props: Props) => {
   let rulesEditorRef: RefObject<any> = React.createRef();
 
   useEffect(() => {
-    updateValue(props.value, true);
-  }, []);
-
-  const updateValue = (newValue: string, forceUpdate: boolean) => {
-    if (lastHtml !== newValue || forceUpdate) {
-      const blocksFromHTML = convertFromHTML(newValue || "");
+    if (lastHtml === undefined) {
+      const blocksFromHTML = convertFromHTML(props.value || "");
       if (blocksFromHTML.contentBlocks.length) {
         const state = ContentState.createFromBlockArray(
           blocksFromHTML.contentBlocks,
@@ -64,7 +59,7 @@ const RichTextEditor = (props: Props) => {
         setEditorState(EditorState.createEmpty());
       }
     }
-  };
+  }, [props.value, lastHtml]);
 
   const onEditorChange = (editorState: EditorState) => {
     setEditorState(editorState);

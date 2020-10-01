@@ -1,36 +1,29 @@
-import React, { useState, useEffect } from "react";
-import Tabs from "@material-ui/core/Tabs";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
-import { StoreState } from "../../model/storeState";
+import Tabs from "@material-ui/core/Tabs";
+import { OrderedMap } from "immutable";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { Route, RouteComponentProps, Switch } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import {} from "../../actions/actions";
-import ContestEdit from "./ContestEdit";
-import RaffleList from "../raffle/RaffleList";
-import { Switch, Route } from "react-router";
-import { Link } from "react-router-dom";
-import CompClassList from "../compClass/CompClassList";
-import { useLocation } from "react-router-dom";
-import ProblemList from "../problem/ProblemList";
-import ContenderList from "../contender/ContenderList";
 import {
-  reloadColors,
   loadCompClasses,
-  loadProblems,
   loadContenders,
-  loadTicks,
-  loadRaffles,
   loadContest,
+  loadProblems,
+  loadRaffles,
+  loadTicks,
+  reloadColors,
 } from "../../actions/asyncActions";
 import { Color } from "../../model/color";
-import { RouteComponentProps, withRouter } from "react-router";
-import { OrderedMap } from "immutable";
 import { Contest } from "../../model/contest";
-import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles,
-} from "@material-ui/core/styles";
+import { StoreState } from "../../model/storeState";
+import CompClassList from "../compClass/CompClassList";
+import ContenderList from "../contender/ContenderList";
+import ProblemList from "../problem/ProblemList";
+import RaffleList from "../raffle/RaffleList";
+import ContestEdit from "./ContestEdit";
 import ContestStats from "./ContestStats";
 
 interface Props {
@@ -62,6 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const ContestInfo = (props: Props & RouteComponentProps) => {
   let selectedPath = useLocation().pathname;
   let [contestId, setContestId] = useState<number | undefined>(undefined);
+  let [loading, setLoading] = useState(false);
 
   const classes = useStyles();
 
@@ -73,44 +67,58 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
   }, [props.match]);
 
   useEffect(() => {
-    if (contestId == undefined) {
+    if (contestId === undefined) {
       return;
     }
 
-    let contest = props.contests?.get(contestId);
-
-    if (contest == undefined) {
-      props.loadContest?.(contestId);
-    }
-
-    Promise.all([
-      props.colors == undefined ? props.loadColors?.() : Promise.resolve(),
+    let loadables: Array<Promise<any> | undefined> = [
+      props.colors === undefined ? props.loadColors?.() : Promise.resolve(),
       props.loadCompClasses?.(contestId),
       props.loadProblems?.(contestId),
       props.loadContenders?.(contestId),
       props.loadTicks?.(contestId),
       props.loadRaffles?.(contestId),
-    ]);
-  }, [contestId]);
+    ];
+
+    let contest = props.contests?.get(contestId);
+
+    if (contest === undefined) {
+      loadables.push(props.loadContest?.(contestId));
+    }
+
+    setLoading(true);
+    Promise.all(loadables).finally(() => setLoading(false));
+  }, [
+    contestId,
+    props.colors,
+    props.contests,
+    props.loadColors,
+    props.loadCompClasses,
+    props.loadContenders,
+    props.loadContest,
+    props.loadProblems,
+    props.loadRaffles,
+    props.loadTicks,
+  ]);
 
   const selectTab = (event: any, newValue: string) => {
     props.history.push(newValue);
   };
 
   const createLink = (tab?: string): string => {
-    if (contestId == undefined) {
+    if (contestId === undefined) {
       return "/contests/new";
     }
 
     let path = "/contests/" + contestId;
-    if (tab != undefined) {
+    if (tab !== undefined) {
       path += "/" + tab;
     }
 
     return path;
   };
 
-  if (!selectedPath.endsWith("/new") && contestId == undefined) {
+  if (!selectedPath.endsWith("/new") && contestId === undefined) {
     return <></>;
   }
 
@@ -180,7 +188,11 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
       <div className={classes.page}>
         <Switch>
           <Route path="/contests/:contestId" exact>
-            <ContestEdit key="general" contestId={contestId} />
+            <ContestEdit
+              key="general"
+              contestId={contestId}
+              loading={loading}
+            />
           </Route>
           <Route path="/contests/:contestId/statistics">
             <ContestStats key="statistics" contestId={contestId} />

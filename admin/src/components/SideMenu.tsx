@@ -1,26 +1,20 @@
-import * as React from "react";
-import { Link } from "react-router-dom";
-import { Palette, TableChart } from "@material-ui/icons";
-import { Divider, Typography } from "@material-ui/core";
-import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles,
-} from "@material-ui/core/styles";
-import { User } from "../model/user";
-import { Environment } from "src/environment";
-import HomeIcon from "@material-ui/icons/Home";
-import ExploreIcon from "@material-ui/icons/Explore";
-import PeopleIcon from "@material-ui/icons/People";
-import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import { Divider } from "@material-ui/core";
+import Chip from "@material-ui/core/Chip";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { Palette, TableChart } from "@material-ui/icons";
+import ExploreIcon from "@material-ui/icons/Explore";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import PeopleIcon from "@material-ui/icons/People";
+import * as React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { Environment } from "src/environment";
 import { StoreState } from "../model/storeState";
-import Chip from "@material-ui/core/Chip";
+import { User } from "../model/user";
 
 export interface Props {
   loggedInUser?: User;
@@ -44,32 +38,32 @@ function SideMenu({ loggedInUser }: Props) {
       name: "Contests",
       icon: <TableChart />,
       path: "/contests",
-      condition: loggedInUser != undefined,
+      condition: loggedInUser !== undefined,
     },
     {
       name: "Colors",
       icon: <Palette />,
       path: "/colors",
-      condition: loggedInUser != undefined,
+      condition: loggedInUser !== undefined,
       divider: true,
     },
     {
       name: "Locations",
       icon: <ExploreIcon />,
       path: "/locations",
-      condition: loggedInUser != undefined,
+      condition: loggedInUser !== undefined,
     },
     {
       name: "Organizers",
       icon: <PeopleIcon />,
       path: "/organizers",
-      condition: loggedInUser != undefined,
+      condition: loggedInUser !== undefined,
     },
     {
       name: "Series",
       icon: <LibraryBooksIcon />,
       path: "/series",
-      condition: loggedInUser != undefined,
+      condition: loggedInUser !== undefined,
     },
   ];
 
@@ -85,6 +79,7 @@ function SideMenu({ loggedInUser }: Props) {
           }}
         >
           <img
+            alt=""
             style={{
               width: 65,
             }}

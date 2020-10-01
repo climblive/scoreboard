@@ -51,7 +51,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.updateContestSuccess): {
       let contests = state.contests;
 
-      if (contests == undefined) {
+      if (contests === undefined) {
         contests = OrderedMap<number, Contest>();
       }
 
@@ -156,7 +156,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.updateColorSuccess): {
       let colors = state.colors;
 
-      if (colors == undefined) {
+      if (colors === undefined) {
         colors = OrderedMap<number, Color>();
       }
 
@@ -187,7 +187,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.updateSeriesSuccess): {
       let series = state.series;
 
-      if (series == undefined) {
+      if (series === undefined) {
         series = OrderedMap<number, Series>();
       }
 
@@ -218,7 +218,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.updateLocationSuccess): {
       let locations = state.locations;
 
-      if (locations == undefined) {
+      if (locations === undefined) {
         locations = OrderedMap<number, CompLocation>();
       }
 
@@ -249,7 +249,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.updateOrganizerSuccess): {
       let organizers = state.organizers;
 
-      if (organizers == undefined) {
+      if (organizers === undefined) {
         organizers = OrderedMap<number, Organizer>();
       }
 

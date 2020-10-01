@@ -73,10 +73,6 @@ const RaffleView = (props: Props) => {
       : "Unknown contender with id " + contenderId;
   };
 
-  const deleteRaffle = () => {
-    setDeleteRequested(true);
-  };
-
   const onDeleteConfirmed = (result: boolean) => {
     setDeleteRequested(false);
 

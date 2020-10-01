@@ -1,45 +1,45 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { InputLabel, TextField, useTheme } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import { Contest } from "../../model/contest";
-import { InputLabel, TextField, Grid, useTheme } from "@material-ui/core";
-import { RouteComponentProps, withRouter } from "react-router";
-import RichTextEditor from "../RichTextEditor";
 import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import { Series } from "../../model/series";
-import { CompLocation } from "../../model/compLocation";
-import { CreatePdfDialog } from "../CreatePdfDialog";
-import { Environment } from "../../environment";
-import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Switch from "@material-ui/core/Switch";
 import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
-import { ConfirmationDialog } from "../ConfirmationDialog";
+import DescriptionIcon from "@material-ui/icons/Description";
+import LockIcon from "@material-ui/icons/Lock";
+import SaveIcon from "@material-ui/icons/Save";
+import Alert from "@material-ui/lab/Alert";
+import { saveAs } from "file-saver";
+import { OrderedMap } from "immutable";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import { StoreState } from "../../model/storeState";
+import { RouteComponentProps, withRouter } from "react-router";
+import { Link } from "react-router-dom";
+import { CompClass } from "src/model/compClass";
+import { ContenderData } from "src/model/contenderData";
+import { Organizer } from "src/model/organizer";
+import { Problem } from "src/model/problem";
+import { Api } from "src/utils/Api";
+import { setErrorMessage, setTitle } from "../../actions/actions";
 import {
-  saveContest,
   deleteContest,
   loadContest,
   reloadLocations,
   reloadSeries,
+  saveContest,
 } from "../../actions/asyncActions";
-import { setTitle, setErrorMessage } from "../../actions/actions";
-import { Organizer } from "src/model/organizer";
-import SaveIcon from "@material-ui/icons/Save";
-import { saveAs } from "file-saver";
-import { Api } from "src/utils/Api";
-import { Problem } from "src/model/problem";
-import { CompClass } from "src/model/compClass";
+import { Environment } from "../../environment";
+import { CompLocation } from "../../model/compLocation";
+import { Contest } from "../../model/contest";
+import { Series } from "../../model/series";
+import { StoreState } from "../../model/storeState";
 import { getSelectedOrganizer } from "../../selectors/selector";
-import { ContenderData } from "src/model/contenderData";
-import { Link } from "react-router-dom";
-import { OrderedMap } from "immutable";
+import { ConfirmationDialog } from "../ConfirmationDialog";
+import { CreatePdfDialog } from "../CreatePdfDialog";
 import { ProgressButton } from "../ProgressButton";
-import DescriptionIcon from "@material-ui/icons/Description";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import LockIcon from "@material-ui/icons/Lock";
-import Alert from "@material-ui/lab/Alert";
+import RichTextEditor from "../RichTextEditor";
 
 interface Props {
   contestId?: number;
@@ -50,6 +50,7 @@ interface Props {
   problems?: OrderedMap<number, Problem>;
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
+  loading?: boolean;
   setTitle?: (title: string) => void;
   saveContest?: (contest: Contest) => Promise<Contest>;
   deleteContest?: (contest: Contest) => Promise<void>;
@@ -74,13 +75,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestEdit = (props: Props & RouteComponentProps) => {
-  let [loading, setLoading] = useState<boolean>(false);
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
   let [compilingPdf, setCompilingPdf] = useState<boolean>(false);
   let [showPopup, setShowPopup] = useState<boolean>(false);
   let [requestingDelete, setRequestingDelete] = useState<boolean>(false);
-  let [creatingPdf, setCreatingPdf] = useState<boolean>(false);
   let [contest, setContest] = useState<Contest>({
     organizerId: props.selectedOrganizer?.id!,
     protected: false,
@@ -94,27 +93,27 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   });
 
   useEffect(() => {
-    if (props.locations == undefined) {
+    if (props.locations === undefined) {
       props.loadLocations?.();
     }
-    if (props.series == undefined) {
+    if (props.series === undefined) {
       props.loadSeries?.();
     }
-  }, [props.series, props.locations]);
+  }, [props.series, props.locations, props.loadLocations, props.loadSeries]);
 
   useEffect(() => {
-    if (props.contestId != undefined) {
+    if (props.contestId !== undefined) {
       let contest = props.contests?.get(props.contestId);
-      if (contest != undefined) {
+      if (contest !== undefined) {
         setContest(contest);
       }
     }
   }, [props.contestId, props.contests]);
 
   useEffect(() => {
-    let title = contest?.id == undefined ? "Add contest" : contest.name;
+    let title = contest?.id === undefined ? "Add contest" : contest.name;
     props.setTitle?.(title);
-  }, [contest.name]);
+  }, [contest, props.setTitle]);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -122,30 +121,37 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   const contestIssues = useMemo(() => {
     let issues: any[] = [];
 
-    if (contest.id == undefined) {
+    if (props.loading || contest.id === undefined) {
       return issues;
     }
 
-    if ((props.problems?.size ?? 0) == 0) {
+    if ((props.problems?.size ?? 0) === 0) {
       issues.push({
         description: "Please add problems",
         link: `/contests/${props.contestId}/problems`,
       });
     }
-    if ((props.compClasses?.size ?? 0) == 0) {
+    if ((props.compClasses?.size ?? 0) === 0) {
       issues.push({
         description: "Please add at least one competition class",
         link: `/contests/${props.contestId}/classes`,
       });
     }
-    if ((props.contenders?.size ?? 0) == 0) {
+    if ((props.contenders?.size ?? 0) === 0) {
       issues.push({
         description: "Please add contenders",
         link: `/contests/${props.contestId}/contenders`,
       });
     }
     return issues;
-  }, [contest, props.problems, props.compClasses, props.contenders]);
+  }, [
+    contest,
+    props.problems,
+    props.compClasses,
+    props.contenders,
+    props.loading,
+    props.contestId,
+  ]);
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContest({ ...contest, name: e.target.value });
@@ -182,13 +188,13 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
 
   const onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const locationId =
-      e.target.value == "None" ? undefined : parseInt(e.target.value);
+      e.target.value === "None" ? undefined : parseInt(e.target.value);
     setContest({ ...contest, locationId });
   };
 
   const onSeriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const seriesId =
-      e.target.value == "None" ? undefined : parseInt(e.target.value);
+      e.target.value === "None" ? undefined : parseInt(e.target.value);
     setContest({ ...contest, seriesId });
   };
 
@@ -228,7 +234,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     setShowPopup(false);
   };
 
-  const isNew = contest.id == undefined;
+  const isNew = contest.id === undefined;
 
   const createPdfFromTemplate = (file: Blob) => {
     let reader = new FileReader();
@@ -282,7 +288,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
         </div>
       ))}
       <div>
-        {!isNew && contestIssues.length == 0 && (
+        {!isNew && contestIssues.length === 0 && (
           <div className={classes.buttons}>
             <ProgressButton
               size="small"
@@ -324,13 +330,13 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               label="Name"
               value={contest.name}
               onChange={onNameChange}
-              disabled={loading}
+              disabled={props.loading}
             />
             <TextField
               label="Description"
               value={contest.description}
               onChange={onDescriptionChange}
-              disabled={loading}
+              disabled={props.loading}
             />
             {(props.locations?.size ?? 0) > 0 && (
               <FormControl>
@@ -341,7 +347,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   id="location-select"
                   value={contest.locationId ?? "None"}
                   onChange={onLocationChange}
-                  disabled={loading}
+                  disabled={props.loading}
                 >
                   <MenuItem value="None">
                     <em>None</em>
@@ -363,7 +369,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   id="series-select"
                   value={contest.seriesId ?? "None"}
                   onChange={onSeriesChange}
-                  disabled={loading}
+                  disabled={props.loading}
                 >
                   <MenuItem value="None">
                     <em>None</em>
@@ -385,7 +391,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               }
               label="Enable finals"
               labelPlacement="end"
-              disabled={loading}
+              disabled={props.loading}
             />
             {contest.finalEnabled && (
               <>
@@ -393,13 +399,13 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   label="Number of qualifying problems"
                   value={contest.qualifyingProblems}
                   onChange={onQualifyingProblemsChange}
-                  disabled={loading}
+                  disabled={props.loading}
                 />
                 <TextField
                   label="Number of finalists"
                   value={contest.finalists}
                   onChange={onFinalistsChange}
-                  disabled={loading}
+                  disabled={props.loading}
                 />
               </>
             )}
@@ -407,7 +413,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               label="Grace period (minutes)"
               value={contest.gracePeriod}
               onChange={onGracePeriodChange}
-              disabled={loading}
+              disabled={props.loading}
             />
           </div>
           <div
@@ -457,7 +463,6 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
       </div>
       <CreatePdfDialog
         open={showPopup}
-        creatingPdf={creatingPdf || false}
         createPdf={createPdf}
         createPdfFromTemplate={createPdfFromTemplate}
         onClose={closePopup}

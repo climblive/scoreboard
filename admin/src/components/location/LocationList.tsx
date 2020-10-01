@@ -1,12 +1,17 @@
 import { Button, TableCell } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { OrderedMap } from "immutable";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { setTitle } from "../../actions/actions";
@@ -19,7 +24,6 @@ import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import LocationEdit from "./LocationEdit";
 import LocationView from "./LocationView";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface Props {
   locations?: OrderedMap<number, CompLocation>;
@@ -40,13 +44,18 @@ const breakpoints = new Map<number, string>().set(1, "smDown").set(2, "smDown");
 const LocationList = (props: Props) => {
   React.useEffect(() => {
     props.setTitle?.("Location");
-  }, []);
+  }, [props.setTitle]);
+
+  const refreshLocation = useCallback(() => {
+    setRefreshing(true);
+    props.loadLocation?.().finally(() => setRefreshing(false));
+  }, [props.loadLocation]);
 
   React.useEffect(() => {
-    if (props.locations == undefined) {
+    if (props.locations === undefined) {
       refreshLocation();
     }
-  }, [props.locations]);
+  }, [props.locations, refreshLocation]);
 
   const classes = useStyles();
 
@@ -57,11 +66,6 @@ const LocationList = (props: Props) => {
 
   const onCreateDone = () => {
     setShowCreate(false);
-  };
-
-  const refreshLocation = () => {
-    setRefreshing(true);
-    props.loadLocation?.().finally(() => setRefreshing(false));
   };
 
   const buttons = [

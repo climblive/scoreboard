@@ -118,7 +118,7 @@ const LocationEdit = (props: Props) => {
             loading={saving}
             startIcon={<SaveIcon />}
           >
-            {location.id == undefined ? "Create" : "Save"}
+            {location.id === undefined ? "Create" : "Save"}
           </ProgressButton>
           {props.removable && (
             <ProgressButton

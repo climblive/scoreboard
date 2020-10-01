@@ -1,12 +1,17 @@
 import { Button, TableCell } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { OrderedMap } from "immutable";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { setTitle } from "../../actions/actions";
@@ -19,7 +24,6 @@ import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import SeriesEdit from "./SeriesEdit";
 import SeriesView from "./SeriesView";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface Props {
   series?: OrderedMap<number, Series>;
@@ -40,13 +44,18 @@ const breakpoints = new Map<number, string>();
 const SeriesList = (props: Props) => {
   React.useEffect(() => {
     props.setTitle?.("Series");
-  }, []);
+  }, [props.setTitle]);
+
+  const refreshSeries = useCallback(() => {
+    setRefreshing(true);
+    props.loadSeries?.().finally(() => setRefreshing(false));
+  }, [props.loadSeries]);
 
   React.useEffect(() => {
-    if (props.series == undefined) {
+    if (props.series === undefined) {
       refreshSeries();
     }
-  }, [props.series]);
+  }, [props.series, refreshSeries]);
 
   const classes = useStyles();
 
@@ -57,11 +66,6 @@ const SeriesList = (props: Props) => {
 
   const onCreateDone = () => {
     setShowCreate(false);
-  };
-
-  const refreshSeries = () => {
-    setRefreshing(true);
-    props.loadSeries?.().finally(() => setRefreshing(false));
   };
 
   const buttons = [

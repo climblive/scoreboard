@@ -1,23 +1,23 @@
-import React, { useState } from "react";
-import { ContenderData } from "src/model/contenderData";
-import { connect } from "react-redux";
-import { StoreState } from "../../model/storeState";
-import { TableCell, Divider, Typography, Grid } from "@material-ui/core";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
-import { Environment } from "../../environment";
+import { Divider, Grid, TableCell, Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import { CompClass } from "../../model/compClass";
-import { updateContender } from "../../actions/asyncActions";
-import { Problem } from "../../model/problem";
-import { Color } from "../../model/color";
-import { OrderedMap } from "immutable";
-import ContenderScoring from "./ContenderScoring";
-import ContenderEdit from "./ContenderEdit";
-import { ProgressButton } from "../ProgressButton";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
-import ContenderTickList from "./ContenderTickList";
+import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { ContenderData } from "src/model/contenderData";
+import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { updateContender } from "../../actions/asyncActions";
+import { Environment } from "../../environment";
+import { Color } from "../../model/color";
+import { CompClass } from "../../model/compClass";
+import { Problem } from "../../model/problem";
+import { StoreState } from "../../model/storeState";
+import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableRow from "../ResponsiveTableRow";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import ContenderEdit from "./ContenderEdit";
+import ContenderScoring from "./ContenderScoring";
+import ContenderTickList from "./ContenderTickList";
 
 interface Props {
   contender?: ContenderData;
@@ -188,7 +188,7 @@ const ContenderView = (props: Props) => {
             </ProgressButton>
           ) : (
             <ProgressButton
-              disabled={contender.entered == undefined}
+              disabled={contender.entered === undefined}
               variant="contained"
               color="secondary"
               onClick={onDisqualify}

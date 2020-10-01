@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { ContenderData } from "src/model/contenderData";
-import { connect } from "react-redux";
-import { StoreState } from "../../model/storeState";
-import { TextField, FormControl, InputLabel } from "@material-ui/core";
-import { CompClass } from "../../model/compClass";
-import { updateContender } from "../../actions/asyncActions";
-import { OrderedMap } from "immutable";
-import Select from "@material-ui/core/Select";
+import { FormControl, InputLabel, TextField } from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
-import { ProgressButton } from "../ProgressButton";
+import Select from "@material-ui/core/Select";
 import SaveIcon from "@material-ui/icons/Save";
+import { OrderedMap } from "immutable";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { ContenderData } from "src/model/contenderData";
+import { updateContender } from "../../actions/asyncActions";
+import { CompClass } from "../../model/compClass";
+import { StoreState } from "../../model/storeState";
+import { ProgressButton } from "../ProgressButton";
 
 interface Props {
   contender?: ContenderData;

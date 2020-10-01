@@ -1,5 +1,3 @@
-import { Tick } from "./tick";
-
 export class ContenderData {
   id?: number;
   compClassId?: number;

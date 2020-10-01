@@ -37,7 +37,7 @@ export class Api {
     if (this.credentials) {
       authHeaders.Authorization = "Bearer " + this.credentials;
     }
-    if (this.organizerId != undefined && !url.startsWith("/organizer")) {
+    if (this.organizerId !== undefined && !url.startsWith("/organizer")) {
       authHeaders["Organizer-Id"] = this.organizerId;
     }
     return authHeaders;
@@ -118,7 +118,7 @@ export class Api {
   }
 
   static saveContest(contest: Contest): Promise<Contest> {
-    if (contest.id == undefined) {
+    if (contest.id === undefined) {
       return this.post("/contest", contest);
     } else {
       return this.put("/contest/" + contest.id, contest);
@@ -170,7 +170,7 @@ export class Api {
   }
 
   static saveProblem(problem: Problem): Promise<Problem> {
-    if (problem.id == undefined) {
+    if (problem.id === undefined) {
       return this.post("/problem", problem);
     } else {
       return this.put("/problem/" + problem.id, problem);
@@ -190,7 +190,7 @@ export class Api {
   }
 
   static saveCompClass(compClass: CompClass): Promise<CompClass> {
-    if (compClass.id == undefined) {
+    if (compClass.id === undefined) {
       return this.post("/compClass", compClass);
     } else {
       return this.put("/compClass/" + compClass.id, compClass);
@@ -210,7 +210,7 @@ export class Api {
   }
 
   static saveContender(contender: ContenderData): Promise<ContenderData> {
-    if (contender.id == undefined) {
+    if (contender.id === undefined) {
       return this.post("/contender", contender);
     } else {
       return this.put("/contender/" + contender.id, contender);
@@ -236,7 +236,7 @@ export class Api {
   }
 
   static saveRaffle(raffle: Raffle): Promise<Raffle> {
-    if (raffle.id == undefined) {
+    if (raffle.id === undefined) {
       return this.post("/raffle", Raffle.makeRequestBody(raffle));
     } else {
       return this.put("/raffle/" + raffle.id, Raffle.makeRequestBody(raffle));
@@ -264,7 +264,7 @@ export class Api {
   }
 
   static saveColor(color: Color): Promise<Color> {
-    if (color.id == undefined) {
+    if (color.id === undefined) {
       return this.post("/color", color);
     } else {
       return this.put("/color/" + color.id, color);
@@ -288,7 +288,7 @@ export class Api {
   }
 
   static saveSeries(series: Series): Promise<Series> {
-    if (series.id == undefined) {
+    if (series.id === undefined) {
       return this.post("/series", series);
     } else {
       return this.put("/series/" + series.id, series);
@@ -304,7 +304,7 @@ export class Api {
   }
 
   static saveLocation(location: CompLocation): Promise<CompLocation> {
-    if (location.id == undefined) {
+    if (location.id === undefined) {
       return this.post("/location", location);
     } else {
       return this.put("/location/" + location.id, location);
@@ -328,7 +328,7 @@ export class Api {
   }
 
   static saveOrganizer(organizer: Organizer): Promise<Organizer> {
-    if (organizer.id == undefined) {
+    if (organizer.id === undefined) {
       return this.post("/organizer", organizer);
     } else {
       return this.put("/organizer/" + organizer.id, organizer);

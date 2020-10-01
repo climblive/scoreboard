@@ -1,6 +1,6 @@
+import { Divider, Grid, Paper, Typography } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
-import { Typography, Divider, Paper, Grid } from "@material-ui/core";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { StoreState } from "../model/storeState";
 

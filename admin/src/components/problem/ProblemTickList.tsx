@@ -1,19 +1,18 @@
-import React from "react";
-import { Problem } from "src/model/problem";
-import { Tick } from "src/model/tick";
-import { CompClass } from "src/model/compClass";
-import { ContenderData } from "src/model/contenderData";
-import moment from "moment";
-import { OrderedMap } from "immutable";
-import { TableCell } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
+import { Paper, TableCell } from "@material-ui/core";
+import Hidden from "@material-ui/core/Hidden";
+import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
-import Hidden from "@material-ui/core/Hidden";
 import DoneIcon from "@material-ui/icons/Done";
+import { OrderedMap } from "immutable";
+import moment from "moment";
+import React from "react";
+import { CompClass } from "src/model/compClass";
+import { ContenderData } from "src/model/contenderData";
+import { Problem } from "src/model/problem";
+import { Tick } from "src/model/tick";
 
 interface Props {
   problem?: Problem;

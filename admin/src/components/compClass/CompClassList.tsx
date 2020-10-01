@@ -2,7 +2,6 @@ import {
   Paper,
   StyledComponentProps,
   TableCell,
-  TableContainer,
   useTheme,
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
@@ -133,7 +132,7 @@ const CompClassList = (
           ))}
         </TableBody>
       </Table>
-      {!showCreate && (props.compClasses?.size ?? 0) == 0 && (
+      {!showCreate && (props.compClasses?.size ?? 0) === 0 && (
         <div className={classes.emptyText}>
           Use the plus button to setup your first competition class.
         </div>

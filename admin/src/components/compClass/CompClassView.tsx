@@ -1,9 +1,9 @@
-import React from "react";
-import { CompClass } from "src/model/compClass";
-import CompClassEdit from "./CompClassEdit";
 import { TableCell } from "@material-ui/core";
 import moment from "moment";
+import React from "react";
+import { CompClass } from "src/model/compClass";
 import ResponsiveTableRow from "../ResponsiveTableRow";
+import CompClassEdit from "./CompClassEdit";
 
 interface Props {
   compClass?: CompClass;

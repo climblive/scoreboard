@@ -106,7 +106,7 @@ const OrganizerEdit = (props: Props) => {
             loading={saving}
             startIcon={<SaveIcon />}
           >
-            {organizer.id == undefined ? "Create" : "Save"}
+            {organizer.id === undefined ? "Create" : "Save"}
           </ProgressButton>
           {props.removable && (
             <ProgressButton

@@ -30,7 +30,7 @@ const breakpoints = new Map<number, string>().set(1, "smDown");
 const OrganizerList = (props: Props) => {
   React.useEffect(() => {
     props.setTitle?.("Organizers");
-  }, []);
+  }, [props.setTitle]);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);

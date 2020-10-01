@@ -1,28 +1,28 @@
-import React, { useEffect } from "react";
-import { Button, StyledComponentProps, Hidden, Grid } from "@material-ui/core";
-import { RouteComponentProps, withRouter } from "react-router";
-import * as qs from "qs";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { User } from "../model/user";
-import { Organizer } from "../model/organizer";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import { Button, Grid, Hidden, StyledComponentProps } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { connect } from "react-redux";
-import { login, selectOrganizer } from "../actions/asyncActions";
-import { logout } from "../actions/actions";
-import { getSelectedOrganizer } from "src/selectors/selector";
-import { StoreState } from "../model/storeState";
-import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles,
-} from "@material-ui/core/styles";
 import { OrderedMap } from "immutable";
+import * as qs from "qs";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router";
+import { getSelectedOrganizer } from "src/selectors/selector";
+import { logout } from "../actions/actions";
+import { login, selectOrganizer } from "../actions/asyncActions";
+import { Organizer } from "../model/organizer";
+import { StoreState } from "../model/storeState";
+import { User } from "../model/user";
 
 export interface Props {
   loggingIn: boolean;
@@ -69,12 +69,12 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
         props.login!(credentials);
       }
     }
-  }, []);
+  }, [props.history, props.location.hash, props.login]);
 
   const onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = parseInt(e.target.value);
     let organizer = props.organizers?.get(id);
-    if (organizer != undefined) {
+    if (organizer !== undefined) {
       props.selectOrganizer?.(organizer.id!);
     }
   };
@@ -111,7 +111,7 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
             style={{ minWidth: 200 }}
             size="small"
           >
-            {props.selectedOrganizer != undefined && (
+            {props.selectedOrganizer !== undefined && (
               <Select
                 id="series-select"
                 value={props.selectedOrganizer.id}

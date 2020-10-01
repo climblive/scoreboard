@@ -1,7 +1,7 @@
-import * as React from "react";
 import { StyledComponentProps, Theme } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import * as React from "react";
 import { connect } from "react-redux";
 import { StoreState } from "../model/storeState";
 

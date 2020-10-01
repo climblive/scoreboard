@@ -1,19 +1,18 @@
-import React from "react";
-import { Paper, Typography } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
+import { Paper } from "@material-ui/core";
+import Hidden from "@material-ui/core/Hidden";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import DoneIcon from "@material-ui/icons/Done";
-import Hidden from "@material-ui/core/Hidden";
-import { Problem } from "../../model/problem";
-import { Color } from "../../model/color";
 import { OrderedMap } from "immutable";
 import moment from "moment";
+import React from "react";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { Color } from "../../model/color";
+import { Problem } from "../../model/problem";
 
 interface Props {
   scoring: ContenderScoringInfo;
@@ -22,8 +21,6 @@ interface Props {
 }
 
 const ContenderTickList = (props: Props) => {
-  const theme = useTheme();
-
   return (
     <TableContainer component={Paper}>
       <Table size="small">

@@ -1,9 +1,5 @@
-import {
-  Paper,
-  StyledComponentProps,
-  TableCell,
-  TableContainer,
-} from "@material-ui/core";
+import { Paper, StyledComponentProps, TableCell } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
@@ -19,7 +15,6 @@ import { StoreState } from "../../model/storeState";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import RaffleView from "./RaffleView";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 interface Props {
   contestId?: number;

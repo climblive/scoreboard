@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
+import { Hidden, TableCell } from "@material-ui/core";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import { TableCell, Hidden } from "@material-ui/core";
+import React, { Fragment } from "react";
 
 interface Props {
   cells?: React.ReactNode[];
@@ -16,7 +16,7 @@ const ResponsiveTableHead = (props: Props) => {
         {props.cells?.map((cell, index) => {
           const breakpoint = props.breakpoints?.get(index);
 
-          if (breakpoint == undefined) {
+          if (breakpoint === undefined) {
             return <Fragment key={index}>{cell}</Fragment>;
           } else {
             const props = { [breakpoint]: true };

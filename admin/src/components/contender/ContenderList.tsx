@@ -1,56 +1,49 @@
-import React, { useState, useMemo } from "react";
-import Table from "@material-ui/core/Table";
-import {
-  InputLabel,
-  TableCell,
-  Hidden,
-  Grid,
-  TableContainer,
-  Paper,
-} from "@material-ui/core";
-import TableBody from "@material-ui/core/TableBody";
-import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/AddCircleOutline";
-import SaveIcon from "@material-ui/icons/SaveAlt";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import { ContenderData } from "../../model/contenderData";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
+import { Grid, InputLabel, Paper, TableCell } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import { CompClass } from "../../model/compClass";
-import { Contest } from "../../model/contest";
-import { Problem } from "../../model/problem";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
+import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
-import { SortBy } from "../../constants/sortBy";
-import { calculateContenderScoringInfo } from "../../selectors/selector";
-import { connect } from "react-redux";
+import Select from "@material-ui/core/Select";
 import {
-  loadContenders,
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TextField from "@material-ui/core/TextField";
+import AddIcon from "@material-ui/icons/AddCircleOutline";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import SaveIcon from "@material-ui/icons/SaveAlt";
+import Pagination from "@material-ui/lab/Pagination";
+import { saveAs } from "file-saver";
+import { OrderedMap } from "immutable";
+import React, { useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
+import { StoreState } from "src/model/storeState";
+import { Tick } from "src/model/tick";
+import { Api } from "src/utils/Api";
+import { setErrorMessage } from "../../actions/actions";
+import {
   createContenders,
+  loadContenders,
   loadTicks,
 } from "../../actions/asyncActions";
-import { setErrorMessage } from "../../actions/actions";
-import { StoreState } from "src/model/storeState";
-import { Api } from "src/utils/Api";
-import { Tick } from "src/model/tick";
-import ContenderView from "./ContenderView";
-import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
-import { OrderedMap } from "immutable";
-import Pagination from "@material-ui/lab/Pagination";
-import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles,
-} from "@material-ui/core/styles";
-import ResponsiveTableHead from "../ResponsiveTableHead";
+import { SortBy } from "../../constants/sortBy";
+import { CompClass } from "../../model/compClass";
+import { ContenderData } from "../../model/contenderData";
+import { Contest } from "../../model/contest";
+import { Problem } from "../../model/problem";
+import { calculateContenderScoringInfo } from "../../selectors/selector";
 import ProgressIconButton from "../ProgressIconButton";
-import { saveAs } from "file-saver";
+import ResponsiveTableHead from "../ResponsiveTableHead";
+import ContenderView from "./ContenderView";
 
 const CONTENDERS_PER_PAGE = 10;
 
@@ -115,7 +108,7 @@ const ContenderList = (props: Props) => {
   const [page, setPage] = React.useState(1);
 
   const scoringByContender = useMemo(() => {
-    if (props.contest == undefined) {
+    if (props.contest === undefined) {
       return undefined;
     }
 
@@ -152,17 +145,17 @@ const ContenderList = (props: Props) => {
       return contender.id ? scoringByContender?.get(contender.id) : undefined;
     };
 
-    if (contenderSortBy == SortBy.BY_NUMBER_OF_TICKS) {
+    if (contenderSortBy === SortBy.BY_NUMBER_OF_TICKS) {
       contenders?.sort(
         (a, b) =>
           (getScore(b)?.ticks?.length ?? 0) - (getScore(a)?.ticks?.length ?? 0)
       );
-    } else if (contenderSortBy == SortBy.BY_TOTAL_POINTS) {
+    } else if (contenderSortBy === SortBy.BY_TOTAL_POINTS) {
       contenders?.sort(
         (a, b) =>
           (getScore(b)?.totalScore ?? 0) - (getScore(a)?.totalScore ?? 0)
       );
-    } else if (contenderSortBy == SortBy.BY_QUALIFYING_POINTS) {
+    } else if (contenderSortBy === SortBy.BY_QUALIFYING_POINTS) {
       contenders?.sort(
         (a, b) =>
           (getScore(b)?.qualifyingScore ?? 0) -
@@ -177,7 +170,13 @@ const ContenderList = (props: Props) => {
     }
 
     return contenders;
-  }, [props.contenders, selectedContenders, contenderFilter, contenderSortBy]);
+  }, [
+    props.contenders,
+    selectedContenders,
+    contenderFilter,
+    contenderSortBy,
+    scoringByContender,
+  ]);
 
   const numPages = Math.ceil(
     (contendersSortedAndFiltered?.length ?? 0) / CONTENDERS_PER_PAGE
@@ -206,7 +205,7 @@ const ContenderList = (props: Props) => {
 
   const addContendersConfirmed = () => {
     let number: number = 0;
-    if (numberOfNewContenders != undefined) {
+    if (numberOfNewContenders !== undefined) {
       number = parseInt(numberOfNewContenders);
     }
 

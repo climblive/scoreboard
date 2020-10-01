@@ -1,6 +1,6 @@
-import React from "react";
 import { CircularProgress } from "@material-ui/core";
 import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
+import React from "react";
 
 interface Props {
   loading?: boolean;

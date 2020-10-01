@@ -1,11 +1,8 @@
-import * as React from "react";
-import { StyledComponentProps, Theme, Typography } from "@material-ui/core";
-import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles from "@material-ui/core/styles/withStyles";
-import { connect } from "react-redux";
-import { StoreState } from "../model/storeState";
-import { setTitle } from "../actions/actions";
 import Alert from "@material-ui/lab/Alert";
+import * as React from "react";
+import { connect } from "react-redux";
+import { setTitle } from "../actions/actions";
+import { StoreState } from "../model/storeState";
 
 interface Props {
   setTitle?: (title: string) => void;
@@ -14,7 +11,7 @@ interface Props {
 const NotFound = (props: Props) => {
   React.useEffect(() => {
     props.setTitle?.("404");
-  }, []);
+  }, [props.setTitle]);
   return <Alert severity="error">The requested page does not exist.</Alert>;
 };
 

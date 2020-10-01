@@ -1,16 +1,15 @@
+import { Divider, TableCell, Typography, useTheme } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { OrderedMap } from "immutable";
 import React from "react";
-import { Problem } from "src/model/problem";
 import { connect } from "react-redux";
-import { StoreState } from "../../model/storeState";
-import { Tick } from "src/model/tick";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
-import { OrderedMap } from "immutable";
-import { Button, TableCell, useTheme } from "@material-ui/core";
+import { Problem } from "src/model/problem";
+import { Tick } from "src/model/tick";
+import { StoreState } from "../../model/storeState";
 import ResponsiveTableRow from "../ResponsiveTableRow";
 import ProblemEdit from "./ProblemEdit";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { Divider, Typography } from "@material-ui/core";
 import ProblemTickList from "./ProblemTickList";
 
 interface Props {

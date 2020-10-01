@@ -96,7 +96,7 @@ const SeriesEdit = (props: Props) => {
             loading={saving}
             startIcon={<SaveIcon />}
           >
-            {series.id == undefined ? "Create" : "Save"}
+            {series.id === undefined ? "Create" : "Save"}
           </ProgressButton>
           {props.removable && (
             <ProgressButton

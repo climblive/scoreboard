@@ -1,14 +1,14 @@
-import React, { Fragment, useState } from "react";
-import TableRow from "@material-ui/core/TableRow";
-import { TableCell, Hidden, Collapse } from "@material-ui/core";
+import { Collapse, Hidden, TableCell } from "@material-ui/core";
 import {
-  makeStyles,
   createStyles,
+  makeStyles,
   Theme,
   useTheme,
 } from "@material-ui/core/styles";
+import TableRow from "@material-ui/core/TableRow";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import React, { Fragment, useState } from "react";
 
 interface Props {
   children?: React.ReactNode;
@@ -50,7 +50,7 @@ const ResponsiveTableRow = (props: Props) => {
         {props.cells?.map((cell, index) => {
           const breakpoint = props.breakpoints?.get(index);
 
-          if (breakpoint == undefined) {
+          if (breakpoint === undefined) {
             return <Fragment key={index}>{cell}</Fragment>;
           } else {
             const props = { [breakpoint]: true };

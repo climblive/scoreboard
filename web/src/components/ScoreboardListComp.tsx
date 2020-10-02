@@ -54,18 +54,13 @@ export class ScoreboardListComp extends React.Component<
   componentDidMount() {
     if (this.props.isPaging) {
       window.addEventListener("resize", this.updateDimensions);
+      this.updateDimensions();
     }
   }
 
   componentWillUnmount() {
     if (this.props.isPaging) {
       window.removeEventListener("resize", this.updateDimensions);
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.props.isPaging) {
-      this.updateDimensions();
     }
   }
 
@@ -86,7 +81,7 @@ export class ScoreboardListComp extends React.Component<
       : "scoreboardListContenders";
     let list = this.props.totalList!.map((contender) => {
       let color = this.props.compClass.color;
-      if (color === undefined) {
+      if (color == null) {
         color = "#ffffff";
       }
 

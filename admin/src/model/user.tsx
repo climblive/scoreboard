@@ -1,4 +1,9 @@
+import { Organizer } from "./organizer";
+
 export interface User {
-   name: number;
-   admin: boolean;
+  id?: number;
+  name: string;
+  username: string;
+  admin: boolean;
+  organizers: Organizer[];
 }

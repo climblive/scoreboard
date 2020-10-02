@@ -1,14 +1,9 @@
-import {Tick} from "./tick";
-
-export interface Problem {
-   id?: number;
-   contestId: number;
-   number?: number;
-   colorId?: number;
-   points?: number;
-   flashBonus?: number;
-   text?: string;
-
-   // Internal data:
-   ticks?: Tick[];
+export class Problem {
+  id?: number;
+  colorId: number;
+  contestId: number;
+  number: number;
+  name?: string;
+  points?: number;
+  flashBonus?: number;
 }

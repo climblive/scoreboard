@@ -1,53 +1,41 @@
-import { ContenderData } from './contenderData';
-import { Contest } from './contest';
-import {Problem} from "./problem";
-import {CompClass} from "./compClass";
-import {Color} from "./color";
-import {Organizer} from "./organizer";
-import {CompLocation} from "./compLocation";
-import {Series} from "./series";
-import {User} from "./user";
-import {Tick} from "./tick";
-import {SortBy} from "../constants/sortBy";
-import {Raffle} from "./raffle";
+import { Map, OrderedMap } from "immutable";
+import { Color } from "./color";
+import { CompClass } from "./compClass";
+import { CompLocation } from "./compLocation";
+import { ContenderData } from "./contenderData";
+import { Contest } from "./contest";
+import { Organizer } from "./organizer";
+import { Problem } from "./problem";
+import { Raffle } from "./raffle";
+import { RaffleWinner } from "./raffleWinner";
+import { Series } from "./series";
+import { Tick } from "./tick";
+import { User } from "./user";
 
 export interface StoreState {
-   title: string,
+  title: string;
 
-   loggingIn: boolean,
-   loggedInUser?: User
+  loggingIn: boolean;
+  loggedInUser?: User;
 
-   contests?: Contest[],
-   contest?: Contest;
-   creatingPdf: boolean;
+  contests?: OrderedMap<number, Contest>;
 
-   problems?: Problem[];
-   editProblem?: Problem;
-   problemIdBeingUpdated?: number;
+  compClassesByContest: Map<number, OrderedMap<number, CompClass>>;
+  rafflesByContest: Map<number, OrderedMap<number, Raffle>>;
+  contendersByContest: Map<number, OrderedMap<number, ContenderData>>;
+  problemsByContest: Map<number, OrderedMap<number, Problem>>;
+  ticksByContest: Map<number, OrderedMap<number, Tick>>;
 
-   compClasses?: CompClass[];
-   editCompClass?: CompClass;
+  raffleWinnersByRaffle: Map<number, OrderedMap<number, RaffleWinner>>;
 
-   contenders?: ContenderData[];
-   contenderSortBy: SortBy;
-   contenderFilterCompClassId?:number;
+  colors?: OrderedMap<number, Color>;
 
-   raffles?: Raffle[],
+  series?: OrderedMap<number, Series>;
 
-   colors?: Color[],
-   editColor?: Color;
+  locations?: OrderedMap<number, CompLocation>;
 
-   series?: Series[],
-   editSeries?: Series;
+  organizers?: OrderedMap<number, Organizer>;
+  selectedOrganizerId?: number;
 
-   locations?: CompLocation[],
-   editLocation?: CompLocation,
-
-   organizers?: Organizer[],
-   organizer?: Organizer
-   editOrganizer?:Organizer
-
-   ticks?: Tick[],
-
-   errorMessage?: string;
+  errorMessage?: string;
 }

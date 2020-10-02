@@ -1,7 +1,0 @@
-.problemList {
-   flex-basis:0;
-   flex-grow: 1;
-   overflow-y:auto;
-   margin-right: -10px;
-   padding-right: 10px;
-}

@@ -1,8 +1,13 @@
-import {RaffleWinner} from "./raffleWinner";
+export class Raffle {
+  id?: number;
+  contestId: number;
+  active: boolean;
 
-export interface Raffle {
-   id?: number;
-   contestId: number;
-   active: boolean;
-   winners?: RaffleWinner[];
+  static makeRequestBody = (raffle: Raffle) => {
+    return {
+      id: raffle.id,
+      contestId: raffle.contestId,
+      active: raffle.active,
+    };
+  };
 }

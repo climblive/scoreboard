@@ -1,505 +1,557 @@
-import {Problem} from '../model/problem';
-import {Dispatch} from 'react-redux';
-import {Api} from '../utils/Api';
-import * as actions from './actions';
-import {Contest} from "../model/contest";
-import {StoreState} from "../model/storeState";
-import {CompClass} from "../model/compClass";
-import { saveAs } from 'file-saver';
-import {Color} from "../model/color";
-import {Series} from "../model/series";
-import {Organizer} from "../model/organizer";
-import {CompLocation} from "../model/compLocation";
-import {Raffle} from "../model/raffle";
-import {ContenderData} from 'src/model/contenderData';
+import { OrderedMap } from "immutable";
+import { Dispatch } from "redux";
+import { ContenderData } from "src/model/contenderData";
+import { RaffleWinner } from "src/model/raffleWinner";
+import { Color } from "../model/color";
+import { CompClass } from "../model/compClass";
+import { CompLocation } from "../model/compLocation";
+import { Contest } from "../model/contest";
+import { Organizer } from "../model/organizer";
+import { Problem } from "../model/problem";
+import { Raffle } from "../model/raffle";
+import { Series } from "../model/series";
+import { StoreState } from "../model/storeState";
+import { Api } from "../utils/Api";
+import * as actions from "./actions";
 
-export function login(code:string): any {
-   return (dispatch: Dispatch<any>) => {
-      dispatch(actions.setLoggingIn(true));
-      Api.setCredentials(code);
-      Api.getUser()
-         .then(userData => {
-            localStorage.setItem('credentials', code)
-            dispatch(actions.setLoggingIn(false));
-            dispatch(actions.setLoggedInUser(userData));
-            reloadSeries(dispatch);
-            reloadOrganizers(dispatch);
-            reloadLocations(dispatch);
-         })
-         .catch(error => {
-            Api.setCredentials(undefined);
-            dispatch(actions.setLoggingIn(false));
-            dispatch(actions.setErrorMessage(error));
+export function login(code: string): any {
+  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+    dispatch(actions.setLoggingIn(true));
+    Api.setCredentials(code);
+    Api.getUser()
+      .then((userData) => {
+        localStorage.setItem("credentials", code);
+
+        reloadOrganizers()(dispatch).then(() => {
+          let organizer: Organizer = pickOrganizer(getState().organizers!);
+          Api.setOrganizerId(organizer.id);
+          dispatch(actions.selectOrganizer(organizer.id!));
+
+          dispatch(actions.setLoggingIn(false));
+          dispatch(actions.setLoggedInUser(userData));
+        });
       })
-   }
+      .catch((error) => {
+        Api.setCredentials(undefined);
+        dispatch(actions.setLoggingIn(false));
+        dispatch(actions.setErrorMessage(error));
+      });
+  };
 }
 
-export function loadContests(): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.getContests()
-         .then(contests => {
-            dispatch(actions.receiveContests(contests));
-         })
-         .catch(error => {
-            dispatch(actions.receiveContests([]));
-            dispatch(actions.setErrorMessage(error));
-         });
-   }
+// -----------------------------------------------------------------------------
+// Contests
+// -----------------------------------------------------------------------------
+
+export function reloadContests(): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getContests()
+      .then((contests) => {
+        dispatch(actions.replaceContests(contests));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
 }
 
 export function loadContest(contestId: number): any {
-   return (dispatch: Dispatch<any>) => {
-      dispatch(actions.clearContest());
-      Api.getContest(contestId).then(contest => {
-         dispatch(actions.receiveContest(contest));
-         reloadProblems(dispatch, contestId);
-         reloadCompClasses(dispatch, contestId);
-         reloadContendersForContest(dispatch, contestId);
-         reloadTicks(dispatch, contestId);
-         reloadRaffles(dispatch, contestId);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+  return (dispatch: Dispatch<any>): Promise<Contest> => {
+    return Api.getContest(contestId)
+      .then((contest) => {
+        dispatch(actions.updateContestSuccess(contest));
+        return Promise.resolve(contest);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function saveContest(onSuccess:(contest:Contest) => void): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contest = getState().contest;
-      let isNew = contest!.isNew;
-      Api.saveContest(contest!).then(contest => {
-         dispatch(actions.receiveContest(contest));
-         if(isNew) {
-            dispatch(actions.receiveProblems([]));
-            dispatch(actions.receiveTicks([]));
-            dispatch(actions.receiveCompClasses([]));
-            dispatch(actions.receiveContenders([]));
-            dispatch(actions.receiveRaffles([]));
-         }
-         onSuccess(contest);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function saveContest(contest: Contest): any {
+  return (dispatch: Dispatch<any>): Promise<void | Contest> => {
+    return Api.saveContest(contest)
+      .then((contest) => {
+        dispatch(actions.updateContestSuccess(contest));
+        return Promise.resolve(contest);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
 export function deleteContest(contest: Contest): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      Api.deleteContest(contest).then(() => {
-         dispatch(actions.deleteContest(contest));
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteContest(contest)
+      .then(() => {
+        dispatch(actions.deleteContestSuccess(contest));
+        return Promise.resolve();
       })
-      .catch(error => {dispatch(actions.setErrorMessage(error))});
-   };
-}
-
-// ************
-
-let reloadColors = (dispatch: Dispatch<any>) => {
-   Api.getColors().then(colors => {
-      dispatch(actions.receiveColors(colors));
-   })
-   .catch(error => {
-      dispatch(actions.receiveColors([]));
-      dispatch(actions.setErrorMessage(error));
-   });
-};
-
-export function loadColors(): any {
-   return (dispatch: Dispatch<any>) => {
-      reloadColors(dispatch);
-   }
-}
-
-export function saveEditColor(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let color = getState().editColor!;
-      Api.saveColor(color).then(color => {
-         // Reload the list of comp classes:
-         dispatch(actions.cancelEditColor());
-         reloadColors(dispatch);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deleteColor(color:Color): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.deleteColor(color)
-         .then(() => {
-            dispatch(actions.cancelEditColor());
-            reloadColors(dispatch);
-         })
-         .catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
-}
+// -----------------------------------------------------------------------------
+// Colors
+// -----------------------------------------------------------------------------
 
-// ************
-
-let reloadSeries = (dispatch: Dispatch<any>) => {
-   Api.getSeries().then(series => {
-      dispatch(actions.receiveSeries(series));
-   }).catch(error => {
-      dispatch(actions.receiveSeries([]));
-      dispatch(actions.setErrorMessage(error));
-   });
-};
-
-export function loadSeries(): any {
-   return (dispatch: Dispatch<any>) => {
-      reloadSeries(dispatch);
-   }
-}
-
-export function saveEditSeries(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let series = getState().editSeries!;
-      Api.saveSeries(series).then(serie => {
-         // Reload the list of comp classes:
-         dispatch(actions.cancelEditSeries());
-         reloadSeries(dispatch);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function reloadColors(): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getColors()
+      .then((colors) => {
+        dispatch(actions.replaceColors(colors));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deleteSeries(series:Series): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.deleteSeries(series)
-         .then(() => {
-            dispatch(actions.cancelEditSeries());
-            reloadColors(dispatch);
-         })
-         .catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
-}
-
-// ************
-
-let reloadLocations = (dispatch: Dispatch<any>) => {
-   Api.getLocations().then(locations => {
-      dispatch(actions.receiveLocations(locations));
-   })
-   .catch(error => {
-      dispatch(actions.receiveLocations([]));
-      dispatch(actions.setErrorMessage(error));
-   });
-};
-
-export function loadLocations(): any {
-   return (dispatch: Dispatch<any>) => {
-      reloadLocations(dispatch);
-   }
-}
-
-export function saveEditLocation(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let location = getState().editLocation!;
-      Api.saveLocation(location).then(location => {
-         // Reload the list of comp classes:
-         dispatch(actions.cancelEditLocation());
-         reloadLocations(dispatch);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function saveColor(color: Color): any {
+  return (dispatch: Dispatch<any>): Promise<void | Color> => {
+    return Api.saveColor(color)
+      .then((color) => {
+        dispatch(actions.updateColorSuccess(color));
+        return Promise.resolve(color);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deleteLocation(location:CompLocation): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.deleteLocation(location)
-         .then(() => {
-            dispatch(actions.cancelEditLocation());
-            reloadColors(dispatch);
-         })
-         .catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
-}
-
-// ************
-
-let reloadOrganizers = (dispatch: Dispatch<any>) => {
-   Api.getOrganizers().then(organizers => {
-      dispatch(actions.receiveOrganizers(organizers));
-   }).catch(error => {
-      dispatch(actions.setErrorMessage(error));
-   })
-};
-
-
-export function loadOrganizers(): any {
-   return (dispatch: Dispatch<any>) => {
-      reloadOrganizers(dispatch);
-   }
-}
-
-export function saveEditOrganizer(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let organizer = getState().editOrganizer!;
-      Api.saveOrganizer(organizer).then(organizer => {
-         // Reload the list of comp classes:
-         dispatch(actions.cancelEditOrganizer());
-         reloadOrganizers(dispatch);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function deleteColor(color: Color): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteColor(color)
+      .then(() => {
+        dispatch(actions.deleteColorSuccess(color));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deleteOrganizer(organizer:Organizer): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.deleteOrganizer(organizer)
-         .then(() => {
-            dispatch(actions.cancelEditOrganizer());
-            reloadColors(dispatch);
-         })
-         .catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
-}
+// -----------------------------------------------------------------------------
+// Series
+// -----------------------------------------------------------------------------
 
-// ************
-
-let reloadProblems = (dispatch: Dispatch<any>, contestId: number) => {
-   Api.getProblems(contestId).then(problems => {
-      dispatch(actions.receiveProblems(problems));
-   }).catch(error => {
-      dispatch(actions.setErrorMessage(error));
-   });
-};
-
-export function saveEditProblem(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      // TODO: Implement
-      let problem = getState().editProblem!;
-      Api.saveProblem(problem).then(problem => {
-         // Reload the list of problems:
-         dispatch(actions.cancelEditProblem());
-         reloadProblems(dispatch, problem.contestId);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function reloadSeries(): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getSeries()
+      .then((series) => {
+        dispatch(actions.replaceSeries(series));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deleteProblem(problem:Problem): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.deleteProblem(problem)
-         .then(() => {
-            dispatch(actions.cancelEditProblem());
-            reloadProblems(dispatch, problem.contestId);
-         })
-         .catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
-}
-
-
-let reloadCompClasses = (dispatch: Dispatch<any>, contestId: number) => {
-   Api.getCompClasses(contestId).then(compClasses => {
-      dispatch(actions.receiveCompClasses(compClasses));
-   }).catch(error => {
-      dispatch(actions.setErrorMessage(error));
-   });
-};
-
-export function saveEditCompClass(): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let compClass = getState().editCompClass!;
-      Api.saveCompClass(compClass).then(compClass => {
-         // Reload the list of comp classes:
-         dispatch(actions.cancelEditCompClass());
-         reloadCompClasses(dispatch, compClass.contestId);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function saveSeries(series: Series): any {
+  return (dispatch: Dispatch<any>): Promise<void | Series> => {
+    return Api.saveSeries(series)
+      .then((s) => {
+        dispatch(actions.updateSeriesSuccess(s));
+        return Promise.resolve(s);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deleteCompClass(compClass:CompClass): any {
-   return (dispatch: Dispatch<any>) => {
-      Api.deleteCompClass(compClass).then(() => {
-         dispatch(actions.cancelEditCompClass());
-         reloadCompClasses(dispatch, compClass.contestId);
-      }).catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
+export function deleteSeries(series: Series): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteSeries(series)
+      .then(() => {
+        dispatch(actions.deleteSeriesSuccess(series));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
 }
 
-let reloadContendersForContest = (dispatch: Dispatch<any>, contestId: number) => {
-   Api.getContenders(contestId).then(contenders => {
-      dispatch(actions.receiveContenders(contenders));
-   }).catch(error => {
-      dispatch(actions.setErrorMessage(error));
-   });
-};
+// -----------------------------------------------------------------------------
+// Locations
+// -----------------------------------------------------------------------------
 
-export function createContenders(nNewContenders:number):any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      Api.createContenders(contestId, nNewContenders).then(() => {
-         reloadContendersForContest(dispatch, contestId);
-      }).catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
+export function reloadLocations(): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getLocations()
+      .then((locations) => {
+        dispatch(actions.replaceLocations(locations));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
 }
 
-export function reloadContenders():any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      dispatch(actions.receiveContenders([]));
-      dispatch(actions.receiveTicks([]));
-      reloadContendersForContest(dispatch, contestId);
-      reloadTicks(dispatch, contestId);
-   }
+export function saveLocation(location: CompLocation): any {
+  return (dispatch: Dispatch<any>): Promise<void | CompLocation> => {
+    return Api.saveLocation(location)
+      .then((location) => {
+        dispatch(actions.updateLocationSuccess(location));
+        return Promise.resolve(location);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
 }
 
-export function resetContenders():any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      Api.resetContenders(contestId).then(() => {
-         reloadContendersForContest(dispatch, contestId);
-      }).catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
+export function deleteLocation(location: CompLocation): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteLocation(location)
+      .then(() => {
+        dispatch(actions.deleteLocationSuccess(location));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Organizers
+// -----------------------------------------------------------------------------
+
+export function reloadOrganizers(): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getOrganizers()
+      .then((organizers) => {
+        dispatch(actions.replaceOrganizers(organizers));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function saveOrganizer(organizer: Organizer): any {
+  return (dispatch: Dispatch<any>): Promise<void | Organizer> => {
+    return Api.saveOrganizer(organizer)
+      .then((organizer) => {
+        dispatch(actions.updateOrganizerSuccess(organizer));
+        return Promise.resolve(organizer);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function deleteOrganizer(organizer: Organizer): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteOrganizer(organizer)
+      .then(() => {
+        dispatch(actions.deleteOrganizerSuccess(organizer));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function selectOrganizer(organizerId: number): any {
+  return (dispatch: Dispatch<any>) => {
+    Api.setOrganizerId(organizerId);
+    dispatch(actions.selectOrganizer(organizerId));
+    localStorage.setItem("organizerId", organizerId.toString());
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Problems
+// -----------------------------------------------------------------------------
+
+export function loadProblems(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getProblems(contestId)
+      .then((problems) => {
+        dispatch(actions.receiveProblems(problems));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function saveProblem(problem: Problem): any {
+  return (dispatch: Dispatch<any>): Promise<Problem> => {
+    return Api.saveProblem(problem)
+      .then((problem) => {
+        dispatch(actions.updateProblemSuccess(problem));
+        return loadProblems(problem.contestId)(dispatch).then(() => problem);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function deleteProblem(problem: Problem): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteProblem(problem)
+      .then(() => {
+        dispatch(actions.deleteProblemSuccess(problem));
+        return loadProblems(problem.contestId)(dispatch);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Comp Classes
+// -----------------------------------------------------------------------------
+
+export function loadCompClasses(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getCompClasses(contestId)
+      .then((compClasses) => {
+        dispatch(actions.receiveCompClasses(compClasses));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function saveCompClass(compClass: CompClass): any {
+  return (dispatch: Dispatch<any>): Promise<CompClass> => {
+    return Api.saveCompClass(compClass)
+      .then((compClass) => {
+        dispatch(actions.updateCompClassSuccess(compClass));
+        return Promise.resolve(compClass);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function deleteCompClass(compClass: CompClass): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.deleteCompClass(compClass)
+      .then(() => {
+        dispatch(actions.deleteCompClassSuccess(compClass));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Contenders
+// -----------------------------------------------------------------------------
+
+export function createContenders(
+  contestId: number,
+  nNewContenders: number
+): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.createContenders(contestId, nNewContenders)
+      .then(() => {
+        return loadContenders(contestId)(dispatch);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function loadContenders(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getContenders(contestId)
+      .then((contenders) => {
+        dispatch(actions.receiveContenders(contenders));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
+export function resetContenders(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.resetContenders(contestId)
+      .then(() => {
+        return loadContenders(contestId)(dispatch);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
 }
 
 export function updateContender(contender: ContenderData): any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      Api.saveContender(contender).then(() => {
-         dispatch(actions.updateContender(contender));
-      }).catch(error => {dispatch(actions.setErrorMessage(error))});
-   }
-}
-
-export function exportResults():any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      Api.exportContest(contestId).then(response => {
-         saveAs(response, "contest.xls");
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error))
+  return (dispatch: Dispatch<any>): Promise<ContenderData> => {
+    return Api.saveContender(contender)
+      .then(() => {
+        dispatch(actions.updateContenderSuccess(contender));
+        return Promise.resolve(contender);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function createPdfFromTemplate(file:Blob):any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      let reader = new FileReader();
-      dispatch(actions.setCreatingPdf(true));
-      reader.onload = (evt:any) => {
-         let arrayBuffer = evt.currentTarget.result;
-         Api.createPdfFromTemplate(contestId, arrayBuffer).then(response => {
-            dispatch(actions.setCreatingPdf(false));
-            saveAs(response, "contest.pdf");
-         }).catch(error => {
-            dispatch(actions.setCreatingPdf(false));
-            dispatch(actions.setErrorMessage(error))
-         });
-      };
-      reader.onerror = function (evt) {
-         dispatch(actions.setCreatingPdf(false));
-         dispatch(actions.setErrorMessage("Failed to load file:" + evt))
-      };
-      reader.readAsArrayBuffer(file);
-   }
-}
+// -----------------------------------------------------------------------------
+// Ticks
+// -----------------------------------------------------------------------------
 
-export function createPdf():any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      dispatch(actions.setCreatingPdf(true));
-      Api.createPdf(contestId).then(response => {
-         dispatch(actions.setCreatingPdf(false));
-         saveAs(response, "contest.pdf");
-      }).catch(error => {
-         dispatch(actions.setCreatingPdf(false));
-         dispatch(actions.setErrorMessage(error))
+export function loadTicks(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getTicks(contestId)
+      .then((ticks) => {
+        dispatch(actions.receiveTicks(ticks));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-let reloadTicks = (dispatch: Dispatch<any>, contestId: number) => {
-   Api.getTicks(contestId).then(ticks => {
-      dispatch(actions.receiveTicks(ticks));
-   }).catch(error => {
-      dispatch(actions.setErrorMessage(error));
-   });
-};
+// -----------------------------------------------------------------------------
+// Raffles
+// -----------------------------------------------------------------------------
 
-let reloadRaffles = (dispatch: Dispatch<any>, contestId: number) => {
-   Api.getRaffles(contestId).then(raffles => {
-      dispatch(actions.receiveRaffles(raffles));
-      for(let raffle of raffles) {
-         Api.getRaffleWinners(raffle).then(winners => {
-            dispatch(actions.receiveRaffleWinners({raffle: raffle, winners: winners}))
-         });
-      }
-   }).catch(error => {
-      dispatch(actions.setErrorMessage(error));
-   });
-};
+export function loadRaffles(contestId: number): any {
+  return (dispatch: Dispatch<any>): Promise<void> => {
+    return Api.getRaffles(contestId)
+      .then((raffles) => {
+        dispatch(actions.receiveRaffles(raffles));
 
-export function createRaffle():any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      let newRaffle: Raffle = {
-         id: undefined,
-         contestId: contestId,
-         winners: undefined,
-         active:false
-      };
-      Api.saveRaffle(newRaffle).then(() => {
-         reloadRaffles(dispatch, contestId);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+        return Promise.all(
+          raffles.map((raffle) => Api.getRaffleWinners(raffle))
+        );
+      })
+      .then((w: RaffleWinner[][]) => {
+        dispatch(
+          actions.receiveRaffleWinners(
+            ([] as RaffleWinner[]).concat.apply([], w)
+          )
+        );
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function activateRaffle(raffle:Raffle):any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      raffle.active = true;
-      raffle.winners = undefined;
-      dispatch(actions.clearRaffles());
-      Api.saveRaffle(raffle).then(() => {
-         reloadRaffles(dispatch, contestId);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function saveRaffle(raffle: Raffle): any {
+  return (dispatch: Dispatch<any>): Promise<Raffle> => {
+    return Api.saveRaffle(raffle)
+      .then((raffle) => {
+        dispatch(actions.updateRaffleSuccess(raffle));
+        return Promise.resolve(raffle);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deactivateRaffle(raffle:Raffle):any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      raffle.active = false;
-      raffle.winners = undefined;
-      dispatch(actions.clearRaffles());
-      Api.saveRaffle(raffle).then(() => {
-         reloadRaffles(dispatch, contestId);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function drawWinner(raffle: Raffle): any {
+  return (dispatch: Dispatch<any>): Promise<RaffleWinner> => {
+    return Api.drawWinner(raffle)
+      .then((winner) => {
+        dispatch(actions.receiveRaffleWinner(winner));
+        return Promise.resolve(winner);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function drawWinner(raffle:Raffle):any {
-   return (dispatch: Dispatch<any>) => {
-      Api.drawWinner(raffle).then((winner) => {
-         dispatch(actions.receiveRaffleWinner(winner))
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
+export function deleteRaffle(raffle: Raffle): any {
+  return (dispatch: Dispatch<any>): Promise<Raffle> => {
+    return Api.deleteRaffle(raffle)
+      .then(() => {
+        dispatch(actions.deleteRaffleSuccess(raffle));
+        return Promise.resolve(raffle);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
       });
-   }
+  };
 }
 
-export function deleteRaffle(raffle:Raffle):any {
-   return (dispatch: Dispatch<any>, getState: () => StoreState) => {
-      let contestId = getState().contest?.id!;
-      Api.deleteRaffle(raffle).then(() => {
-         reloadRaffles(dispatch, contestId);
-      }).catch(error => {
-         dispatch(actions.setErrorMessage(error));
-      });
-   }
-}
+function pickOrganizer(organizers: OrderedMap<number, Organizer>): Organizer {
+  let organizer: Organizer | undefined;
 
+  let previousOrganizerId = parseInt(
+    localStorage.getItem("organizerId") ?? "",
+    10
+  );
+
+  if (previousOrganizerId != null) {
+    organizer = organizers.get(previousOrganizerId);
+  }
+
+  if (organizer == null) {
+    organizer = organizers.first();
+  }
+
+  if (organizer != null) {
+    localStorage.setItem("organizerId", organizer.id!.toString());
+  }
+
+  return organizer!;
+}

@@ -7,7 +7,9 @@ data class UserDto (
     var name: String?,
     var username: String?,
     @JsonProperty("admin")
-    var admin: Boolean) {
+    var admin: Boolean,
+    @JsonProperty("organizers")
+    var organizers : List<OrganizerDto>?) {
 
-    constructor() : this(null, null, null, false)
+    constructor() : this(null, null, null, false, null)
 }

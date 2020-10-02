@@ -17,8 +17,9 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
         Mapping(source = "location.id", target = "locationId"),
         Mapping(source = "organizer.id", target = "organizerId"),
         Mapping(source = "series.id", target = "seriesId"),
-        Mapping(target = "scoreboardUrl", ignore = true)
-    )
+        Mapping(target = "scoreboardUrl", ignore = true),
+        Mapping(target = "timeBegin", ignore = true),
+        Mapping(target = "timeEnd", ignore = true))
     abstract override fun convertToDto(source: Contest): ContestDto
 
     @InheritInverseConfiguration(name = "convertToDto")
@@ -31,8 +32,10 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
     abstract override fun convertToEntity(source: ContestDto): Contest
 
     @AfterMapping
-    fun afterMapping(@MappingTarget target: ContestDto) {
+    fun afterMapping(source: Contest, @MappingTarget target: ContestDto) {
         target.scoreboardUrl = "${webUrl}/scoreboard/${target.id}"
+        target.timeBegin = source.compClasses.map { it.timeBegin }.filterNotNull().min()
+        target.timeEnd = source.compClasses.map { it.timeEnd }.filterNotNull().max()
     }
 
     @AfterMapping

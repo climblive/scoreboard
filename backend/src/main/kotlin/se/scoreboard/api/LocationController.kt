@@ -10,6 +10,7 @@ import se.scoreboard.dto.ContestDto
 import se.scoreboard.dto.LocationDto
 import se.scoreboard.mapper.ContestMapper
 import se.scoreboard.service.LocationService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -23,7 +24,7 @@ class LocationController @Autowired constructor(
     @GetMapping("/location")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getLocations(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = locationService.search(pageable)
+    fun getLocations(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = locationService.search(request, pageable)
 
     @GetMapping("/location/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

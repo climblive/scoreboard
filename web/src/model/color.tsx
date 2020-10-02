@@ -1,6 +1,6 @@
 export interface Color {
-   id: number;
-   name: string;
-   rgbPrimary: string;
-   rgbSecondary?: string;
+  id: number;
+  name: string;
+  rgbPrimary: string;
+  rgbSecondary?: string;
 }

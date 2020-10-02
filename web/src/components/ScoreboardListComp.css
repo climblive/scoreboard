@@ -1,195 +1,143 @@
-
 .scoreboardList {
-   flex-grow:1;
-   flex-basis: 0;
-   flex-direction:column;
-   display: flex;
-   min-width:0;
-   margin-left: auto;
-   margin-right: auto;
-   max-width: 370px;
+  flex-grow: 1;
+  flex-basis: 0;
+  flex-direction: column;
+  display: flex;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 370px;
 }
 
 .separator {
-      width: 2px;
-      background: black;
+  width: 2px;
+  background: black;
 }
 
 .scoreboardList .scoreboardListContenders {
-   flex-basis: 0;
-   flex-grow:1;
+  flex-basis: 0;
+  flex-grow: 1;
 }
 
 .scoreboardList .scoreboardListContendersPaging {
-   overflow: hidden;
+  overflow: hidden;
 }
 
 .scoreboardList .scoreboardListPaging {
-   display:flex;
-   padding: 5px;
+  display: flex;
+  padding: 5px;
 }
 
 .scoreboardList .scoreboardListPaging .paging:first-child {
-   margin-left: auto;
+  margin-left: auto;
 }
 
 @keyframes splash {
-   0% {
-      color:inherit;
-      background-color:inherit;
-   }
-   10% {
-      color: #888;
-      background-color:white;
-   }
-   90%{
-      color: #888;
-      background-color:white;
-   }
-   100%{
-      color:inherit;
-      background-color:inherit;
-   }
+  0% {
+    color: inherit;
+    background-color: inherit;
+  }
+  10% {
+    color: #888;
+    background-color: white;
+  }
+  90% {
+    color: #888;
+    background-color: white;
+  }
+  100% {
+    color: inherit;
+    background-color: inherit;
+  }
 }
 
 .highlight {
-   animation: splash 3s normal forwards ease-in-out;
-   z-index: 10;
+  animation: splash 3s normal forwards ease-in-out;
+  z-index: 10;
 }
 
 .scoreboardList .scoreboardListPaging .paging {
-   margin-left: 2px;
-   margin-right: 2px;
-   border-radius: 5px;
-   width:5px;
-   height:5px;
-   background: #555;
+  margin-left: 2px;
+  margin-right: 2px;
+  border-radius: 5px;
+  width: 5px;
+  height: 5px;
+  background: #555;
 }
 
 .scoreboardList .scoreboardListPaging .paging.current {
-   background: rgb(184, 184, 184);
+  background: rgb(184, 184, 184);
 }
 
 .scoreboardList .scoreboardListPaging .paging:last-child {
-   margin-right: auto;
+  margin-right: auto;
 }
 
 .compClassHeader {
-   flex-basis: 0;
-   flex-grow:1;
-   text-align: center;
+  flex-basis: 0;
+  flex-grow: 1;
+  text-align: center;
 }
 
 .contenderRow {
-   display:flex;
-   width:100%;
-   background: black;
+  display: flex;
+  width: 100%;
+  background: black;
 }
 
 .compClassHeader .compClass {
-   margin-bottom:10px;
-   padding-top: 20px;
-   font-size: 24px;
+  margin-bottom: 10px;
+  padding-top: 20px;
+  font-size: 24px;
+  font-weight: bolder;
 }
 
 .compClassHeader .status {
-   color: #888;
-   font-size: 18px;
-   margin-top: 15px;
+  color: #888;
+  font-size: 18px;
+  margin-top: 15px;
 }
 
 @-webkit-keyframes blinker {
-   0% { opacity: 0.1; }
-   25% { opacity: 1; }
-   75% { opacity: 1; }
-   100% { opacity: 0.1; }
-   
- }
+  0% {
+    opacity: 0.1;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
 
 .compClassHeader .time {
-   margin-top: 1px;
-   font-size: 24px;
-   font-family: monospace;
-   /*animation: blinker 1.5s infinite;*/
+  margin-top: 1px;
+  font-size: 24px;
+  font-family: monospace;
 }
 
 .compClassHeader .time.active {
-   margin-top: 0px;
-   font-size: 28px;
+  margin-top: 0px;
+  font-size: 28px;
 }
 
 .name {
-   flex: 1;
-   overflow: hidden;
-   white-space: nowrap;
-   text-overflow: ellipsis;
-   min-width:0;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .position {
-   margin-left: 20px;
-   width:30px;
+  margin-left: 20px;
+  width: 30px;
 }
 
 .score {
-   margin-left:10px;
-   width: 50px;
+  margin-left: 10px;
+  width: 50px;
 }
-
-
-
-.compClassHeader .compClass-0 {color: #6699ff; font-weight: bolder;}
-.compClass-0 .listIndex-all {color:#6699ff;}
-.compClass-0 .listIndex-0 {color:#ffffff; font-weight: 900;}
-.compClass-0 .listIndex-1 {color:#e6eeff; font-weight: 800;}
-.compClass-0 .listIndex-2 {color:#ccddff; font-weight: 700;}
-.compClass-0 .listIndex-3 {color:#b3ccff;}
-.compClass-0 .listIndex-4 {color:#99bbff;}
-.compClass-0 .listIndex-5 {color:#80aaff;}
-.compClass-0 .listIndex-6 {color:#6699ff;}
-.compClass-0 .placement-1 {background-color: #003cb3 !important; color: #ffffff;}
-
-.compClassHeader .compClass-1 {color: #ff66ff; font-weight: bolder;}
-.compClass-1 .listIndex-all {color:#ff66ff}
-.compClass-1 .listIndex-0 {color:#ffffff; font-weight: 900;}
-.compClass-1 .listIndex-1 {color:#ffe6ff; font-weight: 800;}
-.compClass-1 .listIndex-2 {color:#ffccff; font-weight: 700;}
-.compClass-1 .listIndex-3 {color:#ffb3ff;}
-.compClass-1 .listIndex-4 {color:#ff99ff;}
-.compClass-1 .listIndex-5 {color:#ff80ff;}
-.compClass-1 .listIndex-6 {color:#ff66ff;}
-.compClass-1 .placement-1 {background-color: #b300b3 !important; color: #ffffff;}
-
-.compClassHeader .compClass-2 {color: #66ff66; font-weight: bolder;}
-.compClass-2 .listIndex-all {color:#66ff66;}
-.compClass-2 .listIndex-0 {color:#ffffff; font-weight: 900;}
-.compClass-2 .listIndex-1 {color:#e6ffe6; font-weight: 800;}
-.compClass-2 .listIndex-2 {color:#ccffcc; font-weight: 700;}
-.compClass-2 .listIndex-3 {color:#b3ffb3;}
-.compClass-2 .listIndex-4 {color:#99ff99;}
-.compClass-2 .listIndex-5 {color:#80ff80;}
-.compClass-2 .listIndex-6 {color:#66ff66;}
-.compClass-2 .placement-1 {background-color: #009900 !important; color: #ffffff;}
-
-.compClassHeader .compClass-3 {color: #ffcc66; font-weight: bolder;}
-.compClass-3 .listIndex-all {color:#ffcc66;}
-.compClass-3 .listIndex-0 {color: #ffffff; font-weight: 900;}
-.compClass-3 .listIndex-1 {color: #fff7e6; font-weight: 800;}
-.compClass-3 .listIndex-2 {color: #ffeecc; font-weight: 700;}
-.compClass-3 .listIndex-3 {color: #ffe6b3;}
-.compClass-3 .listIndex-4 {color: #ffdd99;}
-.compClass-3 .listIndex-5 {color: #ffd480;}
-.compClass-3 .listIndex-6 {color: #ffcc66;}
-.compClass-3 .placement-1 {background-color: #996600  !important; color: #ffffff;}
-
-
-.compClassHeader .compClass-4 {color: #66ffff; font-weight: bolder;}
-.compClass-4 .listIndex-all {color:#66ffff;}
-.compClass-4 .listIndex-0 {color: #ffffff; font-weight: 900;}
-.compClass-4 .listIndex-1 {color: #e6ffff; font-weight: 800;}
-.compClass-4 .listIndex-2 {color: #ccffff; font-weight: 700;}
-.compClass-4 .listIndex-3 {color: #b3ffff;}
-.compClass-4 .listIndex-4 {color: #99ffff;}
-.compClass-4 .listIndex-5 {color: #80ffff;}
-.compClass-4 .listIndex-6 {color: #66ffff;}
-.compClass-4 .placement-1 {background-color: #009999  !important; color: #ffffff;}

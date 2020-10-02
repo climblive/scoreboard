@@ -10,6 +10,7 @@ import se.scoreboard.dto.ContestDto
 import se.scoreboard.dto.SeriesDto
 import se.scoreboard.mapper.ContestMapper
 import se.scoreboard.service.SeriesService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -23,7 +24,7 @@ class SeriesController @Autowired constructor(
     @GetMapping("/series")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getAllSeries(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = seriesService.search(pageable)
+    fun getAllSeries(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = seriesService.search(request, pageable)
 
     @GetMapping("/series/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

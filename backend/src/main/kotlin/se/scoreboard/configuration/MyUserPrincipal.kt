@@ -7,7 +7,7 @@ import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.User
 
 
-class MyUserPrincipal(private val username: String, private val role: String, val contenderId: Int?, val contestId: Int?, val organizerIds: List<Int>?) : UserDetails {
+class MyUserPrincipal(private val username: String, private val role: String, val contenderId: Int?, val contestId: Int?, var organizerIds: List<Int>?) : UserDetails {
 
     constructor(user: User, role: String, organizerIds: List<Int>) : this(
             user.username!!,

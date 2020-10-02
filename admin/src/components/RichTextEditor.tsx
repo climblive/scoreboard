@@ -1,112 +1,140 @@
-import * as React from 'react';
-import {RouteComponentProps} from "react-router";
-import {Editor, EditorState, RichUtils, ContentBlock, ContentState, convertFromHTML} from "draft-js"
-import {RefObject} from "react";
-import UnderlineIcon from '@material-ui/icons/FormatUnderlined';
-import BoldIcon from '@material-ui/icons/FormatBold';
-import ItalicIcon from '@material-ui/icons/FormatItalic';
-import UnorderedListIcon from '@material-ui/icons/FormatListBulleted';
-import OrderedListIcon from '@material-ui/icons/FormatListNumbered';
-
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import BoldIcon from "@material-ui/icons/FormatBold";
+import ItalicIcon from "@material-ui/icons/FormatItalic";
+import UnorderedListIcon from "@material-ui/icons/FormatListBulleted";
+import OrderedListIcon from "@material-ui/icons/FormatListNumbered";
+import UnderlineIcon from "@material-ui/icons/FormatUnderlined";
+import {
+  ContentState,
+  convertFromHTML,
+  Editor,
+  EditorState,
+  RichUtils,
+} from "draft-js";
+import { stateToHTML } from "draft-js-export-html";
 import "draft-js/dist/Draft.css";
-import {stateToHTML} from 'draft-js-export-html';
+import React, { RefObject, useEffect, useState } from "react";
 
 interface Props {
-   title:string,
-   value:string,
-   onChange?:(newValue:string) => void
+  title: string;
+  value: string;
+  onChange?: (newValue: string) => void;
 }
 
-type State = {
-   editorState:EditorState,
-   lastHtml?:string
-}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    actions: {
+      "& > *": {
+        cursor: "pointer",
+      },
+    },
+    editor: {
+      flexGrow: 1,
+      boxShadow: "0px 0px 3px 1px rgba(0, 0, 0, 0.5)",
+      overflowY: "scroll",
+      padding: 5,
+      fontSize: 16,
+    },
+  })
+);
 
-class RichTextEditor extends React.Component<Props, State> {
-   public readonly state: State = {
-      editorState: EditorState.createEmpty()
-   };
+const RichTextEditor = (props: Props) => {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [lastHtml, setLastHtml] = useState<string | undefined>(undefined);
 
-   rulesEditorRef:RefObject<any>; //HTMLDivElement
+  const classes = useStyles();
 
-   constructor(props: Props & RouteComponentProps) {
-      super(props);
-      this.rulesEditorRef = React.createRef();
-   }
+  let rulesEditorRef: RefObject<any> = React.createRef();
 
-   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-      this.updateValue(nextProps.value, false);
-   }
-
-   componentDidMount() {
-      this.updateValue(this.props.value, true);
-   }
-
-   updateValue = (newValue: string, forceUpdate:boolean) => {
-      if(this.state.lastHtml !== newValue || forceUpdate) {
-         const blocksFromHTML = convertFromHTML(newValue || "");
-         if (blocksFromHTML.contentBlocks.length) {
-            const state = ContentState.createFromBlockArray(
-               blocksFromHTML.contentBlocks,
-               blocksFromHTML.entityMap
-            );
-            this.state.editorState = EditorState.createWithContent(state);
-         } else {
-            this.state.editorState = EditorState.createEmpty();
-         }
+  useEffect(() => {
+    if (lastHtml === undefined) {
+      const blocksFromHTML = convertFromHTML(props.value || "");
+      if (blocksFromHTML.contentBlocks.length) {
+        const state = ContentState.createFromBlockArray(
+          blocksFromHTML.contentBlocks,
+          blocksFromHTML.entityMap
+        );
+        setEditorState(EditorState.createWithContent(state));
+      } else {
+        setEditorState(EditorState.createEmpty());
       }
-      this.setState(this.state);
-   };
+    }
+  }, [props.value, lastHtml]);
 
-   onEditorChange = (editorState:EditorState) => {
-      this.state.editorState = editorState;
-      this.state.lastHtml = stateToHTML(editorState.getCurrentContent());
-      this.setState(this.state);
-      this.props.onChange!(this.state.lastHtml);
-   };
+  const onEditorChange = (editorState: EditorState) => {
+    setEditorState(editorState);
+    setLastHtml(stateToHTML(editorState.getCurrentContent()));
+    if (lastHtml) {
+      props.onChange?.(lastHtml);
+    }
+  };
 
-   toggleUnorderedList = (e:any) => {
-      e.preventDefault();
-      this.onEditorChange(RichUtils.toggleBlockType(this.state.editorState, 'unordered-list-item'));
-   };
+  const toggleUnorderedList = (e: any) => {
+    e.preventDefault();
+    onEditorChange(
+      RichUtils.toggleBlockType(editorState, "unordered-list-item")
+    );
+  };
 
-   toggleOrderedList = (e:any) => {
-      e.preventDefault();
-      this.onEditorChange(RichUtils.toggleBlockType(this.state.editorState, 'ordered-list-item'));
-   };
+  const toggleOrderedList = (e: any) => {
+    e.preventDefault();
+    onEditorChange(RichUtils.toggleBlockType(editorState, "ordered-list-item"));
+  };
 
-   toggleBold = (e:any) => {
-      e.preventDefault();
-      this.onEditorChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
-   };
-   toggleUnderline = (e:any) => {
-      e.preventDefault();
-      this.onEditorChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
-   };
-   toggleItalic = (e:any) => {
-      e.preventDefault();
-      this.onEditorChange(RichUtils.toggleInlineStyle(this.state.editorState, 'ITALIC'));
-   };
+  const toggleBold = (e: any) => {
+    e.preventDefault();
+    onEditorChange(RichUtils.toggleInlineStyle(editorState, "BOLD"));
+  };
 
-   render() {
-      return(
-         <div style={{display:"flex", flexDirection:"column", flexGrow:1}} onClick={() => this.rulesEditorRef.current!.focus()}>
-            <div style={{display:"flex", alignItems:"center", marginBottom:5}}>
-               <span style={{marginRight:"auto", color:"rgba(0, 0, 0, 0.54)"}}>{this.props.title}</span>
-               <UnderlineIcon className="editor-action" onMouseDown={this.toggleUnderline} />
-               <BoldIcon className="editor-action" onMouseDown={this.toggleBold} />
-               <ItalicIcon className="editor-action" style={{marginRight:10}} onMouseDown={this.toggleItalic} />
-               <UnorderedListIcon className="editor-action" onMouseDown={this.toggleUnorderedList} />
-               <OrderedListIcon className="editor-action" onMouseDown={this.toggleOrderedList} />
-            </div>
-            <Editor editorState={this.state.editorState}
-                    onChange={this.onEditorChange}
-                    ref={this.rulesEditorRef}
-                    />
+  const toggleUnderline = (e: any) => {
+    e.preventDefault();
+    onEditorChange(RichUtils.toggleInlineStyle(editorState, "UNDERLINE"));
+  };
 
-         </div>
-      )
-   }
-}
+  const toggleItalic = (e: any) => {
+    e.preventDefault();
+    onEditorChange(RichUtils.toggleInlineStyle(editorState, "ITALIC"));
+  };
+
+  return (
+    <div
+      style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}
+      onClick={() => rulesEditorRef.current!.focus()}
+    >
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
+        <span style={{ marginRight: "auto", color: "rgba(0, 0, 0, 0.54)" }}>
+          {props.title}
+        </span>
+        <div className={classes.actions}>
+          <UnderlineIcon
+            className="editor-action"
+            onMouseDown={toggleUnderline}
+          />
+          <BoldIcon className="editor-action" onMouseDown={toggleBold} />
+          <ItalicIcon
+            className="editor-action"
+            style={{ marginRight: 10 }}
+            onMouseDown={toggleItalic}
+          />
+          <UnorderedListIcon
+            className="editor-action"
+            onMouseDown={toggleUnorderedList}
+          />
+          <OrderedListIcon
+            className="editor-action"
+            onMouseDown={toggleOrderedList}
+          />
+        </div>
+      </div>
+      <div className={classes.editor}>
+        <Editor
+          editorState={editorState}
+          onChange={onEditorChange}
+          ref={rulesEditorRef}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default RichTextEditor;

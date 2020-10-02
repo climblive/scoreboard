@@ -10,6 +10,7 @@ import se.scoreboard.dto.ProblemDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ProblemService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -23,7 +24,7 @@ class ProblemController @Autowired constructor(
     @GetMapping("/problem")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getProblems(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = problemService.search(pageable)
+    fun getProblems(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = problemService.search(request, pageable)
 
     @GetMapping("/problem/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

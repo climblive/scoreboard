@@ -23,6 +23,7 @@ import se.scoreboard.mapper.*
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
 import java.time.OffsetDateTime
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -42,7 +43,7 @@ class ContestController @Autowired constructor(
     @GetMapping("/contest")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getContests(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(pageable)
+    fun getContests(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(request, pageable)
 
     @GetMapping("/contest/{id}")
     @PreAuthorize("true")

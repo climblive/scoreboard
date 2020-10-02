@@ -3,23 +3,18 @@ package se.scoreboard.api
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.data.domain.CompClass
-import se.scoreboard.data.domain.extension.allowedToAlterContender
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.ScoreDto
+import se.scoreboard.dto.ScoringDto
 import se.scoreboard.dto.TickDto
-import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.TickMapper
-import se.scoreboard.service.BroadcastService
-import se.scoreboard.service.CompClassService
 import se.scoreboard.service.ContenderService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -33,7 +28,7 @@ class ContenderController @Autowired constructor(
     @GetMapping("/contender")
     @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
-    fun getContenders(@RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contenderService.search(pageable)
+    fun getContenders(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contenderService.search(request, pageable)
 
     @GetMapping("/contender/{id}")
     @PostAuthorize("hasPermission(returnObject, 'read')")

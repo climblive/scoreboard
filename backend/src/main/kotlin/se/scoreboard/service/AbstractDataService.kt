@@ -108,9 +108,10 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         entity.id = id
 
         val old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
-        entityManager.detach(old)
 
         checkConstraints(entityMapper.convertToDto(old), dto)
+
+        entityManager.detach(old)
 
         onUpdate(Phase.BEFORE, old, entity)
         entity = entityRepository.save(entity)

@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `location` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_location_1` ON `location` (`organizer_id` ASC) VISIBLE;
+CREATE INDEX `fk_location_1` ON `location` (`organizer_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `series` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_series_1` ON `series` (`organizer_id` ASC) VISIBLE;
+CREATE INDEX `fk_series_1` ON `series` (`organizer_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -94,11 +94,11 @@ CREATE TABLE IF NOT EXISTS `contest` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_contest_1_idx` ON `contest` (`location_id` ASC) VISIBLE;
+CREATE INDEX `fk_contest_1_idx` ON `contest` (`location_id` ASC);
 
-CREATE INDEX `fk_contest_2_idx` ON `contest` (`organizer_id` ASC) VISIBLE;
+CREATE INDEX `fk_contest_2_idx` ON `contest` (`organizer_id` ASC);
 
-CREATE INDEX `fk_contest_3` ON `contest` (`series_id` ASC) VISIBLE;
+CREATE INDEX `fk_contest_3` ON `contest` (`series_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -120,9 +120,9 @@ CREATE TABLE IF NOT EXISTS `comp_class` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `index2` ON `comp_class` (`contest_id` ASC) VISIBLE;
+CREATE INDEX `index2` ON `comp_class` (`contest_id` ASC);
 
-CREATE INDEX `index3` ON `comp_class` (`id` ASC, `contest_id` ASC) VISIBLE;
+CREATE INDEX `index3` ON `comp_class` (`id` ASC, `contest_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -150,11 +150,11 @@ CREATE TABLE IF NOT EXISTS `contender` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_contender_1_idx` ON `contender` (`class_id` ASC, `contest_id` ASC) VISIBLE;
+CREATE INDEX `fk_contender_1_idx` ON `contender` (`class_id` ASC, `contest_id` ASC);
 
-CREATE UNIQUE INDEX `registration_code_UNIQUE` ON `contender` (`registration_code` ASC) VISIBLE;
+CREATE UNIQUE INDEX `registration_code_UNIQUE` ON `contender` (`registration_code` ASC);
 
-CREATE INDEX `fk_contender_2_idx` ON `contender` (`contest_id` ASC) VISIBLE;
+CREATE INDEX `fk_contender_2_idx` ON `contender` (`contest_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -175,9 +175,9 @@ CREATE TABLE IF NOT EXISTS `color` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `name_UNIQUE` ON `color` (`name` ASC, `organizer_id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `name_UNIQUE` ON `color` (`name` ASC, `organizer_id` ASC);
 
-CREATE INDEX `fk_color_1` ON `color` (`organizer_id` ASC) VISIBLE;
+CREATE INDEX `fk_color_1` ON `color` (`organizer_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -204,11 +204,11 @@ CREATE TABLE IF NOT EXISTS `problem` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_problem_1_idx` ON `problem` (`contest_id` ASC) VISIBLE;
+CREATE INDEX `fk_problem_1_idx` ON `problem` (`contest_id` ASC);
 
-CREATE UNIQUE INDEX `index3` ON `problem` (`number` ASC, `contest_id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `index3` ON `problem` (`number` ASC, `contest_id` ASC);
 
-CREATE INDEX `fk_problem_2_idx` ON `problem` (`color_id` ASC) VISIBLE;
+CREATE INDEX `fk_problem_2_idx` ON `problem` (`color_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -233,11 +233,11 @@ CREATE TABLE IF NOT EXISTS `tick` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_tick_1_idx` ON `tick` (`problem_id` ASC) VISIBLE;
+CREATE INDEX `fk_tick_1_idx` ON `tick` (`problem_id` ASC);
 
-CREATE INDEX `fk_tick_2_idx` ON `tick` (`contender_id` ASC) VISIBLE;
+CREATE INDEX `fk_tick_2_idx` ON `tick` (`contender_id` ASC);
 
-CREATE UNIQUE INDEX `index4` ON `tick` (`contender_id` ASC, `problem_id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `index4` ON `tick` (`contender_id` ASC, `problem_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `username_UNIQUE` ON `user` (`username` ASC) VISIBLE;
+CREATE UNIQUE INDEX `username_UNIQUE` ON `user` (`username` ASC);
 
 
 -- -----------------------------------------------------
@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `user_organizer` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_user_organizer_2_idx` ON `user_organizer` (`organizer_id` ASC) VISIBLE;
+CREATE INDEX `fk_user_organizer_2_idx` ON `user_organizer` (`organizer_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -291,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `raffle` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_raffle_1_idx` ON `raffle` (`contest_id` ASC) VISIBLE;
+CREATE INDEX `fk_raffle_1_idx` ON `raffle` (`contest_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -315,11 +315,11 @@ CREATE TABLE IF NOT EXISTS `raffle_winner` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_raffle_winner_1_idx` ON `raffle_winner` (`raffle_id` ASC) VISIBLE;
+CREATE INDEX `fk_raffle_winner_1_idx` ON `raffle_winner` (`raffle_id` ASC);
 
-CREATE INDEX `fk_raffle_winner_2_idx` ON `raffle_winner` (`contender_id` ASC) VISIBLE;
+CREATE INDEX `fk_raffle_winner_2_idx` ON `raffle_winner` (`contender_id` ASC);
 
-CREATE UNIQUE INDEX `index4` ON `raffle_winner` (`raffle_id` ASC, `contender_id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `index4` ON `raffle_winner` (`raffle_id` ASC, `contender_id` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

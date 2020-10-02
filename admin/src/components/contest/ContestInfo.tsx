@@ -25,16 +25,22 @@ import ProblemList from "../problem/ProblemList";
 import RaffleList from "../raffle/RaffleList";
 import ContestEdit from "./ContestEdit";
 import ContestStats from "./ContestStats";
+import { CompClass } from "../../model/compClass";
+import { Problem } from "../../model/problem";
+import { Tick } from "../../model/tick";
+import { ContenderData } from "../../model/contenderData";
+import { Raffle } from "../../model/raffle";
 
 interface Props {
-  match: {
-    params: {
-      contestId: string;
-    };
-  };
-
+  contestId?: number;
   colors?: OrderedMap<number, Color>;
   contests?: OrderedMap<number, Contest>;
+  compClasses?: OrderedMap<number, CompClass>;
+  problems?: OrderedMap<number, Problem>;
+  ticks?: OrderedMap<number, Tick>;
+  contenders?: OrderedMap<number, ContenderData>;
+  raffles?: OrderedMap<number, Raffle>;
+
   loadColors?: () => Promise<void>;
   loadCompClasses?: (contestId: number) => Promise<void>;
   loadProblems?: (contestId: number) => Promise<void>;
@@ -54,63 +60,71 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ContestInfo = (props: Props & RouteComponentProps) => {
   let selectedPath = useLocation().pathname;
-  let [contestId, setContestId] = useState<number | undefined>(undefined);
   let [loading, setLoading] = useState(false);
 
   const classes = useStyles();
 
   useEffect(() => {
-    let id: string = props.match.params.contestId;
-    if (id !== "new") {
-      setContestId(parseInt(id));
-    }
-  }, [props.match]);
-
-  useEffect(() => {
-    if (contestId === undefined) {
+    if (props.contestId === undefined) {
       return;
     }
 
-    let loadables: Array<Promise<any> | undefined> = [
-      props.colors === undefined ? props.loadColors?.() : Promise.resolve(),
-      props.loadCompClasses?.(contestId),
-      props.loadProblems?.(contestId),
-      props.loadContenders?.(contestId),
-      props.loadTicks?.(contestId),
-      props.loadRaffles?.(contestId),
-    ];
-
-    let contest = props.contests?.get(contestId);
+    let contest = props.contests?.get(props.contestId);
 
     if (contest === undefined) {
-      loadables.push(props.loadContest?.(contestId));
+      setLoading(true);
+      props.loadContest?.(props.contestId).finally(() => {
+        setLoading(false);
+      });
     }
+  }, [props.contestId, props.contests, props.loadContest]);
 
-    setLoading(true);
-    Promise.all(loadables).finally(() => setLoading(false));
-  }, [
-    contestId,
-    props.colors,
-    props.contests,
-    props.loadColors,
-    props.loadCompClasses,
-    props.loadContenders,
-    props.loadContest,
-    props.loadProblems,
-    props.loadRaffles,
-    props.loadTicks,
-  ]);
+  useEffect(() => {
+    if (props.contestId !== undefined && props.colors === undefined) {
+      props.loadColors?.();
+    }
+  }, [props.contestId, props.colors, props.loadColors]);
+
+  useEffect(() => {
+    if (props.contestId !== undefined && props.compClasses === undefined) {
+      props.loadCompClasses?.(props.contestId);
+    }
+  }, [props.contestId, props.compClasses, props.loadCompClasses]);
+
+  useEffect(() => {
+    if (props.contestId !== undefined && props.problems === undefined) {
+      props.loadProblems?.(props.contestId);
+    }
+  }, [props.contestId, props.problems, props.loadProblems]);
+
+  useEffect(() => {
+    if (props.contestId !== undefined && props.contenders === undefined) {
+      props.loadContenders?.(props.contestId);
+    }
+  }, [props.contestId, props.contenders, props.loadContenders]);
+
+  useEffect(() => {
+    if (props.contestId !== undefined && props.ticks === undefined) {
+      props.loadTicks?.(props.contestId);
+    }
+  }, [props.contestId, props.ticks, props.loadTicks]);
+
+  useEffect(() => {
+    if (props.contestId !== undefined && props.raffles === undefined) {
+      props.loadRaffles?.(props.contestId);
+    }
+  }, [props.contestId, props.raffles, props.loadRaffles]);
 
   const selectTab = (event: any, newValue: string) => {
     props.history.push(newValue);
   };
 
   const createLink = (tab?: string): string => {
-    if (contestId === undefined) {
+    if (props.contestId === undefined) {
       return "/contests/new";
     }
 
-    let path = "/contests/" + contestId;
+    let path = "/contests/" + props.contestId;
     if (tab !== undefined) {
       path += "/" + tab;
     }
@@ -118,7 +132,7 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
     return path;
   };
 
-  if (!selectedPath.endsWith("/new") && contestId === undefined) {
+  if (!selectedPath.endsWith("/new") && props.contestId === undefined) {
     return <></>;
   }
 
@@ -132,7 +146,7 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
     />,
   ];
 
-  if (contestId) {
+  if (props.contestId) {
     tabs = [
       ...tabs,
       <Tab
@@ -190,24 +204,24 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
           <Route path="/contests/:contestId" exact>
             <ContestEdit
               key="general"
-              contestId={contestId}
+              contestId={props.contestId}
               loading={loading}
             />
           </Route>
           <Route path="/contests/:contestId/statistics">
-            <ContestStats key="statistics" contestId={contestId} />
+            <ContestStats key="statistics" contestId={props.contestId} />
           </Route>
           <Route path="/contests/:contestId/classes">
-            <CompClassList key="compClasses" contestId={contestId} />
+            <CompClassList key="compClasses" contestId={props.contestId} />
           </Route>
           <Route path="/contests/:contestId/problems">
-            <ProblemList key="problems" contestId={contestId} />
+            <ProblemList key="problems" contestId={props.contestId} />
           </Route>
           <Route path="/contests/:contestId/contenders">
-            <ContenderList key="contenders" contestId={contestId} />
+            <ContenderList key="contenders" contestId={props.contestId} />
           </Route>
           <Route path="/contests/:contestId/raffles">
-            <RaffleList key="raffles" contestId={contestId} />
+            <RaffleList key="raffles" contestId={props.contestId} />
           </Route>
         </Switch>
       </div>
@@ -215,11 +229,25 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
+function mapStateToProps(state: StoreState, props: Props): Props {
   return {
-    match: props.match,
     colors: state.colors,
     contests: state.contests,
+    compClasses: props.contestId
+      ? state.compClassesByContest.get(props.contestId)
+      : undefined,
+    problems: props.contestId
+      ? state.problemsByContest.get(props.contestId)
+      : undefined,
+    contenders: props.contestId
+      ? state.contendersByContest.get(props.contestId)
+      : undefined,
+    ticks: props.contestId
+      ? state.ticksByContest.get(props.contestId)
+      : undefined,
+    raffles: props.contestId
+      ? state.rafflesByContest.get(props.contestId)
+      : undefined,
   };
 }
 

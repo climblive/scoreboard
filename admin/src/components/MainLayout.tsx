@@ -24,6 +24,7 @@ import OrganizerList from "./organizer/OrganizerList";
 import SeriesList from "./series/SeriesList";
 import SideMenu from "./SideMenu";
 import TopMenu from "./TopMenu";
+import { RouteComponentProps } from "react-router";
 
 const drawerWidth = 180;
 
@@ -70,7 +71,7 @@ interface Props {
   title: string;
 }
 
-const MainLayout = (props: Props) => {
+const MainLayout = (props: Props & RouteComponentProps) => {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -129,7 +130,19 @@ const MainLayout = (props: Props) => {
         {props.isLoggedIn && (
           <Switch>
             <Route path="(/|/contests)" exact component={ContestList} />
-            <Route path="/contests/:contestId" component={ContestInfo} />
+            <Route
+              path="/contests/:contestId"
+              render={(props) => {
+                let contestId: number | undefined = undefined;
+                if (
+                  props.match.params.contestId !== undefined &&
+                  props.match.params.contestId !== "new"
+                ) {
+                  contestId = parseInt(props.match.params.contestId);
+                }
+                return <ContestInfo {...props} contestId={contestId} />;
+              }}
+            />
             <Route path="/colors" exact component={ColorList} />
             <Route path="/series" exact component={SeriesList} />
             <Route path="/organizers" exact component={OrganizerList} />

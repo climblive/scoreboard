@@ -32,13 +32,13 @@ export class Api {
     return data;
   }
 
-  private static getAuthHeader(url: string): any {
-    let authHeaders: any = {};
+  private static getAuthHeader(url: string): Record<string, string> {
+    let authHeaders: Record<string, string> = {};
     if (this.credentials) {
       authHeaders.Authorization = "Bearer " + this.credentials;
     }
     if (this.organizerId !== undefined && !url.startsWith("/organizer")) {
-      authHeaders["Organizer-Id"] = this.organizerId;
+      authHeaders["Organizer-Id"] = this.organizerId.toString();
     }
     return authHeaders;
   }

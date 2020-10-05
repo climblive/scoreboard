@@ -1,4 +1,4 @@
-export class ContenderData {
+export interface ContenderData {
   id?: number;
   compClassId?: number;
   contestId: number;

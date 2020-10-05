@@ -237,9 +237,9 @@ export class Api {
 
   static saveRaffle(raffle: Raffle): Promise<Raffle> {
     if (raffle.id === undefined) {
-      return this.post("/raffle", Raffle.makeRequestBody(raffle));
+      return this.post("/raffle", raffle);
     } else {
-      return this.put("/raffle/" + raffle.id, Raffle.makeRequestBody(raffle));
+      return this.put("/raffle/" + raffle.id, raffle);
     }
   }
 

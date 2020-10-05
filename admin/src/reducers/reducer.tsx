@@ -1,10 +1,12 @@
-import { OrderedMap } from "immutable";
+import { Map, OrderedMap } from "immutable";
+import { Reducer } from "redux";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import { Raffle } from "src/model/raffle";
 import { Tick } from "src/model/tick";
 import { ActionType, getType } from "typesafe-actions";
 import * as scoreboardActions from "../actions/actions";
+import initialStore from "../initialState";
 import initialState from "../initialState";
 import { Color } from "../model/color";
 import { CompLocation } from "../model/compLocation";
@@ -13,10 +15,14 @@ import { Organizer } from "../model/organizer";
 import { Problem } from "../model/problem";
 import { Series } from "../model/series";
 import { StoreState } from "../model/storeState";
+import { RaffleWinner } from "../model/raffleWinner";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
-export const reducer = (state: StoreState, action: ScoreboardActions) => {
+export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
+  state: StoreState | undefined = initialStore,
+  action: ScoreboardActions
+): StoreState => {
   switch (action.type) {
     case getType(scoreboardActions.setLoggingIn):
       return { ...state, loggingIn: action.payload };
@@ -270,14 +276,15 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
         ...state,
         selectedOrganizerId: action.payload,
         contests: undefined,
-        problems: undefined,
-        compClasses: undefined,
-        contenders: undefined,
-        raffles: undefined,
         colors: undefined,
         locations: undefined,
         series: undefined,
-        ticks: undefined,
+        compClassesByContest: Map<number, OrderedMap<number, CompClass>>(),
+        rafflesByContest: Map<number, OrderedMap<number, Raffle>>(),
+        contendersByContest: Map<number, OrderedMap<number, ContenderData>>(),
+        problemsByContest: Map<number, OrderedMap<number, Problem>>(),
+        ticksByContest: Map<number, OrderedMap<number, Tick>>(),
+        raffleWinnersByRaffle: Map<number, OrderedMap<number, RaffleWinner>>(),
       };
 
     // -------------------------------------------------------------------------

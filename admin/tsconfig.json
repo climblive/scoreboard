@@ -17,7 +17,7 @@
     "noImplicitAny": false,
     "noImplicitThis": true,
     "strictBindCallApply": true,
-    "strictFunctionTypes": false,
+    "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "allowSyntheticDefaultImports": true,

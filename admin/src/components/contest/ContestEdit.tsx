@@ -186,15 +186,19 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     setContest({ ...contest, rules });
   };
 
-  const onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onLocationChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const locationId =
-      e.target.value === "None" ? undefined : parseInt(e.target.value);
+      e.target.value === "None"
+        ? undefined
+        : parseInt(e.target.value as string);
     setContest({ ...contest, locationId });
   };
 
-  const onSeriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onSeriesChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const seriesId =
-      e.target.value === "None" ? undefined : parseInt(e.target.value);
+      e.target.value === "None"
+        ? undefined
+        : parseInt(e.target.value as string);
     setContest({ ...contest, seriesId });
   };
 

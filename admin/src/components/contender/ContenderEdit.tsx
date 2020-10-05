@@ -25,8 +25,11 @@ const ContenderEdit = (props: Props) => {
     setContender({ ...contender, name: e.target.value });
   };
 
-  const onCompClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setContender({ ...contender, compClassId: parseInt(e.target.value) });
+  const onCompClassChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    setContender({
+      ...contender,
+      compClassId: parseInt(e.target.value as string),
+    });
   };
 
   const onSave = () => {

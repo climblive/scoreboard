@@ -6,9 +6,9 @@ import thunk from "redux-thunk";
 import App from "./App";
 import { Environment } from "./environment";
 import "./index.css";
-import initialState from "./initialState";
+import initialStore from "./initialState";
 import { StoreState } from "./model/storeState";
-import { reducer } from "./reducers/reducer";
+import { reducer, ScoreboardActions } from "./reducers/reducer";
 import * as serviceWorker from "./serviceWorker";
 
 let middleware = [applyMiddleware(thunk)];
@@ -20,9 +20,9 @@ if (Environment.siteDomain === "localhost") {
   );
 }
 
-const store = createStore<StoreState, any, any, any>(
+const store = createStore<StoreState | undefined, ScoreboardActions, any, any>(
   reducer,
-  initialState,
+  initialStore,
   compose(...middleware)
 );
 

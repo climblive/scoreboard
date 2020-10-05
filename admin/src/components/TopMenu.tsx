@@ -71,8 +71,8 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     }
   }, [props.history, props.location.hash, props.login]);
 
-  const onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = parseInt(e.target.value);
+  const onOrganizerChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    const id = parseInt(e.target.value as string);
     let organizer = props.organizers?.get(id);
     if (organizer !== undefined) {
       props.selectOrganizer?.(organizer.id!);

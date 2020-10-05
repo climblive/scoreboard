@@ -221,12 +221,14 @@ const ContenderList = (props: Props) => {
   };
 
   const onContenderFilterCompClassChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<{ value: unknown }>
   ) => {
-    setContenderFilter(e.target.value);
+    setContenderFilter(e.target.value as string);
 
-    if (StaticFilter[e.target.value] === undefined) {
-      const filterCompClass = props.compClasses?.get(parseInt(e.target.value));
+    if (StaticFilter[e.target.value as string] === undefined) {
+      const filterCompClass = props.compClasses?.get(
+        parseInt(e.target.value as string)
+      );
       setSelectedContenders([filterCompClass?.id!]);
     }
 

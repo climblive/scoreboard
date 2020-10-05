@@ -97,8 +97,8 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
     setProblem({ ...problem, flashBonus });
   };
 
-  const onColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProblem({ ...problem, colorId: parseInt(e.target.value) });
+  const onColorChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    setProblem({ ...problem, colorId: parseInt(e.target.value as string) });
   };
 
   const onDeleteConfirmed = (result: boolean) => {

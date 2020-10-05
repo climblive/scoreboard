@@ -23,9 +23,9 @@ export const groupTicksByProblem = (ticks: Tick[]) => {
 
   for (let tick of ticks) {
     let key = tick.problemId;
-    let bucket;
+    let bucket: Tick[];
     if (buckets.has(key)) {
-      bucket = buckets.get(key);
+      bucket = buckets.get(key)!;
     } else {
       bucket = [];
       buckets.set(key, bucket);

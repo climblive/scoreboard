@@ -7,7 +7,7 @@ export const getColorStyle = (color?: string, editable?: boolean) => {
     if (color.charAt(0) !== "#") {
       color = "#" + color;
     }
-    const chromaInst = Chroma(color);
+    const chromaInst = Chroma.hex(color);
     const luminance = chromaInst.luminance();
     borderColor = chromaInst.darken(1).hex();
     textColor = luminance < 0.5 ? "#FFF" : "#333";

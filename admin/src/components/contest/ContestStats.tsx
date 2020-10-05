@@ -49,13 +49,13 @@ const ContestStats = (
         label: "Ticks",
         backgroundColor: colors,
         borderColor: colors?.map((color) =>
-          Chroma(color ?? "#ffffff")
+          Chroma.hex(color ?? "#ffffff")
             .darken()
             .hex()
         ),
         borderWidth: 1,
         hoverBackgroundColor: colors?.map((color) =>
-          Chroma(color ?? "#ffffff")
+          Chroma.hex(color ?? "#ffffff")
             .brighten()
             .hex()
         ),

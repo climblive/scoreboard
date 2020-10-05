@@ -105,7 +105,7 @@ const ProblemList = (props: Props) => {
     if (rgbColor.charAt(0) !== "#") {
       rgbColor = "#" + rgbColor;
     }
-    const chromaInst = Chroma(rgbColor);
+    const chromaInst = Chroma.hex(rgbColor);
     const luminance = chromaInst.luminance();
     let borderColor = chromaInst.darken(1).hex();
     let textColor = luminance < 0.5 ? "#FFF" : "#333";

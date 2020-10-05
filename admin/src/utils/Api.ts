@@ -343,7 +343,7 @@ export class Api {
     return this.get("/contest/" + contestId + "/tick")
       .then((ticks) => {
         return Promise.resolve(
-          ticks.map((tick) => {
+          ticks.map((tick: Tick) => {
             return { ...tick, contestId };
           })
         );

@@ -225,7 +225,7 @@ const ContenderList = (props: Props) => {
   ) => {
     setContenderFilter(e.target.value as string);
 
-    if (StaticFilter[e.target.value as string] === undefined) {
+    if (!((e.target.value as string) in StaticFilter)) {
       const filterCompClass = props.compClasses?.get(
         parseInt(e.target.value as string)
       );

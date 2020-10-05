@@ -198,7 +198,6 @@ const ProblemList = (props: Props) => {
         <TableCell padding="none" colSpan={5}>
           <div style={{ padding: theme.spacing(0, 2) }}>
             <ProblemEdit
-              getColorName={getColorName}
               getProblemStyle={getProblemStyle}
               cancellable
               editable
@@ -207,7 +206,7 @@ const ProblemList = (props: Props) => {
               problem={{
                 name: undefined,
                 number: nextNumber(),
-                colorId: props.colors?.toArray()?.[0]?.id,
+                colorId: props.colors?.toArray()?.[0]?.id!,
                 contestId: props.contestId!,
                 points: 1,
               }}

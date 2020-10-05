@@ -2,25 +2,23 @@ import { Divider, TableCell, Typography, useTheme } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { OrderedMap } from "immutable";
 import React from "react";
-import { connect } from "react-redux";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import { Problem } from "src/model/problem";
 import { Tick } from "src/model/tick";
-import { StoreState } from "../../model/storeState";
 import ResponsiveTableRow from "../ResponsiveTableRow";
 import ProblemEdit from "./ProblemEdit";
 import ProblemTickList from "./ProblemTickList";
 
 interface Props {
-  problem?: Problem;
+  problem: Problem;
   ticks?: Tick[];
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
   editable?: boolean;
   onBeginEdit?: () => void;
   getColorName?: (problem: Problem) => string;
-  getProblemStyle?: (colorId: number) => object;
+  getProblemStyle: (colorId: number) => object;
   onBeginCreate?: (problemNumber: number) => void;
   breakpoints?: Map<number, string>;
 }
@@ -98,10 +96,4 @@ const ProblemView = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {};
-}
-
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProblemView);
+export default ProblemView;

@@ -4,12 +4,11 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 import { OrderedMap } from "immutable";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { ContenderData } from "src/model/contenderData";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { updateContender } from "../../actions/asyncActions";
 import { Environment } from "../../environment";
-import { Color } from "../../model/color";
 import { CompClass } from "../../model/compClass";
 import { Problem } from "../../model/problem";
 import { StoreState } from "../../model/storeState";
@@ -20,12 +19,10 @@ import ContenderScoring from "./ContenderScoring";
 import ContenderTickList from "./ContenderTickList";
 
 interface Props {
-  contender?: ContenderData;
+  contender: ContenderData;
   scoring?: ContenderScoringInfo;
   compClasses?: OrderedMap<number, CompClass>;
   problems?: OrderedMap<number, Problem>;
-  colors?: OrderedMap<number, Color>;
-  updateContender?: (contender: ContenderData) => Promise<ContenderData>;
   breakpoints?: Map<number, string>;
 }
 
@@ -50,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContenderView = (props: Props) => {
+const ContenderView = (props: Props & PropsFromRedux) => {
   const [saving, setSaving] = useState<boolean>(false);
 
   const classes = useStyles();
@@ -64,19 +61,19 @@ const ContenderView = (props: Props) => {
     e.stopPropagation();
     setSaving(true);
     props
-      .updateContender?.({ ...props.contender!, disqualified: true })
+      .updateContender?.({ ...props.contender, disqualified: true })
       .finally(() => setSaving(false));
   };
 
   const onReenter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setSaving(true);
     props
-      .updateContender?.({ ...props.contender!, disqualified: false })
+      .updateContender?.({ ...props.contender, disqualified: false })
       .finally(() => setSaving(false));
   };
 
   let scoring = props.scoring;
-  let contender = props.contender!;
+  let contender = props.contender;
 
   const cells = [
     <TableCell
@@ -161,7 +158,7 @@ const ContenderView = (props: Props) => {
                   </Grid>
                 </Grid>
                 <ContenderTickList
-                  scoring={props.scoring!}
+                  scoring={scoring}
                   problems={props.problems}
                   colors={props.colors}
                 />
@@ -203,14 +200,16 @@ const ContenderView = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    colors: state.colors,
-  };
-}
+const mapStateToProps = (state: StoreState) => ({
+  colors: state.colors,
+});
 
 const mapDispatchToProps = {
   updateContender,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContenderView);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ContenderView);

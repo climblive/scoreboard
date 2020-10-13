@@ -1,15 +1,12 @@
-import { Paper, StyledComponentProps, TableCell } from "@material-ui/core";
+import { Paper, TableCell } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { OrderedMap } from "immutable";
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { RouteComponentProps, withRouter } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
 import { loadRaffles, saveRaffle } from "../../actions/asyncActions";
-import { ContenderData } from "../../model/contenderData";
 import { Raffle } from "../../model/raffle";
 import { StoreState } from "../../model/storeState";
 import ProgressIconButton from "../ProgressIconButton";
@@ -17,12 +14,7 @@ import ResponsiveTableHead from "../ResponsiveTableHead";
 import RaffleView from "./RaffleView";
 
 interface Props {
-  contestId?: number;
-  raffles?: OrderedMap<number, Raffle>;
-  contenders?: OrderedMap<number, ContenderData>;
-
-  loadRaffles?: (contestId: number) => Promise<void>;
-  saveRaffle?: (raffle: Raffle) => Promise<Raffle>;
+  contestId: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -38,9 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const breakpoints = new Map<number, string>();
 
-const RaffleList = (
-  props: Props & RouteComponentProps & StyledComponentProps
-) => {
+const RaffleList = (props: Props & PropsFromRedux) => {
   const [creating, setCreating] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -49,13 +39,13 @@ const RaffleList = (
   const createRaffle = () => {
     setCreating(true);
     props
-      .saveRaffle?.({ contestId: props.contestId!, active: false })
+      .saveRaffle?.({ contestId: props.contestId, active: false })
       .finally(() => setCreating(false));
   };
 
   const refreshRaffles = () => {
     setRefreshing(true);
-    props.loadRaffles?.(props.contestId!).finally(() => setRefreshing(false));
+    props.loadRaffles(props.contestId).finally(() => setRefreshing(false));
   };
 
   const toolbar = (
@@ -113,19 +103,18 @@ const RaffleList = (
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contenders: state.contendersByContest.get(props.contestId),
-    raffles: state.rafflesByContest.get(props.contestId),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  contenders: state.contendersByContest.get(props.contestId),
+  raffles: state.rafflesByContest.get(props.contestId),
+});
 
 const mapDispatchToProps = {
   loadRaffles,
   saveRaffle,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(RaffleList));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(RaffleList);

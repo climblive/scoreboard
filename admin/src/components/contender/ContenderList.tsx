@@ -22,12 +22,10 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import SaveIcon from "@material-ui/icons/SaveAlt";
 import Pagination from "@material-ui/lab/Pagination";
 import { saveAs } from "file-saver";
-import { OrderedMap } from "immutable";
 import React, { useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { StoreState } from "src/model/storeState";
-import { Tick } from "src/model/tick";
 import { Api } from "src/utils/Api";
 import { setErrorMessage } from "../../actions/actions";
 import {
@@ -38,8 +36,6 @@ import {
 import { SortBy } from "../../constants/sortBy";
 import { CompClass } from "../../model/compClass";
 import { ContenderData } from "../../model/contenderData";
-import { Contest } from "../../model/contest";
-import { Problem } from "../../model/problem";
 import { calculateContenderScoringInfo } from "../../selectors/selector";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
@@ -59,18 +55,7 @@ enum StaticFilter {
 }
 
 interface Props {
-  contestId?: number;
-  contest?: Contest;
-  finalEnabled?: boolean;
-  contenders?: OrderedMap<number, ContenderData>;
-  compClasses?: OrderedMap<number, CompClass>;
-  problems?: OrderedMap<number, Problem>;
-  ticks?: OrderedMap<number, Tick>;
-
-  loadContenders?: (contestId: number) => Promise<void>;
-  createContenders?: (contestId: number, nContenders: number) => Promise<void>;
-  setErrorMessage?: (message: string) => void;
-  loadTicks?: (contestId: number) => Promise<void>;
+  contestId: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -87,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContenderList = (props: Props) => {
+const ContenderList = (props: Props & PropsFromRedux) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -186,9 +171,7 @@ const ContenderList = (props: Props) => {
 
   const refreshContenders = () => {
     setRefreshing(true);
-    props
-      .loadContenders?.(props.contestId!)
-      .finally(() => setRefreshing(false));
+    props.loadContenders?.(props.contestId).finally(() => setRefreshing(false));
   };
 
   const startAddContenders = () => {
@@ -215,7 +198,7 @@ const ContenderList = (props: Props) => {
 
     setRefreshing(true);
     props
-      .createContenders?.(props.contestId!, number)
+      .createContenders?.(props.contestId, number)
       .finally(() => setRefreshing(false));
     setShowAddContendersPopup(false);
   };
@@ -236,7 +219,7 @@ const ContenderList = (props: Props) => {
   };
 
   function exportResults(): any {
-    Api.exportContest(props.contestId!)
+    Api.exportContest(props.contestId)
       .then((response) => {
         saveAs(response, "contest.xls");
       })
@@ -426,15 +409,13 @@ const ContenderList = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contenders: state.contendersByContest.get(props.contestId),
-    compClasses: state.compClassesByContest.get(props.contestId),
-    problems: state.problemsByContest.get(props.contestId),
-    ticks: state.ticksByContest.get(props.contestId),
-    contest: state.contests?.get(props.contestId),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  contenders: state.contendersByContest.get(props.contestId),
+  compClasses: state.compClassesByContest.get(props.contestId),
+  problems: state.problemsByContest.get(props.contestId),
+  ticks: state.ticksByContest.get(props.contestId),
+  contest: state.contests?.get(props.contestId),
+});
 
 const mapDispatchToProps = {
   loadContenders,
@@ -443,4 +424,8 @@ const mapDispatchToProps = {
   setErrorMessage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContenderList);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ContenderList);

@@ -9,19 +9,16 @@ import { DateTimePicker } from "@material-ui/pickers";
 import moment from "moment";
 import React, { useState } from "react";
 import { ColorResult, TwitterPicker } from "react-color";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteCompClass, saveCompClass } from "../../actions/asyncActions";
 import { CompClass } from "../../model/compClass";
-import { StoreState } from "../../model/storeState";
 import ColorSquare from "../ColorSquare";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { ProgressButton } from "../ProgressButton";
 
 interface Props {
-  compClass?: CompClass;
+  compClass: CompClass;
   onDone?: () => void;
-  saveCompClass?: (compClass: CompClass) => Promise<CompClass>;
-  deleteCompClass?: (compClass: CompClass) => Promise<void>;
   removable?: boolean;
   cancellable?: boolean;
 }
@@ -51,9 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const CompClassEdit = (props: Props) => {
+const CompClassEdit = (props: Props & PropsFromRedux) => {
   const [compClass, setCompClass] = useState<CompClass>({
-    ...props.compClass!,
+    ...props.compClass,
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
@@ -105,7 +102,7 @@ const CompClassEdit = (props: Props) => {
   const onSave = () => {
     setSaving(true);
     props
-      .saveCompClass?.(compClass)
+      .saveCompClass(compClass)
       .then((compClass) => {
         props.onDone?.();
       })
@@ -117,7 +114,7 @@ const CompClassEdit = (props: Props) => {
 
     if (result) {
       setDeleting(true);
-      props.deleteCompClass?.(compClass).finally(() => setDeleting(false));
+      props.deleteCompClass(compClass).finally(() => setDeleting(false));
     }
   };
 
@@ -248,13 +245,13 @@ const CompClassEdit = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {};
-}
-
 const mapDispatchToProps = {
   saveCompClass,
   deleteCompClass,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompClassEdit);
+const connector = connect(undefined, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(CompClassEdit);

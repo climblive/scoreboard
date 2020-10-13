@@ -76,7 +76,7 @@ export function loadContest(contestId: number) {
 }
 
 export function saveContest(contest: Contest) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void | Contest> => {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Contest> => {
     return Api.saveContest(contest)
       .then((contest) => {
         dispatch(actions.updateContestSuccess(contest));
@@ -122,7 +122,7 @@ export function reloadColors() {
 }
 
 export function saveColor(color: Color) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void | Color> => {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Color> => {
     return Api.saveColor(color)
       .then((color) => {
         dispatch(actions.updateColorSuccess(color));
@@ -168,7 +168,7 @@ export function reloadSeries() {
 }
 
 export function saveSeries(series: Series) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void | Series> => {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Series> => {
     return Api.saveSeries(series)
       .then((s) => {
         dispatch(actions.updateSeriesSuccess(s));
@@ -216,7 +216,7 @@ export function reloadLocations() {
 export function saveLocation(location: CompLocation) {
   return (
     dispatch: Dispatch<ScoreboardActions>
-  ): Promise<void | CompLocation> => {
+  ): Promise<CompLocation> => {
     return Api.saveLocation(location)
       .then((location) => {
         dispatch(actions.updateLocationSuccess(location));
@@ -262,7 +262,7 @@ export function reloadOrganizers() {
 }
 
 export function saveOrganizer(organizer: Organizer) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void | Organizer> => {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Organizer> => {
     return Api.saveOrganizer(organizer)
       .then((organizer) => {
         dispatch(actions.updateOrganizerSuccess(organizer));

@@ -4,22 +4,20 @@ import Select from "@material-ui/core/Select";
 import SaveIcon from "@material-ui/icons/Save";
 import { OrderedMap } from "immutable";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { ContenderData } from "src/model/contenderData";
 import { updateContender } from "../../actions/asyncActions";
 import { CompClass } from "../../model/compClass";
-import { StoreState } from "../../model/storeState";
 import { ProgressButton } from "../ProgressButton";
 
 interface Props {
-  contender?: ContenderData;
+  contender: ContenderData;
   compClasses?: OrderedMap<number, CompClass>;
-  updateContender?: (contender: ContenderData) => Promise<ContenderData>;
 }
 
-const ContenderEdit = (props: Props) => {
+const ContenderEdit = (props: Props & PropsFromRedux) => {
   const [saving, setSaving] = useState<boolean>(false);
-  const [contender, setContender] = useState<ContenderData>(props.contender!);
+  const [contender, setContender] = useState<ContenderData>(props.contender);
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContender({ ...contender, name: e.target.value });
@@ -34,7 +32,7 @@ const ContenderEdit = (props: Props) => {
 
   const onSave = () => {
     setSaving(true);
-    props.updateContender?.(contender).finally(() => setSaving(false));
+    props.updateContender(contender).finally(() => setSaving(false));
   };
 
   return (
@@ -69,12 +67,12 @@ const ContenderEdit = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {};
-}
-
 const mapDispatchToProps = {
   updateContender,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContenderEdit);
+const connector = connect(undefined, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ContenderEdit);

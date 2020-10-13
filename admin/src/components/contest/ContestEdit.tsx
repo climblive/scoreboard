@@ -12,15 +12,10 @@ import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
 import Alert from "@material-ui/lab/Alert";
 import { saveAs } from "file-saver";
-import { OrderedMap } from "immutable";
 import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Link } from "react-router-dom";
-import { CompClass } from "src/model/compClass";
-import { ContenderData } from "src/model/contenderData";
-import { Organizer } from "src/model/organizer";
-import { Problem } from "src/model/problem";
 import { Api } from "src/utils/Api";
 import { setErrorMessage, setTitle } from "../../actions/actions";
 import {
@@ -43,19 +38,7 @@ import RichTextEditor from "../RichTextEditor";
 
 interface Props {
   contestId?: number;
-  contests?: OrderedMap<number, Contest>;
-  series?: OrderedMap<number, Series>;
-  locations?: OrderedMap<number, CompLocation>;
-  selectedOrganizer?: Organizer;
-  problems?: OrderedMap<number, Problem>;
-  compClasses?: OrderedMap<number, CompClass>;
-  contenders?: OrderedMap<number, ContenderData>;
   loading?: boolean;
-  setTitle?: (title: string) => void;
-  saveContest?: (contest: Contest) => Promise<Contest>;
-  deleteContest?: (contest: Contest) => Promise<void>;
-  loadLocations?: () => Promise<void>;
-  loadSeries?: () => Promise<void>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -74,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContestEdit = (props: Props & RouteComponentProps) => {
+const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
   let [compilingPdf, setCompilingPdf] = useState<boolean>(false);
@@ -94,10 +77,10 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
 
   useEffect(() => {
     if (props.locations === undefined) {
-      props.loadLocations?.();
+      props.loadLocations();
     }
     if (props.series === undefined) {
-      props.loadSeries?.();
+      props.loadSeries();
     }
   }, [props.series, props.locations, props.loadLocations, props.loadSeries]);
 
@@ -108,11 +91,11 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
         setContest(contest);
       }
     }
-  }, [props.contestId, props.contests]);
+  }, [props.contests]);
 
   useEffect(() => {
     let title = contest?.id === undefined ? "Add contest" : contest.name;
-    props.setTitle?.(title);
+    props.setTitle(title);
   }, [contest, props.setTitle]);
 
   const classes = useStyles();
@@ -205,10 +188,10 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   const onSave = () => {
     setSaving(true);
     props
-      .saveContest?.(contest)
+      .saveContest(contest)
       .then((contest) => {
         if (isNew) {
-          props.history.push("/contests/" + contest.id);
+          props.history.push("/contests/" + contest.id!);
         }
       })
       .finally(() => setSaving(false));
@@ -222,7 +205,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     if (result) {
       setDeleting(true);
       props
-        .deleteContest?.(contest)
+        .deleteContest(contest)
         .then(() => props.history.push("/contests"))
         .catch((error) => setDeleting(false));
     }
@@ -481,17 +464,24 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contests: state.contests,
-    series: state.series,
-    locations: state.locations,
-    selectedOrganizer: getSelectedOrganizer(state),
-    problems: state.problemsByContest.get(props.contestId),
-    compClasses: state.compClassesByContest.get(props.contestId),
-    contenders: state.contendersByContest.get(props.contestId),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  contests: state.contests,
+  series: state.series,
+  locations: state.locations,
+  selectedOrganizer: getSelectedOrganizer(state),
+  problems:
+    props.contestId !== undefined
+      ? state.problemsByContest.get(props.contestId)
+      : undefined,
+  compClasses:
+    props.contestId !== undefined
+      ? state.compClassesByContest.get(props.contestId)
+      : undefined,
+  contenders:
+    props.contestId !== undefined
+      ? state.contendersByContest.get(props.contestId)
+      : undefined,
+});
 
 const mapDispatchToProps = {
   saveContest,
@@ -503,7 +493,8 @@ const mapDispatchToProps = {
   loadSeries: reloadSeries,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(ContestEdit));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(ContestEdit));

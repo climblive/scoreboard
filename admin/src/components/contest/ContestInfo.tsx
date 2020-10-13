@@ -215,7 +215,7 @@ const ContestInfo = (props: Props & RouteComponentProps) => {
             <CompClassList key="compClasses" contestId={props.contestId} />
           </Route>
           <Route path="/contests/:contestId/problems">
-            <ProblemList key="problems" contestId={props.contestId} />
+            <ProblemList key="problems" contestId={props.contestId!} />
           </Route>
           <Route path="/contests/:contestId/contenders">
             <ContenderList key="contenders" contestId={props.contestId} />

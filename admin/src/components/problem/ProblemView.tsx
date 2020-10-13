@@ -16,10 +16,8 @@ interface Props {
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
   editable?: boolean;
-  onBeginEdit?: () => void;
-  getColorName?: (problem: Problem) => string;
+  getColorName: (problem: Problem) => string;
   getProblemStyle: (colorId: number) => object;
-  onBeginCreate?: (problemNumber: number) => void;
   breakpoints?: Map<number, string>;
 }
 
@@ -48,18 +46,18 @@ const ProblemView = (props: Props) => {
 
   const cells = [
     <TableCell component="th" scope="row">
-      {props.problem?.number}
+      {props.problem.number}
     </TableCell>,
     <TableCell>
       <div
-        style={props.getProblemStyle?.(props.problem?.colorId!)}
+        style={props.getProblemStyle(props.problem.colorId!)}
         className={classes.colorBox}
       >
-        {props.problem?.name ?? props.getColorName?.(props.problem!)}
+        {props.problem.name ?? props.getColorName(props.problem)}
       </div>
     </TableCell>,
-    <TableCell>{props.problem?.points}</TableCell>,
-    <TableCell>{props.problem?.flashBonus}</TableCell>,
+    <TableCell>{props.problem.points}</TableCell>,
+    <TableCell>{props.problem.flashBonus}</TableCell>,
   ];
 
   return (
@@ -79,18 +77,21 @@ const ProblemView = (props: Props) => {
 
         <Divider />
 
-        <Typography color="textSecondary" display="block" variant="caption">
-          Ticks
-        </Typography>
+        {props.ticks && (
+          <>
+            <Typography color="textSecondary" display="block" variant="caption">
+              Ticks
+            </Typography>
 
-        <div style={{ padding: theme.spacing(1, 0) }}>
-          <ProblemTickList
-            problem={props.problem}
-            ticks={props.ticks}
-            compClasses={props.compClasses}
-            contenders={props.contenders}
-          />
-        </div>
+            <div style={{ padding: theme.spacing(1, 0) }}>
+              <ProblemTickList
+                ticks={props.ticks}
+                compClasses={props.compClasses}
+                contenders={props.contenders}
+              />
+            </div>
+          </>
+        )}
       </div>
     </ResponsiveTableRow>
   );

@@ -11,12 +11,10 @@ import moment from "moment";
 import React from "react";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
-import { Problem } from "src/model/problem";
 import { Tick } from "src/model/tick";
 
 interface Props {
-  problem?: Problem;
-  ticks?: Tick[];
+  ticks: Tick[];
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
 }
@@ -36,7 +34,7 @@ const ProblemTickList = (props: Props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.ticks?.map((tick) => {
+          {props.ticks.map((tick) => {
             let contender = props.contenders?.get(tick.contenderId);
             let compClass = props.compClasses?.get(contender?.compClassId!);
             return (

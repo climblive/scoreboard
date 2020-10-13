@@ -20,11 +20,14 @@ export interface StoreState {
 
   contests?: OrderedMap<number, Contest>;
 
-  compClassesByContest: Map<number, OrderedMap<number, CompClass>>;
-  rafflesByContest: Map<number, OrderedMap<number, Raffle>>;
-  contendersByContest: Map<number, OrderedMap<number, ContenderData>>;
-  problemsByContest: Map<number, OrderedMap<number, Problem>>;
-  ticksByContest: Map<number, OrderedMap<number, Tick>>;
+  compClassesByContest: Map<number, OrderedMap<number, CompClass> | undefined>;
+  rafflesByContest: Map<number, OrderedMap<number, Raffle> | undefined>;
+  contendersByContest: Map<
+    number,
+    OrderedMap<number, ContenderData> | undefined
+  >;
+  problemsByContest: Map<number, OrderedMap<number, Problem> | undefined>;
+  ticksByContest: Map<number, OrderedMap<number, Tick> | undefined>;
 
   raffleWinnersByRaffle: Map<number, OrderedMap<number, RaffleWinner>>;
 

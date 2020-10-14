@@ -25,7 +25,6 @@ const ContestLineItemView = (
   return (
     <TableRow
       key={props.contest.id}
-      style={{ cursor: "pointer" }}
       hover
       onClick={() => props.history.push("/contests/" + props.contest.id)}
     >

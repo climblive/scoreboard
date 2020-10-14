@@ -8,12 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TextField from "@material-ui/core/TextField";
@@ -69,12 +64,16 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2, 0),
     },
     emptyText: { padding: theme.spacing(2) },
+    createContendersInput: { width: 250 },
+    filterSelector: {
+      width: "100%",
+      marginLeft: theme.spacing(1),
+    },
   })
 );
 
 const ContenderList = (props: Props & PropsFromRedux) => {
   const classes = useStyles();
-  const theme = useTheme();
 
   const [numberOfNewContenders, setNumberOfNewContenders] = useState<string>();
   const [showAddContendersPopup, setShowAddContendersPopup] = useState<boolean>(
@@ -236,38 +235,24 @@ const ContenderList = (props: Props & PropsFromRedux) => {
   };
 
   const headings = [
-    <TableCell
-      style={{ cursor: "pointer" }}
-      onClick={() => setContenderSortBy(SortBy.BY_NAME)}
-    >
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_NAME)}>
       Name
     </TableCell>,
     <TableCell>Class</TableCell>,
-    <TableCell
-      style={{ cursor: "pointer" }}
-      onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}
-    >
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}>
       Total score
     </TableCell>,
-    <TableCell
-      style={{ cursor: "pointer" }}
-      onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}
-    >
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}>
       # Ticks
     </TableCell>,
-    <TableCell style={{ minWidth: 110 }}>Regcode</TableCell>,
+    <TableCell>Regcode</TableCell>,
   ];
 
   return (
     <>
       <div className={classes.toolbar}>
         {(props.compClasses?.size ?? 0) > 0 && (
-          <FormControl
-            style={{
-              width: "100%",
-              marginLeft: theme.spacing(1),
-            }}
-          >
+          <FormControl className={classes.filterSelector}>
             <InputLabel shrink htmlFor="compClass-select">
               Class
             </InputLabel>
@@ -378,19 +363,15 @@ const ContenderList = (props: Props & PropsFromRedux) => {
           Create contenders
         </DialogTitle>
         <DialogContent>
-          <div>
-            Before a contest starts, you have to create activation codes enough
-            for all contenders.
-          </div>
-          <div style={{ marginTop: 5 }}>
-            Currently you have {props.contenders?.size ?? 0} registration codes.
-          </div>
-          <div style={{ marginTop: 5, marginBottom: 20 }}>
+          Before a contest starts, you have to create activation codes enough
+          for all contenders.
+          <p>
             You can create a maximum of {MAX_CONTENDER_COUNT} activation codes
-            per contest.
-          </div>
+            per contest. Currently you have {props.contenders?.size ?? 0}{" "}
+            registration codes.
+          </p>
           <TextField
-            style={{ width: 250 }}
+            className={classes.createContendersInput}
             label="Number of contenders to create"
             value={numberOfNewContenders}
             onChange={onNewContendersChange}

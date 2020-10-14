@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     members: {
       margin: theme.spacing(2, 0),
     },
+    selectedOrganizerChip: { marginLeft: theme.spacing(1) },
   })
 );
 
@@ -70,7 +71,7 @@ const OrganizerView = (props: Props & PropsFromRedux) => {
       {props.organizer.name}
       {props.isSelectedOrganizer && (
         <Chip
-          style={{ marginLeft: "5px" }}
+          className={classes.selectedOrganizerChip}
           label="Selected"
           color="primary"
           size="small"

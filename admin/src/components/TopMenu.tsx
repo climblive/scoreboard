@@ -4,12 +4,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import * as qs from "qs";
@@ -35,12 +30,14 @@ const useStyles = makeStyles((theme: Theme) =>
     adminChip: {
       marginRight: theme.spacing(1),
     },
+    organizerSelector: { minWidth: 200 },
+    selectOption: { color: theme.palette.primary.contrastText },
+    loginProgress: { color: "white" },
   })
 );
 
 const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const classes = useStyles();
-  const theme = useTheme();
 
   useEffect(() => {
     let query = qs.parse(props.location.hash, {
@@ -96,8 +93,8 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
       <Hidden smDown implementation="css">
         {(props.organizers?.size ?? 0) > 1 && (
           <FormControl
+            className={classes.organizerSelector}
             variant="outlined"
-            style={{ minWidth: 200 }}
             size="small"
           >
             {props.selectedOrganizer !== undefined && (
@@ -105,7 +102,7 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
                 id="series-select"
                 value={props.selectedOrganizer.id}
                 onChange={onOrganizerChange}
-                style={{ color: theme.palette.primary.contrastText }}
+                className={classes.selectOption}
               >
                 {props.organizers?.toArray()?.map((organizer: Organizer) => (
                   <MenuItem key={organizer.id} value={organizer.id}>
@@ -120,7 +117,7 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
       <div className={classes.authControl}>
         {props.loggingIn && (
-          <CircularProgress size={20} style={{ color: "white" }} />
+          <CircularProgress size={20} className={classes.loginProgress} />
         )}
         {!props.loggingIn && !props.loggedInUser && (
           <div>

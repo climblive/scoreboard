@@ -26,18 +26,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestList = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const { setTitle, reloadContests } = props;
+
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const classes = useStyles();
 
   useEffect(() => {
-    props.setTitle("Contests");
-  }, [props.setTitle]);
+    setTitle("Contests");
+  }, [setTitle]);
 
   const refreshContests = useCallback(() => {
     setRefreshing(true);
-    props.reloadContests().finally(() => setRefreshing(false));
-  }, [props.reloadContests]);
+    reloadContests().finally(() => setRefreshing(false));
+  }, [reloadContests]);
 
   useEffect(() => {
     if (props.contests === undefined) {

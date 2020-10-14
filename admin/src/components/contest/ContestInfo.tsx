@@ -36,6 +36,16 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const {
+    loadContest,
+    reloadColors,
+    loadCompClasses,
+    loadProblems,
+    loadContenders,
+    loadTicks,
+    loadRaffles,
+  } = props;
+
   let selectedPath = useLocation().pathname;
   let [loading, setLoading] = useState(false);
 
@@ -50,47 +60,47 @@ const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
     if (contest === undefined) {
       setLoading(true);
-      props.loadContest(props.contestId).finally(() => {
+      loadContest(props.contestId).finally(() => {
         setLoading(false);
       });
     }
-  }, [props.contestId, props.contests, props.loadContest]);
+  }, [props.contestId, props.contests, loadContest]);
 
   useEffect(() => {
     if (props.contestId !== undefined && props.colors === undefined) {
-      props.reloadColors();
+      reloadColors();
     }
-  }, [props.contestId, props.colors, props.reloadColors]);
+  }, [props.contestId, props.colors, reloadColors]);
 
   useEffect(() => {
     if (props.contestId !== undefined && props.compClasses === undefined) {
-      props.loadCompClasses(props.contestId);
+      loadCompClasses(props.contestId);
     }
-  }, [props.contestId, props.compClasses, props.loadCompClasses]);
+  }, [props.contestId, props.compClasses, loadCompClasses]);
 
   useEffect(() => {
     if (props.contestId !== undefined && props.problems === undefined) {
-      props.loadProblems(props.contestId);
+      loadProblems(props.contestId);
     }
-  }, [props.contestId, props.problems, props.loadProblems]);
+  }, [props.contestId, props.problems, loadProblems]);
 
   useEffect(() => {
     if (props.contestId !== undefined && props.contenders === undefined) {
-      props.loadContenders(props.contestId);
+      loadContenders(props.contestId);
     }
-  }, [props.contestId, props.contenders, props.loadContenders]);
+  }, [props.contestId, props.contenders, loadContenders]);
 
   useEffect(() => {
     if (props.contestId !== undefined && props.ticks === undefined) {
-      props.loadTicks(props.contestId);
+      loadTicks(props.contestId);
     }
-  }, [props.contestId, props.ticks, props.loadTicks]);
+  }, [props.contestId, props.ticks, loadTicks]);
 
   useEffect(() => {
     if (props.contestId !== undefined && props.raffles === undefined) {
-      props.loadRaffles(props.contestId);
+      loadRaffles(props.contestId);
     }
-  }, [props.contestId, props.raffles, props.loadRaffles]);
+  }, [props.contestId, props.raffles, loadRaffles]);
 
   const selectTab = (event: any, newValue: string) => {
     props.history.push(newValue);

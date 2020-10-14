@@ -23,14 +23,16 @@ interface Props {}
 const breakpoints = new Map<number, string>().set(3, "smDown");
 
 const ColorList = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const { setTitle, loadColors } = props;
+
   React.useEffect(() => {
-    props.setTitle("Colors");
-  }, [props.setTitle]);
+    setTitle("Colors");
+  }, [setTitle]);
 
   const refreshColors = useCallback(() => {
     setRefreshing(true);
-    props.loadColors().finally(() => setRefreshing(false));
-  }, [props.loadColors]);
+    loadColors().finally(() => setRefreshing(false));
+  }, [loadColors]);
 
   React.useEffect(() => {
     if (props.colors === undefined) {

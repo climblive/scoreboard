@@ -21,9 +21,11 @@ interface Props {}
 const breakpoints = new Map<number, string>().set(1, "smDown");
 
 const OrganizerList = (props: Props & PropsFromRedux) => {
+  const { setTitle } = props;
+
   React.useEffect(() => {
-    props.setTitle("Organizers");
-  }, [props.setTitle]);
+    setTitle("Organizers");
+  }, [setTitle]);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);

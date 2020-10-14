@@ -29,14 +29,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const breakpoints = new Map<number, string>();
 
 const SeriesList = (props: Props & PropsFromRedux) => {
+  const { setTitle, reloadSeries } = props;
+
   React.useEffect(() => {
-    props.setTitle("Series");
-  }, [props.setTitle]);
+    setTitle("Series");
+  }, [setTitle]);
 
   const refreshSeries = useCallback(() => {
     setRefreshing(true);
-    props.reloadSeries().finally(() => setRefreshing(false));
-  }, [props.reloadSeries]);
+    reloadSeries().finally(() => setRefreshing(false));
+  }, [reloadSeries]);
 
   React.useEffect(() => {
     if (props.series === undefined) {

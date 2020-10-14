@@ -58,6 +58,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const { loadLocations, loadSeries, setTitle } = props;
+
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
   let [compilingPdf, setCompilingPdf] = useState<boolean>(false);
@@ -77,12 +79,12 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   useEffect(() => {
     if (props.locations === undefined) {
-      props.loadLocations();
+      loadLocations();
     }
     if (props.series === undefined) {
-      props.loadSeries();
+      loadSeries();
     }
-  }, [props.series, props.locations, props.loadLocations, props.loadSeries]);
+  }, [props.series, props.locations, loadLocations, loadSeries]);
 
   useEffect(() => {
     if (props.contestId !== undefined) {
@@ -91,12 +93,12 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
         setContest(contest);
       }
     }
-  }, [props.contests]);
+  }, [props.contestId, props.contests]);
 
   useEffect(() => {
     let title = contest?.id === undefined ? "Add contest" : contest.name;
-    props.setTitle(title);
-  }, [contest, props.setTitle]);
+    setTitle(title);
+  }, [contest, setTitle]);
 
   const classes = useStyles();
   const theme = useTheme();

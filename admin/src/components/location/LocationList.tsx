@@ -29,14 +29,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const breakpoints = new Map<number, string>().set(1, "smDown").set(2, "smDown");
 
 const LocationList = (props: Props & PropsFromRedux) => {
+  const { setTitle, reloadLocations } = props;
+
   React.useEffect(() => {
-    props.setTitle("Location");
-  }, [props.setTitle]);
+    setTitle("Location");
+  }, [setTitle]);
 
   const refreshLocation = useCallback(() => {
     setRefreshing(true);
-    props.reloadLocations().finally(() => setRefreshing(false));
-  }, [props.reloadLocations]);
+    reloadLocations().finally(() => setRefreshing(false));
+  }, [reloadLocations]);
 
   React.useEffect(() => {
     if (props.locations === undefined) {

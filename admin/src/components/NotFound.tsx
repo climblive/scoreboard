@@ -6,9 +6,11 @@ import { setTitle } from "../actions/actions";
 interface Props {}
 
 const NotFound = (props: Props & PropsFromRedux) => {
+  const { setTitle } = props;
+
   React.useEffect(() => {
-    props.setTitle("404");
-  }, [props.setTitle]);
+    setTitle("404");
+  }, [setTitle]);
   return <Alert severity="error">The requested page does not exist.</Alert>;
 };
 

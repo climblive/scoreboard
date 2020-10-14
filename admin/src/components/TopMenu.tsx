@@ -37,6 +37,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const { login } = props;
+
   const classes = useStyles();
 
   useEffect(() => {
@@ -46,16 +48,16 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
     let credentials: string | null = query.access_token as string;
 
     if (credentials) {
-      props.login(credentials);
+      login(credentials);
       props.history.push("/contests");
     } else {
       credentials = localStorage.getItem("credentials");
 
       if (credentials != null) {
-        props.login(credentials);
+        login(credentials);
       }
     }
-  }, [props.history, props.location.hash, props.login]);
+  }, [props.history, props.location.hash, login]);
 
   const onOrganizerChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const id = parseInt(e.target.value as string);
@@ -75,11 +77,11 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
     return url;
   };
 
-  const login = () => {
+  const redirectToLogin = () => {
     window.location.href = getUrl("login");
   };
 
-  const signup = () => {
+  const redirectToSignup = () => {
     window.location.href = getUrl("signup");
   };
 
@@ -121,10 +123,10 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
         )}
         {!props.loggingIn && !props.loggedInUser && (
           <div>
-            <Button color="inherit" onClick={login}>
+            <Button color="inherit" onClick={redirectToLogin}>
               Login
             </Button>
-            <Button color="inherit" onClick={signup}>
+            <Button color="inherit" onClick={redirectToSignup}>
               Sign up
             </Button>
           </div>

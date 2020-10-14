@@ -1,4 +1,4 @@
-import { Button, Grid, Hidden, StyledComponentProps } from "@material-ui/core";
+import { Button, Grid, Hidden } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
@@ -38,9 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const TopMenu = (
-  props: Props & PropsFromRedux & RouteComponentProps & StyledComponentProps
-) => {
+const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const classes = useStyles();
   const theme = useTheme();
 

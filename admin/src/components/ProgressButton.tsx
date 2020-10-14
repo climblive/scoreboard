@@ -1,7 +1,7 @@
 import { CircularProgress } from "@material-ui/core";
 import Button, { ButtonProps } from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import React from "react";
+import React, { memo } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,7 +26,7 @@ interface Props {
   loading?: boolean;
 }
 
-export const ProgressButton = (props: Props & ButtonProps) => {
+export const ProgressButton = memo((props: Props & ButtonProps) => {
   const classes = useStyles();
   const { loading, ...rest } = props;
 
@@ -44,4 +44,4 @@ export const ProgressButton = (props: Props & ButtonProps) => {
       )}
     </div>
   );
-};
+});

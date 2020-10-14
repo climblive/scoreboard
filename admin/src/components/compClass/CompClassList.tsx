@@ -1,9 +1,8 @@
-import { Paper, TableCell, useTheme } from "@material-ui/core";
+import { Paper, TableCell } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import moment from "moment";
@@ -15,6 +14,7 @@ import { StoreState } from "../../model/storeState";
 import { getSelectedOrganizer } from "../../selectors/selector";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import CompClassEdit from "./CompClassEdit";
 import CompClassView from "./CompClassView";
 
@@ -39,7 +39,6 @@ const CompClassList = (props: Props & PropsFromRedux) => {
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const theme = useTheme();
   const classes = useStyles();
 
   const onCreateDone = () => {
@@ -90,23 +89,19 @@ const CompClassList = (props: Props & PropsFromRedux) => {
         />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={4}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <CompClassEdit
-                    cancellable
-                    onDone={onCreateDone}
-                    compClass={{
-                      name: "",
-                      description: "",
-                      contestId: props.contestId,
-                      timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                      timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                    }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={4}>
+              <CompClassEdit
+                cancellable
+                onDone={onCreateDone}
+                compClass={{
+                  name: "",
+                  description: "",
+                  contestId: props.contestId,
+                  timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                  timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
           {props.compClasses?.toArray()?.map((compClass: CompClass) => (
             <CompClassView

@@ -50,7 +50,6 @@ const App = (props: Props & PropsFromRedux) => {
               vertical: "bottom",
               horizontal: "center",
             }}
-            style={{ bottom: 15 }}
             open={props.errorMessage !== undefined}
             autoHideDuration={6000}
             onClose={handleClose}

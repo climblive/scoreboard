@@ -1,8 +1,6 @@
 import { Button, TableCell } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import React, { useState } from "react";
@@ -13,6 +11,7 @@ import { Organizer } from "../../model/organizer";
 import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import OrganizerEdit from "./OrganizerEdit";
 import OrganizerView from "./OrganizerView";
@@ -28,8 +27,6 @@ const OrganizerList = (props: Props & PropsFromRedux) => {
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const theme = useTheme();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -74,17 +71,13 @@ const OrganizerList = (props: Props & PropsFromRedux) => {
         <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={3}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <OrganizerEdit
-                    onDone={onCreateDone}
-                    cancellable
-                    organizer={{ name: "" }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={3}>
+              <OrganizerEdit
+                onDone={onCreateDone}
+                cancellable
+                organizer={{ name: "" }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
 
           {props.organizers?.toArray()?.map((organizer: Organizer) => (

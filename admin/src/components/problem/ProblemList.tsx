@@ -1,10 +1,5 @@
-import { IconButton, Paper, TableCell, TableRow } from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { IconButton, Paper, TableCell } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
@@ -18,6 +13,7 @@ import { Problem } from "../../model/problem";
 import { StoreState } from "../../model/storeState";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import ProblemEdit from "./ProblemEdit";
 import ProblemView from "./ProblemView";
 
@@ -51,7 +47,6 @@ const ProblemList = (props: Props & PropsFromRedux) => {
     return ticks !== undefined ? groupTicksByProblem(ticks) : undefined;
   }, [props.ticks]);
 
-  const theme = useTheme();
   const classes = useStyles();
 
   const createDone = () => {
@@ -177,26 +172,22 @@ const ProblemList = (props: Props & PropsFromRedux) => {
 
   if (showCreate) {
     const component = (
-      <TableRow key="new" selected>
-        <TableCell padding="none" colSpan={5}>
-          <div style={{ padding: theme.spacing(0, 2) }}>
-            <ProblemEdit
-              getProblemStyle={getProblemStyle}
-              cancellable
-              editable
-              onDone={createDone}
-              orderable
-              problem={{
-                name: undefined,
-                number: nextNumber(),
-                colorId: props.colors?.toArray()?.[0]?.id!,
-                contestId: props.contestId,
-                points: 1,
-              }}
-            />
-          </div>
-        </TableCell>
-      </TableRow>
+      <ResponsiveTableSpanningRow colSpan={5}>
+        <ProblemEdit
+          getProblemStyle={getProblemStyle}
+          cancellable
+          editable
+          onDone={createDone}
+          orderable
+          problem={{
+            name: undefined,
+            number: nextNumber(),
+            colorId: props.colors?.toArray()?.[0]?.id!,
+            contestId: props.contestId,
+            points: 1,
+          }}
+        />
+      </ResponsiveTableSpanningRow>
     );
     rows = [component, ...rows];
   }

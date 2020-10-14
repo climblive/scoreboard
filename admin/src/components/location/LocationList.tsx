@@ -1,13 +1,7 @@
 import { Button, TableCell } from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import React, { useCallback, useState } from "react";
@@ -20,6 +14,7 @@ import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import LocationEdit from "./LocationEdit";
 import LocationView from "./LocationView";
 
@@ -53,8 +48,6 @@ const LocationList = (props: Props & PropsFromRedux) => {
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const theme = useTheme();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -95,20 +88,16 @@ const LocationList = (props: Props & PropsFromRedux) => {
         <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={4}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <LocationEdit
-                    onDone={onCreateDone}
-                    cancellable
-                    location={{
-                      name: "",
-                      organizerId: props.selectedOrganizer?.id!,
-                    }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={4}>
+              <LocationEdit
+                onDone={onCreateDone}
+                cancellable
+                location={{
+                  name: "",
+                  organizerId: props.selectedOrganizer?.id!,
+                }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
 
           {props.locations?.toArray()?.map((location: CompLocation) => (

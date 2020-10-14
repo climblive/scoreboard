@@ -1,8 +1,6 @@
 import { Button, TableCell } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import React, { useCallback, useState } from "react";
@@ -16,6 +14,7 @@ import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import ColorEdit from "./ColorEdit";
 import ColorView from "./ColorView";
 
@@ -41,8 +40,6 @@ const ColorList = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const theme = useTheme();
 
   const buttons = [
     <Button
@@ -80,24 +77,20 @@ const ColorList = (props: Props & PropsFromRedux & RouteComponentProps) => {
         <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={5}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <ColorEdit
-                    onDone={() => setShowCreate(false)}
-                    editable
-                    cancellable
-                    color={{
-                      organizerId: props.selectedOrganizer?.id!,
-                      name: "",
-                      rgbPrimary: "#ffffff",
-                      rgbSecondary: undefined,
-                      shared: false,
-                    }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={5}>
+              <ColorEdit
+                onDone={() => setShowCreate(false)}
+                editable
+                cancellable
+                color={{
+                  organizerId: props.selectedOrganizer?.id!,
+                  name: "",
+                  rgbPrimary: "#ffffff",
+                  rgbSecondary: undefined,
+                  shared: false,
+                }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
           {props.colors?.toArray()?.map((color: Color) => (
             <ColorView

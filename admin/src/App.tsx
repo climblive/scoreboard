@@ -7,16 +7,13 @@ import { Close } from "@material-ui/icons";
 import Alert from "@material-ui/lab/Alert";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { clearErrorMessage } from "./actions/actions";
 import MainLayout from "./components/MainLayout";
 import { StoreState } from "./model/storeState";
 
-export interface Props {
-  errorMessage?: string;
-  clearErrorMessage?: () => void;
-}
+export interface Props {}
 
 const theme = createMuiTheme({
   palette: {
@@ -38,9 +35,9 @@ const theme = createMuiTheme({
   },
 });
 
-const App = (props: Props) => {
+const App = (props: Props & PropsFromRedux) => {
   const handleClose = (event: any, reason?: any) => {
-    props.clearErrorMessage!!();
+    props.clearErrorMessage();
   };
 
   return (
@@ -78,14 +75,16 @@ const App = (props: Props) => {
   );
 };
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    errorMessage: state.errorMessage,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  errorMessage: state.errorMessage,
+});
 
 const mapDispatchToProps = {
   clearErrorMessage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(App);

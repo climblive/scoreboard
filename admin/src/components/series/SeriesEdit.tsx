@@ -5,20 +5,17 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import SaveIcon from "@material-ui/icons/Save";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteSeries, saveSeries } from "../../actions/asyncActions";
 import { Series } from "../../model/series";
-import { StoreState } from "../../model/storeState";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { ProgressButton } from "../ProgressButton";
 
 interface Props {
-  series?: Series;
+  series: Series;
   removable?: boolean;
   cancellable?: boolean;
   onDone?: () => void;
-  saveSeries?: (series: Series) => Promise<Series>;
-  deleteSeries?: (series: Series) => Promise<void>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,9 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const SeriesEdit = (props: Props) => {
+const SeriesEdit = (props: Props & PropsFromRedux) => {
   const [series, setSeries] = useState<Series>({
-    ...props.series!,
+    ...props.series,
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
@@ -60,7 +57,7 @@ const SeriesEdit = (props: Props) => {
   const onSave = () => {
     setSaving(true);
     props
-      .saveSeries?.(series)
+      .saveSeries(series)
       .then((series) => {
         setSaving(false);
         props.onDone?.();
@@ -73,7 +70,7 @@ const SeriesEdit = (props: Props) => {
 
     if (result) {
       setDeleting(true);
-      props.deleteSeries?.(series).finally(() => setDeleting(false));
+      props.deleteSeries(series).finally(() => setDeleting(false));
     }
   };
 
@@ -133,13 +130,13 @@ const SeriesEdit = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {};
-}
-
 const mapDispatchToProps = {
   saveSeries,
   deleteSeries,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SeriesEdit);
+const connector = connect(undefined, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(SeriesEdit);

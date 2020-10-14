@@ -12,28 +12,17 @@ import {
 } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { OrderedMap } from "immutable";
 import * as qs from "qs";
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { logout } from "../actions/actions";
 import { login, selectOrganizer } from "../actions/asyncActions";
 import { Organizer } from "../model/organizer";
 import { StoreState } from "../model/storeState";
-import { User } from "../model/user";
 
-export interface Props {
-  loggingIn: boolean;
-  loggedInUser?: User;
-  organizers?: OrderedMap<number, Organizer>;
-  selectedOrganizer?: Organizer;
-
-  login?: (code: string) => void;
-  logout?: () => void;
-  selectOrganizer?: (organizerId: number) => void;
-}
+export interface Props {}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,7 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
+const TopMenu = (
+  props: Props & PropsFromRedux & RouteComponentProps & StyledComponentProps
+) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -60,13 +51,13 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     let credentials: string | null = query.access_token as string;
 
     if (credentials) {
-      props.login?.(credentials);
+      props.login(credentials);
       props.history.push("/contests");
     } else {
       credentials = localStorage.getItem("credentials");
 
       if (credentials != null) {
-        props.login!(credentials);
+        props.login(credentials);
       }
     }
   }, [props.history, props.location.hash, props.login]);
@@ -75,7 +66,7 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     const id = parseInt(e.target.value as string);
     let organizer = props.organizers?.get(id);
     if (organizer !== undefined) {
-      props.selectOrganizer?.(organizer.id!);
+      props.selectOrganizer(organizer.id!);
     }
   };
 
@@ -99,7 +90,7 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
 
   const logout = () => {
     localStorage.removeItem("credentials");
-    props.logout!();
+    props.logout();
   };
 
   return (
@@ -189,14 +180,12 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
   );
 };
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    loggingIn: state.loggingIn,
-    loggedInUser: state.loggedInUser,
-    organizers: state.organizers,
-    selectedOrganizer: getSelectedOrganizer(state),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  loggingIn: state.loggingIn,
+  loggedInUser: state.loggedInUser,
+  organizers: state.organizers,
+  selectedOrganizer: getSelectedOrganizer(state),
+});
 
 const mapDispatchToProps = {
   login,
@@ -204,7 +193,8 @@ const mapDispatchToProps = {
   selectOrganizer,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(TopMenu));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(TopMenu));

@@ -2,8 +2,6 @@ import { StyledComponentProps, Theme } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import * as React from "react";
-import { connect } from "react-redux";
-import { StoreState } from "../model/storeState";
 
 interface Props {}
 
@@ -98,13 +96,4 @@ const WelcomeView = ({ classes }: Props & StyledComponentProps) => {
   );
 };
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {};
-}
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(WelcomeView));
+export default withStyles(styles)(WelcomeView);

@@ -14,8 +14,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import SaveIcon from "@material-ui/icons/Save";
 import React, { useState } from "react";
 import { ChromePicker } from "react-color";
-import { connect } from "react-redux";
-import { User } from "src/model/user";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteColor, saveColor } from "../../actions/asyncActions";
 import { Color } from "../../model/color";
 import { StoreState } from "../../model/storeState";
@@ -24,14 +23,11 @@ import { ConfirmationDialog } from "../ConfirmationDialog";
 import { ProgressButton } from "../ProgressButton";
 
 interface Props {
-  color?: Color;
-  loggedInUser?: User;
+  color: Color;
   editable?: boolean;
   removable?: boolean;
   cancellable?: boolean;
   onDone?: () => void;
-  deleteColor?: (color: Color) => Promise<void>;
-  saveColor?: (color: Color) => Promise<Color>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -64,9 +60,9 @@ enum PopupType {
   SECONDARY = "SECONDARY",
 }
 
-const ColorEdit = (props: Props) => {
+const ColorEdit = (props: Props & PropsFromRedux) => {
   const [color, setColor] = useState<Color>({
-    ...props.color!,
+    ...props.color,
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
@@ -88,7 +84,7 @@ const ColorEdit = (props: Props) => {
   const onSave = () => {
     setSaving(true);
     props
-      .saveColor?.(color)
+      .saveColor(color)
       .then((color) => {
         setSaving(false);
         props.onDone?.();
@@ -134,7 +130,7 @@ const ColorEdit = (props: Props) => {
 
     if (result) {
       setDeleting(true);
-      props.deleteColor?.(color).finally(() => setDeleting(false));
+      props.deleteColor(color).finally(() => setDeleting(false));
     }
   };
 
@@ -278,15 +274,17 @@ const ColorEdit = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    loggedInUser: state.loggedInUser,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  loggedInUser: state.loggedInUser,
+});
 
 const mapDispatchToProps = {
   saveColor,
   deleteColor,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ColorEdit);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ColorEdit);

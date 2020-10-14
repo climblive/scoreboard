@@ -10,15 +10,12 @@ import ExploreIcon from "@material-ui/icons/Explore";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import PeopleIcon from "@material-ui/icons/People";
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { Link } from "react-router-dom";
 import { Environment } from "src/environment";
 import { StoreState } from "../model/storeState";
-import { User } from "../model/user";
 
-export interface Props {
-  loggedInUser?: User;
-}
+export interface Props {}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function SideMenu({ loggedInUser }: Props) {
+function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
   const classes = useStyles();
 
   const items = [
@@ -129,12 +126,12 @@ function SideMenu({ loggedInUser }: Props) {
   );
 }
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    loggedInUser: state.loggedInUser,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  loggedInUser: state.loggedInUser,
+});
 
-const mapDispatchToProps = {};
+const connector = connect(mapStateToProps, {});
 
-export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(SideMenu);

@@ -1,11 +1,10 @@
 import { Divider, Grid, Paper, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { StoreState } from "../model/storeState";
 
 interface Props {
-  title?: string;
   buttons?: JSX.Element[];
   children?: React.ReactNode;
 }
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContentLayout = (props: Props) => {
+const ContentLayout = (props: Props & PropsFromRedux) => {
   const classes = useStyles();
 
   return (
@@ -62,12 +61,12 @@ const ContentLayout = (props: Props) => {
   );
 };
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    title: state.title,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  title: state.title,
+});
 
-const mapDispatchToProps = {};
+const connector = connect(mapStateToProps, {});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentLayout);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ContentLayout);

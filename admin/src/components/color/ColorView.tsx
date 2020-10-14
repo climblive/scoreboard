@@ -1,45 +1,41 @@
 import { TableCell } from "@material-ui/core";
 import PeopleIcon from "@material-ui/icons/People";
 import React from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { Color } from "src/model/color";
-import { User } from "src/model/user";
 import { StoreState } from "../../model/storeState";
 import { getColorStyle } from "../../utils/color";
 import ResponsiveTableRow from "../ResponsiveTableRow";
 import ColorEdit from "./ColorEdit";
 
 interface Props {
-  color?: Color;
-  loggedInUser?: User;
+  color: Color;
   breakpoints?: Map<number, string>;
   onBeginEdit?: () => void;
 }
 
-const ColorView = (props: Props) => {
-  const editable = !props.color?.shared || props.loggedInUser?.admin;
+const ColorView = (props: Props & PropsFromRedux) => {
+  const editable = !props.color.shared || props.loggedInUser?.admin;
 
   const cells = [
     <TableCell component="th" scope="row" style={{ overflow: "hidden" }}>
-      {props.color?.name}
+      {props.color.name}
     </TableCell>,
     <TableCell component="th" scope="row">
-      <div style={getColorStyle(props.color?.rgbPrimary)}>
-        {props.color?.rgbPrimary.substr(1)}
+      <div style={getColorStyle(props.color.rgbPrimary)}>
+        {props.color.rgbPrimary.substr(1)}
       </div>
     </TableCell>,
     <TableCell>
-      {props.color?.rgbSecondary ? (
-        <div style={getColorStyle(props.color?.rgbSecondary)}>
-          {props.color?.rgbSecondary.substr(1)}
+      {props.color.rgbSecondary ? (
+        <div style={getColorStyle(props.color.rgbSecondary)}>
+          {props.color.rgbSecondary.substr(1)}
         </div>
       ) : (
         "None"
       )}
     </TableCell>,
-    <TableCell align="right">
-      {props.color?.shared && <PeopleIcon />}
-    </TableCell>,
+    <TableCell align="right">{props.color.shared && <PeopleIcon />}</TableCell>,
   ];
 
   return (
@@ -49,12 +45,12 @@ const ColorView = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    loggedInUser: state.loggedInUser,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  loggedInUser: state.loggedInUser,
+});
 
-const mapDispatchToProps = {};
+const connector = connect(mapStateToProps, {});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ColorView);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ColorView);

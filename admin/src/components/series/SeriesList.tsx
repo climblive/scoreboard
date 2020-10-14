@@ -10,13 +10,11 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { OrderedMap } from "immutable";
 import React, { useCallback, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { setTitle } from "../../actions/actions";
 import { reloadSeries } from "../../actions/asyncActions";
-import { Organizer } from "../../model/organizer";
 import { Series } from "../../model/series";
 import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
@@ -25,13 +23,7 @@ import ResponsiveTableHead from "../ResponsiveTableHead";
 import SeriesEdit from "./SeriesEdit";
 import SeriesView from "./SeriesView";
 
-interface Props {
-  series?: OrderedMap<number, Series>;
-  selectedOrganizer?: Organizer;
-
-  loadSeries?: () => Promise<void>;
-  setTitle?: (title: string) => void;
-}
+interface Props {}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,15 +33,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const breakpoints = new Map<number, string>();
 
-const SeriesList = (props: Props) => {
+const SeriesList = (props: Props & PropsFromRedux) => {
   React.useEffect(() => {
-    props.setTitle?.("Series");
+    props.setTitle("Series");
   }, [props.setTitle]);
 
   const refreshSeries = useCallback(() => {
     setRefreshing(true);
-    props.loadSeries?.().finally(() => setRefreshing(false));
-  }, [props.loadSeries]);
+    props.reloadSeries().finally(() => setRefreshing(false));
+  }, [props.reloadSeries]);
 
   React.useEffect(() => {
     if (props.series === undefined) {
@@ -104,11 +96,10 @@ const SeriesList = (props: Props) => {
                 <div style={{ padding: theme.spacing(0, 2) }}>
                   <SeriesEdit
                     onDone={onCreateDone}
-                    editable
                     cancellable
                     series={{
                       name: "",
-                      organizerId: props.selectedOrganizer?.id,
+                      organizerId: props.selectedOrganizer?.id!,
                     }}
                   />
                 </div>
@@ -134,16 +125,18 @@ const SeriesList = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    series: state.series,
-    selectedOrganizer: getSelectedOrganizer(state),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  series: state.series,
+  selectedOrganizer: getSelectedOrganizer(state),
+});
 
 const mapDispatchToProps = {
-  loadSeries: reloadSeries,
+  reloadSeries,
   setTitle,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SeriesList);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(SeriesList);

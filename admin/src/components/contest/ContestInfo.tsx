@@ -1,20 +1,12 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { Route, RouteComponentProps, Switch } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import {} from "../../actions/actions";
-import {
-  loadCompClasses,
-  loadContenders,
-  loadContest,
-  loadProblems,
-  loadRaffles,
-  loadTicks,
-  reloadColors,
-} from "../../actions/asyncActions";
+import { loadContest, reloadColors } from "../../actions/asyncActions";
 import { StoreState } from "../../model/storeState";
 import CompClassList from "../compClass/CompClassList";
 import ContenderList from "../contender/ContenderList";
@@ -36,71 +28,31 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const {
-    loadContest,
-    reloadColors,
-    loadCompClasses,
-    loadProblems,
-    loadContenders,
-    loadTicks,
-    loadRaffles,
-  } = props;
+  const { loadContest, reloadColors } = props;
 
   let selectedPath = useLocation().pathname;
   let [loading, setLoading] = useState(false);
 
   const classes = useStyles();
 
-  useEffect(() => {
+  const initialize = useCallback(() => {
     if (props.contestId === undefined) {
       return;
     }
 
-    let contest = props.contests?.get(props.contestId);
+    setLoading(true);
+    loadContest(props.contestId).finally(() => {
+      setLoading(false);
+    });
+  }, [props.contestId, loadContest]);
 
-    if (contest === undefined) {
-      setLoading(true);
-      loadContest(props.contestId).finally(() => {
-        setLoading(false);
-      });
-    }
-  }, [props.contestId, props.contests, loadContest]);
+  useEffect(() => initialize(), [initialize]);
 
   useEffect(() => {
-    if (props.contestId !== undefined && props.colors === undefined) {
+    if (props.colors === undefined) {
       reloadColors();
     }
-  }, [props.contestId, props.colors, reloadColors]);
-
-  useEffect(() => {
-    if (props.contestId !== undefined && props.compClasses === undefined) {
-      loadCompClasses(props.contestId);
-    }
-  }, [props.contestId, props.compClasses, loadCompClasses]);
-
-  useEffect(() => {
-    if (props.contestId !== undefined && props.problems === undefined) {
-      loadProblems(props.contestId);
-    }
-  }, [props.contestId, props.problems, loadProblems]);
-
-  useEffect(() => {
-    if (props.contestId !== undefined && props.contenders === undefined) {
-      loadContenders(props.contestId);
-    }
-  }, [props.contestId, props.contenders, loadContenders]);
-
-  useEffect(() => {
-    if (props.contestId !== undefined && props.ticks === undefined) {
-      loadTicks(props.contestId);
-    }
-  }, [props.contestId, props.ticks, loadTicks]);
-
-  useEffect(() => {
-    if (props.contestId !== undefined && props.raffles === undefined) {
-      loadRaffles(props.contestId);
-    }
-  }, [props.contestId, props.raffles, loadRaffles]);
+  }, [props.colors, reloadColors]);
 
   const selectTab = (event: any, newValue: string) => {
     props.history.push(newValue);
@@ -223,30 +175,10 @@ const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
 const mapStateToProps = (state: StoreState, props: Props) => ({
   colors: state.colors,
   contests: state.contests,
-  compClasses: props.contestId
-    ? state.compClassesByContest.get(props.contestId)
-    : undefined,
-  problems: props.contestId
-    ? state.problemsByContest.get(props.contestId)
-    : undefined,
-  contenders: props.contestId
-    ? state.contendersByContest.get(props.contestId)
-    : undefined,
-  ticks: props.contestId
-    ? state.ticksByContest.get(props.contestId)
-    : undefined,
-  raffles: props.contestId
-    ? state.rafflesByContest.get(props.contestId)
-    : undefined,
 });
 
 const mapDispatchToProps = {
   reloadColors,
-  loadCompClasses,
-  loadProblems,
-  loadContenders,
-  loadTicks,
-  loadRaffles,
   loadContest,
 };
 

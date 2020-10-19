@@ -66,7 +66,14 @@ export function loadContest(contestId: number) {
     return Api.getContest(contestId)
       .then((contest) => {
         dispatch(actions.updateContestSuccess(contest));
-        return Promise.resolve(contest);
+
+        return Promise.all([
+          loadCompClasses(contestId)(dispatch),
+          loadProblems(contestId)(dispatch),
+          loadContenders(contestId)(dispatch),
+          loadRaffles(contestId)(dispatch),
+          loadTicks(contestId)(dispatch),
+        ]).then(() => contest);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -214,9 +221,7 @@ export function reloadLocations() {
 }
 
 export function saveLocation(location: CompLocation) {
-  return (
-    dispatch: Dispatch<ScoreboardActions>
-  ): Promise<CompLocation> => {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<CompLocation> => {
     return Api.saveLocation(location)
       .then((location) => {
         dispatch(actions.updateLocationSuccess(location));

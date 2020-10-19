@@ -170,7 +170,10 @@ const ContenderList = (props: Props & PropsFromRedux) => {
 
   const refreshContenders = () => {
     setRefreshing(true);
-    props.loadContenders?.(props.contestId).finally(() => setRefreshing(false));
+    Promise.all([
+      props.loadContenders(props.contestId),
+      props.loadTicks(props.contestId),
+    ]).finally(() => setRefreshing(false));
   };
 
   const startAddContenders = () => {

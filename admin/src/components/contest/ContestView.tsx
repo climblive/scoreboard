@@ -87,6 +87,12 @@ const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
   useEffect(() => initialize(), [initialize]);
 
   useEffect(() => {
+    return () => {
+      props.history.push("/");
+    };
+  }, [props.history, props.selectedOrganizer]);
+
+  useEffect(() => {
     if (props.colors === undefined) {
       reloadColors();
     }

@@ -3,11 +3,11 @@ import Button, { ButtonProps } from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { memo } from "react";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles<Theme, Props & ButtonProps>((theme: Theme) =>
   createStyles({
     wrapper: {
       position: "relative",
-      display: "inline-block",
+      display: ({ fullWidth }) => (fullWidth ? "inline" : "inline-block"),
     },
     buttonProgress: {
       position: "absolute",
@@ -27,7 +27,7 @@ interface Props {
 }
 
 export const ProgressButton = memo((props: Props & ButtonProps) => {
-  const classes = useStyles();
+  const classes = useStyles(props);
   const { loading, ...rest } = props;
 
   return (

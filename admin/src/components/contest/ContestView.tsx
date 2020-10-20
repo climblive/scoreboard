@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
+const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const { loadContest, reloadColors } = props;
 
   let selectedPath = useLocation().pathname;
@@ -211,4 +211,4 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(ContestInfo);
+export default connector(ContestView);

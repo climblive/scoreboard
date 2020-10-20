@@ -15,7 +15,7 @@ import { Contest } from "../../model/contest";
 import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
-import ContestLineItemView from "./ContestLineItemView";
+import ContestTableRow from "./ContestTableRow";
 
 interface Props {}
 
@@ -84,7 +84,7 @@ const ContestList = (props: Props & PropsFromRedux & RouteComponentProps) => {
         </TableHead>
         <TableBody>
           {props.contests?.toArray()?.map((contest: Contest) => (
-            <ContestLineItemView key={contest.id} contest={contest} />
+            <ContestTableRow key={contest.id} contest={contest} />
           ))}
         </TableBody>
       </Table>

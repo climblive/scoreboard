@@ -310,7 +310,7 @@ export function loadProblems(contestId: number) {
   return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getProblems(contestId)
       .then((problems) => {
-        dispatch(actions.receiveProblems(problems));
+        dispatch(actions.receiveProblemsForContest({ contestId, problems }));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -356,7 +356,9 @@ export function loadCompClasses(contestId: number) {
   return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getCompClasses(contestId)
       .then((compClasses) => {
-        dispatch(actions.receiveCompClasses(compClasses));
+        dispatch(
+          actions.receiveCompClassesForContest({ contestId, compClasses })
+        );
         return Promise.resolve();
       })
       .catch((error) => {
@@ -415,7 +417,9 @@ export function loadContenders(contestId: number) {
   return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getContenders(contestId)
       .then((contenders) => {
-        dispatch(actions.receiveContenders(contenders));
+        dispatch(
+          actions.receiveContendersForContest({ contestId, contenders })
+        );
         return Promise.resolve();
       })
       .catch((error) => {
@@ -460,7 +464,7 @@ export function loadTicks(contestId: number) {
   return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getTicks(contestId)
       .then((ticks) => {
-        dispatch(actions.receiveTicks(ticks));
+        dispatch(actions.receiveTicksForContest({ contestId, ticks }));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -478,7 +482,7 @@ export function loadRaffles(contestId: number) {
   return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getRaffles(contestId)
       .then((raffles) => {
-        dispatch(actions.receiveRaffles(raffles));
+        dispatch(actions.receiveRafflesForContest({ contestId, raffles }));
 
         return Promise.all(
           raffles.map((raffle) => Api.getRaffleWinners(raffle))

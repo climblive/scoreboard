@@ -77,17 +77,16 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     // Comp Classes
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveCompClasses):
+    case getType(scoreboardActions.receiveCompClassesForContest):
       return {
         ...state,
-        compClassesByContest: state.compClassesByContest.withMutations((map) =>
-          action.payload.reduce(
-            (compClasses, compClass) =>
-              compClasses.mergeIn(
-                [compClass.contestId],
-                OrderedMap<number, CompClass>([[compClass.id, compClass]])
-              ),
-            map as any
+        compClassesByContest: state.compClassesByContest.setIn(
+          [action.payload.contestId],
+          OrderedMap(
+            action.payload.compClasses.map((compClass) => [
+              compClass.id!,
+              compClass,
+            ])
           )
         ),
       };
@@ -114,17 +113,13 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     // Problems
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveProblems):
+    case getType(scoreboardActions.receiveProblemsForContest):
       return {
         ...state,
-        problemsByContest: state.problemsByContest.withMutations((map) =>
-          action.payload.reduce(
-            (problems, problem) =>
-              problems.mergeIn(
-                [problem.contestId],
-                OrderedMap<number, Problem>([[problem.id, problem]])
-              ),
-            map as any
+        problemsByContest: state.problemsByContest.setIn(
+          [action.payload.contestId],
+          OrderedMap(
+            action.payload.problems.map((problem) => [problem.id!, problem])
           )
         ),
       };
@@ -291,18 +286,12 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     // Ticks
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveTicks):
+    case getType(scoreboardActions.receiveTicksForContest):
       return {
         ...state,
-        ticksByContest: state.ticksByContest.withMutations((map) =>
-          action.payload.reduce(
-            (ticks, tick) =>
-              ticks.mergeIn(
-                [tick.contestId],
-                OrderedMap<number, Tick>([[tick.id, tick]])
-              ),
-            map as any
-          )
+        ticksByContest: state.ticksByContest.setIn(
+          [action.payload.contestId],
+          OrderedMap(action.payload.ticks.map((tick) => [tick.id!, tick]))
         ),
       };
 
@@ -310,17 +299,16 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     // Contenders
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveContenders):
+    case getType(scoreboardActions.receiveContendersForContest):
       return {
         ...state,
-        contendersByContest: state.contendersByContest.withMutations((map) =>
-          action.payload.reduce(
-            (contenders, contender) =>
-              contenders.mergeIn(
-                [contender.contestId],
-                OrderedMap<number, ContenderData>([[contender.id, contender]])
-              ),
-            map as any
+        contendersByContest: state.contendersByContest.setIn(
+          [action.payload.contestId],
+          OrderedMap(
+            action.payload.contenders.map((contender) => [
+              contender.id!,
+              contender,
+            ])
           )
         ),
       };
@@ -338,17 +326,13 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     // Raffles
     // -------------------------------------------------------------------------
 
-    case getType(scoreboardActions.receiveRaffles):
+    case getType(scoreboardActions.receiveRafflesForContest):
       return {
         ...state,
-        rafflesByContest: state.rafflesByContest.withMutations((map) =>
-          action.payload.reduce(
-            (raffles, raffle) =>
-              raffles.mergeIn(
-                [raffle.contestId],
-                OrderedMap<number, Raffle>([[raffle.id, raffle]])
-              ),
-            map as any
+        rafflesByContest: state.rafflesByContest.setIn(
+          [action.payload.contestId],
+          OrderedMap(
+            action.payload.raffles.map((raffle) => [raffle.id!, raffle])
           )
         ),
       };

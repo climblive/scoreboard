@@ -96,9 +96,9 @@ export const deleteSeriesSuccess = createStandardAction(
 // Comp Classes
 // =============================================================================
 
-export const receiveCompClasses = createStandardAction("RECEIVE_COMP_CLASSES")<
-  CompClass[]
->();
+export const receiveCompClassesForContest = createStandardAction(
+  "RECEIVE_COMP_CLASSES_FOR_CONTEST"
+)<{ contestId: number; compClasses: CompClass[] }>();
 export const updateCompClassSuccess = createStandardAction(
   "UPDATE_COMP_CLASS_SUCCESS"
 )<CompClass>();
@@ -110,9 +110,9 @@ export const deleteCompClassSuccess = createStandardAction(
 // Problems
 // =============================================================================
 
-export const receiveProblems = createStandardAction("RECEIVE_PROBLEMS")<
-  Problem[]
->();
+export const receiveProblemsForContest = createStandardAction(
+  "RECEIVE_PROBLEMS_FOR_CONTEST"
+)<{ contestId: number; problems: Problem[] }>();
 export const updateProblemSuccess = createStandardAction(
   "UPDATE_PROBLEM_SUCCESS"
 )<Problem>();
@@ -124,9 +124,9 @@ export const deleteProblemSuccess = createStandardAction(
 // Raffles
 // =============================================================================
 
-export const receiveRaffles = createStandardAction("RECEIVE_RAFFLES")<
-  Raffle[]
->();
+export const receiveRafflesForContest = createStandardAction(
+  "RECEIVE_RAFFLES_FOR_CONTEST"
+)<{ contestId: number; raffles: Raffle[] }>();
 export const updateRaffleSuccess = createStandardAction(
   "UPDATE_RAFFLE_SUCCESS"
 )<Raffle>();
@@ -144,9 +144,9 @@ export const receiveRaffleWinner = createStandardAction(
 // Contenders
 // =============================================================================
 
-export const receiveContenders = createStandardAction("RECEIVE_CONTENDERS")<
-  ContenderData[]
->();
+export const receiveContendersForContest = createStandardAction(
+  "RECEIVE_CONTENDERS_FOR_CONTEST"
+)<{ contestId: number; contenders: ContenderData[] }>();
 export const updateContenderSuccess = createStandardAction(
   "UPDATE_CONTENDER_SUCCESS"
 )<ContenderData>();
@@ -155,4 +155,9 @@ export const updateContenderSuccess = createStandardAction(
 // Ticks
 // =============================================================================
 
-export const receiveTicks = createStandardAction("RECEIVE_TICKS")<Tick[]>();
+export const receiveTicksForContest = createStandardAction(
+  "RECEIVE_TICKS_FOR_CONTEST"
+)<{
+  contestId: number;
+  ticks: Tick[];
+}>();

@@ -16,7 +16,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { Route, Switch, withRouter } from "react-router-dom";
 import { StoreState } from "../model/storeState";
 import ColorList from "./color/ColorList";
-import ContestInfo from "./contest/ContestInfo";
+import ContestView from "./contest/ContestView";
 import ContestList from "./contest/ContestList";
 import LocationList from "./location/LocationList";
 import NotFound from "./NotFound";
@@ -137,7 +137,7 @@ const MainLayout = (props: Props & PropsFromRedux & RouteComponentProps) => {
                 ) {
                   contestId = parseInt(props.match.params.contestId);
                 }
-                return <ContestInfo {...props} contestId={contestId} />;
+                return <ContestView {...props} contestId={contestId} />;
               }}
             />
             <Route path="/colors" exact component={ColorList} />

@@ -11,7 +11,7 @@ interface Props {
   contest: Contest;
 }
 
-const ContestLineItemView = (
+const ContestTableRow = (
   props: Props & PropsFromRedux & RouteComponentProps
 ) => {
   const getSeriesName = (id?: number) => {
@@ -56,4 +56,4 @@ const connector = connect(mapStateToProps, {});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(withRouter(ContestLineItemView));
+export default connector(withRouter(ContestTableRow));

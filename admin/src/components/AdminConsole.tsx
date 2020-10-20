@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {}
 
-const MainLayout = (props: Props & PropsFromRedux & RouteComponentProps) => {
+const AdminConsole = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -160,4 +160,4 @@ const connector = connect(mapStateToProps, {});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(withRouter(MainLayout));
+export default connector(withRouter(AdminConsole));

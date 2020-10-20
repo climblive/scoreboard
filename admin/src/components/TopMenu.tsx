@@ -1,6 +1,5 @@
 import { Button, Grid, Hidden } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -46,24 +45,6 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
     }
   };
 
-  const getUrl = (command: string) => {
-    let url = "https://clmb.auth.eu-west-1.amazoncognito.com/";
-    url += command;
-    // Response type token or code
-    url +=
-      "?response_type=token&client_id=55s3rmvp8t26lmi0898n9d1lfn&redirect_uri=";
-    url += encodeURIComponent(window.location.origin);
-    return url;
-  };
-
-  const redirectToLogin = () => {
-    window.location.href = getUrl("login");
-  };
-
-  const redirectToSignup = () => {
-    window.location.href = getUrl("signup");
-  };
-
   const logout = () => {
     localStorage.removeItem("credentials");
     props.logout();
@@ -97,19 +78,6 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
       </Hidden>
 
       <div className={classes.authControl}>
-        {props.loggingIn && (
-          <CircularProgress size={20} className={classes.loginProgress} />
-        )}
-        {!props.loggingIn && !props.loggedInUser && (
-          <div>
-            <Button color="inherit" onClick={redirectToLogin}>
-              Login
-            </Button>
-            <Button color="inherit" onClick={redirectToSignup}>
-              Sign up
-            </Button>
-          </div>
-        )}
         {props.loggedInUser && (
           <div>
             <Grid container direction="row" alignItems="center">
@@ -157,7 +125,6 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
 };
 
 const mapStateToProps = (state: StoreState, props: Props) => ({
-  loggingIn: state.loggingIn,
   loggedInUser: state.loggedInUser,
   organizers: state.organizers,
   selectedOrganizer: getSelectedOrganizer(state),

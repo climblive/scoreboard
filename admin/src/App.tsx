@@ -13,7 +13,8 @@ import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { clearErrorMessage } from "./actions/actions";
 import { login } from "./actions/asyncActions";
-import MainLayout from "./components/MainLayout";
+import AdminConsole from "./components/AdminConsole";
+import WelcomeView from "./components/WelcomeView";
 import { StoreState } from "./model/storeState";
 
 export interface Props {}
@@ -66,7 +67,7 @@ const App = (props: Props & PropsFromRedux & RouteComponentProps) => {
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <MuiThemeProvider theme={theme}>
-        <MainLayout />
+        {props.loggedInUser ? <AdminConsole /> : <WelcomeView />}
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
@@ -97,6 +98,7 @@ const App = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
 const mapStateToProps = (state: StoreState, props: Props) => ({
   errorMessage: state.errorMessage,
+  loggedInUser: state.loggedInUser,
 });
 
 const mapDispatchToProps = {

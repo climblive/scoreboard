@@ -17,7 +17,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import { Api } from "src/utils/Api";
-import { setErrorMessage, setTitle } from "../../actions/actions";
+import { setErrorMessage } from "../../actions/actions";
 import {
   deleteContest,
   loadContest,
@@ -37,8 +37,7 @@ import { ProgressButton } from "../ProgressButton";
 import RichTextEditor from "../RichTextEditor";
 
 interface Props {
-  contestId?: number;
-  loading?: boolean;
+  contest: Contest;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,24 +57,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const { loadLocations, loadSeries, setTitle } = props;
+  const { loadLocations, loadSeries } = props;
 
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
   let [compilingPdf, setCompilingPdf] = useState<boolean>(false);
   let [showPopup, setShowPopup] = useState<boolean>(false);
   let [requestingDelete, setRequestingDelete] = useState<boolean>(false);
-  let [contest, setContest] = useState<Contest>({
-    organizerId: props.selectedOrganizer?.id!,
-    protected: false,
-    name: "",
-    description: "",
-    finalEnabled: true,
-    qualifyingProblems: 10,
-    finalists: 5,
-    rules: "",
-    gracePeriod: 15,
-  });
+  let [contest, setContest] = useState<Contest>(props.contest);
 
   useEffect(() => {
     if (props.locations === undefined) {
@@ -86,57 +75,36 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     }
   }, [props.series, props.locations, loadLocations, loadSeries]);
 
-  useEffect(() => {
-    if (props.contestId !== undefined) {
-      let contest = props.contests?.get(props.contestId);
-      if (contest !== undefined) {
-        setContest(contest);
-      }
-    }
-  }, [props.contestId, props.contests]);
-
-  useEffect(() => {
-    let title = contest?.id === undefined ? "Add contest" : contest.name;
-    setTitle(title);
-  }, [contest, setTitle]);
-
   const classes = useStyles();
   const theme = useTheme();
 
   const contestIssues = useMemo(() => {
     let issues: any[] = [];
 
-    if (props.loading || contest.id === undefined) {
+    if (contest.id === undefined) {
       return issues;
     }
 
     if ((props.problems?.size ?? 0) === 0) {
       issues.push({
         description: "Please add problems",
-        link: `/contests/${props.contestId}/problems`,
+        link: `/contests/${contest.id}/problems`,
       });
     }
     if ((props.compClasses?.size ?? 0) === 0) {
       issues.push({
         description: "Please add at least one competition class",
-        link: `/contests/${props.contestId}/classes`,
+        link: `/contests/${contest.id}/classes`,
       });
     }
     if ((props.contenders?.size ?? 0) === 0) {
       issues.push({
         description: "Please add contenders",
-        link: `/contests/${props.contestId}/contenders`,
+        link: `/contests/${contest.id}/contenders`,
       });
     }
     return issues;
-  }, [
-    contest,
-    props.problems,
-    props.compClasses,
-    props.contenders,
-    props.loading,
-    props.contestId,
-  ]);
+  }, [contest, props.problems, props.compClasses, props.contenders]);
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContest({ ...contest, name: e.target.value });
@@ -192,6 +160,7 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     props
       .saveContest(contest)
       .then((contest) => {
+        setContest(contest);
         if (isNew) {
           props.history.push("/contests/" + contest.id!);
         }
@@ -319,13 +288,11 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               label="Name"
               value={contest.name}
               onChange={onNameChange}
-              disabled={props.loading}
             />
             <TextField
               label="Description"
               value={contest.description}
               onChange={onDescriptionChange}
-              disabled={props.loading}
             />
             {(props.locations?.size ?? 0) > 0 && (
               <FormControl>
@@ -336,7 +303,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
                   id="location-select"
                   value={contest.locationId ?? "None"}
                   onChange={onLocationChange}
-                  disabled={props.loading}
                 >
                   <MenuItem value="None">
                     <em>None</em>
@@ -358,7 +324,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
                   id="series-select"
                   value={contest.seriesId ?? "None"}
                   onChange={onSeriesChange}
-                  disabled={props.loading}
                 >
                   <MenuItem value="None">
                     <em>None</em>
@@ -380,7 +345,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               }
               label="Enable finals"
               labelPlacement="end"
-              disabled={props.loading}
             />
             {contest.finalEnabled && (
               <>
@@ -388,13 +352,11 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
                   label="Number of qualifying problems"
                   value={contest.qualifyingProblems}
                   onChange={onQualifyingProblemsChange}
-                  disabled={props.loading}
                 />
                 <TextField
                   label="Number of finalists"
                   value={contest.finalists}
                   onChange={onFinalistsChange}
-                  disabled={props.loading}
                 />
               </>
             )}
@@ -402,7 +364,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               label="Grace period (minutes)"
               value={contest.gracePeriod}
               onChange={onGracePeriodChange}
-              disabled={props.loading}
             />
           </div>
           <div
@@ -472,23 +433,22 @@ const mapStateToProps = (state: StoreState, props: Props) => ({
   locations: state.locations,
   selectedOrganizer: getSelectedOrganizer(state),
   problems:
-    props.contestId !== undefined
-      ? state.problemsByContest.get(props.contestId)
+    props.contest.id !== undefined
+      ? state.problemsByContest.get(props.contest.id)
       : undefined,
   compClasses:
-    props.contestId !== undefined
-      ? state.compClassesByContest.get(props.contestId)
+    props.contest.id !== undefined
+      ? state.compClassesByContest.get(props.contest.id)
       : undefined,
   contenders:
-    props.contestId !== undefined
-      ? state.contendersByContest.get(props.contestId)
+    props.contest.id !== undefined
+      ? state.contendersByContest.get(props.contest.id)
       : undefined,
 });
 
 const mapDispatchToProps = {
   saveContest,
   deleteContest,
-  setTitle,
   loadContest,
   setErrorMessage,
   loadLocations: reloadLocations,

@@ -1,3 +1,4 @@
+import { LinearProgress } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
@@ -7,7 +8,9 @@ import { Route, RouteComponentProps, Switch } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import {} from "../../actions/actions";
 import { loadContest, reloadColors } from "../../actions/asyncActions";
+import { Contest } from "../../model/contest";
 import { StoreState } from "../../model/storeState";
+import { getSelectedOrganizer } from "../../selectors/selector";
 import CompClassList from "../compClass/CompClassList";
 import ContenderList from "../contender/ContenderList";
 import ProblemList from "../problem/ProblemList";
@@ -32,19 +35,38 @@ const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   let selectedPath = useLocation().pathname;
   let [loading, setLoading] = useState(false);
+  const [contest, setContest] = useState<Contest | undefined>(undefined);
 
   const classes = useStyles();
 
   const initialize = useCallback(() => {
-    if (props.contestId === undefined) {
+    if (contest) {
       return;
     }
 
-    setLoading(true);
-    loadContest(props.contestId).finally(() => {
-      setLoading(false);
-    });
-  }, [props.contestId, loadContest]);
+    if (props.contestId === undefined) {
+      setContest({
+        organizerId: props.selectedOrganizer?.id!,
+        protected: false,
+        name: "",
+        description: "",
+        finalEnabled: false,
+        qualifyingProblems: 10,
+        finalists: 5,
+        rules: "",
+        gracePeriod: 15,
+      });
+    } else {
+      setLoading(true);
+      loadContest(props.contestId)
+        .then((contest) => {
+          setContest(contest);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [props.contestId, contest, props.selectedOrganizer, loadContest]);
 
   useEffect(() => initialize(), [initialize]);
 
@@ -139,34 +161,36 @@ const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
       </Tabs>
 
       <div className={classes.page}>
-        <Switch>
-          <Route path="/contests/:contestId" exact>
-            <ContestEdit
-              key="general"
-              contestId={props.contestId}
-              loading={loading}
-            />
-          </Route>
-          {props.contestId !== undefined && (
-            <>
-              <Route path="/contests/:contestId/statistics">
-                <ContestStats key="statistics" contestId={props.contestId} />
+        {loading ? (
+          <LinearProgress color="secondary" />
+        ) : (
+          contest && (
+            <Switch>
+              <Route path="/contests/:contestId" exact>
+                <ContestEdit key="general" contest={contest} />
               </Route>
-              <Route path="/contests/:contestId/classes">
-                <CompClassList key="compClasses" contestId={props.contestId} />
-              </Route>
-              <Route path="/contests/:contestId/problems">
-                <ProblemList key="problems" contestId={props.contestId} />
-              </Route>
-              <Route path="/contests/:contestId/contenders">
-                <ContenderList key="contenders" contestId={props.contestId} />
-              </Route>
-              <Route path="/contests/:contestId/raffles">
-                <RaffleList key="raffles" contestId={props.contestId} />
-              </Route>
-            </>
-          )}
-        </Switch>
+              {contest?.id !== undefined && (
+                <>
+                  <Route path="/contests/:contestId/statistics">
+                    <ContestStats key="statistics" contestId={contest.id} />
+                  </Route>
+                  <Route path="/contests/:contestId/classes">
+                    <CompClassList key="compClasses" contestId={contest.id} />
+                  </Route>
+                  <Route path="/contests/:contestId/problems">
+                    <ProblemList key="problems" contestId={contest.id} />
+                  </Route>
+                  <Route path="/contests/:contestId/contenders">
+                    <ContenderList key="contenders" contestId={contest.id} />
+                  </Route>
+                  <Route path="/contests/:contestId/raffles">
+                    <RaffleList key="raffles" contestId={contest.id} />
+                  </Route>
+                </>
+              )}
+            </Switch>
+          )
+        )}
       </div>
     </>
   );
@@ -175,6 +199,7 @@ const ContestInfo = (props: Props & PropsFromRedux & RouteComponentProps) => {
 const mapStateToProps = (state: StoreState, props: Props) => ({
   colors: state.colors,
   contests: state.contests,
+  selectedOrganizer: getSelectedOrganizer(state),
 });
 
 const mapDispatchToProps = {

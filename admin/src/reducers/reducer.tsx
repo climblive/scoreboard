@@ -355,19 +355,14 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
         ]),
       };
 
-    case getType(scoreboardActions.receiveRaffleWinners):
+    case getType(scoreboardActions.receiveRaffleWinnersForRaffle):
       return {
         ...state,
-        raffleWinnersByRaffle: state.raffleWinnersByRaffle.withMutations(
-          (map) =>
-            action.payload.reduce(
-              (raffleWinners, raffleWinner) =>
-                raffleWinners.mergeIn(
-                  [raffleWinner.raffleId],
-                  OrderedMap<number, Raffle>([[raffleWinner.id, raffleWinner]])
-                ),
-              map as any
-            )
+        raffleWinnersByRaffle: state.raffleWinnersByRaffle.setIn(
+          [action.payload.raffleId],
+          OrderedMap(
+            action.payload.raffleWinners.map((winner) => [winner.id!, winner])
+          )
         ),
       };
 

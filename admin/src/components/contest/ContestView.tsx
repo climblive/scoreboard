@@ -7,7 +7,11 @@ import { connect, ConnectedProps } from "react-redux";
 import { Route, RouteComponentProps, Switch } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import {} from "../../actions/actions";
-import { loadContest, reloadColors } from "../../actions/asyncActions";
+import {
+  loadContest,
+  unloadContest,
+  reloadColors,
+} from "../../actions/asyncActions";
 import { Contest } from "../../model/contest";
 import { StoreState } from "../../model/storeState";
 import { getSelectedOrganizer } from "../../selectors/selector";
@@ -31,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const { loadContest, reloadColors } = props;
+  const { loadContest, unloadContest, reloadColors } = props;
 
   let selectedPath = useLocation().pathname;
   let [loading, setLoading] = useState(false);
@@ -41,7 +45,11 @@ const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   const initialize = useCallback(() => {
     if (contest) {
-      return;
+      return function cleanup() {
+        if (contest.id !== undefined) {
+          unloadContest(contest.id);
+        }
+      };
     }
 
     if (props.contestId === undefined) {
@@ -66,7 +74,15 @@ const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
           setLoading(false);
         });
     }
-  }, [props.contestId, contest, props.selectedOrganizer, loadContest]);
+
+    return () => {};
+  }, [
+    props.contestId,
+    contest,
+    props.selectedOrganizer,
+    loadContest,
+    unloadContest,
+  ]);
 
   useEffect(() => initialize(), [initialize]);
 
@@ -205,6 +221,7 @@ const mapStateToProps = (state: StoreState, props: Props) => ({
 const mapDispatchToProps = {
   reloadColors,
   loadContest,
+  unloadContest,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

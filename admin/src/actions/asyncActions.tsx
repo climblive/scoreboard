@@ -82,6 +82,35 @@ export function loadContest(contestId: number) {
   };
 }
 
+export function unloadContest(contestId: number) {
+  return (
+    dispatch: Dispatch<ScoreboardActions>,
+    getState: () => StoreState
+  ): void => {
+    dispatch(
+      actions.receiveCompClassesForContest({ contestId, compClasses: [] })
+    );
+    dispatch(actions.receiveProblemsForContest({ contestId, problems: [] }));
+    dispatch(
+      actions.receiveContendersForContest({ contestId, contenders: [] })
+    );
+
+    getState()
+      .rafflesByContest.get(contestId)
+      ?.forEach((raffle?: Raffle, raffleId?: number) => {
+        dispatch(
+          actions.receiveRaffleWinnersForRaffle({
+            raffleId: raffleId!,
+            raffleWinners: [],
+          })
+        );
+      });
+
+    dispatch(actions.receiveRafflesForContest({ contestId, raffles: [] }));
+    dispatch(actions.receiveTicksForContest({ contestId, ticks: [] }));
+  };
+}
+
 export function saveContest(contest: Contest) {
   return (dispatch: Dispatch<ScoreboardActions>): Promise<Contest> => {
     return Api.saveContest(contest)
@@ -489,11 +518,16 @@ export function loadRaffles(contestId: number) {
         );
       })
       .then((w: RaffleWinner[][]) => {
-        dispatch(
-          actions.receiveRaffleWinners(
-            ([] as RaffleWinner[]).concat.apply([], w)
-          )
-        );
+        w.forEach((winners) => {
+          if (winners.length > 0) {
+            dispatch(
+              actions.receiveRaffleWinnersForRaffle({
+                raffleId: winners[0].raffleId,
+                raffleWinners: winners,
+              })
+            );
+          }
+        });
         return Promise.resolve();
       })
       .catch((error) => {

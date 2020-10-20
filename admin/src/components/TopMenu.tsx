@@ -7,13 +7,12 @@ import Select from "@material-ui/core/Select";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import * as qs from "qs";
-import React, { useEffect } from "react";
+import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { logout } from "../actions/actions";
-import { login, selectOrganizer } from "../actions/asyncActions";
+import { selectOrganizer } from "../actions/asyncActions";
 import { Organizer } from "../model/organizer";
 import { StoreState } from "../model/storeState";
 
@@ -37,27 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const { login } = props;
-
   const classes = useStyles();
-
-  useEffect(() => {
-    let query = qs.parse(props.location.hash, {
-      ignoreQueryPrefix: true,
-    });
-    let credentials: string | null = query.access_token as string;
-
-    if (credentials) {
-      login(credentials);
-      props.history.push("/contests");
-    } else {
-      credentials = localStorage.getItem("credentials");
-
-      if (credentials != null) {
-        login(credentials);
-      }
-    }
-  }, [props.history, props.location.hash, login]);
 
   const onOrganizerChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const id = parseInt(e.target.value as string);
@@ -185,7 +164,6 @@ const mapStateToProps = (state: StoreState, props: Props) => ({
 });
 
 const mapDispatchToProps = {
-  login,
   logout,
   selectOrganizer,
 };

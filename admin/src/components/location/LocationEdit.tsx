@@ -5,20 +5,17 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import SaveIcon from "@material-ui/icons/Save";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteLocation, saveLocation } from "../../actions/asyncActions";
 import { CompLocation } from "../../model/compLocation";
-import { StoreState } from "../../model/storeState";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { ProgressButton } from "../ProgressButton";
 
 interface Props {
-  location?: CompLocation;
+  location: CompLocation;
   removable?: boolean;
   cancellable?: boolean;
   onDone?: () => void;
-  saveLocation?: (location: CompLocation) => Promise<CompLocation>;
-  deleteLocation?: (location: CompLocation) => Promise<void>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,9 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const LocationEdit = (props: Props) => {
+const LocationEdit = (props: Props & PropsFromRedux) => {
   const [location, setLocation] = useState<CompLocation>({
-    ...props.location!,
+    ...props.location,
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
@@ -68,7 +65,7 @@ const LocationEdit = (props: Props) => {
   const onSave = () => {
     setSaving(true);
     props
-      .saveLocation?.(location)
+      .saveLocation(location)
       .then((location) => {
         setSaving(false);
         props.onDone?.();
@@ -81,7 +78,7 @@ const LocationEdit = (props: Props) => {
 
     if (result) {
       setDeleting(true);
-      props.deleteLocation?.(location).finally(() => setDeleting(false));
+      props.deleteLocation(location).finally(() => setDeleting(false));
     }
   };
 
@@ -155,13 +152,13 @@ const LocationEdit = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {};
-}
-
 const mapDispatchToProps = {
   saveLocation,
   deleteLocation,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LocationEdit);
+const connector = connect(undefined, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(LocationEdit);

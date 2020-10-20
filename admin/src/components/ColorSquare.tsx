@@ -1,4 +1,3 @@
-import { StyledComponentProps } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { ReactElement } from "react";
 
@@ -20,7 +19,7 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
   })
 );
 
-function ColorSquare(props: Props & StyledComponentProps): ReactElement {
+function ColorSquare(props: Props): ReactElement {
   const classes = useStyles(props);
 
   return <div className={`${classes.box} ${props.className}`}></div>;

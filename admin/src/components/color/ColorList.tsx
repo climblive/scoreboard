@@ -1,15 +1,11 @@
 import { Button, TableCell } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { OrderedMap } from "immutable";
 import React, { useCallback, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { setTitle } from "../../actions/actions";
 import { reloadColors } from "../../actions/asyncActions";
@@ -18,28 +14,25 @@ import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import ColorEdit from "./ColorEdit";
 import ColorView from "./ColorView";
 
-interface Props {
-  colors?: OrderedMap<number, Color>;
-  selectedOrganizer?: Organizer;
-
-  loadColors?: () => Promise<void>;
-  setTitle?: (title: string) => void;
-}
+interface Props {}
 
 const breakpoints = new Map<number, string>().set(3, "smDown");
 
-const ColorList = (props: Props & RouteComponentProps) => {
+const ColorList = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const { setTitle, loadColors } = props;
+
   React.useEffect(() => {
-    props.setTitle?.("Colors");
-  }, [props.setTitle]);
+    setTitle("Colors");
+  }, [setTitle]);
 
   const refreshColors = useCallback(() => {
     setRefreshing(true);
-    props.loadColors?.().finally(() => setRefreshing(false));
-  }, [props.loadColors]);
+    loadColors().finally(() => setRefreshing(false));
+  }, [loadColors]);
 
   React.useEffect(() => {
     if (props.colors === undefined) {
@@ -49,8 +42,6 @@ const ColorList = (props: Props & RouteComponentProps) => {
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const theme = useTheme();
 
   const buttons = [
     <Button
@@ -88,24 +79,20 @@ const ColorList = (props: Props & RouteComponentProps) => {
         <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={5}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <ColorEdit
-                    onDone={() => setShowCreate(false)}
-                    editable
-                    cancellable
-                    color={{
-                      organizerId: props.selectedOrganizer?.id!,
-                      name: "",
-                      rgbPrimary: "#ffffff",
-                      rgbSecondary: undefined,
-                      shared: false,
-                    }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={5}>
+              <ColorEdit
+                onDone={() => setShowCreate(false)}
+                editable
+                cancellable
+                color={{
+                  organizerId: props.selectedOrganizer?.id!,
+                  name: "",
+                  rgbPrimary: "#ffffff",
+                  rgbSecondary: undefined,
+                  shared: false,
+                }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
           {props.colors?.toArray()?.map((color: Color) => (
             <ColorView
@@ -120,19 +107,18 @@ const ColorList = (props: Props & RouteComponentProps) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    colors: state.colors,
-    selectedOrganizer: getSelectedOrganizer(state),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  colors: state.colors,
+  selectedOrganizer: getSelectedOrganizer(state),
+});
 
 const mapDispatchToProps = {
   loadColors: reloadColors,
   setTitle,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(ColorList));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(ColorList));

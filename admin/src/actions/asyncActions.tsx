@@ -2,6 +2,7 @@ import { OrderedMap } from "immutable";
 import { Dispatch } from "redux";
 import { ContenderData } from "src/model/contenderData";
 import { RaffleWinner } from "src/model/raffleWinner";
+import { ScoreboardActions } from "src/reducers/reducer";
 import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
 import { CompLocation } from "../model/compLocation";
@@ -14,8 +15,11 @@ import { StoreState } from "../model/storeState";
 import { Api } from "../utils/Api";
 import * as actions from "./actions";
 
-export function login(code: string): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+export function login(code: string) {
+  return (
+    dispatch: Dispatch<ScoreboardActions>,
+    getState: () => StoreState
+  ) => {
     dispatch(actions.setLoggingIn(true));
     Api.setCredentials(code);
     Api.getUser()
@@ -43,8 +47,8 @@ export function login(code: string): any {
 // Contests
 // -----------------------------------------------------------------------------
 
-export function reloadContests(): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function reloadContests() {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getContests()
       .then((contests) => {
         dispatch(actions.replaceContests(contests));
@@ -57,12 +61,19 @@ export function reloadContests(): any {
   };
 }
 
-export function loadContest(contestId: number): any {
-  return (dispatch: Dispatch<any>): Promise<Contest> => {
+export function loadContest(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Contest> => {
     return Api.getContest(contestId)
       .then((contest) => {
         dispatch(actions.updateContestSuccess(contest));
-        return Promise.resolve(contest);
+
+        return Promise.all([
+          loadCompClasses(contestId)(dispatch),
+          loadProblems(contestId)(dispatch),
+          loadContenders(contestId)(dispatch),
+          loadRaffles(contestId)(dispatch),
+          loadTicks(contestId)(dispatch),
+        ]).then(() => contest);
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));
@@ -71,8 +82,37 @@ export function loadContest(contestId: number): any {
   };
 }
 
-export function saveContest(contest: Contest): any {
-  return (dispatch: Dispatch<any>): Promise<void | Contest> => {
+export function unloadContest(contestId: number) {
+  return (
+    dispatch: Dispatch<ScoreboardActions>,
+    getState: () => StoreState
+  ): void => {
+    dispatch(
+      actions.receiveCompClassesForContest({ contestId, compClasses: [] })
+    );
+    dispatch(actions.receiveProblemsForContest({ contestId, problems: [] }));
+    dispatch(
+      actions.receiveContendersForContest({ contestId, contenders: [] })
+    );
+
+    getState()
+      .rafflesByContest.get(contestId)
+      ?.forEach((raffle?: Raffle, raffleId?: number) => {
+        dispatch(
+          actions.receiveRaffleWinnersForRaffle({
+            raffleId: raffleId!,
+            raffleWinners: [],
+          })
+        );
+      });
+
+    dispatch(actions.receiveRafflesForContest({ contestId, raffles: [] }));
+    dispatch(actions.receiveTicksForContest({ contestId, ticks: [] }));
+  };
+}
+
+export function saveContest(contest: Contest) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Contest> => {
     return Api.saveContest(contest)
       .then((contest) => {
         dispatch(actions.updateContestSuccess(contest));
@@ -85,8 +125,8 @@ export function saveContest(contest: Contest): any {
   };
 }
 
-export function deleteContest(contest: Contest): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function deleteContest(contest: Contest) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.deleteContest(contest)
       .then(() => {
         dispatch(actions.deleteContestSuccess(contest));
@@ -103,8 +143,8 @@ export function deleteContest(contest: Contest): any {
 // Colors
 // -----------------------------------------------------------------------------
 
-export function reloadColors(): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function reloadColors() {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getColors()
       .then((colors) => {
         dispatch(actions.replaceColors(colors));
@@ -117,8 +157,8 @@ export function reloadColors(): any {
   };
 }
 
-export function saveColor(color: Color): any {
-  return (dispatch: Dispatch<any>): Promise<void | Color> => {
+export function saveColor(color: Color) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Color> => {
     return Api.saveColor(color)
       .then((color) => {
         dispatch(actions.updateColorSuccess(color));
@@ -131,8 +171,8 @@ export function saveColor(color: Color): any {
   };
 }
 
-export function deleteColor(color: Color): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function deleteColor(color: Color) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.deleteColor(color)
       .then(() => {
         dispatch(actions.deleteColorSuccess(color));
@@ -149,8 +189,8 @@ export function deleteColor(color: Color): any {
 // Series
 // -----------------------------------------------------------------------------
 
-export function reloadSeries(): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function reloadSeries() {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getSeries()
       .then((series) => {
         dispatch(actions.replaceSeries(series));
@@ -163,8 +203,8 @@ export function reloadSeries(): any {
   };
 }
 
-export function saveSeries(series: Series): any {
-  return (dispatch: Dispatch<any>): Promise<void | Series> => {
+export function saveSeries(series: Series) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Series> => {
     return Api.saveSeries(series)
       .then((s) => {
         dispatch(actions.updateSeriesSuccess(s));
@@ -177,8 +217,8 @@ export function saveSeries(series: Series): any {
   };
 }
 
-export function deleteSeries(series: Series): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function deleteSeries(series: Series) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.deleteSeries(series)
       .then(() => {
         dispatch(actions.deleteSeriesSuccess(series));
@@ -195,8 +235,8 @@ export function deleteSeries(series: Series): any {
 // Locations
 // -----------------------------------------------------------------------------
 
-export function reloadLocations(): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function reloadLocations() {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getLocations()
       .then((locations) => {
         dispatch(actions.replaceLocations(locations));
@@ -209,8 +249,8 @@ export function reloadLocations(): any {
   };
 }
 
-export function saveLocation(location: CompLocation): any {
-  return (dispatch: Dispatch<any>): Promise<void | CompLocation> => {
+export function saveLocation(location: CompLocation) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<CompLocation> => {
     return Api.saveLocation(location)
       .then((location) => {
         dispatch(actions.updateLocationSuccess(location));
@@ -223,8 +263,8 @@ export function saveLocation(location: CompLocation): any {
   };
 }
 
-export function deleteLocation(location: CompLocation): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function deleteLocation(location: CompLocation) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.deleteLocation(location)
       .then(() => {
         dispatch(actions.deleteLocationSuccess(location));
@@ -241,8 +281,8 @@ export function deleteLocation(location: CompLocation): any {
 // Organizers
 // -----------------------------------------------------------------------------
 
-export function reloadOrganizers(): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function reloadOrganizers() {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getOrganizers()
       .then((organizers) => {
         dispatch(actions.replaceOrganizers(organizers));
@@ -255,8 +295,8 @@ export function reloadOrganizers(): any {
   };
 }
 
-export function saveOrganizer(organizer: Organizer): any {
-  return (dispatch: Dispatch<any>): Promise<void | Organizer> => {
+export function saveOrganizer(organizer: Organizer) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Organizer> => {
     return Api.saveOrganizer(organizer)
       .then((organizer) => {
         dispatch(actions.updateOrganizerSuccess(organizer));
@@ -269,8 +309,8 @@ export function saveOrganizer(organizer: Organizer): any {
   };
 }
 
-export function deleteOrganizer(organizer: Organizer): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function deleteOrganizer(organizer: Organizer) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.deleteOrganizer(organizer)
       .then(() => {
         dispatch(actions.deleteOrganizerSuccess(organizer));
@@ -283,8 +323,8 @@ export function deleteOrganizer(organizer: Organizer): any {
   };
 }
 
-export function selectOrganizer(organizerId: number): any {
-  return (dispatch: Dispatch<any>) => {
+export function selectOrganizer(organizerId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.setOrganizerId(organizerId);
     dispatch(actions.selectOrganizer(organizerId));
     localStorage.setItem("organizerId", organizerId.toString());
@@ -295,11 +335,11 @@ export function selectOrganizer(organizerId: number): any {
 // Problems
 // -----------------------------------------------------------------------------
 
-export function loadProblems(contestId: number): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function loadProblems(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getProblems(contestId)
       .then((problems) => {
-        dispatch(actions.receiveProblems(problems));
+        dispatch(actions.receiveProblemsForContest({ contestId, problems }));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -309,8 +349,8 @@ export function loadProblems(contestId: number): any {
   };
 }
 
-export function saveProblem(problem: Problem): any {
-  return (dispatch: Dispatch<any>): Promise<Problem> => {
+export function saveProblem(problem: Problem) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Problem> => {
     return Api.saveProblem(problem)
       .then((problem) => {
         dispatch(actions.updateProblemSuccess(problem));
@@ -323,8 +363,8 @@ export function saveProblem(problem: Problem): any {
   };
 }
 
-export function deleteProblem(problem: Problem): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function deleteProblem(problem: Problem) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.deleteProblem(problem)
       .then(() => {
         dispatch(actions.deleteProblemSuccess(problem));
@@ -341,11 +381,13 @@ export function deleteProblem(problem: Problem): any {
 // Comp Classes
 // -----------------------------------------------------------------------------
 
-export function loadCompClasses(contestId: number): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function loadCompClasses(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getCompClasses(contestId)
       .then((compClasses) => {
-        dispatch(actions.receiveCompClasses(compClasses));
+        dispatch(
+          actions.receiveCompClassesForContest({ contestId, compClasses })
+        );
         return Promise.resolve();
       })
       .catch((error) => {
@@ -355,8 +397,8 @@ export function loadCompClasses(contestId: number): any {
   };
 }
 
-export function saveCompClass(compClass: CompClass): any {
-  return (dispatch: Dispatch<any>): Promise<CompClass> => {
+export function saveCompClass(compClass: CompClass) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<CompClass> => {
     return Api.saveCompClass(compClass)
       .then((compClass) => {
         dispatch(actions.updateCompClassSuccess(compClass));
@@ -369,8 +411,8 @@ export function saveCompClass(compClass: CompClass): any {
   };
 }
 
-export function deleteCompClass(compClass: CompClass): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function deleteCompClass(compClass: CompClass) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.deleteCompClass(compClass)
       .then(() => {
         dispatch(actions.deleteCompClassSuccess(compClass));
@@ -387,11 +429,8 @@ export function deleteCompClass(compClass: CompClass): any {
 // Contenders
 // -----------------------------------------------------------------------------
 
-export function createContenders(
-  contestId: number,
-  nNewContenders: number
-): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function createContenders(contestId: number, nNewContenders: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.createContenders(contestId, nNewContenders)
       .then(() => {
         return loadContenders(contestId)(dispatch);
@@ -403,11 +442,13 @@ export function createContenders(
   };
 }
 
-export function loadContenders(contestId: number): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function loadContenders(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getContenders(contestId)
       .then((contenders) => {
-        dispatch(actions.receiveContenders(contenders));
+        dispatch(
+          actions.receiveContendersForContest({ contestId, contenders })
+        );
         return Promise.resolve();
       })
       .catch((error) => {
@@ -417,8 +458,8 @@ export function loadContenders(contestId: number): any {
   };
 }
 
-export function resetContenders(contestId: number): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function resetContenders(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.resetContenders(contestId)
       .then(() => {
         return loadContenders(contestId)(dispatch);
@@ -430,8 +471,8 @@ export function resetContenders(contestId: number): any {
   };
 }
 
-export function updateContender(contender: ContenderData): any {
-  return (dispatch: Dispatch<any>): Promise<ContenderData> => {
+export function updateContender(contender: ContenderData) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<ContenderData> => {
     return Api.saveContender(contender)
       .then(() => {
         dispatch(actions.updateContenderSuccess(contender));
@@ -448,11 +489,11 @@ export function updateContender(contender: ContenderData): any {
 // Ticks
 // -----------------------------------------------------------------------------
 
-export function loadTicks(contestId: number): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function loadTicks(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getTicks(contestId)
       .then((ticks) => {
-        dispatch(actions.receiveTicks(ticks));
+        dispatch(actions.receiveTicksForContest({ contestId, ticks }));
         return Promise.resolve();
       })
       .catch((error) => {
@@ -466,22 +507,27 @@ export function loadTicks(contestId: number): any {
 // Raffles
 // -----------------------------------------------------------------------------
 
-export function loadRaffles(contestId: number): any {
-  return (dispatch: Dispatch<any>): Promise<void> => {
+export function loadRaffles(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
     return Api.getRaffles(contestId)
       .then((raffles) => {
-        dispatch(actions.receiveRaffles(raffles));
+        dispatch(actions.receiveRafflesForContest({ contestId, raffles }));
 
         return Promise.all(
           raffles.map((raffle) => Api.getRaffleWinners(raffle))
         );
       })
       .then((w: RaffleWinner[][]) => {
-        dispatch(
-          actions.receiveRaffleWinners(
-            ([] as RaffleWinner[]).concat.apply([], w)
-          )
-        );
+        w.forEach((winners) => {
+          if (winners.length > 0) {
+            dispatch(
+              actions.receiveRaffleWinnersForRaffle({
+                raffleId: winners[0].raffleId,
+                raffleWinners: winners,
+              })
+            );
+          }
+        });
         return Promise.resolve();
       })
       .catch((error) => {
@@ -491,8 +537,8 @@ export function loadRaffles(contestId: number): any {
   };
 }
 
-export function saveRaffle(raffle: Raffle): any {
-  return (dispatch: Dispatch<any>): Promise<Raffle> => {
+export function saveRaffle(raffle: Raffle) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Raffle> => {
     return Api.saveRaffle(raffle)
       .then((raffle) => {
         dispatch(actions.updateRaffleSuccess(raffle));
@@ -505,8 +551,8 @@ export function saveRaffle(raffle: Raffle): any {
   };
 }
 
-export function drawWinner(raffle: Raffle): any {
-  return (dispatch: Dispatch<any>): Promise<RaffleWinner> => {
+export function drawWinner(raffle: Raffle) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<RaffleWinner> => {
     return Api.drawWinner(raffle)
       .then((winner) => {
         dispatch(actions.receiveRaffleWinner(winner));
@@ -519,8 +565,8 @@ export function drawWinner(raffle: Raffle): any {
   };
 }
 
-export function deleteRaffle(raffle: Raffle): any {
-  return (dispatch: Dispatch<any>): Promise<Raffle> => {
+export function deleteRaffle(raffle: Raffle) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Raffle> => {
     return Api.deleteRaffle(raffle)
       .then(() => {
         dispatch(actions.deleteRaffleSuccess(raffle));

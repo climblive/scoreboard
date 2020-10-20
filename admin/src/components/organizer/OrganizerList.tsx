@@ -1,41 +1,34 @@
 import { Button, TableCell } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { OrderedMap } from "immutable";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { setTitle } from "../../actions/actions";
 import { reloadOrganizers } from "../../actions/asyncActions";
 import { Organizer } from "../../model/organizer";
 import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import OrganizerEdit from "./OrganizerEdit";
 import OrganizerView from "./OrganizerView";
 
-interface Props {
-  organizers?: OrderedMap<number, Organizer>;
-
-  loadOrganizers?: () => Promise<void>;
-  setTitle?: (title: string) => void;
-}
+interface Props {}
 
 const breakpoints = new Map<number, string>().set(1, "smDown");
 
-const OrganizerList = (props: Props) => {
+const OrganizerList = (props: Props & PropsFromRedux) => {
+  const { setTitle } = props;
+
   React.useEffect(() => {
-    props.setTitle?.("Organizers");
-  }, [props.setTitle]);
+    setTitle("Organizers");
+  }, [setTitle]);
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const theme = useTheme();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -43,7 +36,7 @@ const OrganizerList = (props: Props) => {
 
   const refreshOrganizers = () => {
     setRefreshing(true);
-    props.loadOrganizers?.().finally(() => setRefreshing(false));
+    props.loadOrganizers().finally(() => setRefreshing(false));
   };
 
   const buttons = [
@@ -80,18 +73,13 @@ const OrganizerList = (props: Props) => {
         <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={3}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <OrganizerEdit
-                    onDone={onCreateDone}
-                    editable
-                    cancellable
-                    organizer={{ name: "" }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={3}>
+              <OrganizerEdit
+                onDone={onCreateDone}
+                cancellable
+                organizer={{ name: "" }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
 
           {props.organizers?.toArray()?.map((organizer: Organizer) => (
@@ -107,15 +95,17 @@ const OrganizerList = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    organizers: state.organizers,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  organizers: state.organizers,
+});
 
 const mapDispatchToProps = {
   loadOrganizers: reloadOrganizers,
   setTitle,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizerList);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(OrganizerList);

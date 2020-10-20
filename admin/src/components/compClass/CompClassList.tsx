@@ -1,36 +1,25 @@
-import {
-  Paper,
-  StyledComponentProps,
-  TableCell,
-  useTheme,
-} from "@material-ui/core";
+import { Paper, TableCell } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { OrderedMap } from "immutable";
 import moment from "moment";
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { Organizer } from "src/model/organizer";
+import { connect, ConnectedProps } from "react-redux";
 import { loadCompClasses } from "../../actions/asyncActions";
 import { CompClass } from "../../model/compClass";
 import { StoreState } from "../../model/storeState";
 import { getSelectedOrganizer } from "../../selectors/selector";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import CompClassEdit from "./CompClassEdit";
 import CompClassView from "./CompClassView";
 
 interface Props {
-  contestId?: number;
-  compClasses?: OrderedMap<number, CompClass>;
-  selectedOrganizer?: Organizer;
-  loadCompClasses?: (contestId: number) => Promise<void>;
+  contestId: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -46,13 +35,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const breakpoints = new Map<number, string>().set(1, "smDown").set(2, "smDown");
 
-const CompClassList = (
-  props: Props & RouteComponentProps & StyledComponentProps
-) => {
+const CompClassList = (props: Props & PropsFromRedux) => {
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const theme = useTheme();
   const classes = useStyles();
 
   const onCreateDone = () => {
@@ -61,9 +47,7 @@ const CompClassList = (
 
   const refreshCompClasses = () => {
     setRefreshing(true);
-    props
-      .loadCompClasses?.(props.contestId!)
-      .finally(() => setRefreshing(false));
+    props.loadCompClasses(props.contestId).finally(() => setRefreshing(false));
   };
 
   const headings = [
@@ -105,23 +89,19 @@ const CompClassList = (
         />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={4}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <CompClassEdit
-                    cancellable
-                    onDone={onCreateDone}
-                    compClass={{
-                      name: "",
-                      description: "",
-                      contestId: props.contestId!,
-                      timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                      timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                    }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={4}>
+              <CompClassEdit
+                cancellable
+                onDone={onCreateDone}
+                compClass={{
+                  name: "",
+                  description: "",
+                  contestId: props.contestId,
+                  timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                  timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
           {props.compClasses?.toArray()?.map((compClass: CompClass) => (
             <CompClassView
@@ -141,18 +121,17 @@ const CompClassList = (
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    selectedOrganizer: getSelectedOrganizer(state),
-    compClasses: state.compClassesByContest.get(props.contestId),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  selectedOrganizer: getSelectedOrganizer(state),
+  compClasses: state.compClassesByContest.get(props.contestId),
+});
 
 const mapDispatchToProps = {
   loadCompClasses,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(CompClassList));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(CompClassList);

@@ -1,37 +1,24 @@
 import { Button, TableCell } from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import { OrderedMap } from "immutable";
 import React, { useCallback, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { setTitle } from "../../actions/actions";
 import { reloadSeries } from "../../actions/asyncActions";
-import { Organizer } from "../../model/organizer";
 import { Series } from "../../model/series";
 import { StoreState } from "../../model/storeState";
 import ContentLayout from "../ContentLayout";
 import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import SeriesEdit from "./SeriesEdit";
 import SeriesView from "./SeriesView";
 
-interface Props {
-  series?: OrderedMap<number, Series>;
-  selectedOrganizer?: Organizer;
-
-  loadSeries?: () => Promise<void>;
-  setTitle?: (title: string) => void;
-}
+interface Props {}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,15 +28,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const breakpoints = new Map<number, string>();
 
-const SeriesList = (props: Props) => {
+const SeriesList = (props: Props & PropsFromRedux) => {
+  const { setTitle, reloadSeries } = props;
+
   React.useEffect(() => {
-    props.setTitle?.("Series");
-  }, [props.setTitle]);
+    setTitle("Series");
+  }, [setTitle]);
 
   const refreshSeries = useCallback(() => {
     setRefreshing(true);
-    props.loadSeries?.().finally(() => setRefreshing(false));
-  }, [props.loadSeries]);
+    reloadSeries().finally(() => setRefreshing(false));
+  }, [reloadSeries]);
 
   React.useEffect(() => {
     if (props.series === undefined) {
@@ -61,8 +50,6 @@ const SeriesList = (props: Props) => {
 
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const theme = useTheme();
 
   const onCreateDone = () => {
     setShowCreate(false);
@@ -99,21 +86,16 @@ const SeriesList = (props: Props) => {
         <ResponsiveTableHead cells={headings} breakpoints={breakpoints} />
         <TableBody>
           {showCreate && (
-            <TableRow selected>
-              <TableCell padding="none" colSpan={3}>
-                <div style={{ padding: theme.spacing(0, 2) }}>
-                  <SeriesEdit
-                    onDone={onCreateDone}
-                    editable
-                    cancellable
-                    series={{
-                      name: "",
-                      organizerId: props.selectedOrganizer?.id,
-                    }}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
+            <ResponsiveTableSpanningRow colSpan={3}>
+              <SeriesEdit
+                onDone={onCreateDone}
+                cancellable
+                series={{
+                  name: "",
+                  organizerId: props.selectedOrganizer?.id!,
+                }}
+              />
+            </ResponsiveTableSpanningRow>
           )}
 
           {props.series?.toArray()?.map((series: Series) => (
@@ -134,16 +116,18 @@ const SeriesList = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    series: state.series,
-    selectedOrganizer: getSelectedOrganizer(state),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  series: state.series,
+  selectedOrganizer: getSelectedOrganizer(state),
+});
 
 const mapDispatchToProps = {
-  loadSeries: reloadSeries,
+  reloadSeries,
   setTitle,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SeriesList);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(SeriesList);

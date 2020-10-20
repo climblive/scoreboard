@@ -6,7 +6,7 @@ import ResponsiveTableRow from "../ResponsiveTableRow";
 import CompClassEdit from "./CompClassEdit";
 
 interface Props {
-  compClass?: CompClass;
+  compClass: CompClass;
   breakpoints?: Map<number, string>;
 }
 
@@ -15,10 +15,10 @@ const CompClassView = (props: Props) => {
 
   const cells = [
     <TableCell component="th" scope="row">
-      {props.compClass?.name}
+      {props.compClass.name}
     </TableCell>,
-    <TableCell>{moment(props.compClass?.timeBegin).format(format)}</TableCell>,
-    <TableCell>{moment(props.compClass?.timeEnd).format(format)}</TableCell>,
+    <TableCell>{moment(props.compClass.timeBegin).format(format)}</TableCell>,
+    <TableCell>{moment(props.compClass.timeEnd).format(format)}</TableCell>,
   ];
 
   return (

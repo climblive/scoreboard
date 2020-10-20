@@ -1,4 +1,4 @@
-export class Contest {
+export interface Contest {
   id?: number;
   locationId?: number;
   organizerId: number;

@@ -32,13 +32,13 @@ export class Api {
     return data;
   }
 
-  private static getAuthHeader(url: string): any {
-    let authHeaders: any = {};
+  private static getAuthHeader(url: string): Record<string, string> {
+    let authHeaders: Record<string, string> = {};
     if (this.credentials) {
       authHeaders.Authorization = "Bearer " + this.credentials;
     }
     if (this.organizerId !== undefined && !url.startsWith("/organizer")) {
-      authHeaders["Organizer-Id"] = this.organizerId;
+      authHeaders["Organizer-Id"] = this.organizerId.toString();
     }
     return authHeaders;
   }
@@ -237,9 +237,9 @@ export class Api {
 
   static saveRaffle(raffle: Raffle): Promise<Raffle> {
     if (raffle.id === undefined) {
-      return this.post("/raffle", Raffle.makeRequestBody(raffle));
+      return this.post("/raffle", raffle);
     } else {
-      return this.put("/raffle/" + raffle.id, Raffle.makeRequestBody(raffle));
+      return this.put("/raffle/" + raffle.id, raffle);
     }
   }
 
@@ -343,7 +343,7 @@ export class Api {
     return this.get("/contest/" + contestId + "/tick")
       .then((ticks) => {
         return Promise.resolve(
-          ticks.map((tick) => {
+          ticks.map((tick: Tick) => {
             return { ...tick, contestId };
           })
         );

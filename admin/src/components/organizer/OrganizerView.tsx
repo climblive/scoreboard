@@ -10,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
 import Alert from "@material-ui/lab/Alert";
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { Organizer } from "src/model/organizer";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { selectOrganizer } from "../../actions/asyncActions";
@@ -22,10 +22,8 @@ import ResponsiveTableRow from "../ResponsiveTableRow";
 import OrganizerEdit from "./OrganizerEdit";
 
 interface Props {
-  isSelectedOrganizer: boolean;
-  organizer?: Organizer;
+  organizer: Organizer;
   breakpoints?: Map<number, string>;
-  selectOrganizer?: (organizerId: number) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,39 +45,40 @@ const useStyles = makeStyles((theme: Theme) =>
     members: {
       margin: theme.spacing(2, 0),
     },
+    selectedOrganizerChip: { marginLeft: theme.spacing(1) },
   })
 );
 
-const OrganizerView = (props: Props) => {
+const OrganizerView = (props: Props & PropsFromRedux) => {
   const [users, setUsers] = useState<User[]>([]);
 
   const classes = useStyles();
 
   useEffect(() => {
-    if (props.organizer?.id != null) {
-      Api.getUsersForOrganizer(props.organizer?.id).then((users) =>
+    if (props.organizer.id != null) {
+      Api.getUsersForOrganizer(props.organizer.id).then((users) =>
         setUsers(users)
       );
     }
   }, [props.organizer]);
 
   const switchOrganizer = () => {
-    props.selectOrganizer?.(props.organizer?.id!);
+    props.selectOrganizer(props.organizer.id!);
   };
 
   const cells = [
     <TableCell component="th" scope="row">
-      {props.organizer?.name}
+      {props.organizer.name}
       {props.isSelectedOrganizer && (
         <Chip
-          style={{ marginLeft: "5px" }}
+          className={classes.selectedOrganizerChip}
           label="Selected"
           color="primary"
           size="small"
         />
       )}
     </TableCell>,
-    <TableCell>{props.organizer?.homepage}</TableCell>,
+    <TableCell>{props.organizer.homepage}</TableCell>,
   ];
 
   return (
@@ -88,7 +87,7 @@ const OrganizerView = (props: Props) => {
         <Typography color="textSecondary" display="block" variant="caption">
           Info
         </Typography>
-        <OrganizerEdit organizer={props.organizer} removable editable />
+        <OrganizerEdit organizer={props.organizer} removable />
 
         <Divider className={classes.divider} />
 
@@ -147,15 +146,16 @@ const OrganizerView = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    isSelectedOrganizer:
-      props.organizer?.id === getSelectedOrganizer(state)?.id,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  isSelectedOrganizer: props.organizer.id === getSelectedOrganizer(state)?.id,
+});
 
 const mapDispatchToProps = {
   selectOrganizer,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizerView);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(OrganizerView);

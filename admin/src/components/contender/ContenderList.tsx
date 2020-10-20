@@ -8,12 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TextField from "@material-ui/core/TextField";
@@ -22,12 +17,10 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import SaveIcon from "@material-ui/icons/SaveAlt";
 import Pagination from "@material-ui/lab/Pagination";
 import { saveAs } from "file-saver";
-import { OrderedMap } from "immutable";
 import React, { useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
 import { StoreState } from "src/model/storeState";
-import { Tick } from "src/model/tick";
 import { Api } from "src/utils/Api";
 import { setErrorMessage } from "../../actions/actions";
 import {
@@ -38,8 +31,6 @@ import {
 import { SortBy } from "../../constants/sortBy";
 import { CompClass } from "../../model/compClass";
 import { ContenderData } from "../../model/contenderData";
-import { Contest } from "../../model/contest";
-import { Problem } from "../../model/problem";
 import { calculateContenderScoringInfo } from "../../selectors/selector";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
@@ -59,18 +50,7 @@ enum StaticFilter {
 }
 
 interface Props {
-  contestId?: number;
-  contest?: Contest;
-  finalEnabled?: boolean;
-  contenders?: OrderedMap<number, ContenderData>;
-  compClasses?: OrderedMap<number, CompClass>;
-  problems?: OrderedMap<number, Problem>;
-  ticks?: OrderedMap<number, Tick>;
-
-  loadContenders?: (contestId: number) => Promise<void>;
-  createContenders?: (contestId: number, nContenders: number) => Promise<void>;
-  setErrorMessage?: (message: string) => void;
-  loadTicks?: (contestId: number) => Promise<void>;
+  contestId: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -84,12 +64,16 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2, 0),
     },
     emptyText: { padding: theme.spacing(2) },
+    createContendersInput: { width: 250 },
+    filterSelector: {
+      width: "100%",
+      marginLeft: theme.spacing(1),
+    },
   })
 );
 
-const ContenderList = (props: Props) => {
+const ContenderList = (props: Props & PropsFromRedux) => {
   const classes = useStyles();
-  const theme = useTheme();
 
   const [numberOfNewContenders, setNumberOfNewContenders] = useState<string>();
   const [showAddContendersPopup, setShowAddContendersPopup] = useState<boolean>(
@@ -186,9 +170,10 @@ const ContenderList = (props: Props) => {
 
   const refreshContenders = () => {
     setRefreshing(true);
-    props
-      .loadContenders?.(props.contestId!)
-      .finally(() => setRefreshing(false));
+    Promise.all([
+      props.loadContenders(props.contestId),
+      props.loadTicks(props.contestId),
+    ]).finally(() => setRefreshing(false));
   };
 
   const startAddContenders = () => {
@@ -215,18 +200,20 @@ const ContenderList = (props: Props) => {
 
     setRefreshing(true);
     props
-      .createContenders?.(props.contestId!, number)
+      .createContenders?.(props.contestId, number)
       .finally(() => setRefreshing(false));
     setShowAddContendersPopup(false);
   };
 
   const onContenderFilterCompClassChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<{ value: unknown }>
   ) => {
-    setContenderFilter(e.target.value);
+    setContenderFilter(e.target.value as string);
 
-    if (StaticFilter[e.target.value] === undefined) {
-      const filterCompClass = props.compClasses?.get(parseInt(e.target.value));
+    if (!((e.target.value as string) in StaticFilter)) {
+      const filterCompClass = props.compClasses?.get(
+        parseInt(e.target.value as string)
+      );
       setSelectedContenders([filterCompClass?.id!]);
     }
 
@@ -234,7 +221,7 @@ const ContenderList = (props: Props) => {
   };
 
   function exportResults(): any {
-    Api.exportContest(props.contestId!)
+    Api.exportContest(props.contestId)
       .then((response) => {
         saveAs(response, "contest.xls");
       })
@@ -251,38 +238,24 @@ const ContenderList = (props: Props) => {
   };
 
   const headings = [
-    <TableCell
-      style={{ cursor: "pointer" }}
-      onClick={() => setContenderSortBy(SortBy.BY_NAME)}
-    >
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_NAME)}>
       Name
     </TableCell>,
     <TableCell>Class</TableCell>,
-    <TableCell
-      style={{ cursor: "pointer" }}
-      onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}
-    >
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}>
       Total score
     </TableCell>,
-    <TableCell
-      style={{ cursor: "pointer" }}
-      onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}
-    >
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}>
       # Ticks
     </TableCell>,
-    <TableCell style={{ minWidth: 110 }}>Regcode</TableCell>,
+    <TableCell>Regcode</TableCell>,
   ];
 
   return (
     <>
       <div className={classes.toolbar}>
         {(props.compClasses?.size ?? 0) > 0 && (
-          <FormControl
-            style={{
-              width: "100%",
-              marginLeft: theme.spacing(1),
-            }}
-          >
+          <FormControl className={classes.filterSelector}>
             <InputLabel shrink htmlFor="compClass-select">
               Class
             </InputLabel>
@@ -393,19 +366,15 @@ const ContenderList = (props: Props) => {
           Create contenders
         </DialogTitle>
         <DialogContent>
-          <div>
-            Before a contest starts, you have to create activation codes enough
-            for all contenders.
-          </div>
-          <div style={{ marginTop: 5 }}>
-            Currently you have {props.contenders?.size ?? 0} registration codes.
-          </div>
-          <div style={{ marginTop: 5, marginBottom: 20 }}>
+          Before a contest starts, you have to create activation codes enough
+          for all contenders.
+          <p>
             You can create a maximum of {MAX_CONTENDER_COUNT} activation codes
-            per contest.
-          </div>
+            per contest. Currently you have {props.contenders?.size ?? 0}{" "}
+            registration codes.
+          </p>
           <TextField
-            style={{ width: 250 }}
+            className={classes.createContendersInput}
             label="Number of contenders to create"
             value={numberOfNewContenders}
             onChange={onNewContendersChange}
@@ -424,15 +393,13 @@ const ContenderList = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contenders: state.contendersByContest.get(props.contestId),
-    compClasses: state.compClassesByContest.get(props.contestId),
-    problems: state.problemsByContest.get(props.contestId),
-    ticks: state.ticksByContest.get(props.contestId),
-    contest: state.contests?.get(props.contestId),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  contenders: state.contendersByContest.get(props.contestId),
+  compClasses: state.compClassesByContest.get(props.contestId),
+  problems: state.problemsByContest.get(props.contestId),
+  ticks: state.ticksByContest.get(props.contestId),
+  contest: state.contests?.get(props.contestId),
+});
 
 const mapDispatchToProps = {
   loadContenders,
@@ -441,4 +408,8 @@ const mapDispatchToProps = {
   setErrorMessage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContenderList);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ContenderList);

@@ -12,11 +12,11 @@ import {
 import Toolbar from "@material-ui/core/Toolbar";
 import MenuIcon from "@material-ui/icons/Menu";
 import React from "react";
-import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
+import { Route, Switch, withRouter } from "react-router-dom";
 import { StoreState } from "../model/storeState";
 import ColorList from "./color/ColorList";
-import ContestInfo from "./contest/ContestInfo";
+import ContestView from "./contest/ContestView";
 import ContestList from "./contest/ContestList";
 import LocationList from "./location/LocationList";
 import NotFound from "./NotFound";
@@ -66,12 +66,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface Props {
-  isLoggedIn: boolean;
-  title: string;
-}
+interface Props {}
 
-const MainLayout = (props: Props & RouteComponentProps) => {
+const MainLayout = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -140,7 +137,7 @@ const MainLayout = (props: Props & RouteComponentProps) => {
                 ) {
                   contestId = parseInt(props.match.params.contestId);
                 }
-                return <ContestInfo {...props} contestId={contestId} />;
+                return <ContestView {...props} contestId={contestId} />;
               }}
             />
             <Route path="/colors" exact component={ColorList} />
@@ -155,13 +152,12 @@ const MainLayout = (props: Props & RouteComponentProps) => {
   );
 };
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    title: state.title,
-    isLoggedIn: state.loggedInUser !== undefined,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  isLoggedIn: state.loggedInUser !== undefined,
+});
 
-const mapDispatchToProps = {};
+const connector = connect(mapStateToProps, {});
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainLayout);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(MainLayout));

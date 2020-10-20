@@ -10,15 +10,12 @@ import ExploreIcon from "@material-ui/icons/Explore";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import PeopleIcon from "@material-ui/icons/People";
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { Link } from "react-router-dom";
 import { Environment } from "src/environment";
 import { StoreState } from "../model/storeState";
-import { User } from "../model/user";
 
-export interface Props {
-  loggedInUser?: User;
-}
+export interface Props {}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,10 +24,20 @@ const useStyles = makeStyles((theme: Theme) =>
     menuItem: {
       color: theme.palette.primary.contrastText,
     },
+    logoContainer: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100%",
+    },
+    logo: {
+      width: 65,
+    },
+    questions: { margin: theme.spacing("auto", 1, 2, 1), textAlign: "center" },
   })
 );
 
-function SideMenu({ loggedInUser }: Props) {
+function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
   const classes = useStyles();
 
   const items = [
@@ -70,19 +77,10 @@ function SideMenu({ loggedInUser }: Props) {
   return (
     <>
       <div className={classes.toolbar}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
+        <div className={classes.logoContainer}>
           <img
             alt=""
-            style={{
-              width: 65,
-            }}
+            className={classes.logo}
             src="/clmb_MainLogo_NoShadow.png"
           />
         </div>
@@ -109,17 +107,16 @@ function SideMenu({ loggedInUser }: Props) {
           })}
       </List>
 
-      <div style={{ margin: "auto 10px 20px 10px", textAlign: "center" }}>
-        <div>Questions, requests or just want to chat?</div>
-        <div style={{ marginTop: 5 }}>
+      <div className={classes.questions}>
+        <p>Questions, requests or just want to chat?</p>
+        <p>
           Please{" "}
           <a target={"_NEW"} href={"https://www.facebook.com/CLMB.live"}>
             <u>click here</u>
           </a>{" "}
-          to visit us on Facebook
-        </div>
+          to visit us on Facebook.
+        </p>
         <Chip
-          style={{ marginTop: "1rem" }}
           label={`v.${Environment.projectVersion}`}
           color="primary"
           size="small"
@@ -129,12 +126,12 @@ function SideMenu({ loggedInUser }: Props) {
   );
 }
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    loggedInUser: state.loggedInUser,
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  loggedInUser: state.loggedInUser,
+});
 
-const mapDispatchToProps = {};
+const connector = connect(mapStateToProps, {});
 
-export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(SideMenu);

@@ -5,7 +5,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  StyledComponentProps,
 } from "@material-ui/core";
 import {
   createStyles,
@@ -17,9 +16,8 @@ import TextField from "@material-ui/core/TextField";
 import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import SaveIcon from "@material-ui/icons/Save";
-import { OrderedMap } from "immutable";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteProblem, saveProblem } from "../../actions/asyncActions";
 import { Color } from "../../model/color";
 import { Problem } from "../../model/problem";
@@ -27,18 +25,14 @@ import { StoreState } from "../../model/storeState";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { ProgressButton } from "../ProgressButton";
 
-interface Props {
-  problem?: Problem;
-  colors?: OrderedMap<number, Color>;
+export interface Props {
+  problem: Problem;
   editable?: boolean;
   cancellable?: boolean;
   removable?: boolean;
   orderable?: boolean;
   onDone?: () => void;
-  saveProblem?: (problem: Problem) => Promise<Problem>;
-  getColorName?: (problem: Problem) => string;
-  getProblemStyle?: (colorId: number) => object;
-  deleteProblem?: (problem: Problem) => Promise<void>;
+  getProblemStyle: (colorId: number) => object;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -68,10 +62,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ProblemEdit = (props: Props & StyledComponentProps) => {
+const ProblemEdit = (props: Props & PropsFromRedux) => {
   let [deleteRequested, setDeleteRequested] = useState<boolean>(false);
   const [problem, setProblem] = useState<Problem>({
-    ...props.problem!,
+    ...props.problem,
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
@@ -84,7 +78,10 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
   };
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let name = e.target.value;
+    let name: string | undefined = e.target.value.trim();
+    if (name.length === 0) {
+      name = undefined;
+    }
     setProblem({ ...problem, name: name !== "" ? name : undefined });
   };
 
@@ -97,8 +94,8 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
     setProblem({ ...problem, flashBonus });
   };
 
-  const onColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProblem({ ...problem, colorId: parseInt(e.target.value) });
+  const onColorChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    setProblem({ ...problem, colorId: parseInt(e.target.value as string) });
   };
 
   const onDeleteConfirmed = (result: boolean) => {
@@ -106,16 +103,14 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
 
     if (result) {
       setDeleting(true);
-      props
-        .deleteProblem?.(props.problem!)
-        .catch((error) => setDeleting(false));
+      props.deleteProblem(props.problem).catch((error) => setDeleting(false));
     }
   };
 
   const onSave = () => {
     setSaving(true);
     props
-      .saveProblem?.(problem)
+      .saveProblem(problem)
       .then((problem) => {
         setSaving(false);
         props.onDone?.();
@@ -143,7 +138,7 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
               <Grid container direction="row" alignItems="center">
                 <Grid style={{ marginRight: theme.spacing(1) }}>
                   <div
-                    style={props.getProblemStyle?.(color.id!)}
+                    style={props.getProblemStyle(color.id!)}
                     className={classes.colorBox}
                   ></div>
                 </Grid>
@@ -221,15 +216,17 @@ const ProblemEdit = (props: Props & StyledComponentProps) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    colors: state.colors,
-  };
-}
+const mapStateToProps = (state: StoreState) => ({
+  colors: state.colors,
+});
 
 const mapDispatchToProps = {
   saveProblem,
   deleteProblem,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProblemEdit);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ProblemEdit);

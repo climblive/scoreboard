@@ -1,21 +1,13 @@
-import { Paper, StyledComponentProps } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as Chroma from "chroma-js";
-import { OrderedMap } from "immutable";
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router-dom";
-import { Color } from "../../model/color";
-import { Problem } from "../../model/problem";
+import { connect, ConnectedProps } from "react-redux";
 import { StoreState } from "../../model/storeState";
-import { Tick } from "../../model/tick";
 
 interface Props {
-  contestId?: number;
-  problems?: OrderedMap<number, Problem>;
-  colors?: OrderedMap<number, Color>;
-  ticks?: OrderedMap<number, Tick>;
+  contestId: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,9 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContestStats = (
-  props: Props & RouteComponentProps & StyledComponentProps
-) => {
+const ContestStats = (props: Props & PropsFromRedux) => {
   const classes = useStyles();
 
   const problems = props.problems
@@ -49,13 +39,13 @@ const ContestStats = (
         label: "Ticks",
         backgroundColor: colors,
         borderColor: colors?.map((color) =>
-          Chroma(color ?? "#ffffff")
+          Chroma.hex(color ?? "#ffffff")
             .darken()
             .hex()
         ),
         borderWidth: 1,
         hoverBackgroundColor: colors?.map((color) =>
-          Chroma(color ?? "#ffffff")
+          Chroma.hex(color ?? "#ffffff")
             .brighten()
             .hex()
         ),
@@ -81,14 +71,14 @@ const ContestStats = (
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    problems: state.problemsByContest.get(props.contestId),
-    colors: state.colors,
-    ticks: state.ticksByContest.get(props.contestId),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  problems: state.problemsByContest.get(props.contestId),
+  colors: state.colors,
+  ticks: state.ticksByContest.get(props.contestId),
+});
 
-const mapDispatchToProps = {};
+const connector = connect(mapStateToProps, {});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContestStats);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ContestStats);

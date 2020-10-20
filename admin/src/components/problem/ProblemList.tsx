@@ -1,45 +1,24 @@
-import { IconButton, Paper, TableCell, TableRow } from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { IconButton, Paper, TableCell } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import * as Chroma from "chroma-js";
-import { OrderedMap } from "immutable";
 import React, { useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { Organizer } from "src/model/organizer";
-import {
-  getSelectedOrganizer,
-  groupTicksByProblem,
-} from "src/selectors/selector";
-import { loadProblems, reloadColors } from "../../actions/asyncActions";
-import { Color } from "../../model/color";
-import { CompClass } from "../../model/compClass";
-import { ContenderData } from "../../model/contenderData";
+import { connect, ConnectedProps } from "react-redux";
+import { groupTicksByProblem } from "src/selectors/selector";
+import { loadProblems } from "../../actions/asyncActions";
 import { Problem } from "../../model/problem";
 import { StoreState } from "../../model/storeState";
-import { Tick } from "../../model/tick";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
+import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
 import ProblemEdit from "./ProblemEdit";
 import ProblemView from "./ProblemView";
 
 interface Props {
-  contestId?: number;
-  problems?: OrderedMap<number, Problem>;
-  selectedOrganizer?: Organizer;
-  colors?: OrderedMap<number, Color>;
-  ticks?: OrderedMap<number, Tick>;
-  contenders?: OrderedMap<number, ContenderData>;
-  compClasses?: OrderedMap<number, CompClass>;
-  loadProblems?: (contestId: number) => Promise<void>;
-  loadColors?: () => Promise<void>;
+  contestId: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const breakpoints = new Map<number, string>().set(2, "smDown").set(3, "smDown");
 
-const ProblemList = (props: Props) => {
+const ProblemList = (props: Props & PropsFromRedux) => {
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -68,7 +47,6 @@ const ProblemList = (props: Props) => {
     return ticks !== undefined ? groupTicksByProblem(ticks) : undefined;
   }, [props.ticks]);
 
-  const theme = useTheme();
   const classes = useStyles();
 
   const createDone = () => {
@@ -81,7 +59,7 @@ const ProblemList = (props: Props) => {
 
   const refreshProblems = () => {
     setRefreshing(true);
-    props.loadProblems?.(props.contestId!).finally(() => setRefreshing(false));
+    props.loadProblems(props.contestId).finally(() => setRefreshing(false));
   };
 
   const getColorName = (problem: Problem): string => {
@@ -105,7 +83,7 @@ const ProblemList = (props: Props) => {
     if (rgbColor.charAt(0) !== "#") {
       rgbColor = "#" + rgbColor;
     }
-    const chromaInst = Chroma(rgbColor);
+    const chromaInst = Chroma.hex(rgbColor);
     const luminance = chromaInst.luminance();
     let borderColor = chromaInst.darken(1).hex();
     let textColor = luminance < 0.5 ? "#FFF" : "#333";
@@ -194,27 +172,22 @@ const ProblemList = (props: Props) => {
 
   if (showCreate) {
     const component = (
-      <TableRow key="new" selected>
-        <TableCell padding="none" colSpan={5}>
-          <div style={{ padding: theme.spacing(0, 2) }}>
-            <ProblemEdit
-              getColorName={getColorName}
-              getProblemStyle={getProblemStyle}
-              cancellable
-              editable
-              onDone={createDone}
-              orderable
-              problem={{
-                name: undefined,
-                number: nextNumber(),
-                colorId: props.colors?.toArray()?.[0]?.id,
-                contestId: props.contestId!,
-                points: 1,
-              }}
-            />
-          </div>
-        </TableCell>
-      </TableRow>
+      <ResponsiveTableSpanningRow colSpan={5}>
+        <ProblemEdit
+          getProblemStyle={getProblemStyle}
+          cancellable
+          editable
+          onDone={createDone}
+          orderable
+          problem={{
+            name: undefined,
+            number: nextNumber(),
+            colorId: props.colors?.toArray()?.[0]?.id!,
+            contestId: props.contestId,
+            points: 1,
+          }}
+        />
+      </ResponsiveTableSpanningRow>
     );
     rows = [component, ...rows];
   }
@@ -238,20 +211,20 @@ const ProblemList = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    problems: state.problemsByContest.get(props.contestId),
-    ticks: state.ticksByContest.get(props.contestId),
-    contenders: state.contendersByContest.get(props.contestId),
-    compClasses: state.compClassesByContest.get(props.contestId),
-    colors: state.colors,
-    selectedOrganizer: getSelectedOrganizer(state),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  problems: state.problemsByContest.get(props.contestId),
+  ticks: state.ticksByContest.get(props.contestId),
+  contenders: state.contendersByContest.get(props.contestId),
+  compClasses: state.compClassesByContest.get(props.contestId),
+  colors: state.colors,
+});
 
 const mapDispatchToProps = {
   loadProblems,
-  loadColors: reloadColors,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProblemList);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(ProblemList);

@@ -1,39 +1,23 @@
-import { Button, Grid, Hidden, StyledComponentProps } from "@material-ui/core";
+import { Button, Grid, Hidden } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { OrderedMap } from "immutable";
 import * as qs from "qs";
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { logout } from "../actions/actions";
 import { login, selectOrganizer } from "../actions/asyncActions";
 import { Organizer } from "../model/organizer";
 import { StoreState } from "../model/storeState";
-import { User } from "../model/user";
 
-export interface Props {
-  loggingIn: boolean;
-  loggedInUser?: User;
-  organizers?: OrderedMap<number, Organizer>;
-  selectedOrganizer?: Organizer;
-
-  login?: (code: string) => void;
-  logout?: () => void;
-  selectOrganizer?: (organizerId: number) => void;
-}
+export interface Props {}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,12 +30,16 @@ const useStyles = makeStyles((theme: Theme) =>
     adminChip: {
       marginRight: theme.spacing(1),
     },
+    organizerSelector: { minWidth: 200 },
+    selectOption: { color: theme.palette.primary.contrastText },
+    loginProgress: { color: "white" },
   })
 );
 
-const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
+const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const { login } = props;
+
   const classes = useStyles();
-  const theme = useTheme();
 
   useEffect(() => {
     let query = qs.parse(props.location.hash, {
@@ -60,22 +48,22 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     let credentials: string | null = query.access_token as string;
 
     if (credentials) {
-      props.login?.(credentials);
+      login(credentials);
       props.history.push("/contests");
     } else {
       credentials = localStorage.getItem("credentials");
 
       if (credentials != null) {
-        props.login!(credentials);
+        login(credentials);
       }
     }
-  }, [props.history, props.location.hash, props.login]);
+  }, [props.history, props.location.hash, login]);
 
-  const onOrganizerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = parseInt(e.target.value);
+  const onOrganizerChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    const id = parseInt(e.target.value as string);
     let organizer = props.organizers?.get(id);
     if (organizer !== undefined) {
-      props.selectOrganizer?.(organizer.id!);
+      props.selectOrganizer(organizer.id!);
     }
   };
 
@@ -89,17 +77,17 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
     return url;
   };
 
-  const login = () => {
+  const redirectToLogin = () => {
     window.location.href = getUrl("login");
   };
 
-  const signup = () => {
+  const redirectToSignup = () => {
     window.location.href = getUrl("signup");
   };
 
   const logout = () => {
     localStorage.removeItem("credentials");
-    props.logout!();
+    props.logout();
   };
 
   return (
@@ -107,8 +95,8 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
       <Hidden smDown implementation="css">
         {(props.organizers?.size ?? 0) > 1 && (
           <FormControl
+            className={classes.organizerSelector}
             variant="outlined"
-            style={{ minWidth: 200 }}
             size="small"
           >
             {props.selectedOrganizer !== undefined && (
@@ -116,7 +104,7 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
                 id="series-select"
                 value={props.selectedOrganizer.id}
                 onChange={onOrganizerChange}
-                style={{ color: theme.palette.primary.contrastText }}
+                className={classes.selectOption}
               >
                 {props.organizers?.toArray()?.map((organizer: Organizer) => (
                   <MenuItem key={organizer.id} value={organizer.id}>
@@ -131,14 +119,14 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
 
       <div className={classes.authControl}>
         {props.loggingIn && (
-          <CircularProgress size={20} style={{ color: "white" }} />
+          <CircularProgress size={20} className={classes.loginProgress} />
         )}
         {!props.loggingIn && !props.loggedInUser && (
           <div>
-            <Button color="inherit" onClick={login}>
+            <Button color="inherit" onClick={redirectToLogin}>
               Login
             </Button>
-            <Button color="inherit" onClick={signup}>
+            <Button color="inherit" onClick={redirectToSignup}>
               Sign up
             </Button>
           </div>
@@ -189,14 +177,12 @@ const TopMenu = (props: Props & RouteComponentProps & StyledComponentProps) => {
   );
 };
 
-export function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    loggingIn: state.loggingIn,
-    loggedInUser: state.loggedInUser,
-    organizers: state.organizers,
-    selectedOrganizer: getSelectedOrganizer(state),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  loggingIn: state.loggingIn,
+  loggedInUser: state.loggedInUser,
+  organizers: state.organizers,
+  selectedOrganizer: getSelectedOrganizer(state),
+});
 
 const mapDispatchToProps = {
   login,
@@ -204,7 +190,8 @@ const mapDispatchToProps = {
   selectOrganizer,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(TopMenu));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(TopMenu));

@@ -5,20 +5,17 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import SaveIcon from "@material-ui/icons/Save";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteOrganizer, saveOrganizer } from "../../actions/asyncActions";
 import { Organizer } from "../../model/organizer";
-import { StoreState } from "../../model/storeState";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { ProgressButton } from "../ProgressButton";
 
 interface Props {
-  organizer?: Organizer;
+  organizer: Organizer;
   removable?: boolean;
   cancellable?: boolean;
   onDone?: () => void;
-  saveOrganizer?: (organizer: Organizer) => Promise<Organizer>;
-  deleteOrganizer?: (organizer: Organizer) => Promise<void>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,9 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const OrganizerEdit = (props: Props) => {
+const OrganizerEdit = (props: Props & PropsFromRedux) => {
   const [organizer, setOrganizer] = useState<Organizer>({
-    ...props.organizer!,
+    ...props.organizer,
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
@@ -64,7 +61,7 @@ const OrganizerEdit = (props: Props) => {
   const onSave = () => {
     setSaving(true);
     props
-      .saveOrganizer?.(organizer)
+      .saveOrganizer(organizer)
       .then((organizer) => {
         setSaving(false);
         props.onDone?.();
@@ -77,7 +74,7 @@ const OrganizerEdit = (props: Props) => {
 
     if (result) {
       setDeleting(true);
-      props.deleteOrganizer?.(organizer).finally(() => setDeleting(false));
+      props.deleteOrganizer(organizer).finally(() => setDeleting(false));
     }
   };
 
@@ -143,13 +140,13 @@ const OrganizerEdit = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {};
-}
-
 const mapDispatchToProps = {
   saveOrganizer,
   deleteOrganizer,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizerEdit);
+const connector = connect(undefined, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(OrganizerEdit);

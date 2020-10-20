@@ -1,6 +1,6 @@
 import { Tick } from "./tick";
 
-export class ContenderScoringInfo {
+export interface ContenderScoringInfo {
   ticks?: Tick[];
   totalScore?: number;
   totalPosition?: number;

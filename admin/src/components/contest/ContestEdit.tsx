@@ -12,17 +12,12 @@ import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
 import Alert from "@material-ui/lab/Alert";
 import { saveAs } from "file-saver";
-import { OrderedMap } from "immutable";
 import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Link } from "react-router-dom";
-import { CompClass } from "src/model/compClass";
-import { ContenderData } from "src/model/contenderData";
-import { Organizer } from "src/model/organizer";
-import { Problem } from "src/model/problem";
 import { Api } from "src/utils/Api";
-import { setErrorMessage, setTitle } from "../../actions/actions";
+import { setErrorMessage } from "../../actions/actions";
 import {
   deleteContest,
   loadContest,
@@ -42,20 +37,7 @@ import { ProgressButton } from "../ProgressButton";
 import RichTextEditor from "../RichTextEditor";
 
 interface Props {
-  contestId?: number;
-  contests?: OrderedMap<number, Contest>;
-  series?: OrderedMap<number, Series>;
-  locations?: OrderedMap<number, CompLocation>;
-  selectedOrganizer?: Organizer;
-  problems?: OrderedMap<number, Problem>;
-  compClasses?: OrderedMap<number, CompClass>;
-  contenders?: OrderedMap<number, ContenderData>;
-  loading?: boolean;
-  setTitle?: (title: string) => void;
-  saveContest?: (contest: Contest) => Promise<Contest>;
-  deleteContest?: (contest: Contest) => Promise<void>;
-  loadLocations?: () => Promise<void>;
-  loadSeries?: () => Promise<void>;
+  contest: Contest;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -74,46 +56,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContestEdit = (props: Props & RouteComponentProps) => {
+const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
+  const { loadLocations, loadSeries } = props;
+
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
   let [compilingPdf, setCompilingPdf] = useState<boolean>(false);
   let [showPopup, setShowPopup] = useState<boolean>(false);
   let [requestingDelete, setRequestingDelete] = useState<boolean>(false);
-  let [contest, setContest] = useState<Contest>({
-    organizerId: props.selectedOrganizer?.id!,
-    protected: false,
-    name: "",
-    description: "",
-    finalEnabled: true,
-    qualifyingProblems: 10,
-    finalists: 5,
-    rules: "",
-    gracePeriod: 15,
-  });
+  let [contest, setContest] = useState<Contest>(props.contest);
 
   useEffect(() => {
     if (props.locations === undefined) {
-      props.loadLocations?.();
+      loadLocations();
     }
     if (props.series === undefined) {
-      props.loadSeries?.();
+      loadSeries();
     }
-  }, [props.series, props.locations, props.loadLocations, props.loadSeries]);
-
-  useEffect(() => {
-    if (props.contestId !== undefined) {
-      let contest = props.contests?.get(props.contestId);
-      if (contest !== undefined) {
-        setContest(contest);
-      }
-    }
-  }, [props.contestId, props.contests]);
-
-  useEffect(() => {
-    let title = contest?.id === undefined ? "Add contest" : contest.name;
-    props.setTitle?.(title);
-  }, [contest, props.setTitle]);
+  }, [props.series, props.locations, loadLocations, loadSeries]);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -121,37 +81,30 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   const contestIssues = useMemo(() => {
     let issues: any[] = [];
 
-    if (props.loading || contest.id === undefined) {
+    if (contest.id === undefined) {
       return issues;
     }
 
     if ((props.problems?.size ?? 0) === 0) {
       issues.push({
         description: "Please add problems",
-        link: `/contests/${props.contestId}/problems`,
+        link: `/contests/${contest.id}/problems`,
       });
     }
     if ((props.compClasses?.size ?? 0) === 0) {
       issues.push({
         description: "Please add at least one competition class",
-        link: `/contests/${props.contestId}/classes`,
+        link: `/contests/${contest.id}/classes`,
       });
     }
     if ((props.contenders?.size ?? 0) === 0) {
       issues.push({
         description: "Please add contenders",
-        link: `/contests/${props.contestId}/contenders`,
+        link: `/contests/${contest.id}/contenders`,
       });
     }
     return issues;
-  }, [
-    contest,
-    props.problems,
-    props.compClasses,
-    props.contenders,
-    props.loading,
-    props.contestId,
-  ]);
+  }, [contest, props.problems, props.compClasses, props.contenders]);
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContest({ ...contest, name: e.target.value });
@@ -186,25 +139,30 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     setContest({ ...contest, rules });
   };
 
-  const onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onLocationChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const locationId =
-      e.target.value === "None" ? undefined : parseInt(e.target.value);
+      e.target.value === "None"
+        ? undefined
+        : parseInt(e.target.value as string);
     setContest({ ...contest, locationId });
   };
 
-  const onSeriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onSeriesChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const seriesId =
-      e.target.value === "None" ? undefined : parseInt(e.target.value);
+      e.target.value === "None"
+        ? undefined
+        : parseInt(e.target.value as string);
     setContest({ ...contest, seriesId });
   };
 
   const onSave = () => {
     setSaving(true);
     props
-      .saveContest?.(contest)
+      .saveContest(contest)
       .then((contest) => {
+        setContest(contest);
         if (isNew) {
-          props.history.push("/contests/" + contest.id);
+          props.history.push("/contests/" + contest.id!);
         }
       })
       .finally(() => setSaving(false));
@@ -218,7 +176,7 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
     if (result) {
       setDeleting(true);
       props
-        .deleteContest?.(contest)
+        .deleteContest(contest)
         .then(() => props.history.push("/contests"))
         .catch((error) => setDeleting(false));
     }
@@ -330,13 +288,11 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               label="Name"
               value={contest.name}
               onChange={onNameChange}
-              disabled={props.loading}
             />
             <TextField
               label="Description"
               value={contest.description}
               onChange={onDescriptionChange}
-              disabled={props.loading}
             />
             {(props.locations?.size ?? 0) > 0 && (
               <FormControl>
@@ -347,7 +303,6 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   id="location-select"
                   value={contest.locationId ?? "None"}
                   onChange={onLocationChange}
-                  disabled={props.loading}
                 >
                   <MenuItem value="None">
                     <em>None</em>
@@ -369,7 +324,6 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   id="series-select"
                   value={contest.seriesId ?? "None"}
                   onChange={onSeriesChange}
-                  disabled={props.loading}
                 >
                   <MenuItem value="None">
                     <em>None</em>
@@ -391,7 +345,6 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               }
               label="Enable finals"
               labelPlacement="end"
-              disabled={props.loading}
             />
             {contest.finalEnabled && (
               <>
@@ -399,13 +352,11 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
                   label="Number of qualifying problems"
                   value={contest.qualifyingProblems}
                   onChange={onQualifyingProblemsChange}
-                  disabled={props.loading}
                 />
                 <TextField
                   label="Number of finalists"
                   value={contest.finalists}
                   onChange={onFinalistsChange}
-                  disabled={props.loading}
                 />
               </>
             )}
@@ -413,7 +364,6 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
               label="Grace period (minutes)"
               value={contest.gracePeriod}
               onChange={onGracePeriodChange}
-              disabled={props.loading}
             />
           </div>
           <div
@@ -477,29 +427,36 @@ const ContestEdit = (props: Props & RouteComponentProps) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contests: state.contests,
-    series: state.series,
-    locations: state.locations,
-    selectedOrganizer: getSelectedOrganizer(state),
-    problems: state.problemsByContest.get(props.contestId),
-    compClasses: state.compClassesByContest.get(props.contestId),
-    contenders: state.contendersByContest.get(props.contestId),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  contests: state.contests,
+  series: state.series,
+  locations: state.locations,
+  selectedOrganizer: getSelectedOrganizer(state),
+  problems:
+    props.contest.id !== undefined
+      ? state.problemsByContest.get(props.contest.id)
+      : undefined,
+  compClasses:
+    props.contest.id !== undefined
+      ? state.compClassesByContest.get(props.contest.id)
+      : undefined,
+  contenders:
+    props.contest.id !== undefined
+      ? state.contendersByContest.get(props.contest.id)
+      : undefined,
+});
 
 const mapDispatchToProps = {
   saveContest,
   deleteContest,
-  setTitle,
   loadContest,
   setErrorMessage,
   loadLocations: reloadLocations,
   loadSeries: reloadSeries,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(ContestEdit));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(ContestEdit));

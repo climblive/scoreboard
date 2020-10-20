@@ -12,7 +12,7 @@ import StopIcon from "@material-ui/icons/Stop";
 import { OrderedMap } from "immutable";
 import moment from "moment";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { ContenderData } from "src/model/contenderData";
 import { Raffle } from "src/model/raffle";
 import { RaffleWinner } from "src/model/raffleWinner";
@@ -27,12 +27,8 @@ import { ProgressButton } from "../ProgressButton";
 import ResponsiveTableRow from "../ResponsiveTableRow";
 
 interface Props {
-  raffle?: Raffle;
-  raffleWinners?: OrderedMap<number, RaffleWinner>;
+  raffle: Raffle;
   breakpoints?: Map<number, string>;
-  deleteRaffle?: (raffle: Raffle) => Promise<void>;
-  saveRaffle?: (raffle: Raffle) => Promise<Raffle>;
-  drawWinner?: (raffle: Raffle) => Promise<RaffleWinner>;
   contenders?: OrderedMap<number, ContenderData>;
 }
 
@@ -58,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const RaffleView = (props: Props) => {
+const RaffleView = (props: Props & PropsFromRedux) => {
   let [drawingWinner, setDrawingWinner] = useState<boolean>(false);
   let [updating, setUpdating] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
@@ -78,25 +74,25 @@ const RaffleView = (props: Props) => {
 
     if (result) {
       setDeleting(true);
-      props.deleteRaffle?.(props.raffle!).finally(() => setDeleting(false));
+      props.deleteRaffle(props.raffle).finally(() => setDeleting(false));
     }
   };
 
   const drawWinner = () => {
     setDrawingWinner(true);
-    props.drawWinner?.(props.raffle!).finally(() => setDrawingWinner(false));
+    props.drawWinner(props.raffle).finally(() => setDrawingWinner(false));
   };
 
   const changeActiveStatus = (active: boolean) => {
     setUpdating(true);
     props
-      .saveRaffle?.({ ...props.raffle!, active })
+      .saveRaffle?.({ ...props.raffle, active })
       .finally(() => setUpdating(false));
   };
 
   const cells = [
     <TableCell component="th" scope="row">
-      {`Raffle #${props.raffle?.id}`}
+      {`Raffle #${props.raffle.id}`}
     </TableCell>,
   ];
 
@@ -116,11 +112,11 @@ const RaffleView = (props: Props) => {
               loading={drawingWinner}
               startIcon={<PlayIcon />}
               fullWidth
-              disabled={!props.raffle?.active}
+              disabled={!props.raffle.active}
             >
               Draw
             </ProgressButton>
-            {props.raffle?.active && (
+            {props.raffle.active && (
               <ProgressButton
                 variant="contained"
                 color="secondary"
@@ -131,7 +127,7 @@ const RaffleView = (props: Props) => {
                 Deactivate
               </ProgressButton>
             )}
-            {!props.raffle?.active && (
+            {!props.raffle.active && (
               <ProgressButton
                 variant="contained"
                 color="secondary"
@@ -210,11 +206,9 @@ const RaffleView = (props: Props) => {
   );
 };
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    raffleWinners: state.raffleWinnersByRaffle.get(props.raffle.id),
-  };
-}
+const mapStateToProps = (state: StoreState, props: Props) => ({
+  raffleWinners: state.raffleWinnersByRaffle.get(props.raffle.id!),
+});
 
 const mapDispatchToProps = {
   deleteRaffle,
@@ -222,4 +216,8 @@ const mapDispatchToProps = {
   drawWinner,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RaffleView);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(RaffleView);

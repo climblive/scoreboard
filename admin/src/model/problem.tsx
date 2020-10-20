@@ -1,4 +1,4 @@
-export class Problem {
+export interface Problem {
   id?: number;
   colorId: number;
   contestId: number;

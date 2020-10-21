@@ -1,13 +1,7 @@
-import "./StartView.css";
-import { Redirect } from "react-router";
 import * as React from "react";
-import { StoreState } from "../model/storeState";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { ContenderData } from "../model/contenderData";
-import * as asyncActions from "../actions/asyncActions";
+import { Redirect } from "react-router";
 import { Environment } from "../environment";
-import { ScoreboardActions } from "src/reducers/reducer";
+import "./StartView.css";
 
 export interface Props {}
 
@@ -114,17 +108,4 @@ class StartView extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contest: state.contest,
-  };
-}
-
-function mapDispatchToProps(dispatch: Dispatch<ScoreboardActions>) {
-  return {
-    saveUserData: (contenderData: ContenderData) =>
-      dispatch(asyncActions.saveUserData(contenderData)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(StartView);
+export default StartView;

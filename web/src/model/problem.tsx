@@ -3,6 +3,6 @@ export interface Problem {
   number: number;
   colorId: number;
   points: number;
-  flashBonus: number;
+  flashBonus?: number;
   text: string;
 }

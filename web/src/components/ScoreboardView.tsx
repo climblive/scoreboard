@@ -1,39 +1,35 @@
-import * as React from "react";
-import "./ScoreboardView.css";
-import { ScoreboardContenderList } from "../model/scoreboardContenderList";
 import { Client } from "@stomp/stompjs";
-import { ScoreboardPushItem } from "../model/scoreboardPushItem";
-import { Api } from "../utils/Api";
-import ScoreboardTotalListContainer from "../containers/ScoreboardTotalListContainer";
-import ScoreboardFinalistListContainer from "../containers/ScoreboardFinalistListContainer";
-import { ScoreboardClassHeaderComp } from "./ScoreboardClassHeaderComp";
-import Spinner from "./Spinner";
-import { StoreState } from "../model/storeState";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import * as asyncActions from "../actions/asyncActions";
-import * as actions from "../actions/actions";
-import { Contest } from "../model/contest";
+import * as React from "react";
+import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
-import { RaffleWinner } from "../model/raffleWinner";
+import {
+  deactivateRaffle,
+  receiveRaffleWinner,
+  setCurrentCompClassId,
+  updateScoreboardTimer,
+} from "../actions/actions";
+import {
+  handleScoreboardItem,
+  loadContest,
+  loadScoreboardData,
+} from "../actions/asyncActions";
 import { RafflePushItem } from "../model/rafflePushItem";
-import { ScoreboardActions } from "src/reducers/reducer";
+import { RaffleWinner } from "../model/raffleWinner";
+import { StoreState } from "../model/storeState";
+import { Api } from "../utils/Api";
+import { ScoreboardClassHeaderComp } from "./ScoreboardClassHeaderComp";
+import {
+  ScoreboardFinalistListContainer,
+  ScoreboardTotalListContainer,
+} from "./ScoreboardListComp";
+import "./ScoreboardView.css";
+import Spinner from "./Spinner";
 
-export interface Props {
-  scoreboardData: ScoreboardContenderList[];
-  raffleWinners?: RaffleWinner[];
-  currentCompClassId: number;
-  contest: Contest;
-  loadScoreboardData?: (id: number) => void;
-  loadContest?: (id: number) => void;
-  receiveScoreboardItem?: (scoreboardPushItem: ScoreboardPushItem) => void;
-  deactivateRaffle?: (rafflePushItem: RafflePushItem) => void;
-  receiveRaffleWinner?: (raffleWinner: RaffleWinner) => void;
-  updateScoreboardTimer?: () => void;
-  setCurrentCompClassId?: (compClassId: number) => void;
-}
+export interface Props {}
 
-class ScoreboardView extends React.Component<Props & RouteComponentProps> {
+class ScoreboardView extends React.Component<
+  Props & PropsFromRedux & RouteComponentProps
+> {
   client: Client;
   intervalId: number;
 
@@ -51,12 +47,10 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
     this.client.activate();
     this.client.onConnect = () => {
       this.props.loadScoreboardData!(contestId);
-      console.log("subscribe " + contestId);
       this.client.subscribe(
         "/topic/contest/" + contestId + "/scoreboard",
         (message) => {
-          console.log(message, JSON.parse(message.body));
-          this.props.receiveScoreboardItem!(JSON.parse(message.body));
+          this.props.handleScoreboardItem(JSON.parse(message.body));
         }
       );
       this.client.subscribe(
@@ -73,7 +67,6 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
       this.client.subscribe(
         "/topic/contest/" + contestId + "/raffle/winner",
         (message) => {
-          console.log(message, JSON.parse(message.body));
           this.props.receiveRaffleWinner!(
             JSON.parse(message.body) as RaffleWinner
           );
@@ -94,7 +87,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
         scoreboardData.contenders[
           Math.floor(Math.random() * scoreboardData.contenders.length)
         ];
-      this.props.receiveScoreboardItem!({
+      this.props.handleScoreboardItem({
         compClassId: scoreboardData.compClass.id,
         item: {
           contenderId: contender.contenderId,
@@ -134,7 +127,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
       const currentCompClassId = this.props.currentCompClassId;
       const currentCompClass = scoreboardData.find(
         (sd) => sd.compClass.id === currentCompClassId
-      )!.compClass;
+      )?.compClass;
 
       let headers = scoreboardData.map((scoreboardList) => (
         <ScoreboardClassHeaderComp
@@ -189,7 +182,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
                     : "selector"
                 }
                 onClick={() =>
-                  this.props.setCurrentCompClassId!(scoreboardList.compClass.id)
+                  this.props.setCurrentCompClassId(scoreboardList.compClass.id)
                 }
               >
                 {scoreboardList.compClass.name}
@@ -197,16 +190,18 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             ))}
           </div>
           <div className="showLarge scoreboardListContainer">{headers}</div>
-          <div className="showSmall scoreboardListContainer">
-            <ScoreboardClassHeaderComp compClass={currentCompClass} />
-          </div>
+          {currentCompClass && (
+            <div className="showSmall scoreboardListContainer">
+              <ScoreboardClassHeaderComp compClass={currentCompClass} />
+            </div>
+          )}
           {contest.finalists > 0 && <div className="header">Finalister</div>}
           {contest.finalists > 0 && (
             <div className="showLarge scoreboardListContainer">
               {finalistList}
             </div>
           )}
-          {contest.finalists > 0 && (
+          {currentCompClass && contest.finalists > 0 && (
             <div className="showSmall scoreboardListContainer">
               <ScoreboardFinalistListContainer compClass={currentCompClass} />
             </div>
@@ -218,9 +213,11 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
           <div className="showLarge scoreboardListContainer total">
             {totalList}
           </div>
-          <div className="showSmall scoreboardListContainer total">
-            <ScoreboardTotalListContainer compClass={currentCompClass} />
-          </div>
+          {currentCompClass && (
+            <div className="showSmall scoreboardListContainer total">
+              <ScoreboardTotalListContainer compClass={currentCompClass} />
+            </div>
+          )}
           <div className="logoContainer">
             <img height="100" src="/clmb_MainLogo_Shadow.png" alt="" />
           </div>
@@ -239,34 +236,25 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
   }
 }
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    scoreboardData: state.scoreboardData,
-    raffleWinners: state.raffleWinners,
-    contest: state.contest,
-    currentCompClassId: state.currentCompClassId,
-  };
-}
+const mapStateToProps = (state: StoreState) => ({
+  scoreboardData: state.scoreboardData,
+  raffleWinners: state.raffleWinners,
+  contest: state.contest,
+  currentCompClassId: state.currentCompClassId,
+});
 
-function mapDispatchToProps(dispatch: Dispatch<ScoreboardActions>) {
-  return {
-    loadScoreboardData: (contestId: number) =>
-      dispatch(asyncActions.loadScoreboardData(contestId)),
-    loadContest: (contestId: number) =>
-      dispatch(asyncActions.loadContest(contestId)),
-    receiveScoreboardItem: (scoreboardPushItem: ScoreboardPushItem) =>
-      dispatch(asyncActions.handleScoreboardItem(scoreboardPushItem)),
-    updateScoreboardTimer: () => dispatch(actions.updateScoreboardTimer()),
-    setCurrentCompClassId: (compClassId: number) =>
-      dispatch(actions.setCurrentCompClassId(compClassId)),
-    deactivateRaffle: (rafflePushItem: RafflePushItem) =>
-      dispatch(actions.deactivateRaffle(rafflePushItem)),
-    receiveRaffleWinner: (raffleWinner: RaffleWinner) =>
-      dispatch(actions.receiveRaffleWinner(raffleWinner)),
-  };
-}
+const mapDispatchToProps = {
+  loadScoreboardData,
+  loadContest,
+  updateScoreboardTimer,
+  setCurrentCompClassId,
+  deactivateRaffle,
+  receiveRaffleWinner,
+  handleScoreboardItem,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(ScoreboardView));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(ScoreboardView));

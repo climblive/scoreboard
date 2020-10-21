@@ -111,7 +111,6 @@ const RaffleView = (props: Props & PropsFromRedux) => {
               onClick={drawWinner}
               loading={drawingWinner}
               startIcon={<PlayIcon />}
-              fullWidth
               disabled={!props.raffle.active}
             >
               Draw

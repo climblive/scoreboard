@@ -1,16 +1,15 @@
-import * as React from "react";
-import "./ScoreboardListComp.css";
-import { ScoreboardListItem } from "../model/scoreboardListItem";
-import { CompClass } from "../model/compClass";
-import { RefObject } from "react";
 import * as Chroma from "chroma-js";
+import * as React from "react";
+import { RefObject } from "react";
+import { connect, ConnectedProps } from "react-redux";
+import { CompClass } from "../model/compClass";
+import { StoreState } from "../model/storeState";
+import { makeGetFinalistList, makeGetTotalList } from "../selectors/selector";
+import "./ScoreboardListComp.css";
 
-export interface ScoreboardListCompProps {
+interface Props {
   compClass: CompClass;
-  totalList?: ScoreboardListItem[];
-  isPaging: boolean;
-  animationPropertyName: string;
-  pagingCounter: number;
+  isPaging?: boolean;
 }
 
 type State = {
@@ -19,7 +18,7 @@ type State = {
 };
 
 export class ScoreboardListComp extends React.Component<
-  ScoreboardListCompProps,
+  Props & PropsFromRedux,
   State
 > {
   private readonly containerRef: RefObject<HTMLDivElement>;
@@ -30,7 +29,7 @@ export class ScoreboardListComp extends React.Component<
 
   private readonly ITEM_HEIGHT = 18;
 
-  constructor(props: ScoreboardListCompProps) {
+  constructor(props: Props & PropsFromRedux) {
     super(props);
     this.containerRef = React.createRef();
   }
@@ -78,10 +77,7 @@ export class ScoreboardListComp extends React.Component<
       ? "scoreboardListContenders scoreboardListContendersPaging"
       : "scoreboardListContenders";
     let list = this.props.totalList!.map((contender) => {
-      let color = this.props.compClass.color;
-      if (color === null) {
-        color = "#ffffff";
-      }
+      let color = this.props.compClass.color ?? "#ffffff";
 
       let style: React.CSSProperties = {
         position: "absolute",
@@ -132,7 +128,7 @@ export class ScoreboardListComp extends React.Component<
       );
     });
 
-    let pagerItems = [];
+    let pagerItems: JSX.Element[] = [];
     for (let i = 0; i < nPages; i++) {
       let className = i === currentPage ? "paging current" : "paging";
       pagerItems.push(<div key={i} className={className}></div>);
@@ -167,3 +163,40 @@ export class ScoreboardListComp extends React.Component<
     );
   }
 }
+
+const makeMapStateToPropsTotal = () => {
+  const getTotalList = makeGetTotalList();
+  const mapStateToProps = (state: StoreState, props: Props) => {
+    return {
+      totalList: getTotalList(state, props),
+      pagingCounter: state.pagingCounter,
+      animationPropertyName: "isAnimatingTotal",
+    };
+  };
+  return mapStateToProps;
+};
+
+const connectorTotal = connect(makeMapStateToPropsTotal, {});
+
+const ScoreboardTotalListContainer = connectorTotal(ScoreboardListComp);
+
+const makeMapStateToPropsFinalists = () => {
+  const getFinalistList = makeGetFinalistList();
+  const mapStateToProps = (state: StoreState, props: Props) => {
+    return {
+      totalList: getFinalistList(state, props),
+      pagingCounter: state.pagingCounter,
+      animationPropertyName: "isAnimatingFinalist",
+    };
+  };
+  return mapStateToProps;
+};
+
+const connectorFinalists = connect(makeMapStateToPropsFinalists, {});
+
+const ScoreboardFinalistListContainer = connectorFinalists(ScoreboardListComp);
+
+type PropsFromRedux = ConnectedProps<typeof connectorTotal> &
+  ConnectedProps<typeof connectorFinalists>;
+
+export { ScoreboardTotalListContainer, ScoreboardFinalistListContainer };

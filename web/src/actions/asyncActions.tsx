@@ -26,7 +26,7 @@ import { Tick } from "../model/tick";
 import { ScoreboardPushItem } from "../model/scoreboardPushItem";
 import { ScoreboardActions } from "../reducers/reducer";
 
-export function loadUserData(code: string): any {
+export function loadUserData(code: string) {
   return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getContender(code)
       .then((contenderData) => {
@@ -62,7 +62,7 @@ export function loadUserData(code: string): any {
   };
 }
 
-export function loadContest(contestId: number): any {
+export function loadContest(contestId: number) {
   return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getContest(contestId).then((contest) => {
       dispatch(receiveContest(contest));
@@ -70,7 +70,7 @@ export function loadContest(contestId: number): any {
   };
 }
 
-export function loadScoreboardData(id: number): any {
+export function loadScoreboardData(id: number) {
   return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getScoreboard(id).then((scoreboardDescription) => {
       dispatch(receiveScoreboardData(scoreboardDescription));
@@ -79,9 +79,7 @@ export function loadScoreboardData(id: number): any {
   };
 }
 
-export function handleScoreboardItem(
-  scoreboardPushItem: ScoreboardPushItem
-): any {
+export function handleScoreboardItem(scoreboardPushItem: ScoreboardPushItem) {
   return (dispatch: Dispatch<ScoreboardActions>) => {
     dispatch(receiveScoreboardItem(scoreboardPushItem));
     setTimeout(() => {
@@ -90,16 +88,15 @@ export function handleScoreboardItem(
   };
 }
 
-export function saveUserData(contenderData: ContenderData): any {
-  return (dispatch: Dispatch<ScoreboardActions>) => {
-    let promise: Promise<ContenderData> = Api.updateContender(
+export function saveUserData(contenderData: ContenderData) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<ContenderData> => {
+    return Api.updateContender(
       contenderData,
       contenderData.registrationCode
-    );
-    promise.then((contenderData) =>
-      dispatch(receiveContenderData(contenderData))
-    );
-    return promise;
+    ).then((contenderData) => {
+      dispatch(receiveContenderData(contenderData));
+      return contenderData;
+    });
   };
 }
 
@@ -107,7 +104,7 @@ export function setProblemStateAndSave(
   problem: Problem,
   problemState: ProblemState,
   tick?: Tick
-): any {
+) {
   return (
     dispatch: Dispatch<ScoreboardActions>,
     getState: () => StoreState

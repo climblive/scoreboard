@@ -46,7 +46,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
   };
 
   inputOk(): boolean {
-    console.log("this.state.compClassId", this.state.compClassId);
     return (
       this.state.compClassId !== undefined &&
       this.state.name !== undefined &&
@@ -55,7 +54,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props);
     if (!this.props.contest) {
       return <div>Vänta...</div>;
     }

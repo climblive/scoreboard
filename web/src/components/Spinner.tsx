@@ -7,7 +7,7 @@ export interface SpinnerProps {
 
 class Spinner extends React.Component<SpinnerProps> {
   render() {
-    let bars = [];
+    let bars: JSX.Element[] = [];
     const props = this.props;
 
     for (let i = 0; i < 12; i++) {

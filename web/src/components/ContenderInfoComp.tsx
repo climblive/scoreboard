@@ -26,13 +26,11 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
   };
 
   handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-    this.state.name = event.currentTarget.value;
-    this.setState(this.state);
+    this.setState({ name: event.currentTarget.value });
   };
 
   setCompClass = (compClassId: number) => {
-    this.state.compClassId = compClassId;
-    this.setState(this.state);
+    this.setState({ compClassId });
   };
 
   onSubmit = () => {

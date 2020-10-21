@@ -27,8 +27,7 @@ class StartView extends React.Component<Props, State> {
   }
 
   handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-    this.state.activationCode = event.currentTarget.value;
-    this.setState(this.state);
+    this.setState({ activationCode: event.currentTarget.value });
   };
 
   handleActivationCodeKeyUp = (
@@ -48,8 +47,7 @@ class StartView extends React.Component<Props, State> {
 
   onSubmit = () => {
     if (this.inputOk()) {
-      this.state.redirect = true;
-      this.setState(this.state);
+      this.setState({ redirect: true });
     }
   };
 

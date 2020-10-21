@@ -68,8 +68,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
       return <Redirect to="/" />;
     } else if (this.props.contenderNotFound) {
       let goBack = () => {
-        this.state.goBack = true;
-        this.setState(this.state);
+        this.setState({ goBack: true });
       };
 
       return (
@@ -142,8 +141,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
     } else if (this.state.userInfoModalIsOpen) {
       let closeUserInfoModal = () => {
         console.log("closeUserInfoModal");
-        this.state.userInfoModalIsOpen = false;
-        this.setState(this.state);
+        this.setState({ userInfoModalIsOpen: false });
       };
 
       return (
@@ -182,14 +180,12 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
 
       let openUserInfoModal = () => {
         console.log("openUserInfoModal");
-        this.state.userInfoModalIsOpen = true;
-        this.setState(this.state);
+        this.setState({ userInfoModalIsOpen: true });
       };
 
       let closeRulesModal = () => {
         console.log("closeRulesModal");
-        this.state.rulesModalIsOpen = false;
-        this.setState(this.state);
+        this.setState({ rulesModalIsOpen: false });
       };
 
       let rules = this.props.contest ? this.props.contest.rules : "";

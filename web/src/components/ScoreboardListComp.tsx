@@ -44,9 +44,7 @@ export class ScoreboardListComp extends React.Component<
         nToShow !== this.state.nToShow ||
         marginBottom !== this.state.marginBottom
       ) {
-        this.state.nToShow = nToShow;
-        this.state.marginBottom = marginBottom;
-        this.setState(this.state);
+        this.setState({ nToShow, marginBottom });
       }
     }
   };

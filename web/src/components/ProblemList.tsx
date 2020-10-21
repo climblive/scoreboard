@@ -31,9 +31,9 @@ export default class ProblemList extends React.Component<
   };
 
   toggle(p: Problem) {
-    this.state.expandedProblem =
-      p.id === this.state.expandedProblem ? undefined : p.id;
-    this.setState(this.state);
+    this.setState({
+      expandedProblem: p.id === this.state.expandedProblem ? undefined : p.id,
+    });
   }
 
   getTick(p: Problem) {

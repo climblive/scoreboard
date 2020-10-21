@@ -98,7 +98,7 @@ export class ScoreboardListComp extends React.Component<
       ) {
         style = {
           ...style,
-          color: Chroma(color)
+          color: Chroma.hex(color)
             .brighten(6 - contender.uiPosition)
             .hex(),
           fontWeight: 400 + (6 - contender.uiPosition) * 100,
@@ -113,7 +113,7 @@ export class ScoreboardListComp extends React.Component<
       if (contender.position === 1) {
         style = {
           ...style,
-          backgroundColor: Chroma(color).darken(1).hex(),
+          backgroundColor: Chroma.hex(color).darken(1).hex(),
           color: "#ffffff",
         };
       }

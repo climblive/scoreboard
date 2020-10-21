@@ -74,7 +74,7 @@ function ProblemComp({
   if (isExpanded) {
     secondRowClassName += problem.flashBonus ? " expandedLarge" : " expanded";
   }
-  const chromaInst = Chroma(rgbColor);
+  const chromaInst = Chroma.hex(rgbColor);
   const luminance = chromaInst.luminance();
   let borderColor = chromaInst.darken(1).hex();
   let textColor = luminance < 0.5 ? "#FFF" : "#333";

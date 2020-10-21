@@ -2,7 +2,7 @@ import * as React from "react";
 import "./MainView.css";
 import { Problem } from "../model/problem";
 import { ContenderData } from "../model/contenderData";
-import * as ReactModal from "react-modal";
+import ReactModal from "react-modal";
 import { Contest } from "../model/contest";
 import ContenderInfoComp from "./ContenderInfoComp";
 import { Redirect, RouteComponentProps, withRouter } from "react-router";
@@ -14,9 +14,11 @@ import ProblemList from "./ProblemList";
 import { Color } from "../model/color";
 import Spinner from "./Spinner";
 import { StoreState } from "../model/storeState";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
+import { ScoreboardActions } from 'src/reducers/reducer';
 
 export interface Props {
   contenderData?: ContenderData;
@@ -286,7 +288,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<ScoreboardActions>) {
   return {
     setProblemStateAndSave: (
       problem: Problem,

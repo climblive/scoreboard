@@ -2,10 +2,12 @@ import "./StartView.css";
 import { Redirect } from "react-router";
 import * as React from "react";
 import { StoreState } from "../model/storeState";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { ContenderData } from "../model/contenderData";
 import * as asyncActions from "../actions/asyncActions";
 import { Environment } from "../environment";
+import { ScoreboardActions } from 'src/reducers/reducer';
 
 export interface Props {}
 
@@ -123,7 +125,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<ScoreboardActions>) {
   return {
     saveUserData: (contenderData: ContenderData) =>
       dispatch(asyncActions.saveUserData(contenderData)),

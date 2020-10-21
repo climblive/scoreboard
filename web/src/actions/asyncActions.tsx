@@ -1,6 +1,6 @@
 import { Problem } from "../model/problem";
 import { ContenderData } from "../model/contenderData";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 import { Api } from "../utils/Api";
 import {
   createTick,

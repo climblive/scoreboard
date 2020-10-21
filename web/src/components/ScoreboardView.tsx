@@ -9,13 +9,15 @@ import ScoreboardFinalistListContainer from "../containers/ScoreboardFinalistLis
 import { ScoreboardClassHeaderComp } from "./ScoreboardClassHeaderComp";
 import Spinner from "./Spinner";
 import { StoreState } from "../model/storeState";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
 import { Contest } from "../model/contest";
 import { RouteComponentProps, withRouter } from "react-router";
 import { RaffleWinner } from "../model/raffleWinner";
 import { RafflePushItem } from "../model/rafflePushItem";
+import { ScoreboardActions } from 'src/reducers/reducer';
 
 export interface Props {
   scoreboardData: ScoreboardContenderList[];
@@ -246,7 +248,7 @@ function mapStateToProps(state: StoreState, props: any): Props {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<ScoreboardActions>) {
   return {
     loadScoreboardData: (contestId: number) =>
       dispatch(asyncActions.loadScoreboardData(contestId)),

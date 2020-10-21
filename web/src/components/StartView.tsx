@@ -7,7 +7,7 @@ import { Dispatch } from "redux";
 import { ContenderData } from "../model/contenderData";
 import * as asyncActions from "../actions/asyncActions";
 import { Environment } from "../environment";
-import { ScoreboardActions } from 'src/reducers/reducer';
+import { ScoreboardActions } from "src/reducers/reducer";
 
 export interface Props {}
 
@@ -22,10 +22,6 @@ class StartView extends React.Component<Props, State> {
     redirect: false,
   };
 
-  constructor(props: Props) {
-    super(props);
-  }
-
   componentDidMount() {
     document.title = "Välkommen till ClimbLive";
   }
@@ -38,14 +34,14 @@ class StartView extends React.Component<Props, State> {
   handleActivationCodeKeyUp = (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       this.onSubmit();
     }
   };
 
   inputOk(): boolean {
     return (
-      this.state.activationCode != undefined &&
+      this.state.activationCode !== undefined &&
       this.state.activationCode.length > 6
     );
   }
@@ -67,6 +63,7 @@ class StartView extends React.Component<Props, State> {
       <div className="maxWidth">
         <div className="startView view">
           <img
+            alt=""
             style={{
               width: 200,
               position: "absolute",

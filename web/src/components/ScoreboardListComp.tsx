@@ -81,7 +81,7 @@ export class ScoreboardListComp extends React.Component<
       : "scoreboardListContenders";
     let list = this.props.totalList!.map((contender) => {
       let color = this.props.compClass.color;
-      if (color == null) {
+      if (color === null) {
         color = "#ffffff";
       }
 
@@ -136,15 +136,12 @@ export class ScoreboardListComp extends React.Component<
 
     let pagerItems = [];
     for (let i = 0; i < nPages; i++) {
-      let className = i == currentPage ? "paging current" : "paging";
+      let className = i === currentPage ? "paging current" : "paging";
       pagerItems.push(<div key={i} className={className}></div>);
     }
 
     return (
-      <div
-        className={"listRowIndex-" + " scoreboardList"}
-        ref={this.containerRef}
-      >
+      <div className={"scoreboardList"} ref={this.containerRef}>
         <div
           className={
             listClass + " compClass-" + this.props.compClass.scoreboardIndex

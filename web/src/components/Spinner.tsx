@@ -6,10 +6,6 @@ export interface SpinnerProps {
 }
 
 class Spinner extends React.Component<SpinnerProps> {
-  constructor(props: SpinnerProps) {
-    super(props);
-  }
-
   render() {
     let bars = [];
     const props = this.props;

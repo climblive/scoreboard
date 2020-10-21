@@ -6,7 +6,7 @@ import { ScoreboardContender } from "../model/scoreboardContender";
 const getScoreboardContenders = (state: StoreState, props: any) => {
   if (state.scoreboardData) {
     return state.scoreboardData.find(
-      (list) => list.compClass.name == props.compClass.name
+      (list) => list.compClass.name === props.compClass.name
     )!.contenders;
   } else {
     return undefined;
@@ -27,14 +27,14 @@ const createList = (
     let listItems = scoreboardContenders
       .sort((a, b) => {
         let scoreDiff = getScore(b) - getScore(a);
-        return scoreDiff == 0 ? b.contenderId - a.contenderId : scoreDiff;
+        return scoreDiff === 0 ? b.contenderId - a.contenderId : scoreDiff;
       })
       .map((sc, index) => {
         let score = getScore(sc);
-        if (score != lastScore) {
+        if (score !== lastScore) {
           lastScore = score;
           position = index + 1;
-          maxFulfilled = maxCount != 0 && index >= maxCount;
+          maxFulfilled = maxCount !== 0 && index >= maxCount;
         }
         if (maxFulfilled) {
           return undefined;

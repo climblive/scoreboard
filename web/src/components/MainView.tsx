@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import * as asyncActions from "../actions/asyncActions";
 import * as actions from "../actions/actions";
-import { ScoreboardActions } from 'src/reducers/reducer';
+import { ScoreboardActions } from "src/reducers/reducer";
 
 export interface Props {
   contenderData?: ContenderData;
@@ -77,6 +77,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
           <div className="startView view">
             <div className="activationWrapper">
               <img
+                alt=""
                 style={{
                   width: 200,
                   position: "absolute",
@@ -165,7 +166,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
       const points = this.props.ticks
         .map((tick) => {
           const problem = this.props.problems.find(
-            (problem) => problem.id == tick.problemId
+            (problem) => problem.id === tick.problemId
           )!;
           return tick.flash
             ? problem.points + problem.flashBonus
@@ -207,7 +208,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
             <div className="pointsRow">
               <div className="points">{totalPoints}</div>
               <div className="pointsDesc total">
-                {this.props.contest.finalists == 0 ? "Poäng" : "Totalt"}
+                {this.props.contest.finalists === 0 ? "Poäng" : "Totalt"}
               </div>
               {this.props.contest.finalists > 0 && (
                 <div className="pointsDesc">{qualifyingProblems} bästa</div>
@@ -219,7 +220,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
             <div className="headerRow">
               <div
                 className={
-                  this.props.problemsSortedBy == SortBy.BY_NUMBER
+                  this.props.problemsSortedBy === SortBy.BY_NUMBER
                     ? "selector selected"
                     : "selector"
                 }
@@ -229,7 +230,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
               </div>
               <div
                 className={
-                  this.props.problemsSortedBy == SortBy.BY_POINTS
+                  this.props.problemsSortedBy === SortBy.BY_POINTS
                     ? "selector selected"
                     : "selector"
                 }

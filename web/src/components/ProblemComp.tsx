@@ -46,7 +46,7 @@ function ProblemComp({
     };
   }
   let rgbColor = color.rgbPrimary;
-  if (rgbColor.charAt(0) != "#") {
+  if (rgbColor.charAt(0) !== "#") {
     rgbColor = "#" + rgbColor;
   }
   let background = rgbColor;
@@ -66,7 +66,7 @@ function ProblemComp({
   }
 
   let displayPoints = problem.points;
-  if (problemState == ProblemState.FLASHED && problem.flashBonus) {
+  if (problemState === ProblemState.FLASHED && problem.flashBonus) {
     displayPoints += problem.flashBonus;
   }
 
@@ -102,17 +102,17 @@ function ProblemComp({
             <Spinner color={textColor} />
           </div>
         )}
-        {problemState != ProblemState.NOT_SENT && !isUpdating && (
+        {problemState !== ProblemState.NOT_SENT && !isUpdating && (
           <StatusComp state={problemState!} color={textColor} size={25} />
         )}
         <div className="points">{displayPoints}</div>
       </div>
       <div className={secondRowClassName} style={colorStyle}>
-        {problem.flashBonus != undefined && problem.flashBonus > 0 && (
+        {problem.flashBonus !== undefined && problem.flashBonus > 0 && (
           <div
             style={selectorStyle}
             className={
-              problemState == ProblemState.FLASHED
+              problemState === ProblemState.FLASHED
                 ? "selector selected"
                 : "selector"
             }
@@ -122,7 +122,7 @@ function ProblemComp({
           >
             <StatusComp
               state={ProblemState.FLASHED}
-              color={problemState == ProblemState.FLASHED ? "#FFF" : "F333"}
+              color={problemState === ProblemState.FLASHED ? "#FFF" : "F333"}
               size={20}
             />
             <div className="buttonText">Flashed</div>
@@ -131,13 +131,15 @@ function ProblemComp({
         <div
           style={selectorStyle}
           className={
-            problemState == ProblemState.SENT ? "selector selected" : "selector"
+            problemState === ProblemState.SENT
+              ? "selector selected"
+              : "selector"
           }
           onClick={() => setProblemState!(problem, ProblemState.SENT, tick)}
         >
           <StatusComp
             state={ProblemState.SENT}
-            color={problemState == ProblemState.SENT ? "#FFF" : "F333"}
+            color={problemState === ProblemState.SENT ? "#FFF" : "F333"}
             size={20}
           />
           <div className="buttonText">Sent</div>
@@ -145,7 +147,7 @@ function ProblemComp({
         <div
           style={selectorStyle}
           className={
-            problemState == ProblemState.NOT_SENT
+            problemState === ProblemState.NOT_SENT
               ? "selector selected"
               : "selector"
           }
@@ -153,7 +155,7 @@ function ProblemComp({
         >
           <StatusComp
             state={ProblemState.NOT_SENT}
-            color={problemState == ProblemState.NOT_SENT ? "#FFF" : "F333"}
+            color={problemState === ProblemState.NOT_SENT ? "#FFF" : "F333"}
             size={20}
           />
           <div className="buttonText">Not sent</div>

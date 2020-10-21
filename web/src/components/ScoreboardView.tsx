@@ -17,7 +17,7 @@ import { Contest } from "../model/contest";
 import { RouteComponentProps, withRouter } from "react-router";
 import { RaffleWinner } from "../model/raffleWinner";
 import { RafflePushItem } from "../model/rafflePushItem";
-import { ScoreboardActions } from 'src/reducers/reducer';
+import { ScoreboardActions } from "src/reducers/reducer";
 
 export interface Props {
   scoreboardData: ScoreboardContenderList[];
@@ -118,7 +118,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
   addSeparators = (list: any[]) => {
     let result: any[] = [];
     for (let i = 0; i < list.length; i++) {
-      if (i != 0) {
+      if (i !== 0) {
         result.push(<div key={-1 * i} className="separator"></div>);
       }
       result.push(list[i]);
@@ -133,7 +133,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
     if (scoreboardData && contest) {
       const currentCompClassId = this.props.currentCompClassId;
       const currentCompClass = scoreboardData.find(
-        (sd) => sd.compClass.id == currentCompClassId
+        (sd) => sd.compClass.id === currentCompClassId
       )!.compClass;
 
       let headers = scoreboardData.map((scoreboardList) => (
@@ -184,7 +184,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
                 key={scoreboardList.compClass.id}
                 style={{ padding: 5, fontSize: 18 }}
                 className={
-                  scoreboardList.compClass.id == currentCompClassId
+                  scoreboardList.compClass.id === currentCompClassId
                     ? "selector selected"
                     : "selector"
                 }
@@ -212,7 +212,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             </div>
           )}
           {contest.finalists > 0 && <div className="header">Totalpoäng</div>}
-          {contest.finalists == 0 && (
+          {contest.finalists === 0 && (
             <div className="header" style={{ marginTop: 20 }}></div>
           )}
           <div className="showLarge scoreboardListContainer total">
@@ -222,7 +222,7 @@ class ScoreboardView extends React.Component<Props & RouteComponentProps> {
             <ScoreboardTotalListContainer compClass={currentCompClass} />
           </div>
           <div className="logoContainer">
-            <img height="100" src="/clmb_MainLogo_Shadow.png" />
+            <img height="100" src="/clmb_MainLogo_Shadow.png" alt="" />
           </div>
         </div>
       );

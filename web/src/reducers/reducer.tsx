@@ -86,10 +86,10 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
 
     case getType(scoreboardActions.receiveContenderData):
       let contenderData: ContenderData = action.payload;
-      if (contenderData.compClassId == null) {
+      if (contenderData.compClassId === null) {
         contenderData.compClassId = undefined;
       }
-      if (contenderData.name == null) {
+      if (contenderData.name === null) {
         contenderData.name = undefined;
       }
       return {
@@ -147,7 +147,7 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     }
 
     case getType(scoreboardActions.deactivateRaffle): {
-      if (action.payload.raffleId == state.raffleId) {
+      if (action.payload.raffleId === state.raffleId) {
         return { ...state, raffleWinners: undefined, raffleId: undefined };
       } else {
         return state;
@@ -281,7 +281,7 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
           (contender) =>
             action.payload.item.contenderId === contender.contenderId
         );
-        if (contendersIndex != -1) {
+        if (contendersIndex !== -1) {
           // Create the new contenders list and put everything together again:
           let newContenders = [...oldContenders];
           let newItem = { ...newContenders[contendersIndex] };

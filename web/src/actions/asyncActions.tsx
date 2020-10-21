@@ -117,7 +117,7 @@ export function setProblemStateAndSave(
       : tick.flash
       ? ProblemState.FLASHED
       : ProblemState.SENT;
-    if (oldState != problemState) {
+    if (oldState !== problemState) {
       dispatch(startProblemUpdate(problem));
       const activationCode: string = getState().contenderData!.registrationCode;
       if (!tick) {
@@ -125,7 +125,7 @@ export function setProblemStateAndSave(
         Api.createTick(
           problem.id,
           getState().contenderData!.id,
-          problemState == ProblemState.FLASHED,
+          problemState === ProblemState.FLASHED,
           activationCode
         )
           .then((tick) => {
@@ -135,7 +135,7 @@ export function setProblemStateAndSave(
             console.log(error);
             dispatch(setProblemStateFailed(error));
           });
-      } else if (problemState == ProblemState.NOT_SENT) {
+      } else if (problemState === ProblemState.NOT_SENT) {
         // Delete the tick:
         Api.deleteTick(tick, activationCode)
           .then(() => {
@@ -147,7 +147,7 @@ export function setProblemStateAndSave(
       } else {
         // Update the tick:
         const newTick: Tick = JSON.parse(JSON.stringify(tick));
-        newTick.flash = problemState == ProblemState.FLASHED;
+        newTick.flash = problemState === ProblemState.FLASHED;
         Api.updateTick(newTick, activationCode)
           .then(() => {
             dispatch(updateTick(newTick));

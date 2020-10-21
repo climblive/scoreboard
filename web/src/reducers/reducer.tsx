@@ -7,6 +7,8 @@ import { Problem } from "../model/problem";
 import { SortBy } from "../constants/constants";
 import { ContenderData } from "../model/contenderData";
 import { RaffleWinner } from "../model/raffleWinner";
+import { Reducer } from "redux";
+import initialState from "../initialState";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -52,7 +54,10 @@ function formatRaffleWinners(winners: RaffleWinner[]) {
   return winners;
 }
 
-export const reducer = (state: StoreState, action: ScoreboardActions) => {
+export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
+  state: StoreState | undefined = initialState,
+  action: ScoreboardActions
+): StoreState => {
   switch (action.type) {
     case getType(scoreboardActions.startProblemUpdate):
       return { ...state, problemIdBeingUpdated: action.payload.id };

@@ -24,9 +24,10 @@ import { StoreState } from "../model/storeState";
 import { ProblemState } from "../model/problemState";
 import { Tick } from "../model/tick";
 import { ScoreboardPushItem } from "../model/scoreboardPushItem";
+import { ScoreboardActions } from "../reducers/reducer";
 
 export function loadUserData(code: string): any {
-  return (dispatch: Dispatch<any>) => {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getContender(code)
       .then((contenderData) => {
         dispatch(receiveContenderData(contenderData));
@@ -62,7 +63,7 @@ export function loadUserData(code: string): any {
 }
 
 export function loadContest(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getContest(contestId).then((contest) => {
       dispatch(receiveContest(contest));
     });
@@ -70,7 +71,7 @@ export function loadContest(contestId: number): any {
 }
 
 export function loadScoreboardData(id: number): any {
-  return (dispatch: Dispatch<any>) => {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getScoreboard(id).then((scoreboardDescription) => {
       dispatch(receiveScoreboardData(scoreboardDescription));
       dispatch(updateScoreboardTimer());
@@ -81,7 +82,7 @@ export function loadScoreboardData(id: number): any {
 export function handleScoreboardItem(
   scoreboardPushItem: ScoreboardPushItem
 ): any {
-  return (dispatch: Dispatch<any>) => {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     dispatch(receiveScoreboardItem(scoreboardPushItem));
     setTimeout(() => {
       dispatch(resetScoreboardItemAnimation(scoreboardPushItem));
@@ -90,8 +91,8 @@ export function handleScoreboardItem(
 }
 
 export function saveUserData(contenderData: ContenderData): any {
-  return (dispatch: Dispatch<any>) => {
-    let promise: Promise<ContenderData> = Api.setContender(
+  return (dispatch: Dispatch<ScoreboardActions>) => {
+    let promise: Promise<ContenderData> = Api.updateContender(
       contenderData,
       contenderData.registrationCode
     );
@@ -107,7 +108,10 @@ export function setProblemStateAndSave(
   problemState: ProblemState,
   tick?: Tick
 ): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+  return (
+    dispatch: Dispatch<ScoreboardActions>,
+    getState: () => StoreState
+  ) => {
     const oldState = !tick
       ? ProblemState.NOT_SENT
       : tick.flash

@@ -10,7 +10,7 @@ import { Environment } from "../environment";
 export class Api {
   private static useLocalhost = false;
 
-  static getLiveUrl(): any {
+  static getLiveUrl(): string {
     return (
       (Api.useLocalhost
         ? "ws://localhost:8080/api"
@@ -33,13 +33,13 @@ export class Api {
     return data;
   }
 
-  private static getAuthHeader(activationCode?: string): any {
-    return activationCode ? { Authorization: "Regcode " + activationCode } : {};
+  private static getAuthHeader(registrationCode?: string): Record<string, string> {
+    return registrationCode ? { Authorization: "Regcode " + registrationCode } : {};
   }
 
-  private static async get(url: string, activationCode?: string) {
+  private static async get(url: string, registrationCode?: string) {
     let response = await fetch(this.getBaseUrl() + url, {
-      headers: Api.getAuthHeader(activationCode),
+      headers: Api.getAuthHeader(registrationCode),
     });
     return (await this.handleErrors(response)).json();
   }
@@ -47,25 +47,25 @@ export class Api {
   private static async post(
     url: string,
     postData: any,
-    activationCode?: string
+    registrationCode?: string
   ) {
     let response = await fetch(this.getBaseUrl() + url, {
       method: "POST",
       body: JSON.stringify(postData),
       headers: {
         "Content-Type": "application/json",
-        ...Api.getAuthHeader(activationCode),
+        ...Api.getAuthHeader(registrationCode),
       },
     });
     return (await this.handleErrors(response)).json();
   }
 
-  private static async delete(url: string, activationCode?: string) {
+  private static async delete(url: string, registrationCode?: string) {
     let response = await fetch(this.getBaseUrl() + url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        ...Api.getAuthHeader(activationCode),
+        ...Api.getAuthHeader(registrationCode),
       },
     });
     return this.handleErrors(response);
@@ -74,14 +74,14 @@ export class Api {
   private static async put(
     url: string,
     postData: any,
-    activationCode?: string
+    registrationCode?: string
   ) {
     let response = await fetch(this.getBaseUrl() + url, {
       method: "PUT",
       body: JSON.stringify(postData),
       headers: {
         "Content-Type": "application/json",
-        ...Api.getAuthHeader(activationCode),
+        ...Api.getAuthHeader(registrationCode),
       },
     });
     return (await this.handleErrors(response)).json();
@@ -89,70 +89,70 @@ export class Api {
 
   static getContest(
     contestId: number,
-    activationCode?: string
+    registrationCode?: string
   ): Promise<Contest> {
-    return this.get("/contest/" + contestId, activationCode);
+    return this.get("/contest/" + contestId, registrationCode);
   }
 
   static getProblems(
     contestId: number,
-    activationCode: string
+    registrationCode: string
   ): Promise<Problem[]> {
-    return this.get("/contest/" + contestId + "/problem", activationCode);
+    return this.get("/contest/" + contestId + "/problem", registrationCode);
   }
 
   static getCompClasses(
     contestId: number,
-    activationCode: string
+    registrationCode: string
   ): Promise<CompClass[]> {
-    return this.get("/contest/" + contestId + "/compClass", activationCode);
+    return this.get("/contest/" + contestId + "/compClass", registrationCode);
   }
 
   static getTicks(
     contenderId: number,
-    activationCode: string
+    registrationCode: string
   ): Promise<Tick[]> {
-    return this.get("/contender/" + contenderId + "/tick", activationCode);
+    return this.get("/contender/" + contenderId + "/tick", registrationCode);
   }
 
   static createTick(
     problemId: number,
     contenderId: number,
     flash: boolean,
-    activationCode: string
+    registrationCode: string
   ): Promise<Tick> {
     const newTick: Tick = {
       flash,
       contenderId,
       problemId,
     };
-    return this.post("/tick", newTick, activationCode);
+    return this.post("/tick", newTick, registrationCode);
   }
 
-  static updateTick(tick: Tick, activationCode: string): Promise<any> {
-    return this.put("/tick/" + tick.id, tick, activationCode);
+  static updateTick(tick: Tick, registrationCode: string): Promise<any> {
+    return this.put("/tick/" + tick.id, tick, registrationCode);
   }
 
-  static deleteTick(tick: Tick, activationCode: string): Promise<any> {
-    return this.delete("/tick/" + tick.id, activationCode);
+  static deleteTick(tick: Tick, registrationCode: string): Promise<any> {
+    return this.delete("/tick/" + tick.id, registrationCode);
   }
 
-  static getColors(activationCode: string): Promise<Color[]> {
-    return this.get("/color", activationCode);
+  static getColors(registrationCode: string): Promise<Color[]> {
+    return this.get("/color", registrationCode);
   }
 
-  static getContender(code: string): Promise<ContenderData> {
-    return this.get("/contender/findByCode?code=" + code, code);
+  static getContender(registrationCode: string): Promise<ContenderData> {
+    return this.get("/contender/findByCode?code=" + registrationCode, registrationCode);
   }
 
-  static setContender(
+  static updateContender(
     contenderData: ContenderData,
-    activationCode: string
+    registrationCode: string
   ): Promise<ContenderData> {
     return this.put(
       "/contender/" + contenderData.id,
       contenderData,
-      activationCode
+      registrationCode
     );
   }
 

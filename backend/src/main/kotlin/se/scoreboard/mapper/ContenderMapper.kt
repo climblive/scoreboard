@@ -27,17 +27,4 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
         target.contest = entityManager.getReference(Contest::class.java, source.contestId)
         target.compClass = source.compClassId?.let { entityManager.getReference(CompClass::class.java, it) }
     }
-
-    @AfterMapping
-    fun afterMapping(source: Contender, @MappingTarget target: ContenderDto) {
-        val scoring = ScoringDto(
-            source.id!!,
-            Random.nextInt(0, 2000),
-            Random.nextInt(1, 10),
-            Random.nextInt(0, 5000),
-            Random.nextInt(1, 50),
-            Random.nextInt(1, 40),
-            Random.nextBoolean())
-        target.scoring = scoring
-    }
 }

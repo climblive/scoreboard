@@ -156,7 +156,7 @@ class ContestService @Autowired constructor(
         val contest = fetchEntity(id)
         val now = OffsetDateTime.now()
 
-        if (now >= contest.compClasses.minBy { it.timeBegin!! }?.timeBegin) {
+        if (now >= contest.compClasses.minByOrNull { it.timeBegin!! }?.timeBegin) {
             throw WebException(HttpStatus.FORBIDDEN,
                     "Cannot reset contenders after competition has started")
         }

@@ -47,6 +47,8 @@ java {
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     with copySpec {
         from 'src/main/resources'
         include '**/application*.properties'

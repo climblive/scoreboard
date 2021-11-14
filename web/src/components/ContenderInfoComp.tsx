@@ -142,11 +142,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
           >
             {this.props.contest.name}
           </div>
-          <img
-            alt=""
-            style={{ position: "absolute", width: 40, bottom: 15, right: 15 }}
-            src="/logos/klatterdomen.jpg"
-          />
         </div>
         <div
           style={{ marginTop: 20, marginBottom: 10 }}

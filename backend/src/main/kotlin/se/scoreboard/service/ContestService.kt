@@ -151,23 +151,4 @@ class ContestService @Autowired constructor(
 
         return ResponseEntity.ok(scoreboard)
     }
-
-    fun resetContenders(id: Int) {
-        val contest = fetchEntity(id)
-        val now = OffsetDateTime.now()
-
-        if (now >= contest.compClasses.minByOrNull { it.timeBegin!! }?.timeBegin) {
-            throw WebException(HttpStatus.FORBIDDEN,
-                    "Cannot reset contenders after competition has started")
-        }
-
-        contenderRepository.saveAll(contest.contenders.map { contender ->
-            contender.compClass = null
-            contender.name = null
-            contender.entered = null
-            contender.disqualified = false
-            tickRepository.deleteAll(contender.ticks)
-            contender
-        })
-    }
 }

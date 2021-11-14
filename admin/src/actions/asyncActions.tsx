@@ -458,19 +458,6 @@ export function loadContenders(contestId: number) {
   };
 }
 
-export function resetContenders(contestId: number) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
-    return Api.resetContenders(contestId)
-      .then(() => {
-        return loadContenders(contestId)(dispatch);
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-        return Promise.reject(error);
-      });
-  };
-}
-
 export function updateContender(contender: ContenderData) {
   return (dispatch: Dispatch<ScoreboardActions>): Promise<ContenderData> => {
     return Api.saveContender(contender)

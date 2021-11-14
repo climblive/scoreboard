@@ -144,9 +144,4 @@ class ContestController @Autowired constructor(
         val contest= contestService.fetchEntity(id)
         return contenderService.createContenders(contest, createContendersParamsDto.count)
     }
-
-    @GetMapping("/contest/{id}/resetContenders")
-    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
-    @Transactional
-    fun resetContenders(@PathVariable("id") id: Int) = contestService.resetContenders(id)
 }

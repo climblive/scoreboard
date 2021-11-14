@@ -2,13 +2,6 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
-    ext {
-        kotlinVersion = '1.5.31'
-        springBootVersion = '2.2.4.RELEASE'
-        mapstructVersion = "1.4.2.Final"
-        junitVersion = "5.4.2"
-    }
-
     repositories {
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -20,14 +13,14 @@ buildscript {
 plugins {
     id 'java'
     id 'org.hidetake.ssh' version '2.10.1'
-    id 'com.palantir.git-version' version '0.12.2'
-    id 'org.springframework.boot' version '2.2.4.RELEASE'
-    id "org.jetbrains.kotlin.jvm" version "1.5.31"
-    id "org.jetbrains.kotlin.plugin.spring" version "1.5.31"
-    id 'org.jetbrains.kotlin.plugin.jpa' version "1.5.31"
-    id "org.jetbrains.kotlin.plugin.noarg" version "1.5.31"
-    id "org.jetbrains.kotlin.kapt" version "1.5.31"
-    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id 'com.palantir.git-version' version '0.12.3'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id "org.jetbrains.kotlin.jvm" version "${kotlinVersion}"
+    id "org.jetbrains.kotlin.plugin.spring" version "${kotlinVersion}"
+    id 'org.jetbrains.kotlin.plugin.jpa' version "${kotlinVersion}"
+    id "org.jetbrains.kotlin.plugin.noarg" version "${kotlinVersion}"
+    id "org.jetbrains.kotlin.kapt" version "${kotlinVersion}"
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
 }
 
 group = 'app.climblive'
@@ -186,19 +179,19 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-websocket"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "com.google.code.gson:gson:2.8.5"
-    implementation "io.springfox:springfox-swagger2:2.9.2"
-    implementation "io.springfox:springfox-swagger-ui:2.9.2"
-    implementation "org.hibernate:hibernate-core:5.4.2.Final"
+    implementation "com.google.code.gson:gson:2.8.9"
+    implementation "io.springfox:springfox-swagger2:$springfoxVersion"
+    implementation "io.springfox:springfox-swagger-ui:$springfoxVersion"
+    implementation "org.hibernate:hibernate-core:$hibernateVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
-    implementation "org.apache.poi:poi:3.17"
-    implementation "org.apache.pdfbox:pdfbox:2.0.13"
-    implementation "com.google.zxing:core:3.3.0"
-    implementation 'com.google.zxing:javase:3.3.0'
-    implementation 'com.auth0:java-jwt:3.8.1'
-    implementation 'com.auth0:jwks-rsa:0.8.2'
-    implementation 'io.swagger:swagger-annotations:1.6.0'
+    implementation "org.apache.poi:poi:5.1.0"
+    implementation "org.apache.pdfbox:pdfbox:2.0.24"
+    implementation "com.google.zxing:core:3.4.1"
+    implementation 'com.google.zxing:javase:3.4.1'
+    implementation 'com.auth0:java-jwt:3.18.1'
+    implementation 'com.auth0:jwks-rsa:0.20.0'
+    implementation 'io.swagger:swagger-annotations:1.6.3'
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     implementation 'org.flywaydb:flyway-core:6.2.4'
 
@@ -211,7 +204,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation "org.hibernate:hibernate-testing:5.3.7.Final"
+    testImplementation "org.hibernate:hibernate-testing:$hibernateVersion"
     testImplementation "com.h2database:h2:1.4.196"
-    testImplementation "org.assertj:assertj-core:3.11.1"
+    testImplementation "org.assertj:assertj-core:3.21.0"
 }

@@ -80,7 +80,10 @@ const RaffleView = (props: Props & PropsFromRedux) => {
 
   const drawWinner = () => {
     setDrawingWinner(true);
-    props.drawWinner(props.raffle).finally(() => setDrawingWinner(false));
+    props
+      .drawWinner(props.raffle)
+      .catch(() => {})
+      .finally(() => setDrawingWinner(false));
   };
 
   const changeActiveStatus = (active: boolean) => {

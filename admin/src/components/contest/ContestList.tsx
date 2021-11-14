@@ -41,11 +41,7 @@ const ContestList = (props: Props & PropsFromRedux & RouteComponentProps) => {
     reloadContests().finally(() => setRefreshing(false));
   }, [reloadContests]);
 
-  useEffect(() => {
-    if (props.contests === undefined) {
-      refreshContests();
-    }
-  }, [props.contests, refreshContests]);
+  useEffect(() => refreshContests(), [refreshContests]);
 
   const buttons = [
     <Button

@@ -180,7 +180,11 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
           props.history.push("/contests/" + contest.id!);
         }
       })
-      .finally(() => setSaving(false));
+      .finally(() => {
+        if (!isNew) {
+          setSaving(false);
+        }
+      });
   };
 
   const onDelete = () => {

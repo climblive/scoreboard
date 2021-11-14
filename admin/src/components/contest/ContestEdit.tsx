@@ -59,12 +59,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const { loadLocations, loadSeries } = props;
 
-  let [saving, setSaving] = useState<boolean>(false);
-  let [deleting, setDeleting] = useState<boolean>(false);
-  let [compilingPdf, setCompilingPdf] = useState<boolean>(false);
-  let [showPopup, setShowPopup] = useState<boolean>(false);
-  let [requestingDelete, setRequestingDelete] = useState<boolean>(false);
-  let [contest, setContest] = useState<Contest>(props.contest);
+  const [saving, setSaving] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
+  const [compilingPdf, setCompilingPdf] = useState<boolean>(false);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [requestingDelete, setRequestingDelete] = useState<boolean>(false);
+  const [contest, setContest] = useState<Contest>(props.contest);
+  const [validated, setValidated] = useState(false);
 
   useEffect(() => {
     if (props.locations === undefined) {
@@ -155,7 +156,21 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     setContest({ ...contest, seriesId });
   };
 
+  const validate = () => {
+    if (contest.name === "") {
+      return false;
+    }
+
+    return true;
+  };
+
   const onSave = () => {
+    setValidated(true);
+
+    if (!validate()) {
+      return;
+    }
+
     setSaving(true);
     props
       .saveContest(contest)
@@ -289,6 +304,7 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               value={contest.name}
               onChange={onNameChange}
               required
+              error={validated && contest.name === ""}
             />
             <TextField
               label="Description"

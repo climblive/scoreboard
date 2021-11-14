@@ -47,9 +47,9 @@ import javax.transaction.Transactional
 
     data class Authorization(val method: AuthMethod, val data: String)
 
-    private lateinit var jwkProvider: UrlJwkProvider
-    private lateinit var issuer: String
-    private lateinit var verifier: JWTVerifier
+    private var jwkProvider: UrlJwkProvider
+    private var issuer: String
+    private var verifier: JWTVerifier
 
     @Autowired
     private val userDetailsService: UserDetailsService? = null
@@ -128,7 +128,7 @@ import javax.transaction.Transactional
 
     @Transactional
     private fun createUser(username: String) : UserDetails {
-        var user = User(null, username.capitalize(), username, false)
+        var user = User(null, username.replaceFirstChar(Char::titlecase), username, false)
         var organizer = Organizer(null, "My Organizer", null)
         user.organizers.add(organizer)
 

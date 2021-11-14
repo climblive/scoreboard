@@ -72,7 +72,7 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
             if (organizerId != null) {
                 page = entityRepository.findAllByOrganizerIds(listOf(organizerId), pageable)
             } else {
-                page = entityRepository.findAll(pageable)
+                page = entityRepository.findAll(pageable ?: PageRequest.of(0, 1000))
             }
         }
 

@@ -71,7 +71,7 @@ class PdfService @Autowired constructor(
     }
 
     private fun getLogo(document: PDDocument): PDImageXObject {
-        var logo:BufferedImage? = null
+        var logo: BufferedImage?
         PdfService::class.java.getResourceAsStream("/logo.png").use {
             logo = ImageIO.read(it)
         }

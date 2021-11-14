@@ -288,6 +288,7 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               label="Name"
               value={contest.name}
               onChange={onNameChange}
+              required
             />
             <TextField
               label="Description"
@@ -349,11 +350,13 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
             {contest.finalEnabled && (
               <>
                 <TextField
+                  type="number"
                   label="Number of qualifying problems"
                   value={contest.qualifyingProblems}
                   onChange={onQualifyingProblemsChange}
                 />
                 <TextField
+                  type="number"
                   label="Number of finalists"
                   value={contest.finalists}
                   onChange={onFinalistsChange}
@@ -361,6 +364,7 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               </>
             )}
             <TextField
+              type="number"
               label="Grace period (minutes)"
               value={contest.gracePeriod}
               onChange={onGracePeriodChange}

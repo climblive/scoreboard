@@ -24,6 +24,7 @@ interface Props {
   compClasses?: OrderedMap<number, CompClass>;
   problems?: OrderedMap<number, Problem>;
   breakpoints?: Map<number, string>;
+  finalEnabled: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -149,13 +150,15 @@ const ContenderView = (props: Props & PropsFromRedux) => {
                       placement={scoring.totalPosition ?? 0}
                     ></ContenderScoring>
                   </Grid>
-                  <Grid item>
-                    <ContenderScoring
-                      title="Qualifying"
-                      score={scoring.qualifyingScore ?? 0}
-                      placement={scoring.qualifyingPosition ?? 0}
-                    ></ContenderScoring>
-                  </Grid>
+                  {props.finalEnabled && (
+                    <Grid item>
+                      <ContenderScoring
+                        title="Qualifying"
+                        score={scoring.qualifyingScore ?? 0}
+                        placement={scoring.qualifyingPosition ?? 0}
+                      ></ContenderScoring>
+                    </Grid>
+                  )}
                 </Grid>
                 <ContenderTickList
                   scoring={scoring}

@@ -182,14 +182,12 @@ class MainView extends React.Component<
             </div>
             <div className="pointsRow">
               <div className="points">{totalPoints}</div>
-              <div className="pointsDesc total">
-                {this.props.contest.finalists === 0 ? "Poäng" : "Totalt"}
-              </div>
-              {this.props.contest.finalists > 0 && (
-                <div className="pointsDesc">{qualifyingProblems} bästa</div>
-              )}
-              {this.props.contest.finalists > 0 && (
-                <div className="points">{tenBest}</div>
+              <div className="pointsDesc total">Poäng</div>
+              {this.props.contest.finalEnabled && (
+                <>
+                  <div className="pointsDesc">{qualifyingProblems} bästa</div>
+                  <div className="points">{tenBest}</div>
+                </>
               )}
             </div>
             <div className="headerRow">

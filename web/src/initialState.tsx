@@ -11,6 +11,7 @@ const initialState: StoreState = {
     qualifyingProblems: 0,
     finalists: 0,
     gracePeriod: 0,
+    finalEnabled: false,
   },
   problems: [],
   compClasses: [],

@@ -80,29 +80,6 @@ class ScoreboardView extends React.Component<
     }, 1000);
   }
 
-  fakeScore = () => {
-    if (this.props.scoreboardData) {
-      let scoreboardData = this.props.scoreboardData[0];
-      let contender =
-        scoreboardData.contenders[
-          Math.floor(Math.random() * scoreboardData.contenders.length)
-        ];
-      this.props.handleScoreboardItem({
-        compClassId: scoreboardData.compClass.id,
-        item: {
-          contenderId: contender.contenderId,
-          contenderName: contender.contenderName,
-          totalScore: contender.totalScore + 50,
-          qualifyingScore: contender.qualifyingScore + 50,
-          isAnimatingTotal: false,
-          isAnimatingFinalist: false,
-          lastUpdate: 0,
-        },
-      });
-    }
-    setTimeout(this.fakeScore, 2000);
-  };
-
   componentWillUnmount() {
     this.client.deactivate();
     window.clearInterval(this.intervalId);
@@ -195,21 +172,18 @@ class ScoreboardView extends React.Component<
               <ScoreboardClassHeaderComp compClass={currentCompClass} />
             </div>
           )}
-          {contest.finalists > 0 && <div className="header">Finalister</div>}
-          {contest.finalists > 0 && (
+          {contest.finalEnabled && <div className="header">Finalister</div>}
+          {contest.finalEnabled && (
             <div className="showLarge scoreboardListContainer">
               {finalistList}
             </div>
           )}
-          {currentCompClass && contest.finalists > 0 && (
+          {currentCompClass && contest.finalEnabled && (
             <div className="showSmall scoreboardListContainer">
               <ScoreboardFinalistListContainer compClass={currentCompClass} />
             </div>
           )}
-          {contest.finalists > 0 && <div className="header">Totalpoäng</div>}
-          {contest.finalists === 0 && (
-            <div className="header" style={{ marginTop: 20 }}></div>
-          )}
+          <div className="header">Poäng</div>
           <div className="showLarge scoreboardListContainer total">
             {totalList}
           </div>

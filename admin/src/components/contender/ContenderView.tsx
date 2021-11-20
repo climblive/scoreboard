@@ -145,20 +145,11 @@ const ContenderView = (props: Props & PropsFromRedux) => {
                 >
                   <Grid item style={{ paddingLeft: 0 }}>
                     <ContenderScoring
-                      title="Total"
-                      score={scoring.totalScore ?? 0}
-                      placement={scoring.totalPosition ?? 0}
+                      title="Qualifying"
+                      score={scoring.qualifyingScore ?? 0}
+                      placement={scoring.qualifyingPosition ?? 0}
                     ></ContenderScoring>
                   </Grid>
-                  {props.finalEnabled && (
-                    <Grid item>
-                      <ContenderScoring
-                        title="Qualifying"
-                        score={scoring.qualifyingScore ?? 0}
-                        placement={scoring.qualifyingPosition ?? 0}
-                      ></ContenderScoring>
-                    </Grid>
-                  )}
                 </Grid>
                 <ContenderTickList
                   scoring={scoring}

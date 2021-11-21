@@ -89,8 +89,8 @@ const ContenderView = (props: Props & PropsFromRedux) => {
     </TableCell>,
     <TableCell component="th" scope="row">
       <div style={{ display: "inline-block" }}>
-        {contender.name ? scoring?.totalScore : "-"}{" "}
-        {contender.name && "(" + scoring?.totalPosition + ")"}
+        {contender.name ? scoring?.qualifyingScore : "-"}{" "}
+        {contender.name && "(" + scoring?.qualifyingPosition + ")"}
       </div>
     </TableCell>,
     <TableCell component="th" scope="row">

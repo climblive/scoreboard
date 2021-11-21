@@ -99,10 +99,10 @@ class ContestService @Autowired constructor(
             var lastPosition:Number = -1
             allContenders
                     .filter { it.compClass?.name == compClass.name }
-                    .sortedBy { it.getTotalScore() }
+                    .sortedBy { it.getQualificationScore() }
                     .reversed().
                             forEach{ contender ->
-                                val score = contender.getTotalScore()
+                                val score = contender.getQualificationScore()
                                 if(score != lastScore) {
                                     lastPosition = rowNum
                                     lastScore = score

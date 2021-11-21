@@ -112,7 +112,7 @@ class PdfService @Autowired constructor(
         cs.beginText()
         cs.newLineAtOffset(boxX + logoW + m * 3, boxY + m * 3 + 20)
         cs.setFont( PDType1Font.HELVETICA, 10f )
-        cs.showText("Din aktiveringskod på " + webUrl + ":")
+        cs.showText("Din aktiveringskod på " + webUrl)
         cs.endText()
 
         cs.drawImage(logo, boxX + m, boxY + m, logoW, logoH)

@@ -40,17 +40,12 @@ java {
 }
 
 processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
     with copySpec {
         from 'src/main/resources'
         include '**/application*.properties'
-        project.properties.findAll().each {
-          prop ->
-            if (prop.value != null) {
-                filter(ReplaceTokens, tokens: [ (prop.key): prop.value])
-            }
-        }
+        expand(project.properties)
     }
 }
 

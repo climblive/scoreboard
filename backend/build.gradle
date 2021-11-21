@@ -180,7 +180,7 @@ dependencies {
     implementation "org.hibernate:hibernate-core:$hibernateVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
-    implementation "org.apache.poi:poi:5.1.0"
+    implementation "org.apache.poi:poi:3.17"
     implementation "org.apache.pdfbox:pdfbox:2.0.24"
     implementation "com.google.zxing:core:3.4.1"
     implementation 'com.google.zxing:javase:3.4.1'

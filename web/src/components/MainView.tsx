@@ -56,15 +56,16 @@ class MainView extends React.Component<
               <img
                 alt=""
                 style={{
-                  width: 200,
+                  width: 120,
                   position: "absolute",
-                  top: 70,
+                  top: 110,
                   right: 0,
                   marginRight: "auto",
                   left: 0,
                   marginLeft: "auto",
+                  borderRadius: 5,
                 }}
-                src="clmb_MainLogo_NoShadow.png"
+                src="logo-square.png"
               />
               <div style={{ marginTop: 50, textAlign: "center" }}>
                 <div style={{ marginBottom: 10 }}>

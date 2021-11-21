@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logo: {
       width: 120,
+      borderRadius: 5,
     },
     buttons: {
       "& > *": {
@@ -83,11 +84,7 @@ function WelcomeView(props: Props & PropsFromRedux): ReactElement {
         <Grid item>
           <div className={classes.box}>
             <div className={classes.logoContainer}>
-              <img
-                alt=""
-                className={classes.logo}
-                src="/clmb_MainLogo_NoShadow.png"
-              />
+              <img alt="" className={classes.logo} src="/logo-square.png" />
             </div>
             <Typography variant="h5" className={classes.title}>
               ClimbLive Admin

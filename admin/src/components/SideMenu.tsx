@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100%",
     },
     logo: {
-      width: 65,
+      height: 45,
+      borderRadius: 3,
     },
     questions: { margin: theme.spacing("auto", 1, 2, 1), textAlign: "center" },
   })
@@ -78,11 +79,7 @@ function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
     <>
       <div className={classes.toolbar}>
         <div className={classes.logoContainer}>
-          <img
-            alt=""
-            className={classes.logo}
-            src="/clmb_MainLogo_NoShadow.png"
-          />
+          <img alt="" className={classes.logo} src="/logo-square.png" />
         </div>
       </div>
       <Divider />

@@ -57,15 +57,16 @@ class StartView extends React.Component<Props, State> {
           <img
             alt=""
             style={{
-              width: 200,
+              width: 120,
               position: "absolute",
-              top: 70,
+              top: 110,
               right: 0,
               marginRight: "auto",
               left: 0,
               marginLeft: "auto",
+              borderRadius: 5,
             }}
-            src="clmb_MainLogo_NoShadow.png"
+            src="logo-square.png"
           />
           <div className="activationWrapper">
             <div className="message" style={{ marginBottom: 10 }}>

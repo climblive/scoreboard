@@ -130,7 +130,7 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
       />
       <FormControl required disabled={!props.editable}>
         <InputLabel shrink htmlFor="compClass-select">
-          Color
+          Hold color
         </InputLabel>
         <Select value={problem.colorId ?? ""} onChange={onColorChange}>
           {props.colors?.toArray()?.map((color: Color) => (

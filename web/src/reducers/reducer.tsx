@@ -1,14 +1,14 @@
-import { StoreState } from "../model/storeState";
-import { ScoreboardContenderList } from "../model/scoreboardContenderList";
-import * as scoreboardActions from "../actions/actions";
-import { ActionType, getType } from "typesafe-actions";
-import { Color } from "../model/color";
-import { Problem } from "../model/problem";
-import { SortBy } from "../constants/constants";
-import { ContenderData } from "../model/contenderData";
-import { RaffleWinner } from "../model/raffleWinner";
 import { Reducer } from "redux";
+import { ActionType, getType } from "typesafe-actions";
+import * as scoreboardActions from "../actions/actions";
+import { SortBy } from "../constants/constants";
 import initialState from "../initialState";
+import { Color } from "../model/color";
+import { ContenderData } from "../model/contenderData";
+import { Problem } from "../model/problem";
+import { RaffleWinner } from "../model/raffleWinner";
+import { ScoreboardContenderList } from "../model/scoreboardContenderList";
+import { StoreState } from "../model/storeState";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -207,7 +207,7 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     }
 
     case getType(scoreboardActions.receiveScoreboardItem):
-      if (state.scoreboardData) {
+      if (state.scoreboardData.length !== 0) {
         let newScoreboardData: ScoreboardContenderList[] = [
           ...state.scoreboardData,
         ];
@@ -264,8 +264,12 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
           contenders: newContenders,
         };
         return { ...state, scoreboardData: newScoreboardData };
+      } else {
+        return {
+          ...state,
+          pushItemsQueue: [...state.pushItemsQueue, action.payload],
+        };
       }
-      return state;
 
     case getType(scoreboardActions.resetScoreboardItemAnimation):
       if (state.scoreboardData) {
@@ -302,8 +306,8 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
     case getType(scoreboardActions.updateScoreboardTimer):
       let now: number = new Date().getTime() / 1000;
       if (state.scoreboardData) {
-        let newScoreboardData2: ScoreboardContenderList[] = state.scoreboardData.map(
-          (scl) => {
+        let newScoreboardData2: ScoreboardContenderList[] =
+          state.scoreboardData.map((scl) => {
             let newCompClass = { ...scl.compClass };
             newCompClass.inProgress = false;
             const startTime = Date.parse(newCompClass.timeBegin) / 1000;
@@ -322,8 +326,7 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
               newCompClass.inProgress = true;
             }
             return { ...scl, compClass: newCompClass };
-          }
-        );
+          });
         return {
           ...state,
           scoreboardData: newScoreboardData2,
@@ -332,6 +335,12 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
       } else {
         return { ...state };
       }
+
+    case getType(scoreboardActions.clearPushItemsQueue):
+      return {
+        ...state,
+        pushItemsQueue: [],
+      };
 
     default:
       return state;

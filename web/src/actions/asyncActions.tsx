@@ -3,6 +3,7 @@ import { ContenderData } from "../model/contenderData";
 import { Dispatch } from "redux";
 import { Api } from "../utils/Api";
 import {
+  clearPushItemsQueue,
   createTick,
   deleteTick,
   receiveColors,
@@ -71,10 +72,19 @@ export function loadContest(contestId: number) {
 }
 
 export function loadScoreboardData(id: number) {
-  return (dispatch: Dispatch<ScoreboardActions>) => {
+  return (
+    dispatch: Dispatch<ScoreboardActions>,
+    getState: () => StoreState
+  ) => {
     Api.getScoreboard(id).then((scoreboardDescription) => {
       dispatch(receiveScoreboardData(scoreboardDescription));
       dispatch(updateScoreboardTimer());
+
+      for (const queuedItem of getState().pushItemsQueue) {
+        handleScoreboardItem(queuedItem);
+      }
+
+      dispatch(clearPushItemsQueue());
     });
   };
 }

@@ -20,6 +20,7 @@ const initialState: StoreState = {
   pagingCounter: 0,
   scoreboardData: [],
   currentCompClassId: 0,
+  pushItemsQueue: [],
 };
 
 export default initialState;

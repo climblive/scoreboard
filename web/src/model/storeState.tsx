@@ -7,6 +7,7 @@ import { CompClass } from "./compClass";
 import { Tick } from "./tick";
 import { Color } from "./color";
 import { RaffleWinner } from "./raffleWinner";
+import { ScoreboardPushItem } from "./scoreboardPushItem";
 
 export interface StoreState {
   contenderData?: ContenderData;
@@ -26,4 +27,5 @@ export interface StoreState {
   currentCompClassId: number;
   raffleWinners?: RaffleWinner[];
   raffleId?: number;
+  pushItemsQueue: ScoreboardPushItem[];
 }

@@ -4,5 +4,5 @@ export interface Problem {
   colorId: number;
   points: number;
   flashBonus?: number;
-  text: string;
+  name: string;
 }

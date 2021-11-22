@@ -96,7 +96,7 @@ function ProblemComp({
     >
       <div style={colorStyle} className="firstRow">
         <div className="id">{problem.number}</div>
-        <div className="color">{color.name}</div>
+        <div className="color">{problem.name ? problem.name : color.name}</div>
         {isUpdating && (
           <div style={{ height: 0 }}>
             <Spinner color={textColor} />

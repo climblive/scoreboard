@@ -1,11 +1,7 @@
-import "./StartView.css";
-import { Redirect } from "react-router";
 import * as React from "react";
-import { StoreState } from "../model/storeState";
-import { connect, Dispatch } from "react-redux";
-import { ContenderData } from "../model/contenderData";
-import * as asyncActions from "../actions/asyncActions";
+import { Redirect } from "react-router";
 import { Environment } from "../environment";
+import "./StartView.css";
 
 export interface Props {}
 
@@ -20,38 +16,32 @@ class StartView extends React.Component<Props, State> {
     redirect: false,
   };
 
-  constructor(props: Props) {
-    super(props);
-  }
-
   componentDidMount() {
     document.title = "Välkommen till ClimbLive";
   }
 
   handleActivationCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-    this.state.activationCode = event.currentTarget.value;
-    this.setState(this.state);
+    this.setState({ activationCode: event.currentTarget.value });
   };
 
   handleActivationCodeKeyUp = (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       this.onSubmit();
     }
   };
 
   inputOk(): boolean {
     return (
-      this.state.activationCode != undefined &&
+      this.state.activationCode !== undefined &&
       this.state.activationCode.length > 6
     );
   }
 
   onSubmit = () => {
     if (this.inputOk()) {
-      this.state.redirect = true;
-      this.setState(this.state);
+      this.setState({ redirect: true });
     }
   };
 
@@ -65,16 +55,18 @@ class StartView extends React.Component<Props, State> {
       <div className="maxWidth">
         <div className="startView view">
           <img
+            alt=""
             style={{
-              width: 200,
+              width: 120,
               position: "absolute",
-              top: 70,
+              top: 110,
               right: 0,
               marginRight: "auto",
               left: 0,
               marginLeft: "auto",
+              borderRadius: 5,
             }}
-            src="clmb_MainLogo_NoShadow.png"
+            src="logo-square.png"
           />
           <div className="activationWrapper">
             <div className="message" style={{ marginBottom: 10 }}>
@@ -117,17 +109,4 @@ class StartView extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contest: state.contest,
-  };
-}
-
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {
-    saveUserData: (contenderData: ContenderData) =>
-      dispatch(asyncActions.saveUserData(contenderData)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(StartView);
+export default StartView;

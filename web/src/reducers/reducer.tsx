@@ -1,12 +1,14 @@
-import { StoreState } from "../model/storeState";
-import { ScoreboardContenderList } from "../model/scoreboardContenderList";
-import * as scoreboardActions from "../actions/actions";
+import { Reducer } from "redux";
 import { ActionType, getType } from "typesafe-actions";
-import { Color } from "../model/color";
-import { Problem } from "../model/problem";
+import * as scoreboardActions from "../actions/actions";
 import { SortBy } from "../constants/constants";
+import initialState from "../initialState";
+import { Color } from "../model/color";
 import { ContenderData } from "../model/contenderData";
+import { Problem } from "../model/problem";
 import { RaffleWinner } from "../model/raffleWinner";
+import { ScoreboardContenderList } from "../model/scoreboardContenderList";
+import { StoreState } from "../model/storeState";
 
 export type ScoreboardActions = ActionType<typeof scoreboardActions>;
 
@@ -52,7 +54,10 @@ function formatRaffleWinners(winners: RaffleWinner[]) {
   return winners;
 }
 
-export const reducer = (state: StoreState, action: ScoreboardActions) => {
+export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
+  state: StoreState | undefined = initialState,
+  action: ScoreboardActions
+): StoreState => {
   switch (action.type) {
     case getType(scoreboardActions.startProblemUpdate):
       return { ...state, problemIdBeingUpdated: action.payload.id };
@@ -81,10 +86,10 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
 
     case getType(scoreboardActions.receiveContenderData):
       let contenderData: ContenderData = action.payload;
-      if (contenderData.compClassId == null) {
+      if (contenderData.compClassId === null) {
         contenderData.compClassId = undefined;
       }
-      if (contenderData.name == null) {
+      if (contenderData.name === null) {
         contenderData.name = undefined;
       }
       return {
@@ -142,7 +147,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     }
 
     case getType(scoreboardActions.deactivateRaffle): {
-      if (action.payload.raffleId == state.raffleId) {
+      if (action.payload.raffleId === state.raffleId) {
         return { ...state, raffleWinners: undefined, raffleId: undefined };
       } else {
         return state;
@@ -202,7 +207,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     }
 
     case getType(scoreboardActions.receiveScoreboardItem):
-      if (state.scoreboardData) {
+      if (state.scoreboardData.length !== 0) {
         let newScoreboardData: ScoreboardContenderList[] = [
           ...state.scoreboardData,
         ];
@@ -259,8 +264,12 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
           contenders: newContenders,
         };
         return { ...state, scoreboardData: newScoreboardData };
+      } else {
+        return {
+          ...state,
+          pushItemsQueue: [...state.pushItemsQueue, action.payload],
+        };
       }
-      return state;
 
     case getType(scoreboardActions.resetScoreboardItemAnimation):
       if (state.scoreboardData) {
@@ -276,7 +285,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
           (contender) =>
             action.payload.item.contenderId === contender.contenderId
         );
-        if (contendersIndex != -1) {
+        if (contendersIndex !== -1) {
           // Create the new contenders list and put everything together again:
           let newContenders = [...oldContenders];
           let newItem = { ...newContenders[contendersIndex] };
@@ -297,8 +306,8 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
     case getType(scoreboardActions.updateScoreboardTimer):
       let now: number = new Date().getTime() / 1000;
       if (state.scoreboardData) {
-        let newScoreboardData2: ScoreboardContenderList[] = state.scoreboardData.map(
-          (scl) => {
+        let newScoreboardData2: ScoreboardContenderList[] =
+          state.scoreboardData.map((scl) => {
             let newCompClass = { ...scl.compClass };
             newCompClass.inProgress = false;
             const startTime = Date.parse(newCompClass.timeBegin) / 1000;
@@ -317,8 +326,7 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
               newCompClass.inProgress = true;
             }
             return { ...scl, compClass: newCompClass };
-          }
-        );
+          });
         return {
           ...state,
           scoreboardData: newScoreboardData2,
@@ -327,6 +335,12 @@ export const reducer = (state: StoreState, action: ScoreboardActions) => {
       } else {
         return { ...state };
       }
+
+    case getType(scoreboardActions.clearPushItemsQueue):
+      return {
+        ...state,
+        pushItemsQueue: [],
+      };
 
     default:
       return state;

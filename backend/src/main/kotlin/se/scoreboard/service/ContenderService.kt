@@ -73,8 +73,6 @@ class ContenderService @Autowired constructor(
     }
 
     private fun beforeCreateAndUpdate(old: Contender?, new: Contender) {
-        new.name = new.name?.trim()?.split("\\s+".toRegex())?.map { it.capitalize() }?.joinToString(" ")
-
         if (new.name != null && new.compClass != null && old?.entered == null) {
             new.entered = nowWithoutNanos()
         }

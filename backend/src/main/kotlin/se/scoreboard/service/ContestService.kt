@@ -99,10 +99,10 @@ class ContestService @Autowired constructor(
             var lastPosition:Number = -1
             allContenders
                     .filter { it.compClass?.name == compClass.name }
-                    .sortedBy { it.getTotalScore() }
+                    .sortedBy { it.getQualificationScore() }
                     .reversed().
                             forEach{ contender ->
-                                val score = contender.getTotalScore()
+                                val score = contender.getQualificationScore()
                                 if(score != lastScore) {
                                     lastPosition = rowNum
                                     lastScore = score
@@ -150,24 +150,5 @@ class ContestService @Autowired constructor(
                         })
 
         return ResponseEntity.ok(scoreboard)
-    }
-
-    fun resetContenders(id: Int) {
-        val contest = fetchEntity(id)
-        val now = OffsetDateTime.now()
-
-        if (now >= contest.compClasses.minBy { it.timeBegin!! }?.timeBegin) {
-            throw WebException(HttpStatus.FORBIDDEN,
-                    "Cannot reset contenders after competition has started")
-        }
-
-        contenderRepository.saveAll(contest.contenders.map { contender ->
-            contender.compClass = null
-            contender.name = null
-            contender.entered = null
-            contender.disqualified = false
-            tickRepository.deleteAll(contender.ticks)
-            contender
-        })
     }
 }

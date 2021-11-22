@@ -1,44 +1,21 @@
 import * as React from "react";
-import "./MainView.css";
-import { Problem } from "../model/problem";
-import { ContenderData } from "../model/contenderData";
-import * as ReactModal from "react-modal";
-import { Contest } from "../model/contest";
-import ContenderInfoComp from "./ContenderInfoComp";
+import ReactModal from "react-modal";
+import { connect, ConnectedProps } from "react-redux";
 import { Redirect, RouteComponentProps, withRouter } from "react-router";
+import { clearErrorMessage, sortProblems } from "../actions/actions";
+import {
+  loadUserData,
+  saveUserData,
+  setProblemStateAndSave,
+} from "../actions/asyncActions";
 import { SortBy } from "../constants/constants";
-import { ProblemState } from "../model/problemState";
-import { Tick } from "../model/tick";
-import { CompClass } from "../model/compClass";
-import ProblemList from "./ProblemList";
-import { Color } from "../model/color";
-import Spinner from "./Spinner";
 import { StoreState } from "../model/storeState";
-import { connect, Dispatch } from "react-redux";
-import * as asyncActions from "../actions/asyncActions";
-import * as actions from "../actions/actions";
+import ContenderInfoComp from "./ContenderInfoComp";
+import "./MainView.css";
+import ProblemList from "./ProblemList";
+import Spinner from "./Spinner";
 
-export interface Props {
-  contenderData?: ContenderData;
-  contenderNotFound: boolean;
-  contest: Contest;
-  problems: Problem[];
-  compClasses: CompClass[];
-  ticks: Tick[];
-  colors: Map<number, Color>;
-  problemsSortedBy: string;
-  problemIdBeingUpdated?: number;
-  errorMessage?: string;
-  loadUserData?: (code: string) => void;
-  saveUserData?: (contenderData: ContenderData) => Promise<ContenderData>;
-  setProblemStateAndSave?: (
-    problem: Problem,
-    problemState: ProblemState,
-    tick?: Tick
-  ) => void;
-  sortProblems?: (sortBy: SortBy) => void;
-  clearErrorMessage?: () => void;
-}
+export interface Props {}
 
 type State = {
   userInfoModalIsOpen: boolean;
@@ -46,7 +23,10 @@ type State = {
   goBack: boolean;
 };
 
-class MainView extends React.Component<Props & RouteComponentProps, State> {
+class MainView extends React.Component<
+  Props & PropsFromRedux & RouteComponentProps,
+  State
+> {
   public readonly state: State = {
     userInfoModalIsOpen: false,
     rulesModalIsOpen: false,
@@ -66,8 +46,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
       return <Redirect to="/" />;
     } else if (this.props.contenderNotFound) {
       let goBack = () => {
-        this.state.goBack = true;
-        this.setState(this.state);
+        this.setState({ goBack: true });
       };
 
       return (
@@ -75,16 +54,18 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
           <div className="startView view">
             <div className="activationWrapper">
               <img
+                alt=""
                 style={{
-                  width: 200,
+                  width: 120,
                   position: "absolute",
-                  top: 70,
+                  top: 110,
                   right: 0,
                   marginRight: "auto",
                   left: 0,
                   marginLeft: "auto",
+                  borderRadius: 5,
                 }}
-                src="clmb_MainLogo_NoShadow.png"
+                src="logo-square.png"
               />
               <div style={{ marginTop: 50, textAlign: "center" }}>
                 <div style={{ marginBottom: 10 }}>
@@ -138,9 +119,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
       );
     } else if (this.state.userInfoModalIsOpen) {
       let closeUserInfoModal = () => {
-        console.log("closeUserInfoModal");
-        this.state.userInfoModalIsOpen = false;
-        this.setState(this.state);
+        this.setState({ userInfoModalIsOpen: false });
       };
 
       return (
@@ -163,61 +142,52 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
       const points = this.props.ticks
         .map((tick) => {
           const problem = this.props.problems.find(
-            (problem) => problem.id == tick.problemId
-          )!;
+            (problem) => problem.id === tick.problemId
+          );
+
+          if (problem === undefined) {
+            return 0;
+          }
+
           return tick.flash
-            ? problem.points + problem.flashBonus
+            ? problem.points + (problem.flashBonus ?? 0)
             : problem.points;
         })
         .sort((a, b) => b - a);
-      console.log("POINTS:", points);
       let qualifyingProblems = this.props.contest.qualifyingProblems;
-      let totalPoints = points.reduce((s, p) => s + p, 0);
-      let tenBest = points
+      let qualifyingScore = points
         .slice(0, qualifyingProblems)
         .reduce((s, p) => s + p, 0);
 
       let openUserInfoModal = () => {
-        console.log("openUserInfoModal");
-        this.state.userInfoModalIsOpen = true;
-        this.setState(this.state);
+        this.setState({ userInfoModalIsOpen: true });
       };
 
       let closeRulesModal = () => {
-        console.log("closeRulesModal");
-        this.state.rulesModalIsOpen = false;
-        this.setState(this.state);
+        this.setState({ rulesModalIsOpen: false });
       };
 
       let rules = this.props.contest ? this.props.contest.rules : "";
       const compClass = this.props.compClasses.find(
-        (compClass) => compClass.id === this.props.contenderData!.compClassId
-      )!;
+        (compClass) => compClass.id === this.props.contenderData?.compClassId
+      );
 
       return (
         <div className="maxWidth">
           <div className="view mainView">
             <div className="titleRow">
               <div className="name">{this.props.contenderData.name}</div>
-              <div>{compClass.name}</div>
+              <div>{compClass?.name}</div>
               <button onClick={openUserInfoModal}>Ändra</button>
             </div>
             <div className="pointsRow">
-              <div className="points">{totalPoints}</div>
-              <div className="pointsDesc total">
-                {this.props.contest.finalists == 0 ? "Poäng" : "Totalt"}
-              </div>
-              {this.props.contest.finalists > 0 && (
-                <div className="pointsDesc">{qualifyingProblems} bästa</div>
-              )}
-              {this.props.contest.finalists > 0 && (
-                <div className="points">{tenBest}</div>
-              )}
+              <div className="pointsDesc">{qualifyingProblems} bästa</div>
+              <div className="points">{qualifyingScore}</div>
             </div>
             <div className="headerRow">
               <div
                 className={
-                  this.props.problemsSortedBy == SortBy.BY_NUMBER
+                  this.props.problemsSortedBy === SortBy.BY_NUMBER
                     ? "selector selected"
                     : "selector"
                 }
@@ -227,7 +197,7 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
               </div>
               <div
                 className={
-                  this.props.problemsSortedBy == SortBy.BY_POINTS
+                  this.props.problemsSortedBy === SortBy.BY_POINTS
                     ? "selector selected"
                     : "selector"
                 }
@@ -271,40 +241,29 @@ class MainView extends React.Component<Props & RouteComponentProps, State> {
   }
 }
 
-function mapStateToProps(state: StoreState, props: any): Props {
-  return {
-    contenderData: state.contenderData,
-    contenderNotFound: state.contenderNotFound,
-    contest: state.contest,
-    problems: state.problems,
-    compClasses: state.compClasses,
-    ticks: state.ticks,
-    colors: state.colors,
-    problemsSortedBy: state.problemsSortedBy,
-    problemIdBeingUpdated: state.problemIdBeingUpdated,
-    errorMessage: state.errorMessage,
-  };
-}
+const mapStateToProps = (state: StoreState) => ({
+  contenderData: state.contenderData,
+  contenderNotFound: state.contenderNotFound,
+  contest: state.contest,
+  problems: state.problems,
+  compClasses: state.compClasses,
+  ticks: state.ticks,
+  colors: state.colors,
+  problemsSortedBy: state.problemsSortedBy,
+  problemIdBeingUpdated: state.problemIdBeingUpdated,
+  errorMessage: state.errorMessage,
+});
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {
-    setProblemStateAndSave: (
-      problem: Problem,
-      problemState: ProblemState,
-      tick?: Tick
-    ) =>
-      dispatch(
-        asyncActions.setProblemStateAndSave(problem, problemState, tick)
-      ),
-    loadUserData: (code: string) => dispatch(asyncActions.loadUserData(code)),
-    saveUserData: (contenderData: ContenderData) =>
-      dispatch(asyncActions.saveUserData(contenderData)),
-    sortProblems: (sortBy: SortBy) => dispatch(actions.sortProblems(sortBy)),
-    clearErrorMessage: () => dispatch(actions.clearErrorMessage()),
-  };
-}
+const mapDispatchToProps = {
+  setProblemStateAndSave,
+  loadUserData,
+  saveUserData,
+  sortProblems,
+  clearErrorMessage,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(MainView));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(withRouter(MainView));

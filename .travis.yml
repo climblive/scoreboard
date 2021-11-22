@@ -20,7 +20,7 @@ jobs:
         - cd ../admin
         - travis_retry npm install
         - cd ../backend
-        - travis_retry ./gradlew clean test bootJar deploy --scan
+        - travis_retry ./gradlew clean test bootJar deploy
 
 branches:
   only:

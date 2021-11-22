@@ -5,4 +5,5 @@ export interface Contest {
   qualifyingProblems: number;
   finalists: number;
   gracePeriod: number;
+  finalEnabled: boolean;
 }

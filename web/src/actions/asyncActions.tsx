@@ -1,8 +1,9 @@
 import { Problem } from "../model/problem";
 import { ContenderData } from "../model/contenderData";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 import { Api } from "../utils/Api";
 import {
+  clearPushItemsQueue,
   createTick,
   deleteTick,
   receiveColors,
@@ -24,9 +25,10 @@ import { StoreState } from "../model/storeState";
 import { ProblemState } from "../model/problemState";
 import { Tick } from "../model/tick";
 import { ScoreboardPushItem } from "../model/scoreboardPushItem";
+import { ScoreboardActions } from "../reducers/reducer";
 
-export function loadUserData(code: string): any {
-  return (dispatch: Dispatch<any>) => {
+export function loadUserData(code: string) {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getContender(code)
       .then((contenderData) => {
         dispatch(receiveContenderData(contenderData));
@@ -61,27 +63,34 @@ export function loadUserData(code: string): any {
   };
 }
 
-export function loadContest(contestId: number): any {
-  return (dispatch: Dispatch<any>) => {
+export function loadContest(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     Api.getContest(contestId).then((contest) => {
       dispatch(receiveContest(contest));
     });
   };
 }
 
-export function loadScoreboardData(id: number): any {
-  return (dispatch: Dispatch<any>) => {
+export function loadScoreboardData(id: number) {
+  return (
+    dispatch: Dispatch<ScoreboardActions>,
+    getState: () => StoreState
+  ) => {
     Api.getScoreboard(id).then((scoreboardDescription) => {
       dispatch(receiveScoreboardData(scoreboardDescription));
       dispatch(updateScoreboardTimer());
+
+      for (const queuedItem of getState().pushItemsQueue) {
+        handleScoreboardItem(queuedItem);
+      }
+
+      dispatch(clearPushItemsQueue());
     });
   };
 }
 
-export function handleScoreboardItem(
-  scoreboardPushItem: ScoreboardPushItem
-): any {
-  return (dispatch: Dispatch<any>) => {
+export function handleScoreboardItem(scoreboardPushItem: ScoreboardPushItem) {
+  return (dispatch: Dispatch<ScoreboardActions>) => {
     dispatch(receiveScoreboardItem(scoreboardPushItem));
     setTimeout(() => {
       dispatch(resetScoreboardItemAnimation(scoreboardPushItem));
@@ -89,16 +98,15 @@ export function handleScoreboardItem(
   };
 }
 
-export function saveUserData(contenderData: ContenderData): any {
-  return (dispatch: Dispatch<any>) => {
-    let promise: Promise<ContenderData> = Api.setContender(
+export function saveUserData(contenderData: ContenderData) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<ContenderData> => {
+    return Api.updateContender(
       contenderData,
       contenderData.registrationCode
-    );
-    promise.then((contenderData) =>
-      dispatch(receiveContenderData(contenderData))
-    );
-    return promise;
+    ).then((contenderData) => {
+      dispatch(receiveContenderData(contenderData));
+      return contenderData;
+    });
   };
 }
 
@@ -106,14 +114,17 @@ export function setProblemStateAndSave(
   problem: Problem,
   problemState: ProblemState,
   tick?: Tick
-): any {
-  return (dispatch: Dispatch<any>, getState: () => StoreState) => {
+) {
+  return (
+    dispatch: Dispatch<ScoreboardActions>,
+    getState: () => StoreState
+  ) => {
     const oldState = !tick
       ? ProblemState.NOT_SENT
       : tick.flash
       ? ProblemState.FLASHED
       : ProblemState.SENT;
-    if (oldState != problemState) {
+    if (oldState !== problemState) {
       dispatch(startProblemUpdate(problem));
       const activationCode: string = getState().contenderData!.registrationCode;
       if (!tick) {
@@ -121,7 +132,7 @@ export function setProblemStateAndSave(
         Api.createTick(
           problem.id,
           getState().contenderData!.id,
-          problemState == ProblemState.FLASHED,
+          problemState === ProblemState.FLASHED,
           activationCode
         )
           .then((tick) => {
@@ -131,7 +142,7 @@ export function setProblemStateAndSave(
             console.log(error);
             dispatch(setProblemStateFailed(error));
           });
-      } else if (problemState == ProblemState.NOT_SENT) {
+      } else if (problemState === ProblemState.NOT_SENT) {
         // Delete the tick:
         Api.deleteTick(tick, activationCode)
           .then(() => {
@@ -143,7 +154,7 @@ export function setProblemStateAndSave(
       } else {
         // Update the tick:
         const newTick: Tick = JSON.parse(JSON.stringify(tick));
-        newTick.flash = problemState == ProblemState.FLASHED;
+        newTick.flash = problemState === ProblemState.FLASHED;
         Api.updateTick(newTick, activationCode)
           .then(() => {
             dispatch(updateTick(newTick));

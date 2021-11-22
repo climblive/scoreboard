@@ -52,10 +52,11 @@ const CompClassEdit = (props: Props & PropsFromRedux) => {
   const [compClass, setCompClass] = useState<CompClass>({
     ...props.compClass,
   });
-  let [saving, setSaving] = useState<boolean>(false);
-  let [deleting, setDeleting] = useState<boolean>(false);
-  let [deleteRequested, setDeleteRequested] = useState<boolean>(false);
-  let [colorPickerVisible, setColorPickerVisible] = useState<boolean>(false);
+  const [saving, setSaving] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
+  const [deleteRequested, setDeleteRequested] = useState<boolean>(false);
+  const [colorPickerVisible, setColorPickerVisible] = useState<boolean>(false);
+  const [validated, setValidated] = useState(false);
 
   const classes = useStyles();
 
@@ -99,7 +100,21 @@ const CompClassEdit = (props: Props & PropsFromRedux) => {
     });
   };
 
+  const validate = () => {
+    if (compClass.name === "") {
+      return false;
+    }
+
+    return true;
+  };
+
   const onSave = () => {
+    setValidated(true);
+
+    if (!validate()) {
+      return;
+    }
+
     setSaving(true);
     props
       .saveCompClass(compClass)
@@ -135,6 +150,7 @@ const CompClassEdit = (props: Props & PropsFromRedux) => {
           required
           value={compClass.name}
           onChange={onNameChange}
+          error={validated && compClass.name === ""}
         />
         <TextField
           label="Description"

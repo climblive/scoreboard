@@ -34,8 +34,8 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
     @AfterMapping
     fun afterMapping(source: Contest, @MappingTarget target: ContestDto) {
         target.scoreboardUrl = "${webUrl}/scoreboard/${target.id}"
-        target.timeBegin = source.compClasses.map { it.timeBegin }.filterNotNull().min()
-        target.timeEnd = source.compClasses.map { it.timeEnd }.filterNotNull().max()
+        target.timeBegin = source.compClasses.map { it.timeBegin }.filterNotNull().minOrNull()
+        target.timeEnd = source.compClasses.map { it.timeEnd }.filterNotNull().maxOrNull()
     }
 
     @AfterMapping

@@ -76,9 +76,8 @@ const ContenderList = (props: Props & PropsFromRedux) => {
   const classes = useStyles();
 
   const [numberOfNewContenders, setNumberOfNewContenders] = useState<string>();
-  const [showAddContendersPopup, setShowAddContendersPopup] = useState<boolean>(
-    false
-  );
+  const [showAddContendersPopup, setShowAddContendersPopup] =
+    useState<boolean>(false);
 
   const [contenderFilter, setContenderFilter] = useState<string>(
     StaticFilter[StaticFilter.All]
@@ -242,8 +241,8 @@ const ContenderList = (props: Props & PropsFromRedux) => {
       Name
     </TableCell>,
     <TableCell>Class</TableCell>,
-    <TableCell onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}>
-      Total score
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_QUALIFYING_POINTS)}>
+      Qualifying score
     </TableCell>,
     <TableCell onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}>
       # Ticks
@@ -330,6 +329,7 @@ const ContenderList = (props: Props & PropsFromRedux) => {
                     compClasses={props.compClasses}
                     problems={props.problems}
                     breakpoints={breakpoints}
+                    finalEnabled={props.contest?.finalEnabled ?? false}
                   />
                 ))}
             </TableBody>

@@ -1,19 +1,17 @@
 import { Button, Grid, Hidden } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import * as qs from "qs";
-import React, { useEffect } from "react";
+import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { getSelectedOrganizer } from "src/selectors/selector";
 import { logout } from "../actions/actions";
-import { login, selectOrganizer } from "../actions/asyncActions";
+import { selectOrganizer } from "../actions/asyncActions";
 import { Organizer } from "../model/organizer";
 import { StoreState } from "../model/storeState";
 
@@ -37,27 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const { login } = props;
-
   const classes = useStyles();
-
-  useEffect(() => {
-    let query = qs.parse(props.location.hash, {
-      ignoreQueryPrefix: true,
-    });
-    let credentials: string | null = query.access_token as string;
-
-    if (credentials) {
-      login(credentials);
-      props.history.push("/contests");
-    } else {
-      credentials = localStorage.getItem("credentials");
-
-      if (credentials != null) {
-        login(credentials);
-      }
-    }
-  }, [props.history, props.location.hash, login]);
 
   const onOrganizerChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const id = parseInt(e.target.value as string);
@@ -65,24 +43,6 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
     if (organizer !== undefined) {
       props.selectOrganizer(organizer.id!);
     }
-  };
-
-  const getUrl = (command: string) => {
-    let url = "https://clmb.auth.eu-west-1.amazoncognito.com/";
-    url += command;
-    // Response type token or code
-    url +=
-      "?response_type=token&client_id=55s3rmvp8t26lmi0898n9d1lfn&redirect_uri=";
-    url += encodeURIComponent(window.location.origin);
-    return url;
-  };
-
-  const redirectToLogin = () => {
-    window.location.href = getUrl("login");
-  };
-
-  const redirectToSignup = () => {
-    window.location.href = getUrl("signup");
   };
 
   const logout = () => {
@@ -118,19 +78,6 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
       </Hidden>
 
       <div className={classes.authControl}>
-        {props.loggingIn && (
-          <CircularProgress size={20} className={classes.loginProgress} />
-        )}
-        {!props.loggingIn && !props.loggedInUser && (
-          <div>
-            <Button color="inherit" onClick={redirectToLogin}>
-              Login
-            </Button>
-            <Button color="inherit" onClick={redirectToSignup}>
-              Sign up
-            </Button>
-          </div>
-        )}
         {props.loggedInUser && (
           <div>
             <Grid container direction="row" alignItems="center">
@@ -178,14 +125,12 @@ const TopMenu = (props: Props & PropsFromRedux & RouteComponentProps) => {
 };
 
 const mapStateToProps = (state: StoreState, props: Props) => ({
-  loggingIn: state.loggingIn,
   loggedInUser: state.loggedInUser,
   organizers: state.organizers,
   selectedOrganizer: getSelectedOrganizer(state),
 });
 
 const mapDispatchToProps = {
-  login,
   logout,
   selectOrganizer,
 };

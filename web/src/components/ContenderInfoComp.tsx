@@ -25,18 +25,12 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
     compClassId: this.props.existingUserData.compClassId,
   };
 
-  constructor(props: Props) {
-    super(props);
-  }
-
   handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-    this.state.name = event.currentTarget.value;
-    this.setState(this.state);
+    this.setState({ name: event.currentTarget.value });
   };
 
   setCompClass = (compClassId: number) => {
-    this.state.compClassId = compClassId;
-    this.setState(this.state);
+    this.setState({ compClassId });
   };
 
   onSubmit = () => {
@@ -52,7 +46,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
   };
 
   inputOk(): boolean {
-    console.log("this.state.compClassId", this.state.compClassId);
     return (
       this.state.compClassId !== undefined &&
       this.state.name !== undefined &&
@@ -61,7 +54,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props);
     if (!this.props.contest) {
       return <div>Vänta...</div>;
     }
@@ -70,7 +62,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
       <div
         key={compClass.name}
         className={
-          compClass.id == this.state.compClassId
+          compClass.id === this.state.compClassId
             ? "selector compClass selected"
             : "selector compClass"
         }
@@ -137,6 +129,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
         {buttons}
         <div style={{ position: "relative", marginTop: 20 }}>
           <img
+            alt=""
             style={{
               width: "100%",
               borderRadius: 10,
@@ -149,10 +142,6 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
           >
             {this.props.contest.name}
           </div>
-          <img
-            style={{ position: "absolute", width: 40, bottom: 15, right: 15 }}
-            src="/logos/klatterdomen.jpg"
-          />
         </div>
         <div
           style={{ marginTop: 20, marginBottom: 10 }}

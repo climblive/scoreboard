@@ -223,10 +223,6 @@ export class Api {
     });
   }
 
-  static resetContenders(contestId: number): Promise<any> {
-    return this.put("/contest/" + contestId + "/resetContenders", {});
-  }
-
   // ---------------------------------------------------------------------------
   // Raffles
   // ---------------------------------------------------------------------------

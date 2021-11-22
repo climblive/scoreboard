@@ -12,8 +12,7 @@ data class ContenderDto (
     var entered: OffsetDateTime? = null,
     @JsonProperty("disqualified")
     var disqualified: Boolean,
-    var finalPlacing: Int?,
-    var scoring: ScoringDto?) {
+    var finalPlacing: Int?) {
 
-    constructor() : this(null, null, null, null, null, null, false, null, null)
+    constructor() : this(null, null, null, null, null, null, false, null)
 }

@@ -53,13 +53,13 @@ class CustomPermissionEvaluator @Autowired constructor(
 
         return if (targetDomainObjects.isEmpty()) {
             true
-        } else hasPrivilege(auth, targetDomainObjects.first().javaClass.simpleName, targetIds, targetDomainObjects, permission.toString().toUpperCase())
+        } else hasPrivilege(auth, targetDomainObjects.first().javaClass.simpleName, targetIds, targetDomainObjects, permission.toString().uppercase())
     }
 
     override fun hasPermission(auth: Authentication?, targetId: Serializable, targetType: String?, permission: Any): Boolean {
         return if (auth == null || targetType == null || targetId !is Int || permission !is String) {
             false
-        } else hasPrivilege(auth, targetType, listOf(targetId), emptyList(), permission.toString().toUpperCase())
+        } else hasPrivilege(auth, targetType, listOf(targetId), emptyList(), permission.toString().uppercase())
     }
 
     private fun hasPrivilege(auth: Authentication, targetType: String, targetIds: List<Int>, dtos: List<Any>, permission: String): Boolean {
@@ -69,7 +69,7 @@ class CustomPermissionEvaluator @Autowired constructor(
         val evaluation = PermissionEvaluation(ownershipDeriver,
             role,
             principal,
-            targetType.removeSuffix("Dto").capitalize(),
+            targetType.removeSuffix("Dto").replaceFirstChar(Char::titlecase),
             targetIds,
             dtos,
             permission)

@@ -2,17 +2,27 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
-import registerServiceWorker from "./registerServiceWorker";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import { StoreState } from "./model/storeState";
-import { reducer } from "./reducers/reducer";
+import { reducer, ScoreboardActions } from "./reducers/reducer";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
+import initialState from "./initialState";
+import * as serviceWorker from "./serviceWorker";
 
-const store = createStore<StoreState, any, any, any>(
+let middleware = [applyMiddleware(thunk)];
+
+if (false) {
+  middleware.push(
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+      (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+  );
+}
+
+const store = createStore<StoreState | undefined, ScoreboardActions, any, any>(
   reducer,
-  {},
-  applyMiddleware(thunk)
+  initialState,
+  compose(...middleware)
 );
 
 ReactDOM.render(
@@ -21,4 +31,8 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root") as HTMLElement
 );
-registerServiceWorker();
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

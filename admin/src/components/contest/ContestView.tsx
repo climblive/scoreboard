@@ -2,15 +2,15 @@ import { LinearProgress } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { Route, RouteComponentProps, Switch } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import {} from "../../actions/actions";
 import {
   loadContest,
-  unloadContest,
   reloadColors,
+  unloadContest,
 } from "../../actions/asyncActions";
 import { Contest } from "../../model/contest";
 import { StoreState } from "../../model/storeState";
@@ -37,54 +37,41 @@ const useStyles = makeStyles((theme: Theme) =>
 const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const { loadContest, unloadContest, reloadColors } = props;
 
-  let selectedPath = useLocation().pathname;
-  let [loading, setLoading] = useState(false);
-  const [contest, setContest] = useState<Contest | undefined>(undefined);
+  const selectedPath = useLocation().pathname;
+  const [loading, setLoading] = useState(false);
+  const contest =
+    props.contestId !== undefined
+      ? props.contests?.get(props.contestId)
+      : undefined;
 
   const classes = useStyles();
 
-  const initialize = useCallback(() => {
-    if (contest) {
-      return function cleanup() {
-        if (contest.id !== undefined) {
-          unloadContest(contest.id);
-        }
-      };
-    }
+  const defaultContest: Contest = {
+    organizerId: props.selectedOrganizer?.id!,
+    protected: false,
+    name: "",
+    description: "",
+    finalEnabled: false,
+    qualifyingProblems: 10,
+    finalists: 5,
+    rules: "",
+    gracePeriod: 15,
+  };
 
-    if (props.contestId === undefined) {
-      setContest({
-        organizerId: props.selectedOrganizer?.id!,
-        protected: false,
-        name: "",
-        description: "",
-        finalEnabled: false,
-        qualifyingProblems: 10,
-        finalists: 5,
-        rules: "",
-        gracePeriod: 15,
-      });
-    } else {
+  useEffect(() => {
+    const contestId = props.contestId;
+
+    if (contestId !== undefined) {
       setLoading(true);
-      loadContest(props.contestId)
-        .then((contest) => {
-          setContest(contest);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      loadContest(contestId).finally(() => {
+        setLoading(false);
+      });
+
+      return () => unloadContest(contestId);
     }
 
     return () => {};
-  }, [
-    props.contestId,
-    contest,
-    props.selectedOrganizer,
-    loadContest,
-    unloadContest,
-  ]);
-
-  useEffect(() => initialize(), [initialize]);
+  }, [props.contestId, props.selectedOrganizer, loadContest, unloadContest]);
 
   useEffect(() => {
     return () => {
@@ -98,7 +85,7 @@ const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
     }
   }, [props.colors, reloadColors]);
 
-  const selectTab = (event: any, newValue: string) => {
+  const selectTab = (_event: any, newValue: string) => {
     props.history.push(newValue);
   };
 
@@ -186,32 +173,32 @@ const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
         {loading ? (
           <LinearProgress color="secondary" />
         ) : (
-          contest && (
-            <Switch>
-              <Route path="/contests/:contestId" exact>
-                <ContestEdit key="general" contest={contest} />
-              </Route>
-              {contest?.id !== undefined && (
-                <>
+          <Switch>
+            <Route path="/contests/:contestId" exact>
+              <ContestEdit contest={contest ?? defaultContest} />
+            </Route>
+            {props.contestId !== undefined && (
+              <Route path="/contests/:contestId/">
+                <Switch>
                   <Route path="/contests/:contestId/statistics">
-                    <ContestStats key="statistics" contestId={contest.id} />
+                    <ContestStats contestId={props.contestId} />
                   </Route>
                   <Route path="/contests/:contestId/classes">
-                    <CompClassList key="compClasses" contestId={contest.id} />
+                    <CompClassList contestId={props.contestId} />
                   </Route>
                   <Route path="/contests/:contestId/problems">
-                    <ProblemList key="problems" contestId={contest.id} />
+                    <ProblemList contestId={props.contestId} />
                   </Route>
                   <Route path="/contests/:contestId/contenders">
-                    <ContenderList key="contenders" contestId={contest.id} />
+                    <ContenderList contestId={props.contestId} />
                   </Route>
                   <Route path="/contests/:contestId/raffles">
-                    <RaffleList key="raffles" contestId={contest.id} />
+                    <RaffleList contestId={props.contestId} />
                   </Route>
-                </>
-              )}
-            </Switch>
-          )
+                </Switch>
+              </Route>
+            )}
+          </Switch>
         )}
       </div>
     </>

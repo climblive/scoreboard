@@ -72,7 +72,7 @@ class ProblemService @Autowired constructor(
 
         var startNumber: Int = when (action) {
             ProblemAdjustmentAction.MAKE_ROOM -> affectedProblemNumber + 1
-            ProblemAdjustmentAction.MOVE_DOWN -> (problems.map { it.number }.min() ?: 0) - 1
+            ProblemAdjustmentAction.MOVE_DOWN -> (problems.map { it.number }.minOrNull() ?: 0) - 1
             ProblemAdjustmentAction.CLOSE_GAP -> affectedProblemNumber
         }
 

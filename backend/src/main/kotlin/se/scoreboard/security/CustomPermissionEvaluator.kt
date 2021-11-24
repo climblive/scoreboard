@@ -12,8 +12,7 @@ import se.scoreboard.dto.*
 import java.io.Serializable
 
 @Component
-class CustomPermissionEvaluator @Autowired constructor(
-        val ownershipDeriver: OwnershipDeriver) : PermissionEvaluator {
+class CustomPermissionEvaluator @Autowired constructor() : PermissionEvaluator {
 
     private var logger = LoggerFactory.getLogger(CustomPermissionEvaluator::class.java)
 
@@ -53,31 +52,12 @@ class CustomPermissionEvaluator @Autowired constructor(
 
         return if (targetDomainObjects.isEmpty()) {
             true
-        } else hasPrivilege(auth, targetDomainObjects.first().javaClass.simpleName, targetIds, targetDomainObjects, permission.toString().uppercase())
+        } else false
     }
 
     override fun hasPermission(auth: Authentication?, targetId: Serializable, targetType: String?, permission: Any): Boolean {
         return if (auth == null || targetType == null || targetId !is Int || permission !is String) {
             false
-        } else hasPrivilege(auth, targetType, listOf(targetId), emptyList(), permission.toString().uppercase())
-    }
-
-    private fun hasPrivilege(auth: Authentication, targetType: String, targetIds: List<Int>, dtos: List<Any>, permission: String): Boolean {
-        val role: GrantedAuthority = auth.authorities.first()
-        val principal: MyUserPrincipal = auth.principal as MyUserPrincipal
-
-        val evaluation = PermissionEvaluation(ownershipDeriver,
-            role,
-            principal,
-            targetType.removeSuffix("Dto").replaceFirstChar(Char::titlecase),
-            targetIds,
-            dtos,
-            permission)
-
-        val result = evaluation.run()
-
-        evaluation.lastError?.also { logger.info(evaluation.lastError) }
-
-        return result
+        } else false
     }
 }

@@ -14,10 +14,4 @@ interface CompClassRepository : ScoreboardRepository<CompClass, Int> {
 
     @Query("SELECT cc FROM Contender contender JOIN contender.contest contest JOIN contest.compClasses cc WHERE contender.id = :contenderId")
     override fun findAllByContenderId(@Param("contenderId") contenderId: Int, pageable: Pageable?): Page<CompClass>
-
-    @Query("SELECT cc.contest.id FROM CompClass cc WHERE cc.id IN :compClassIds")
-    override fun deriveContestIds(@Param("compClassIds") targetIds: List<Int>): List<Int>
-
-    @Query("SELECT c.organizer.id FROM CompClass cc JOIN cc.contest c WHERE cc.id IN :compClassIds")
-    override fun deriveOrganizerIds(@Param("compClassIds") targetIds: List<Int>): List<Int>
 }

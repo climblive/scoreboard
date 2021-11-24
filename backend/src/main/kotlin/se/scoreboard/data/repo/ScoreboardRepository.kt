@@ -9,6 +9,4 @@ import org.springframework.data.repository.PagingAndSortingRepository
 interface ScoreboardRepository<EntityType, ID> : PagingAndSortingRepository<EntityType, ID> {
     fun findAllByContenderId(contenderId: Int, pageable: Pageable?): Page<EntityType>
     fun findAllByOrganizerIds(organizerIds: List<Int>, pageable: Pageable?): Page<EntityType>
-    fun deriveContestIds(targetIds: List<Int>): List<Int>
-    fun deriveOrganizerIds(targetIds: List<Int>): List<Int>
 }

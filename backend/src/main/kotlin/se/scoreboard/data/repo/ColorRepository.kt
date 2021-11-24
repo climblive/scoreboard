@@ -14,10 +14,4 @@ interface ColorRepository : ScoreboardRepository<Color, Int> {
 
     @Query("SELECT DISTINCT c FROM Contender contender JOIN contender.contest contest JOIN contest.problems p JOIN p.color c WHERE contender.id = :contenderId")
     override fun findAllByContenderId(@Param("contenderId") contenderId: Int, pageable: Pageable?): Page<Color>
-
-    @Query("SELECT c.id FROM Contest c WHERE 1 = 0")
-    override fun deriveContestIds(targetIds: List<Int>): List<Int>
-
-    @Query("SELECT c.organizer.id FROM Color c WHERE c.id IN :colorIds")
-    override fun deriveOrganizerIds(@Param("colorIds") targetIds: List<Int>): List<Int>
 }

@@ -15,11 +15,5 @@ interface UserRepository : ScoreboardRepository<User, Int> {
     @Query("SELECT u FROM User u WHERE 1 = 0")
     override fun findAllByContenderId(contenderId: Int, pageable: Pageable?): Page<User>
 
-    @Query("SELECT c.id FROM Contest c WHERE 1 = 0")
-    override fun deriveContestIds(targetIds: List<Int>): List<Int>
-
-    @Query("SELECT o.id FROM User u JOIN u.organizers o WHERE u.id IN :userIds")
-    override fun deriveOrganizerIds(@Param("userIds") targetIds: List<Int>): List<Int>
-
     fun findByUsername(username : String) : User?
 }

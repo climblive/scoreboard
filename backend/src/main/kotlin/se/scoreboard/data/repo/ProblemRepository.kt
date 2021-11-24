@@ -14,10 +14,4 @@ interface ProblemRepository : ScoreboardRepository<Problem, Int> {
 
     @Query("SELECT p FROM Contender contender JOIN contender.contest contest JOIN contest.problems p WHERE contender.id = :contenderId")
     override fun findAllByContenderId(@Param("contenderId") contenderId: Int, pageable: Pageable?): Page<Problem>
-
-    @Query("SELECT p.contest.id FROM Problem p WHERE p.id IN :problemIds")
-    override fun deriveContestIds(@Param("problemIds") targetIds: List<Int>): List<Int>
-
-    @Query("SELECT c.organizer.id FROM Problem p JOIN p.contest c WHERE p.id IN :problemIds")
-    override fun deriveOrganizerIds(@Param("problemIds") targetIds: List<Int>): List<Int>
 }

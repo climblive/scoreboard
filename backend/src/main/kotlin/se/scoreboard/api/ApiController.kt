@@ -19,6 +19,5 @@ class ApiController @Autowired constructor(
         @Autowired val buildProperties: BuildProperties) {
 
     @GetMapping("/version")
-    @Transactional
     fun getVersion() = buildProperties
 }

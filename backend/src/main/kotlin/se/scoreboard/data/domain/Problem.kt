@@ -14,6 +14,10 @@ open class Problem (
     override var id: Int? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    open var organizer: Organizer? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "color_id", nullable = false)
     open var color: Color? = null,
 

@@ -21,38 +21,47 @@ class CustomPermissionEvaluator @Autowired constructor() : PermissionEvaluator {
             return false
         }
 
-        fun unroll(targetDomainObject: Any): List<Any> {
-            var o: Any = targetDomainObject
 
-            if (o is ResponseEntity<*>) {
-                o = o.body
-            }
-
-            return if (o is List<*>) o as List<Any> else listOf(o)
+        var body = if (targetDomainObject is ResponseEntity<*>) {
+            targetDomainObject.body
+        } else {
+            targetDomainObject
         }
 
-        val targetDomainObjects = unroll(targetDomainObject)
+        val principal: MyUserPrincipal = auth.principal as MyUserPrincipal
 
-        val targetIds: List<Int> = targetDomainObjects.mapNotNull {
-            when (it) {
-                is ColorDto -> it.id
-                is CompClassDto -> it.id
-                is ContenderDto -> it.id
-                is ContestDto -> it.id
-                is LocationDto -> it.id
-                is OrganizerDto -> it.id
-                is ProblemDto -> it.id
-                is RaffleDto -> it.id
-                is RaffleWinnerDto -> it.id
-                is SeriesDto -> it.id
-                is TickDto -> it.id
-                is UserDto -> it.id
-                else -> null
-        }}
+        fun checkOrganizer(organizerId: Int?): Boolean {
+            if (organizerId == null) {
+                return false;
+            }
 
-        return if (targetDomainObjects.isEmpty()) {
-            true
-        } else false
+            return principal.organizerIds?.contains(organizerId) ?: false
+        }
+
+        fun checkDto(body: Any?): Boolean {
+            return when (body) {
+                //is ColorDto -> false
+                //is CompClassDto -> false
+                //is ContenderDto -> false
+                is ContestDto -> checkOrganizer(body.organizerId)
+                is LocationDto -> checkOrganizer(body.organizerId)
+                is OrganizerDto -> checkOrganizer(body.id)
+                is ProblemDto -> checkOrganizer(body.organizerId)
+                //is RaffleDto -> false
+                //is RaffleWinnerDto -> false
+                is SeriesDto -> checkOrganizer(body.organizerId)
+                //is TickDto -> false
+                is UserDto -> body.username == principal.username
+                //else -> false
+                else -> true
+            }
+        }
+
+        if (body is List<*>) {
+            return body.all { checkDto(it) }
+        } else {
+            return checkDto(body)
+        }
     }
 
     override fun hasPermission(auth: Authentication?, targetId: Serializable, targetType: String?, permission: Any): Boolean {

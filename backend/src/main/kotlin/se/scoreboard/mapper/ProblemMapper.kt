@@ -10,7 +10,8 @@ import se.scoreboard.dto.ProblemDto
 abstract class ProblemMapper : AbstractMapper<Problem, ProblemDto>() {
     @Mappings(
         Mapping(source = "color.id", target = "colorId"),
-        Mapping(source = "contest.id", target = "contestId")
+        Mapping(source = "contest.id", target = "contestId"),
+        Mapping(source = "organizer.id", target = "organizerId")
     )
     abstract override fun convertToDto(source: Problem): ProblemDto
 

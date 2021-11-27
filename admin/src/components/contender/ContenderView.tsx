@@ -100,9 +100,6 @@ const ContenderView = (props: Props & PropsFromRedux) => {
       </div>
     </TableCell>,
     <TableCell component="th" scope="row">
-      {contender.name ? scoring?.ticks?.length : "-"}
-    </TableCell>,
-    <TableCell component="th" scope="row">
       <Button
         href={
           "https://" + Environment.siteDomain + "/" + contender.registrationCode

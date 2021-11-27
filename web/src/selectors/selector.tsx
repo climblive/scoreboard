@@ -68,7 +68,7 @@ const createList = (
 export const makeGetTotalList = () => {
   return createSelector([getScoreboardContenders], (scoreboardContenders) =>
     createList(
-      (sc: ScoreboardContender) => sc.qualifyingScore,
+      (sc: ScoreboardContender) => sc.totalScore,
       0,
       scoreboardContenders
     )

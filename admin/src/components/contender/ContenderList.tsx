@@ -241,11 +241,11 @@ const ContenderList = (props: Props & PropsFromRedux) => {
       Name
     </TableCell>,
     <TableCell>Class</TableCell>,
+    <TableCell onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}>
+      Total score
+    </TableCell>,
     <TableCell onClick={() => setContenderSortBy(SortBy.BY_QUALIFYING_POINTS)}>
       Qualifying score
-    </TableCell>,
-    <TableCell onClick={() => setContenderSortBy(SortBy.BY_NUMBER_OF_TICKS)}>
-      # Ticks
     </TableCell>,
     <TableCell>Regcode</TableCell>,
   ];

@@ -89,6 +89,12 @@ const ContenderView = (props: Props & PropsFromRedux) => {
     </TableCell>,
     <TableCell component="th" scope="row">
       <div style={{ display: "inline-block" }}>
+        {contender.name ? scoring?.totalScore : "-"}{" "}
+        {contender.name && "(" + scoring?.totalPosition + ")"}
+      </div>
+    </TableCell>,
+    <TableCell component="th" scope="row">
+      <div style={{ display: "inline-block" }}>
         {contender.name ? scoring?.qualifyingScore : "-"}{" "}
         {contender.name && "(" + scoring?.qualifyingPosition + ")"}
       </div>
@@ -144,6 +150,13 @@ const ContenderView = (props: Props & PropsFromRedux) => {
                   justify="flex-start"
                 >
                   <Grid item style={{ paddingLeft: 0 }}>
+                    <ContenderScoring
+                      title="Total"
+                      score={scoring.totalScore ?? 0}
+                      placement={scoring.totalPosition ?? 0}
+                    ></ContenderScoring>
+                  </Grid>
+                  <Grid item>
                     <ContenderScoring
                       title="Qualifying"
                       score={scoring.qualifyingScore ?? 0}

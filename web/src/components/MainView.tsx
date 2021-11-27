@@ -154,6 +154,7 @@ class MainView extends React.Component<
             : problem.points;
         })
         .sort((a, b) => b - a);
+      const totalPoints = points.reduce((s, p) => s + p, 0);
       let qualifyingProblems = this.props.contest.qualifyingProblems;
       let qualifyingScore = points
         .slice(0, qualifyingProblems)
@@ -181,8 +182,15 @@ class MainView extends React.Component<
               <button onClick={openUserInfoModal}>Ändra</button>
             </div>
             <div className="pointsRow">
-              <div className="pointsDesc">{qualifyingProblems} bästa</div>
-              <div className="points">{qualifyingScore}</div>
+              <div className="points">{totalPoints}</div>
+              <div className="pointsDesc total">Totalpoäng</div>
+
+              {this.props.contest.finalEnabled && (
+                <>
+                  <div className="pointsDesc">{qualifyingProblems} bästa</div>
+                  <div className="points">{qualifyingScore}</div>
+                </>
+              )}
             </div>
             <div className="headerRow">
               <div

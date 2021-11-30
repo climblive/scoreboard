@@ -14,6 +14,10 @@ open class Contender (
     @Column(name = "id", unique = true, nullable = false)
     override var id: Int? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    open var organizer: Organizer? = null,
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.MERGE))
     @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = true, insertable = true, updatable = true)
     @Access(AccessType.PROPERTY)

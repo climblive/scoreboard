@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import se.scoreboard.Messages
-import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.Tick
+import se.scoreboard.data.domain.*
 import se.scoreboard.data.domain.extension.allowedToAlterTick
 import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.TickDto
@@ -44,6 +43,8 @@ class TickService @Autowired constructor(
 
     private fun onAnyChange(tick: Tick) {
         tick.timestamp = nowWithoutNanos()
+        tick.organizer = entityManager.getReference(Organizer::class.java, 1) // TODO: Remove hack!
+        tick.contest = entityManager.getReference(Contest::class.java, 1) // TODO: Remove hack!
         checkTimeAllowed(tick.contender!!)
     }
 

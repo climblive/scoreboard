@@ -13,14 +13,16 @@ import { Tick } from "../model/tick";
 import { User } from "../model/user";
 
 export class Api {
+  private static useLocalhost = true;
   static credentials?: string;
   static organizerId?: number;
 
-  static readonly url = "https://api." + Environment.siteDomain;
   static readonly defaultPageSize = 1000;
 
   private static getBaseUrl(): string {
-    return Api.url;
+    return Api.useLocalhost
+      ? "http://localhost:8080/api"
+      : "https://api." + Environment.siteDomain;
   }
 
   private static async handleErrors(data: Response): Promise<Response> {

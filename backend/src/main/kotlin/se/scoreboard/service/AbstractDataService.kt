@@ -1,5 +1,6 @@
 package se.scoreboard.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -12,6 +13,7 @@ import se.scoreboard.data.repo.ScoreboardRepository
 import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.security.CustomPermissionEvaluator
 import se.scoreboard.userHasRole
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -24,6 +26,8 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     protected var MSG_NOT_FOUND = "Not found"
 
     abstract var entityMapper: AbstractMapper<EntityType, DtoType>
+
+    private var logger = LoggerFactory.getLogger(AbstractDataService::class.java)
 
     @PersistenceContext
     protected lateinit var entityManager: EntityManager
@@ -84,8 +88,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun findById(id: ID) : ResponseEntity<DtoType> =
-        ResponseEntity.ok(entityMapper.convertToDto(fetchEntity(id)))
+    open fun findById(id: ID) : ResponseEntity<DtoType> {
+        var someEnt = fetchEntity(id)
+        logger.info("someEnt: " + System.identityHashCode(someEnt))
+        return ResponseEntity.ok(entityMapper.convertToDto(someEnt))
+    }
 
     @Transactional
     open fun create(dto : DtoType) : ResponseEntity<DtoType> {

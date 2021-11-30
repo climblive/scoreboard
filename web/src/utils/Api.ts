@@ -8,7 +8,7 @@ import { ScoreboardDescription } from "../model/scoreboardDescription";
 import { Environment } from "../environment";
 
 export class Api {
-  private static useLocalhost = false;
+  private static useLocalhost = true;
 
   static getLiveUrl(): string {
     return (
@@ -33,8 +33,12 @@ export class Api {
     return data;
   }
 
-  private static getAuthHeader(registrationCode?: string): Record<string, string> {
-    return registrationCode ? { Authorization: "Regcode " + registrationCode } : {};
+  private static getAuthHeader(
+    registrationCode?: string
+  ): Record<string, string> {
+    return registrationCode
+      ? { Authorization: "Regcode " + registrationCode }
+      : {};
   }
 
   private static async get(url: string, registrationCode?: string) {
@@ -142,7 +146,10 @@ export class Api {
   }
 
   static getContender(registrationCode: string): Promise<ContenderData> {
-    return this.get("/contender/findByCode?code=" + registrationCode, registrationCode);
+    return this.get(
+      "/contender/findByCode?code=" + registrationCode,
+      registrationCode
+    );
   }
 
   static updateContender(

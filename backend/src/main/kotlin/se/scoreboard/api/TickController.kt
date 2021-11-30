@@ -27,29 +27,29 @@ class TickController @Autowired constructor(
         val tickService: TickService) {
 
     @GetMapping("/tick")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    //@PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getTicks(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(request, pageable)
 
     @GetMapping("/tick/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Tick', 'read')")
     @Transactional
     fun getTick(@PathVariable("id") id: Int) = tickService.findById(id)
 
     @PostMapping("/tick")
-    @PreAuthorize("hasPermission(#tick, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER','ROLE_CONTENDER')")
     @Transactional
     fun createTick(@RequestBody tick : TickDto) = tickService.create(tick)
 
     @PutMapping("/tick/{id}")
-    @PreAuthorize("hasPermission(#id, 'TickDto', 'update') && hasPermission(#tick, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Tick', 'write')")
     @Transactional
     fun updateTick(
             @PathVariable("id") id: Int,
             @RequestBody tick : TickDto) = tickService.update(id, tick)
 
     @DeleteMapping("/tick/{id}")
-    @PreAuthorize("hasPermission(#id, 'TickDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Tick', 'delete')")
     @Transactional
     fun deleteTick(@PathVariable("id") id: Int) = tickService.delete(id)
 }

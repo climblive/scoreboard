@@ -13,6 +13,14 @@ open class Tick (
     @Column(name = "id", unique = true, nullable = false)
     override var id: Int? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    open var organizer: Organizer? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contest_id", nullable = false)
+    open var contest: Contest? = null,
+
     @Column(name = "timestamp", nullable = false, length = 26)
     open var timestamp: OffsetDateTime? = null,
 
@@ -21,7 +29,7 @@ open class Tick (
     @Access(AccessType.PROPERTY)
     open var contender: Contender? = null,
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER) // TODO: WHy????
     @JoinColumn(name = "problem_id", nullable = false)
     @Access(AccessType.PROPERTY)
     open var problem: Problem? = null,

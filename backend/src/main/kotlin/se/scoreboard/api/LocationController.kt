@@ -22,35 +22,34 @@ class LocationController @Autowired constructor(
         private var contestMapper: ContestMapper) {
 
     @GetMapping("/location")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getLocations(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = locationService.search(request, pageable)
 
     @GetMapping("/location/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Location', 'read')")
     @Transactional
     fun getLocation(@PathVariable("id") id: Int) = locationService.findById(id)
 
     @GetMapping("/location/{id}/contest")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Location', 'read')")
     @Transactional
     fun getLocationContests(@PathVariable("id") id: Int) : List<ContestDto> =
             locationService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
 
     @PostMapping("/location")
-    @PreAuthorize("hasPermission(#location, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
     fun createLocation(@RequestBody location : LocationDto) = locationService.create(location)
 
     @PutMapping("/location/{id}")
-    @PreAuthorize("hasPermission(#id, 'LocationDto', 'update') && hasPermission(#location, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Location', 'update')")
     @Transactional
     fun updateLocation(
             @PathVariable("id") id: Int,
             @RequestBody location : LocationDto) = locationService.update(id, location)
 
     @DeleteMapping("/location/{id}")
-    @PreAuthorize("hasPermission(#id, 'LocationDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Location', 'write')")
     @Transactional
     fun deleteLocation(@PathVariable("id") id: Int) = locationService.delete(id)
 }

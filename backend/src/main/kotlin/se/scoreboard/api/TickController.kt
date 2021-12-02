@@ -27,7 +27,6 @@ class TickController @Autowired constructor(
         val tickService: TickService) {
 
     @GetMapping("/tick")
-    //@PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getTicks(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(request, pageable)
 
@@ -35,11 +34,6 @@ class TickController @Autowired constructor(
     @PreAuthorize("hasPermission(#id, 'Tick', 'read')")
     @Transactional
     fun getTick(@PathVariable("id") id: Int) = tickService.findById(id)
-
-    @PostMapping("/tick")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER','ROLE_CONTENDER')")
-    @Transactional
-    fun createTick(@RequestBody tick : TickDto) = tickService.create(tick)
 
     @PutMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'write')")

@@ -24,24 +24,24 @@ class ColorController @Autowired constructor(
     fun getColors(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = colorService.search(request, pageable)
 
     @GetMapping("/color/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Color', 'read')")
     @Transactional
     fun getColor(@PathVariable("id") id: Int) = colorService.findById(id)
 
     @PostMapping("/color")
-    @PreAuthorize("hasPermission(#color, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
     fun createColor(@RequestBody color : ColorDto) = colorService.create(color)
 
     @PutMapping("/color/{id}")
-    @PreAuthorize("hasPermission(#id, 'ColorDto', 'update') && hasPermission(#color, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Color', 'write')")
     @Transactional
     fun updateColor(
             @PathVariable("id") id: Int,
             @RequestBody color : ColorDto) = colorService.update(id, color)
 
     @DeleteMapping("/color/{id}")
-    @PreAuthorize("hasPermission(#id, 'ColorDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Color', 'delete')")
     @Transactional
     fun deleteColor(@PathVariable("id") id: Int) = colorService.delete(id)
 }

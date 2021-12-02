@@ -41,7 +41,6 @@ class ContestController @Autowired constructor(
         private var raffleMapper: RaffleMapper) {
 
     @GetMapping("/contest")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContests(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(request, pageable)
 
@@ -51,54 +50,54 @@ class ContestController @Autowired constructor(
     fun getContest(@PathVariable("id") id: Int) = contestService.findById(id)
 
     @GetMapping("/contest/{id}/problem")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun getContestProblems(@PathVariable("id") id: Int) : List<ProblemDto> =
             contestService.fetchEntity(id).problems.map { problem -> problemMapper.convertToDto(problem) }
 
     @GetMapping("/contest/{id}/contender")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun getContestContenders(@PathVariable("id") id: Int) : List<ContenderDto> =
             contestService.fetchEntity(id).contenders.map { contender -> contenderMapper.convertToDto(contender) }
 
     @GetMapping("/contest/{id}/compClass")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun getContestCompClasses(@PathVariable("id") id: Int) : List<CompClassDto> =
             contestService.fetchEntity(id).compClasses.map { compClass -> compClassMapper.convertToDto(compClass) }
 
     @GetMapping("/contest/{id}/tick")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun getContestTicks(@PathVariable("id") id: Int) : List<TickDto> =
             tickRepository.findAllByContestId(id).map { tickMapper.convertToDto(it) }
 
     @GetMapping("/contest/{id}/raffle")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun getContestRaffles(@PathVariable("id") id: Int) : List<RaffleDto> =
             contestService.fetchEntity(id).raffles.map { raffleMapper.convertToDto(it) }
 
     @PostMapping("/contest")
-    @PreAuthorize("hasPermission(#contest, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
     fun createContest(@RequestBody contest : ContestDto) = contestService.create(contest)
 
     @PutMapping("/contest/{id}")
-    @PreAuthorize("hasPermission(#id, 'ContestDto', 'update') && hasPermission(#contest, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
     @Transactional
     fun updateContest(
             @PathVariable("id") id: Int,
             @RequestBody contest : ContestDto) = contestService.update(id, contest)
 
     @DeleteMapping("/contest/{id}")
-    @PreAuthorize("hasPermission(#id, 'ContestDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'delete')")
     @Transactional
     fun deleteContest(@PathVariable("id") id: Int) = contestService.delete(id)
 
     @GetMapping("/contest/export/{id}")
-    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun export(@PathVariable("id") id: Int) : ResponseEntity<ByteArray> {
         val data = contestService.export(id)
@@ -109,7 +108,7 @@ class ContestController @Autowired constructor(
     }
 
     @PostMapping(path = arrayOf("/contest/{id}/pdf"), consumes = arrayOf("application/pdf"))
-    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun createPdf(@PathVariable("id") id: Int, @RequestBody payload:ByteArray) : ResponseEntity<ByteArray> {
         val data = contestService.getPdf(id, payload)
@@ -120,7 +119,7 @@ class ContestController @Autowired constructor(
     }
 
     @GetMapping(path = arrayOf("/contest/{id}/pdf"))
-    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun createPdf(@PathVariable("id") id: Int) : ResponseEntity<ByteArray> {
         val data = contestService.getPdf(id)
@@ -135,7 +134,7 @@ class ContestController @Autowired constructor(
     fun getScoreboard(@PathVariable("id") id: Int) = contestService.getScoreboard(id)
 
     @PutMapping("/contest/{id}/createContenders")
-    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
     @Transactional
     fun createContenders(
             @PathVariable("id") id: Int,

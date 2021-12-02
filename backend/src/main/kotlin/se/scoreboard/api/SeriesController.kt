@@ -21,36 +21,26 @@ class SeriesController @Autowired constructor(
         private val seriesService: SeriesService,
         private var contestMapper: ContestMapper) {
 
-    @GetMapping("/series")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
-    @Transactional
-    fun getAllSeries(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = seriesService.search(request, pageable)
-
     @GetMapping("/series/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'read')")
     @Transactional
     fun getSeries(@PathVariable("id") id: Int) = seriesService.findById(id)
 
     @GetMapping("/series/{id}/contest")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'read')")
     @Transactional
     fun getSeriesContests(@PathVariable("id") id: Int) : List<ContestDto> =
             seriesService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
 
-    @PostMapping("/series")
-    @PreAuthorize("hasPermission(#series, 'create')")
-    @Transactional
-    fun createSeries(@RequestBody series : SeriesDto) = seriesService.create(series)
-
     @PutMapping("/series/{id}")
-    @PreAuthorize("hasPermission(#id, 'SeriesDto', 'update') && hasPermission(#series, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'write')")
     @Transactional
     fun updateSeries(
             @PathVariable("id") id: Int,
             @RequestBody series : SeriesDto) = seriesService.update(id, series)
 
     @DeleteMapping("/series/{id}")
-    @PreAuthorize("hasPermission(#id, 'SeriesDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'delete')")
     @Transactional
     fun deleteSeries(@PathVariable("id") id: Int) = seriesService.delete(id)
 }

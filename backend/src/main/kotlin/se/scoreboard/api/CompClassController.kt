@@ -21,36 +21,31 @@ class CompClassController @Autowired constructor(
         val compClassService: CompClassService,
         private var contenderMapper: ContenderMapper) {
 
-    @GetMapping("/compClass")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
-    @Transactional
-    fun getCompClasses(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = compClassService.search(request, pageable)
-
     @GetMapping("/compClass/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'CompClass', 'read')")
     @Transactional
     fun getCompClass(@PathVariable("id") id: Int) = compClassService.findById(id)
 
     @GetMapping("/compClass/{id}/contender")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'CompClass', 'read')")
     @Transactional
     fun getCompClassContenders(@PathVariable("id") id: Int) : List<ContenderDto> =
             compClassService.fetchEntity(id).contenders.map { contender -> contenderMapper.convertToDto(contender) }
 
     @PostMapping("/compClass")
-    @PreAuthorize("hasPermission(#compClass, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
     fun createCompClass(@RequestBody compClass : CompClassDto) = compClassService.create(compClass)
 
     @PutMapping("/compClass/{id}")
-    @PreAuthorize("hasPermission(#id, 'CompClassDto', 'update') && hasPermission(#compClass, 'update')")
+    @PreAuthorize("hasPermission(#id, 'CompClass', 'write')")
     @Transactional
     fun updateCompClass(
             @PathVariable("id") id: Int,
             @RequestBody compClass : CompClassDto) = compClassService.update(id, compClass)
 
     @DeleteMapping("/compClass/{id}")
-    @PreAuthorize("hasPermission(#id, 'CompClassDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'CompClass', 'delete')")
     @Transactional
     fun deleteCompClass(@PathVariable("id") id: Int) = compClassService.delete(id)
 }

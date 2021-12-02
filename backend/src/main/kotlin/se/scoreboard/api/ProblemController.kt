@@ -21,36 +21,31 @@ class ProblemController @Autowired constructor(
         val problemService: ProblemService,
         private var tickMapper: TickMapper) {
 
-    @GetMapping("/problem")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
-    @Transactional
-    fun getProblems(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = problemService.search(request, pageable)
-
     @GetMapping("/problem/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Problem', 'read')")
     @Transactional
     fun getProblem(@PathVariable("id") id: Int) = problemService.findById(id)
 
     @GetMapping("/problem/{id}/tick")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Problem', 'read')")
     @Transactional
     fun getProblemTicks(@PathVariable("id") id: Int) : List<TickDto> =
             problemService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
 
     @PostMapping("/problem")
-    @PreAuthorize("hasPermission(#problem, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
     fun createProblem(@RequestBody problem : ProblemDto) = problemService.create(problem)
 
     @PutMapping("/problem/{id}")
-    @PreAuthorize("hasPermission(#id, 'ProblemDto', 'update') && hasPermission(#problem, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Problem', 'write')")
     @Transactional
     fun updateProblem(
             @PathVariable("id") id: Int,
             @RequestBody problem : ProblemDto) = problemService.update(id, problem)
 
     @DeleteMapping("/problem/{id}")
-    @PreAuthorize("hasPermission(#id, 'ProblemDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Problem', 'delete')")
     @Transactional
     fun deleteProblem(@PathVariable("id") id: Int) = problemService.delete(id)
 }

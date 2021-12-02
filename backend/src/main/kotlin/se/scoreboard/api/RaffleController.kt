@@ -25,55 +25,41 @@ import javax.transaction.Transactional
 @Api(tags = ["Raffle"])
 class RaffleController @Autowired constructor(
         val raffleService: RaffleService,
-        val raffleWinnerService: RaffleWinnerService,
         private var winnerMapper: RaffleWinnerMapper) {
 
-    @GetMapping("/raffle")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
-    @Transactional
-    fun getRaffles(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = raffleService.search(request, pageable)
-
     @GetMapping("/raffle/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Raffle', 'read')")
     @Transactional
     fun getRaffle(@PathVariable("id") id: Int) = raffleService.findById(id)
 
     @GetMapping("/raffle/{id}/winner")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Raffle', 'read')")
     @Transactional
     fun getRaffleWinners(@PathVariable("id") id: Int) : List<RaffleWinnerDto> =
             raffleService.fetchEntity(id).winners.map { winner -> winnerMapper.convertToDto(winner) }.sortedBy { winner -> winner.timestamp }
 
     @PostMapping("/raffle/{id}/winner")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional
     fun drawWinner(@PathVariable("id") id: Int): ResponseEntity<RaffleWinnerDto> {
         val winner = raffleService.drawWinner(id)
         return ResponseEntity(winnerMapper.convertToDto(winner), HttpStatus.CREATED)
     }
 
-    @DeleteMapping("/raffle/{id}/winner/{raffleWinnerId}")
-    @PreAuthorize("hasPermission(#id, 'RaffleDto', 'read') && hasPermission(#raffleWinnerId, 'RaffleWinnerDto', 'delete')")
-    @Transactional
-    fun deleteWinner(@PathVariable("id") id: Int, @PathVariable("raffleWinnerId") raffleWinnerId: Int) : ResponseEntity<RaffleWinnerDto> {
-        raffleService.fetchEntity(id)
-        return raffleWinnerService.delete(raffleWinnerId)
-    }
-
     @PostMapping("/raffle")
-    @PreAuthorize("hasPermission(#raffle, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
     fun createRaffle(@RequestBody raffle : RaffleDto) = raffleService.create(raffle)
 
     @PutMapping("/raffle/{id}")
-    @PreAuthorize("hasPermission(#id, 'RaffleDto', 'update') && hasPermission(#raffle, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional
     fun updateRaffle(
             @PathVariable("id") id: Int,
             @RequestBody raffle : RaffleDto) = raffleService.update(id, raffle)
 
     @DeleteMapping("/raffle/{id}")
-    @PreAuthorize("hasPermission(#id, 'RaffleDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Raffle', 'delete')")
     @Transactional
     fun deleteRaffle(@PathVariable("id") id: Int) = raffleService.delete(id)
 }

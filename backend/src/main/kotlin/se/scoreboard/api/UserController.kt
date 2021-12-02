@@ -26,12 +26,12 @@ class UserController @Autowired constructor(
         private var organizerMapper: OrganizerMapper) {
 
     @GetMapping("/user")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun getUsers(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(request, pageable)
 
     @GetMapping("/user/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasPermission(#id, 'User', 'read')")
     @Transactional
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)
 
@@ -43,25 +43,25 @@ class UserController @Autowired constructor(
                 ?: throw WebException(HttpStatus.INTERNAL_SERVER_ERROR, null)
 
     @GetMapping("/user/{id}/organizer")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasPermission(#id, 'User', 'read')")
     @Transactional
     fun getUserOrganizers(@PathVariable("id") id: Int) : List<OrganizerDto> =
             userService.fetchEntity(id).organizers.map { organizer -> organizerMapper.convertToDto(organizer) }
 
     @PostMapping("/user")
-    @PreAuthorize("hasPermission(#user, 'create')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun createUser(@RequestBody user : UserDto) = userService.create(user)
 
     @PutMapping("/user/{id}")
-    @PreAuthorize("hasPermission(#id, 'UserDto', 'update') && hasPermission(#user, 'update')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun updateUser(
             @PathVariable("id") id: Int,
             @RequestBody user : UserDto) = userService.update(id, user)
 
     @DeleteMapping("/user/{id}")
-    @PreAuthorize("hasPermission(#id, 'UserDto', 'delete')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun deleteUser(@PathVariable("id") id: Int) = userService.delete(id)
 }

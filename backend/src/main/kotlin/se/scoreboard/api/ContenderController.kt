@@ -14,6 +14,7 @@ import se.scoreboard.dto.ScoringDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService
+import se.scoreboard.service.TickService
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -23,32 +24,46 @@ import javax.transaction.Transactional
 @Api(tags = ["Contender"])
 class ContenderController @Autowired constructor(
         val contenderService: ContenderService,
+        val tickService: TickService,
         private var tickMapper: TickMapper) {
 
-    @GetMapping("/contender")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
-    @Transactional
-    fun getContenders(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contenderService.search(request, pageable)
-
     @GetMapping("/contender/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
     @Transactional
     fun getContender(@PathVariable("id") id: Int) = contenderService.findById(id)
 
     @GetMapping("/contender/findByCode")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
     @Transactional
     fun getContenderByCode(@RequestParam("code") code: String) = contenderService.findByCode(code)
 
     @GetMapping("/contender/{id}/tick")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
     @Transactional
     fun getContenderTicks(@PathVariable("id") id: Int) : List<TickDto> {
         return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
     }
 
+    @PostMapping("/contender/{id}/tick")
+    @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
+    @Transactional
+    fun createTick(@RequestBody tick : TickDto) = tickService.create(tick)
+
+ //   @GetMapping("/contender/{id}/problem")
+ //   @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
+ //   @Transactional
+ //   fun getContenderProblems(@PathVariable("id") id: Int) : List<TickDto> {
+ //       return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
+ //   }
+
+ //   @GetMapping("/contender/{id}/compClass")
+ //   @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
+ //   @Transactional
+ //   fun getContenderCompClasses(@PathVariable("id") id: Int) : List<TickDto> {
+ //       return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
+ //   }
+
     @GetMapping("/contender/{id}/score")
-    @PostAuthorize("hasPermission(#id, 'ContenderDto', 'read')")
+    @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
     @Transactional
     fun getContenderScore(@PathVariable("id") id: Int) : ScoreDto {
         val contender = contenderService.fetchEntity(id)
@@ -56,18 +71,18 @@ class ContenderController @Autowired constructor(
     }
 
     @PostMapping("/contender")
-    @PreAuthorize("hasPermission(#contender, 'create')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
     fun createContender(@RequestBody contender : ContenderDto) = contenderService.create(contender)
 
     @PutMapping("/contender/{id}")
-    @PreAuthorize("hasPermission(#id, 'ContenderDto', 'update') && hasPermission(#contender, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
     fun updateContender(@PathVariable("id") id: Int,
                         @RequestBody contender : ContenderDto) = contenderService.update(id, contender)
 
     @DeleteMapping("/contender/{id}")
-    @PreAuthorize("hasPermission(#id, 'ContenderDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Contender', 'delete')")
     @Transactional
     fun deleteContender(@PathVariable("id") id: Int) = contenderService.delete(id)
 }

@@ -23,8 +23,10 @@ plugins {
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
 }
 
+def buildNumber = gitVersion()
+
 group = 'app.climblive'
-version = gitVersion()
+version = buildNumber
 
 repositories {
     mavenCentral()
@@ -71,7 +73,7 @@ task web() {
         }
         exec {
             commandLine 'sed'
-            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${gitVersion()}\";/g", '../web/src/environment.tsx'
+            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${buildNumber}\";/g", '../web/src/environment.tsx'
         }
         exec {
             workingDir '../web'
@@ -101,7 +103,7 @@ task admin() {
         }
         exec {
             commandLine 'sed'
-            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${gitVersion()}\";/g", '../admin/src/environment.tsx'
+            args '-i', '-E', "s/(projectVersion\\s*=\\s*).*/\\1\"${buildNumber}\";/g", '../admin/src/environment.tsx'
         }
         exec {
             workingDir '../admin'
@@ -132,7 +134,7 @@ bootJar {
     launchScript()
 
     archiveBaseName = 'climblive'
-    archiveVersion = gitVersion()
+    archiveVersion = buildNumber
 
     from('tmpWeb') {
         into 'public'
@@ -149,8 +151,8 @@ task deploy {
     doLast {
         ssh.run {
             session(remotes.prod) {
-                put from: "$buildDir/libs/climblive-${gitVersion()}.jar", into: '/home/travis'
-                execute "mv ~/climblive-${gitVersion()}.jar ~/uploads"
+                put from: "$buildDir/libs/climblive-${buildNumber}.jar", into: '/home/travis'
+                execute "mv ~/climblive-${buildNumber}.jar ~/uploads"
             }
         }
     }

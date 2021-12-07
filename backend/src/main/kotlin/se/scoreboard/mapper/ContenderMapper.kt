@@ -16,10 +16,10 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
     )
     abstract override fun convertToDto(source: Contender): ContenderDto
 
-    @InheritInverseConfiguration(name = "convertToDto")
-    @Mappings(
-            Mapping(target = "ticks", ignore = true)
-    )
+//    @InheritInverseConfiguration(name = "convertToDto")
+//    @Mappings(
+//            Mapping(target = "ticks", ignore = true)
+//    )
     abstract override fun convertToEntity(source: ContenderDto): Contender
 
     @AfterMapping

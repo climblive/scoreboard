@@ -18,15 +18,13 @@ open class Contender (
     @JoinColumn(name = "organizer_id", nullable = false)
     open var organizer: Organizer? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.MERGE))
-    @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = true, insertable = true, updatable = true)
-    @Access(AccessType.PROPERTY)
-    open var compClass: CompClass? = null,
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = arrayOf(CascadeType.MERGE))
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contest_id", nullable = false, updatable = false)
-    @Access(AccessType.PROPERTY)
     open var contest: Contest? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id", nullable = true, insertable = true, updatable = true)
+    open var compClass: CompClass? = null,
 
     @Column(name = "registration_code", unique = true, nullable = false, length = 16)
     open var registrationCode: String? = null,

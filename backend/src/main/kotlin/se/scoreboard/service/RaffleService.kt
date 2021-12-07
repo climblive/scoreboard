@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Contender
+import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.Raffle
 import se.scoreboard.data.domain.RaffleWinner
 import se.scoreboard.data.domain.extension.isRegistered
@@ -72,6 +73,7 @@ class RaffleService @Autowired constructor(
         contendersInTheDraw?.takeIf { it.isNotEmpty() }?.let { draw ->
             var winner: RaffleWinner = RaffleWinner(
                     null,
+                    entityManager.getReference(Organizer::class.java, 999999999999),
                     entityManager.getReference(Raffle::class.java, raffleId),
                     entityManager.getReference(Contender::class.java, draw.random().id!!),
                     nowWithoutNanos())

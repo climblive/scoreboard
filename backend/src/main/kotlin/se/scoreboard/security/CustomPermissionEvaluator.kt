@@ -5,16 +5,26 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import se.scoreboard.configuration.MyUserPrincipal
 import se.scoreboard.dto.*
-import se.scoreboard.service.TickService
+import se.scoreboard.service.*
 import java.io.Serializable
 
 @Component
-class CustomPermissionEvaluator @Autowired constructor(val tickService: TickService) : PermissionEvaluator {
+class CustomPermissionEvaluator @Autowired constructor(
+    val colorService: ColorService,
+    val compClassService: CompClassService,
+    val contenderService: ContenderService,
+    val contestService: ContestService,
+    val locationService: LocationService,
+    val problemService: ProblemService,
+    val raffleService: RaffleService,
+    val raffleWinnerService: RaffleWinnerService,
+    val seriesService: SeriesService,
+    val tickService: TickService
+    ) : PermissionEvaluator {
 
     private var logger = LoggerFactory.getLogger(CustomPermissionEvaluator::class.java)
 
@@ -42,19 +52,7 @@ class CustomPermissionEvaluator @Autowired constructor(val tickService: TickServ
 
         fun checkDto(body: Any?): Boolean {
             return when (body) {
-                //is ColorDto -> false
-                //is CompClassDto -> false
-                //is ContenderDto -> false
-                is ContestDto -> checkOrganizer(body.organizerId)
-                is LocationDto -> checkOrganizer(body.organizerId)
-                is OrganizerDto -> checkOrganizer(body.id)
-                //is ProblemDto -> checkOrganizer(body.organizerId)
-                //is RaffleDto -> false
-                //is RaffleWinnerDto -> false
-                is SeriesDto -> checkOrganizer(body.organizerId)
-                //is TickDto -> false
                 is UserDto -> body.username == principal.username
-                //else -> false
                 else -> true
             }
         }
@@ -100,16 +98,16 @@ class CustomPermissionEvaluator @Autowired constructor(val tickService: TickServ
             }
         } else {
             return when (targetType) {
-                "Color" -> false
-                "CompClass" -> false
-                "Contender" -> false
-                "Contest" -> false
-                "Location" -> false
-                "Organizer" -> false
-                "Problem" -> false
-                "Raffle" -> false
-                "RaffleWinner" -> false
-                "Series" -> false
+                "Color" -> checkOrganizer(colorService.fetchEntity(targetId).organizer?.id)
+                "CompClass" -> checkOrganizer(compClassService.fetchEntity(targetId).organizer?.id)
+                "Contender" -> checkOrganizer(contenderService.fetchEntity(targetId).organizer?.id)
+                "Contest" -> checkOrganizer(contestService.fetchEntity(targetId).organizer?.id)
+                "Location" -> checkOrganizer(locationService.fetchEntity(targetId).organizer?.id)
+                "Organizer" -> checkOrganizer(targetId)
+                "Problem" -> checkOrganizer(problemService.fetchEntity(targetId).organizer?.id)
+                "Raffle" -> checkOrganizer(raffleService.fetchEntity(targetId).organizer?.id)
+                "RaffleWinner" -> checkOrganizer(raffleWinnerService.fetchEntity(targetId).organizer?.id)
+                "Series" -> checkOrganizer(seriesService.fetchEntity(targetId).organizer?.id)
                 "Tick" -> checkOrganizer(tickService.fetchEntity(targetId).organizer?.id)
                 "User" -> false
                 else -> false

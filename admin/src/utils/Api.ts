@@ -1,4 +1,3 @@
-import { Environment } from "../environment";
 import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
 import { CompLocation } from "../model/compLocation";
@@ -16,7 +15,7 @@ export class Api {
   static credentials?: string;
   static organizerId?: number;
 
-  static readonly url = "https://api." + Environment.siteDomain;
+  static readonly url = "http://localhost:8080/api";
   static readonly defaultPageSize = 1000;
 
   private static getBaseUrl(): string {

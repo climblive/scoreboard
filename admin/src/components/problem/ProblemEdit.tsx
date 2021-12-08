@@ -32,7 +32,7 @@ export interface Props {
   removable?: boolean;
   orderable?: boolean;
   onDone?: () => void;
-  getProblemStyle: (colorId: number) => object;
+  getProblemStyle: (color?: Color) => object;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -132,13 +132,13 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
         <InputLabel shrink htmlFor="compClass-select">
           Hold color
         </InputLabel>
-        <Select value={problem.colorId ?? ""} onChange={onColorChange}>
+        <Select value={problem.color?.id ?? ""} onChange={onColorChange}>
           {props.colors?.toArray()?.map((color: Color) => (
             <MenuItem key={color.id} value={color.id}>
               <Grid container direction="row" alignItems="center">
                 <Grid style={{ marginRight: theme.spacing(1) }}>
                   <div
-                    style={props.getProblemStyle(color.id!)}
+                    style={props.getProblemStyle(color)}
                     className={classes.colorBox}
                   ></div>
                 </Grid>

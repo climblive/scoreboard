@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -20,10 +21,12 @@ import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.mapper.CompClassMapper
+import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.mapper.RaffleMapper
 import java.io.ByteArrayOutputStream
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import javax.transaction.Transactional
 
 @Service
 class ContestService @Autowired constructor(
@@ -38,11 +41,18 @@ class ContestService @Autowired constructor(
         private val slackNotifier: SlackNotifier,
         private var raffleMapper: RaffleMapper,
         private var compClassMapper: CompClassMapper,
+        private var problemMapper: ProblemMapper,
         override var entityMapper: AbstractMapper<Contest, ContestDto>) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
 
     init {
         addConstraints(ContestDto::protected.name, ContestDto::protected, "ROLE_ORGANIZER", AttributeConstraintType.IMMUTABLE)
+    }
+
+    @Transactional
+    fun getProblems(contestId: Int): List<ProblemDto> {
+        val problems = problemRepository.findAllByContestId(contestId)
+        return problems.map { problemMapper.convertToDto(it) }
     }
 
     override fun onCreate(phase: Phase, new: Contest) {

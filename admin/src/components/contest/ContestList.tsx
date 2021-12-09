@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestList = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const { setTitle, reloadContests } = props;
+  const { setTitle, reloadContests, selectedOrganizerId } = props;
 
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -41,7 +41,7 @@ const ContestList = (props: Props & PropsFromRedux & RouteComponentProps) => {
     reloadContests().finally(() => setRefreshing(false));
   }, [reloadContests]);
 
-  useEffect(() => refreshContests(), [refreshContests]);
+  useEffect(() => refreshContests(), [refreshContests, selectedOrganizerId]);
 
   const buttons = [
     <Button
@@ -95,6 +95,7 @@ const ContestList = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
 const mapStateToProps = (state: StoreState) => ({
   contests: state.contests,
+  selectedOrganizerId: state.selectedOrganizerId,
 });
 
 const mapDispatchToProps = {

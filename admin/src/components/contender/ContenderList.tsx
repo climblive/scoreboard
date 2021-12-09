@@ -1,4 +1,10 @@
-import { Grid, InputLabel, Paper, TableCell } from "@material-ui/core";
+import {
+  Grid,
+  InputLabel,
+  Paper,
+  TableCell,
+  TablePagination,
+} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -15,7 +21,6 @@ import TextField from "@material-ui/core/TextField";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import SaveIcon from "@material-ui/icons/SaveAlt";
-import Pagination from "@material-ui/lab/Pagination";
 import { saveAs } from "file-saver";
 import React, { useMemo, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
@@ -36,7 +41,7 @@ import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import ContenderView from "./ContenderView";
 
-const CONTENDERS_PER_PAGE = 10;
+const DEFAULT_CONTENDERS_PER_PAGE = 10;
 
 const breakpoints = new Map<number, string>()
   .set(1, "smDown")
@@ -88,7 +93,10 @@ const ContenderList = (props: Props & PropsFromRedux) => {
     SortBy.BY_NAME
   );
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(0);
+  const [contendersPerPage, setContendersPerPage] = React.useState(
+    DEFAULT_CONTENDERS_PER_PAGE
+  );
 
   const scoringByContender = useMemo(() => {
     if (props.contest === undefined) {
@@ -161,10 +169,6 @@ const ContenderList = (props: Props & PropsFromRedux) => {
     scoringByContender,
   ]);
 
-  const numPages = Math.ceil(
-    (contendersSortedAndFiltered?.length ?? 0) / CONTENDERS_PER_PAGE
-  );
-
   const MAX_CONTENDER_COUNT = 500;
 
   const refreshContenders = () => {
@@ -229,11 +233,18 @@ const ContenderList = (props: Props & PropsFromRedux) => {
       });
   }
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
   ) => {
-    setPage(value);
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setContendersPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const headings = [
@@ -318,8 +329,8 @@ const ContenderList = (props: Props & PropsFromRedux) => {
             <TableBody>
               {contendersSortedAndFiltered
                 ?.slice(
-                  (page - 1) * CONTENDERS_PER_PAGE,
-                  page * CONTENDERS_PER_PAGE
+                  page * contendersPerPage,
+                  (page + 1) * contendersPerPage
                 )
                 ?.map((contender) => (
                   <ContenderView
@@ -341,19 +352,19 @@ const ContenderList = (props: Props & PropsFromRedux) => {
             </div>
           )}
         </Paper>
-        {numPages > 1 && (
-          <div className={classes.paginationControl}>
-            <Grid container justify="center">
-              <Pagination
-                count={numPages}
-                page={page}
-                size="small"
-                onChange={handlePageChange}
-                showLastButton
-              />
-            </Grid>
-          </div>
-        )}
+        <div className={classes.paginationControl}>
+          <Grid container justify="center">
+            <TablePagination
+              component="div"
+              count={contendersSortedAndFiltered?.length ?? 0}
+              page={page}
+              onChangePage={handleChangePage}
+              rowsPerPage={contendersPerPage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              labelRowsPerPage="Contenders per page:"
+            />
+          </Grid>
+        </div>
       </div>
       <Dialog
         open={showAddContendersPopup}

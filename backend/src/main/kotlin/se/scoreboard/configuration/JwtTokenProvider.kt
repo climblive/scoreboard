@@ -1,6 +1,7 @@
 package se.scoreboard.configuration
 
-import com.auth0.jwk.UrlJwkProvider
+import com.auth0.jwk.JwkProvider
+import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
@@ -25,6 +26,7 @@ import java.net.URL
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -47,7 +49,7 @@ import javax.transaction.Transactional
 
     data class Authorization(val method: AuthMethod, val data: String)
 
-    private var jwkProvider: UrlJwkProvider
+    private var jwkProvider: JwkProvider
     private var issuer: String
     private var verifier: JWTVerifier
 
@@ -57,7 +59,11 @@ import javax.transaction.Transactional
     init {
         val jwksUrl = "https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json"
         this.issuer = "https://cognito-idp.${region}.amazonaws.com/${userPoolId}"
-        jwkProvider = UrlJwkProvider(URL(jwksUrl))
+
+        jwkProvider = JwkProviderBuilder(URL(jwksUrl))
+            .cached(10, 24, TimeUnit.HOURS)
+            .rateLimited(false)
+            .build();
 
         val algorithm = Algorithm.RSA256(this)
         verifier = JWT.require(algorithm)

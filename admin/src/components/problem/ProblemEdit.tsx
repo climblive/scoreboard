@@ -78,7 +78,7 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
   };
 
   const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let name: string | undefined = e.target.value.trim();
+    let name: string | undefined = e.target.value;
     if (name.length === 0) {
       name = undefined;
     }

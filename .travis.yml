@@ -17,8 +17,10 @@ jobs:
         - if [[ "$TRAVIS_BRANCH" =~ ^[0-9]+\.[0-9]+$ ]]; then sed -i -E "s/(siteDomain\s*=\s*).*/\1climblive.app/" backend/gradle.properties; fi
         - cd web
         - travis_retry npm install
+        - git checkout -- package-lock.json
         - cd ../admin
         - travis_retry npm install
+        - git checkout -- package-lock.json
         - cd ../backend
         - travis_retry ./gradlew clean test bootJar deploy
 

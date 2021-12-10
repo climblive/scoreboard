@@ -220,7 +220,7 @@ const ContenderList = (props: Props & PropsFromRedux) => {
       setSelectedContenders([filterCompClass?.id!]);
     }
 
-    setPage(1);
+    setPage(0);
   };
 
   function exportResults(): any {

@@ -355,13 +355,12 @@ const ContenderList = (props: Props & PropsFromRedux) => {
         <div className={classes.paginationControl}>
           <Grid container justify="center">
             <TablePagination
-              component="div"
               count={contendersSortedAndFiltered?.length ?? 0}
               page={page}
               onChangePage={handleChangePage}
               rowsPerPage={contendersPerPage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
-              labelRowsPerPage="Contenders per page:"
+              labelRowsPerPage=""
             />
           </Grid>
         </div>

@@ -4,6 +4,7 @@ import {
   Paper,
   TableCell,
   TablePagination,
+  TableSortLabel,
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -88,9 +89,10 @@ const ContenderList = (props: Props & PropsFromRedux) => {
     StaticFilter[StaticFilter.All]
   );
 
-  const [selectedContenders, setSelectedContenders] = useState<number[]>([]);
+  const [filter, setFilter] = useState<number[]>([]);
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
   const [contenderSortBy, setContenderSortBy] = useState<string>(
-    SortBy.BY_NAME
+    SortBy.BY_TOTAL_POINTS
   );
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [page, setPage] = React.useState(0);
@@ -125,7 +127,7 @@ const ContenderList = (props: Props & PropsFromRedux) => {
         default:
           return (
             contender.compClassId !== undefined &&
-            selectedContenders.includes(contender.compClassId)
+            filter.includes(contender.compClassId)
           );
       }
     });
@@ -139,18 +141,18 @@ const ContenderList = (props: Props & PropsFromRedux) => {
     if (contenderSortBy === SortBy.BY_NUMBER_OF_TICKS) {
       contenders?.sort(
         (a, b) =>
-          (getScore(b)?.ticks?.length ?? 0) - (getScore(a)?.ticks?.length ?? 0)
+          (getScore(a)?.ticks?.length ?? 0) - (getScore(b)?.ticks?.length ?? 0)
       );
     } else if (contenderSortBy === SortBy.BY_TOTAL_POINTS) {
       contenders?.sort(
         (a, b) =>
-          (getScore(b)?.totalScore ?? 0) - (getScore(a)?.totalScore ?? 0)
+          (getScore(a)?.totalScore ?? 0) - (getScore(b)?.totalScore ?? 0)
       );
     } else if (contenderSortBy === SortBy.BY_QUALIFYING_POINTS) {
       contenders?.sort(
         (a, b) =>
-          (getScore(b)?.qualifyingScore ?? 0) -
-          (getScore(a)?.qualifyingScore ?? 0)
+          (getScore(a)?.qualifyingScore ?? 0) -
+          (getScore(b)?.qualifyingScore ?? 0)
       );
     } else {
       contenders?.sort((a, b) => {
@@ -160,12 +162,17 @@ const ContenderList = (props: Props & PropsFromRedux) => {
       });
     }
 
+    if (sortOrder === "desc") {
+      contenders?.reverse();
+    }
+
     return contenders;
   }, [
     props.contenders,
-    selectedContenders,
+    filter,
     contenderFilter,
     contenderSortBy,
+    sortOrder,
     scoringByContender,
   ]);
 
@@ -217,7 +224,7 @@ const ContenderList = (props: Props & PropsFromRedux) => {
       const filterCompClass = props.compClasses?.get(
         parseInt(e.target.value as string)
       );
-      setSelectedContenders([filterCompClass?.id!]);
+      setFilter([filterCompClass?.id!]);
     }
 
     setPage(0);
@@ -247,16 +254,43 @@ const ContenderList = (props: Props & PropsFromRedux) => {
     setPage(0);
   };
 
+  const setSortOptions = (sortBy: SortBy) => {
+    if (sortBy === contenderSortBy) {
+      setSortOrder((order) => (order === "desc" ? "asc" : "desc"));
+    } else {
+      setContenderSortBy(sortBy);
+      setSortOrder("asc");
+    }
+  };
+
   const headings = [
-    <TableCell onClick={() => setContenderSortBy(SortBy.BY_NAME)}>
-      Name
+    <TableCell>
+      <TableSortLabel
+        active={contenderSortBy === SortBy.BY_NAME}
+        direction={sortOrder}
+        onClick={() => setSortOptions(SortBy.BY_NAME)}
+      >
+        Name
+      </TableSortLabel>
     </TableCell>,
     <TableCell>Class</TableCell>,
-    <TableCell onClick={() => setContenderSortBy(SortBy.BY_TOTAL_POINTS)}>
-      Total score
+    <TableCell>
+      <TableSortLabel
+        active={contenderSortBy === SortBy.BY_TOTAL_POINTS}
+        direction={sortOrder}
+        onClick={() => setSortOptions(SortBy.BY_TOTAL_POINTS)}
+      >
+        Total score
+      </TableSortLabel>
     </TableCell>,
-    <TableCell onClick={() => setContenderSortBy(SortBy.BY_QUALIFYING_POINTS)}>
-      Qualifying score
+    <TableCell>
+      <TableSortLabel
+        active={contenderSortBy === SortBy.BY_QUALIFYING_POINTS}
+        direction={sortOrder}
+        onClick={() => setSortOptions(SortBy.BY_QUALIFYING_POINTS)}
+      >
+        Qualifying score
+      </TableSortLabel>
     </TableCell>,
     <TableCell>Regcode</TableCell>,
   ];
@@ -355,6 +389,7 @@ const ContenderList = (props: Props & PropsFromRedux) => {
         <div className={classes.paginationControl}>
           <Grid container justify="center">
             <TablePagination
+              component="div"
               count={contendersSortedAndFiltered?.length ?? 0}
               page={page}
               onChangePage={handleChangePage}

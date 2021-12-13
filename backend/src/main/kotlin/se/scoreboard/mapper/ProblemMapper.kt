@@ -3,6 +3,7 @@ package se.scoreboard.mapper
 import org.mapstruct.*
 import se.scoreboard.data.domain.Color
 import se.scoreboard.data.domain.Contest
+import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.Problem
 import se.scoreboard.dto.ProblemDto
 
@@ -24,5 +25,6 @@ abstract class ProblemMapper : AbstractMapper<Problem, ProblemDto>() {
     fun afterMapping(source: ProblemDto, @MappingTarget target: Problem) {
         target.color = entityManager.getReference(Color::class.java, source.colorId)
         target.contest = entityManager.getReference(Contest::class.java, source.contestId)
+        //target.organizer = entityManager.getReference(Organizer::class.java, 1)
     }
 }

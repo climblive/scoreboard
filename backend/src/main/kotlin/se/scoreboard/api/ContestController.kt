@@ -36,6 +36,7 @@ class ContestController @Autowired constructor(
         private val tickRepository: TickRepository,
         private var problemMapper: ProblemMapper,
         private var contenderMapper: ContenderMapper,
+        private val contestMapper: ContestMapper,
         private var compClassMapper: CompClassMapper,
         private var tickMapper: TickMapper,
         private var raffleMapper: RaffleMapper) {
@@ -82,14 +83,14 @@ class ContestController @Autowired constructor(
     @PostMapping("/contest")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
-    fun createContest(@RequestBody contest : ContestDto) = contestService.create(contest)
+    fun createContest(@RequestBody contest : ContestDto) = contestService.create(contestMapper.convertToEntity(contest))
 
     @PutMapping("/contest/{id}")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
     @Transactional
     fun updateContest(
             @PathVariable("id") id: Int,
-            @RequestBody contest : ContestDto) = contestService.update(id, contest)
+            @RequestBody contest : ContestDto) = contestService.update(id, contestMapper.convertToEntity(contest))
 
     @DeleteMapping("/contest/{id}")
     @PreAuthorize("hasPermission(#id, 'Contest', 'delete')")

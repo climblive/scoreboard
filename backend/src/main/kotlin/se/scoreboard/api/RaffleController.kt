@@ -12,6 +12,7 @@ import se.scoreboard.data.domain.Raffle
 import se.scoreboard.dto.RaffleDto
 import se.scoreboard.dto.RaffleWinnerDto
 import se.scoreboard.exception.WebException
+import se.scoreboard.mapper.RaffleMapper
 import se.scoreboard.mapper.RaffleWinnerMapper
 import se.scoreboard.service.RaffleService
 import se.scoreboard.service.RaffleWinnerService
@@ -25,7 +26,8 @@ import javax.transaction.Transactional
 @Api(tags = ["Raffle"])
 class RaffleController @Autowired constructor(
         val raffleService: RaffleService,
-        private var winnerMapper: RaffleWinnerMapper) {
+        private var winnerMapper: RaffleWinnerMapper,
+        private val raffleMapper: RaffleMapper) {
 
     @GetMapping("/raffle/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'read')")
@@ -49,14 +51,14 @@ class RaffleController @Autowired constructor(
     @PostMapping("/raffle")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
-    fun createRaffle(@RequestBody raffle : RaffleDto) = raffleService.create(raffle)
+    fun createRaffle(@RequestBody raffle : RaffleDto) = raffleService.create(raffleMapper.convertToEntity(raffle))
 
     @PutMapping("/raffle/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional
     fun updateRaffle(
             @PathVariable("id") id: Int,
-            @RequestBody raffle : RaffleDto) = raffleService.update(id, raffle)
+            @RequestBody raffle : RaffleDto) = raffleService.update(id, raffleMapper.convertToEntity(raffle))
 
     @DeleteMapping("/raffle/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'delete')")

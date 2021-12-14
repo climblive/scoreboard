@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
 import se.scoreboard.mapper.*
+import se.scoreboard.service.ColorService
 import se.scoreboard.service.OrganizerService
 import se.scoreboard.service.SeriesService
 import javax.servlet.http.HttpServletRequest
@@ -24,7 +25,9 @@ class OrganizerController @Autowired constructor(
         private var colorMapper: ColorMapper,
         private var locationMapper: LocationMapper,
         private var seriesMapper: SeriesMapper,
-        private var userMapper: UserMapper) {
+        private var userMapper: UserMapper,
+        private val organizerMapper: OrganizerMapper,
+        private val colorService: ColorService) {
 
     @GetMapping("/organizer")
     @Transactional
@@ -47,6 +50,15 @@ class OrganizerController @Autowired constructor(
     fun getOrganizerColors(@PathVariable("id") id: Int) : List<ColorDto> =
             organizerService.fetchEntity(id).colors.map { color -> colorMapper.convertToDto(color) }
 
+    @PostMapping("/organizer/{id}/color")
+    @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
+    @Transactional
+    fun createColor(@PathVariable("id") id: Int, @RequestBody color : ColorDto) {
+        val organizer = organizerService.fetchEntity(id)
+        color.organizerId = organizer.id
+        colorService.create(colorMapper.convertToEntity(color))
+    }
+
     @GetMapping("/organizer/{id}/location")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional
@@ -62,7 +74,7 @@ class OrganizerController @Autowired constructor(
     @PostMapping("/organizer/{id}/series")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
-    fun createSeries(@RequestBody series : SeriesDto) = seriesService.create(series)
+    fun createSeries(@RequestBody series : SeriesDto) = seriesService.create(seriesMapper.convertToEntity(series))
 
     @GetMapping("/organizer/{id}/user")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
@@ -73,14 +85,14 @@ class OrganizerController @Autowired constructor(
     @PostMapping("/organizer")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Transactional
-    fun createOrganizer(@RequestBody organizer : OrganizerDto) = organizerService.create(organizer)
+    fun createOrganizer(@RequestBody organizer : OrganizerDto) = organizerService.create(organizerMapper.convertToEntity(organizer))
 
     @PutMapping("/organizer/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
     fun updateOrganizer(
             @PathVariable("id") id: Int,
-            @RequestBody organizer : OrganizerDto) = organizerService.update(id, organizer)
+            @RequestBody organizer : OrganizerDto) = organizerService.update(id, organizerMapper.convertToEntity(organizer))
 
     @DeleteMapping("/organizer/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'delete')")

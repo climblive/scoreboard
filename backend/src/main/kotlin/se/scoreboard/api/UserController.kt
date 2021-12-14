@@ -12,6 +12,7 @@ import se.scoreboard.dto.UserDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.OrganizerMapper
+import se.scoreboard.mapper.UserMapper
 import se.scoreboard.service.UserService
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
@@ -23,7 +24,8 @@ import javax.transaction.Transactional
 @Api(tags = ["User"])
 class UserController @Autowired constructor(
         val userService: UserService,
-        private var organizerMapper: OrganizerMapper) {
+        private var organizerMapper: OrganizerMapper,
+        private val userMapper: UserMapper) {
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -51,14 +53,14 @@ class UserController @Autowired constructor(
     @PostMapping("/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
-    fun createUser(@RequestBody user : UserDto) = userService.create(user)
+    fun createUser(@RequestBody user : UserDto) = userService.create(userMapper.convertToEntity(user))
 
     @PutMapping("/user/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun updateUser(
             @PathVariable("id") id: Int,
-            @RequestBody user : UserDto) = userService.update(id, user)
+            @RequestBody user : UserDto) = userService.update(id, userMapper.convertToEntity(user))
 
     @DeleteMapping("/user/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

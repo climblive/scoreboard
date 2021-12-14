@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContestDto
 import se.scoreboard.dto.LocationDto
 import se.scoreboard.mapper.ContestMapper
+import se.scoreboard.mapper.LocationMapper
 import se.scoreboard.service.LocationService
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
@@ -19,7 +20,8 @@ import javax.transaction.Transactional
 @Api(tags = ["Location"])
 class LocationController @Autowired constructor(
         val locationService: LocationService,
-        private var contestMapper: ContestMapper) {
+        private var contestMapper: ContestMapper,
+        private val locationMapper: LocationMapper) {
 
     @GetMapping("/location")
     @Transactional
@@ -39,14 +41,14 @@ class LocationController @Autowired constructor(
     @PostMapping("/location")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
-    fun createLocation(@RequestBody location : LocationDto) = locationService.create(location)
+    fun createLocation(@RequestBody location : LocationDto) = locationService.create(locationMapper.convertToEntity(location))
 
     @PutMapping("/location/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'update')")
     @Transactional
     fun updateLocation(
             @PathVariable("id") id: Int,
-            @RequestBody location : LocationDto) = locationService.update(id, location)
+            @RequestBody location : LocationDto) = locationService.update(id, locationMapper.convertToEntity(location))
 
     @DeleteMapping("/location/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'write')")

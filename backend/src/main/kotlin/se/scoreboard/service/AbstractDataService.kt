@@ -95,14 +95,13 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun create(dto : DtoType) : ResponseEntity<DtoType> {
-        var entity: EntityType = entityMapper.convertToEntity(dto)
+    open fun create(entity : EntityType) : ResponseEntity<DtoType> {
         entity.id = null
 
-        checkConstraints(null, dto)
+        checkConstraints(null, entityMapper.convertToDto(entity))
 
         onCreate(Phase.BEFORE, entity)
-        entity = entityRepository.save(entity)
+        //entity = entityRepository.save(entity)
         entityManager.flush()
         onCreate(Phase.AFTER, entity)
 
@@ -110,18 +109,17 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun update(id: ID, dto : DtoType) : ResponseEntity<DtoType> {
-        var entity = entityMapper.convertToEntity(dto)
+    open fun update(id: ID, entity : EntityType) : ResponseEntity<DtoType> {
         entity.id = id
 
         val old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
 
-        checkConstraints(entityMapper.convertToDto(old), dto)
+        checkConstraints(entityMapper.convertToDto(old), entityMapper.convertToDto(entity))
 
         entityManager.detach(old)
 
         onUpdate(Phase.BEFORE, old, entity)
-        entity = entityRepository.save(entity)
+        //entity = entityRepository.save(entity)
         entityManager.flush()
         onUpdate(Phase.AFTER, old, entity)
 

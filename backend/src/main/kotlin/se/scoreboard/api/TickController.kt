@@ -12,6 +12,7 @@ import se.scoreboard.data.domain.Contender
 import se.scoreboard.data.domain.extension.allowedToAlterTick
 import se.scoreboard.dto.TickDto
 import se.scoreboard.exception.WebException
+import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
@@ -24,7 +25,8 @@ import javax.transaction.Transactional
 @RequestMapping("/api")
 @Api(tags = ["Tick"])
 class TickController @Autowired constructor(
-        val tickService: TickService) {
+        val tickService: TickService,
+        val tickMapper: TickMapper) {
 
     @GetMapping("/tick")
     @Transactional
@@ -40,7 +42,7 @@ class TickController @Autowired constructor(
     @Transactional
     fun updateTick(
             @PathVariable("id") id: Int,
-            @RequestBody tick : TickDto) = tickService.update(id, tick)
+            @RequestBody tick : TickDto) = tickService.update(id, tickMapper.convertToEntity(tick))
 
     @DeleteMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'delete')")

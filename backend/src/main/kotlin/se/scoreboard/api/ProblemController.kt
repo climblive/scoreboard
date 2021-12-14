@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ProblemDto
 import se.scoreboard.dto.TickDto
+import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ProblemService
 import javax.servlet.http.HttpServletRequest
@@ -19,7 +20,8 @@ import javax.transaction.Transactional
 @Api(tags = ["Problem"])
 class ProblemController @Autowired constructor(
         val problemService: ProblemService,
-        private var tickMapper: TickMapper) {
+        private var tickMapper: TickMapper,
+        private val problemMapper: ProblemMapper) {
 
     @GetMapping("/problem/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'read')")
@@ -35,14 +37,14 @@ class ProblemController @Autowired constructor(
     @PostMapping("/problem")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
-    fun createProblem(@RequestBody problem : ProblemDto) = problemService.create(problem)
+    fun createProblem(@RequestBody problem : ProblemDto) = problemService.create(problemMapper.convertToEntity(problem))
 
     @PutMapping("/problem/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'write')")
     @Transactional
     fun updateProblem(
             @PathVariable("id") id: Int,
-            @RequestBody problem : ProblemDto) = problemService.update(id, problem)
+            @RequestBody problem : ProblemDto) = problemService.update(id, problemMapper.convertToEntity(problem))
 
     @DeleteMapping("/problem/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'delete')")

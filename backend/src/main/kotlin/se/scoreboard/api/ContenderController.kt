@@ -12,6 +12,7 @@ import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.ScoreDto
 import se.scoreboard.dto.ScoringDto
 import se.scoreboard.dto.TickDto
+import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
@@ -25,7 +26,8 @@ import javax.transaction.Transactional
 class ContenderController @Autowired constructor(
         val contenderService: ContenderService,
         val tickService: TickService,
-        private var tickMapper: TickMapper) {
+        private var tickMapper: TickMapper,
+        private var contenderMapper: ContenderMapper) {
 
     @GetMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
@@ -46,7 +48,7 @@ class ContenderController @Autowired constructor(
     @PostMapping("/contender/{id}/tick")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
-    fun createTick(@RequestBody tick : TickDto) = tickService.create(tick)
+    fun createTick(@RequestBody tick : TickDto) = tickService.create(tickMapper.convertToEntity(tick))
 
  //   @GetMapping("/contender/{id}/problem")
  //   @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
@@ -73,13 +75,13 @@ class ContenderController @Autowired constructor(
     @PostMapping("/contender")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
-    fun createContender(@RequestBody contender : ContenderDto) = contenderService.create(contender)
+    fun createContender(@RequestBody contender : ContenderDto) = contenderService.create(contenderMapper.convertToEntity(contender))
 
     @PutMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
     fun updateContender(@PathVariable("id") id: Int,
-                        @RequestBody contender : ContenderDto) = contenderService.update(id, contender)
+                        @RequestBody contender : ContenderDto) = contenderService.update(id, contenderMapper.convertToEntity(contender))
 
     @DeleteMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'delete')")

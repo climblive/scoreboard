@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.CompClassDto
 import se.scoreboard.dto.ContenderDto
+import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.service.CompClassService
 import javax.servlet.http.HttpServletRequest
@@ -19,7 +20,8 @@ import javax.transaction.Transactional
 @Api(tags = ["Comp Class"])
 class CompClassController @Autowired constructor(
         val compClassService: CompClassService,
-        private var contenderMapper: ContenderMapper) {
+        private val contenderMapper: ContenderMapper,
+        private val compClassMapper: CompClassMapper) {
 
     @GetMapping("/compClass/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'read')")
@@ -35,14 +37,14 @@ class CompClassController @Autowired constructor(
     @PostMapping("/compClass")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
     @Transactional
-    fun createCompClass(@RequestBody compClass : CompClassDto) = compClassService.create(compClass)
+    fun createCompClass(@RequestBody compClass : CompClassDto) = compClassService.create(compClassMapper.convertToEntity(compClass))
 
     @PutMapping("/compClass/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'write')")
     @Transactional
     fun updateCompClass(
             @PathVariable("id") id: Int,
-            @RequestBody compClass : CompClassDto) = compClassService.update(id, compClass)
+            @RequestBody compClass : CompClassDto) = compClassService.update(id, compClassMapper.convertToEntity(compClass))
 
     @DeleteMapping("/compClass/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'delete')")

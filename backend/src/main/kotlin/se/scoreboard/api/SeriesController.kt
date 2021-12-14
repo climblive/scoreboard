@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContestDto
 import se.scoreboard.dto.SeriesDto
 import se.scoreboard.mapper.ContestMapper
+import se.scoreboard.mapper.SeriesMapper
 import se.scoreboard.service.SeriesService
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
@@ -19,7 +20,8 @@ import javax.transaction.Transactional
 @Api(tags = ["Series"])
 class SeriesController @Autowired constructor(
         private val seriesService: SeriesService,
-        private var contestMapper: ContestMapper) {
+        private var contestMapper: ContestMapper,
+        private val seriesMapper: SeriesMapper) {
 
     @GetMapping("/series/{id}")
     @PreAuthorize("hasPermission(#id, 'Series', 'read')")
@@ -37,7 +39,7 @@ class SeriesController @Autowired constructor(
     @Transactional
     fun updateSeries(
             @PathVariable("id") id: Int,
-            @RequestBody series : SeriesDto) = seriesService.update(id, series)
+            @RequestBody series : SeriesDto) = seriesService.update(id, seriesMapper.convertToEntity(series))
 
     @DeleteMapping("/series/{id}")
     @PreAuthorize("hasPermission(#id, 'Series', 'delete')")

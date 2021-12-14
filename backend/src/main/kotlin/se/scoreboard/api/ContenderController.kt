@@ -16,6 +16,7 @@ import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
+import javax.persistence.EntityManager
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -48,21 +49,16 @@ class ContenderController @Autowired constructor(
     @PostMapping("/contender/{id}/tick")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
-    fun createTick(@RequestBody tick : TickDto) = tickService.create(tickMapper.convertToEntity(tick))
+    fun createTick(@PathVariable("id") id: Int, @RequestBody tick : TickDto) {
+        val contender = contenderService.fetchEntity(id)
+        tick.contenderId = contender.id
 
- //   @GetMapping("/contender/{id}/problem")
- //   @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
- //   @Transactional
- //   fun getContenderProblems(@PathVariable("id") id: Int) : List<TickDto> {
- //       return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
- //   }
+        val entity = tickMapper.convertToEntity(tick)
+        entity.organizer = contender.organizer
+        entity.contest = contender.contest
 
- //   @GetMapping("/contender/{id}/compClass")
- //   @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
- //   @Transactional
- //   fun getContenderCompClasses(@PathVariable("id") id: Int) : List<TickDto> {
- //       return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
- //   }
+        tickService.create(entity)
+    }
 
     @GetMapping("/contender/{id}/score")
     @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
@@ -71,11 +67,6 @@ class ContenderController @Autowired constructor(
         val contender = contenderService.fetchEntity(id)
         return ScoreDto(contender.id!!, contender.getQualificationScore(), contender.getTotalScore())
     }
-
-    @PostMapping("/contender")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
-    @Transactional
-    fun createContender(@RequestBody contender : ContenderDto) = contenderService.create(contenderMapper.convertToEntity(contender))
 
     @PutMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")

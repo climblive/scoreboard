@@ -26,12 +26,10 @@ open class Tick (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contender_id", nullable = false)
-    @Access(AccessType.PROPERTY)
     open var contender: Contender? = null,
 
-    @ManyToOne(fetch = FetchType.EAGER) // TODO: WHy????
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "problem_id", nullable = false)
-    @Access(AccessType.PROPERTY)
     open var problem: Problem? = null,
 
     @Column(name = "flash", nullable = false)

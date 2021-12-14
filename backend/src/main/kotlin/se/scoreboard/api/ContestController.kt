@@ -43,10 +43,6 @@ class ContestController @Autowired constructor(
         private var raffleMapper: RaffleMapper,
         private val compClassService: CompClassService) {
 
-    @GetMapping("/contest")
-    @Transactional
-    fun getContests(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = contestService.search(request, pageable)
-
     @GetMapping("/contest/{id}")
     @PreAuthorize("true")
     @Transactional
@@ -90,11 +86,6 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContestRaffles(@PathVariable("id") id: Int) : List<RaffleDto> =
             contestService.fetchEntity(id).raffles.map { raffleMapper.convertToDto(it) }
-
-    @PostMapping("/contest")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
-    @Transactional
-    fun createContest(@RequestBody contest : ContestDto) = contestService.create(contestMapper.convertToEntity(contest))
 
     @PutMapping("/contest/{id}")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")

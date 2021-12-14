@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
 import se.scoreboard.mapper.*
 import se.scoreboard.service.ColorService
+import se.scoreboard.service.ContestService
 import se.scoreboard.service.OrganizerService
 import se.scoreboard.service.SeriesService
 import javax.servlet.http.HttpServletRequest
@@ -27,7 +28,8 @@ class OrganizerController @Autowired constructor(
         private var seriesMapper: SeriesMapper,
         private var userMapper: UserMapper,
         private val organizerMapper: OrganizerMapper,
-        private val colorService: ColorService) {
+        private val colorService: ColorService,
+        private val contestService: ContestService) {
 
     @GetMapping("/organizer")
     @Transactional
@@ -43,6 +45,15 @@ class OrganizerController @Autowired constructor(
     @Transactional
     fun getOrganizerContests(@PathVariable("id") id: Int) : List<ContestDto> =
             organizerService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
+
+    @PostMapping("/organizer/{id}/contest")
+    @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
+    @Transactional
+    fun createContest(@PathVariable("id") id: Int, @RequestBody contest : ContestDto) {
+        val organizer = organizerService.fetchEntity(id)
+        contest.organizerId = organizer.id
+        contestService.create(contestMapper.convertToEntity(contest))
+    }
 
     @GetMapping("/organizer/{id}/color")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")

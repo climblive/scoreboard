@@ -34,11 +34,6 @@ class CompClassController @Autowired constructor(
     fun getCompClassContenders(@PathVariable("id") id: Int) : List<ContenderDto> =
             compClassService.fetchEntity(id).contenders.map { contender -> contenderMapper.convertToDto(contender) }
 
-    @PostMapping("/compClass")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
-    @Transactional
-    fun createCompClass(@RequestBody compClass : CompClassDto) = compClassService.create(compClassMapper.convertToEntity(compClass))
-
     @PutMapping("/compClass/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'write')")
     @Transactional

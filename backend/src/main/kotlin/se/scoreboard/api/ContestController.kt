@@ -20,6 +20,7 @@ import se.scoreboard.dto.*
 import se.scoreboard.dto.scoreboard.*
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.*
+import se.scoreboard.service.CompClassService
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
 import java.time.OffsetDateTime
@@ -39,7 +40,8 @@ class ContestController @Autowired constructor(
         private val contestMapper: ContestMapper,
         private var compClassMapper: CompClassMapper,
         private var tickMapper: TickMapper,
-        private var raffleMapper: RaffleMapper) {
+        private var raffleMapper: RaffleMapper,
+        private val compClassService: CompClassService) {
 
     @GetMapping("/contest")
     @Transactional
@@ -67,6 +69,15 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContestCompClasses(@PathVariable("id") id: Int) : List<CompClassDto> =
             contestService.fetchEntity(id).compClasses.map { compClass -> compClassMapper.convertToDto(compClass) }
+
+    @PostMapping("/contest/{id}/compClass")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
+    @Transactional
+    fun createCompClass(@PathVariable("id") id: Int, @RequestBody compClass : CompClassDto) {
+        val contest = contestService.fetchEntity(id)
+        compClass.contestId = contest.id
+        compClassService.create(compClassMapper.convertToEntity(compClass))
+    }
 
     @GetMapping("/contest/{id}/tick")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")

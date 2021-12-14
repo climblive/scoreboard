@@ -8,10 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
 import se.scoreboard.mapper.*
-import se.scoreboard.service.ColorService
-import se.scoreboard.service.ContestService
-import se.scoreboard.service.OrganizerService
-import se.scoreboard.service.SeriesService
+import se.scoreboard.service.*
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -20,16 +17,17 @@ import javax.transaction.Transactional
 @RequestMapping("/api")
 @Api(tags = ["Organizer"])
 class OrganizerController @Autowired constructor(
-        val organizerService: OrganizerService,
-        private val seriesService: SeriesService,
-        private var contestMapper: ContestMapper,
-        private var colorMapper: ColorMapper,
-        private var locationMapper: LocationMapper,
-        private var seriesMapper: SeriesMapper,
-        private var userMapper: UserMapper,
-        private val organizerMapper: OrganizerMapper,
-        private val colorService: ColorService,
-        private val contestService: ContestService) {
+    val organizerService: OrganizerService,
+    private val seriesService: SeriesService,
+    private var contestMapper: ContestMapper,
+    private var colorMapper: ColorMapper,
+    private var locationMapper: LocationMapper,
+    private var seriesMapper: SeriesMapper,
+    private var userMapper: UserMapper,
+    private val organizerMapper: OrganizerMapper,
+    private val colorService: ColorService,
+    private val contestService: ContestService,
+    private val locationService: LocationService) {
 
     @GetMapping("/organizer")
     @Transactional
@@ -75,6 +73,15 @@ class OrganizerController @Autowired constructor(
     @Transactional
     fun getOrganizerLocations(@PathVariable("id") id: Int) : List<LocationDto> =
             organizerService.fetchEntity(id).locations.map { location -> locationMapper.convertToDto(location) }
+
+    @PostMapping("/organizer/{id}/location")
+    @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
+    @Transactional
+    fun createLocation(@PathVariable("id") id: Int, @RequestBody location : LocationDto) {
+        val organizer = organizerService.fetchEntity(id)
+        location.organizerId = organizer.id
+        locationService.create(locationMapper.convertToEntity(location))
+    }
 
     @GetMapping("/organizer/{id}/series")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")

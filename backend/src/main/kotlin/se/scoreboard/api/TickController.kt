@@ -28,10 +28,6 @@ class TickController @Autowired constructor(
         val tickService: TickService,
         val tickMapper: TickMapper) {
 
-    @GetMapping("/tick")
-    @Transactional
-    fun getTicks(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(request, pageable)
-
     @GetMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'read')")
     @Transactional

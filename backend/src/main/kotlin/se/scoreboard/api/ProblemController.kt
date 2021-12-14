@@ -34,11 +34,6 @@ class ProblemController @Autowired constructor(
     fun getProblemTicks(@PathVariable("id") id: Int) : List<TickDto> =
             problemService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
 
-    @PostMapping("/problem")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
-    @Transactional
-    fun createProblem(@RequestBody problem : ProblemDto) = problemService.create(problemMapper.convertToEntity(problem))
-
     @PutMapping("/problem/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'write')")
     @Transactional

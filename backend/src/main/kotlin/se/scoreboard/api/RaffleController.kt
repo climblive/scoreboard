@@ -48,11 +48,6 @@ class RaffleController @Autowired constructor(
         return ResponseEntity(winnerMapper.convertToDto(winner), HttpStatus.CREATED)
     }
 
-    @PostMapping("/raffle")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
-    @Transactional
-    fun createRaffle(@RequestBody raffle : RaffleDto) = raffleService.create(raffleMapper.convertToEntity(raffle))
-
     @PutMapping("/raffle/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional

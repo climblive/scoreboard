@@ -23,10 +23,6 @@ class LocationController @Autowired constructor(
         private var contestMapper: ContestMapper,
         private val locationMapper: LocationMapper) {
 
-    @GetMapping("/location")
-    @Transactional
-    fun getLocations(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = locationService.search(request, pageable)
-
     @GetMapping("/location/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'read')")
     @Transactional
@@ -37,11 +33,6 @@ class LocationController @Autowired constructor(
     @Transactional
     fun getLocationContests(@PathVariable("id") id: Int) : List<ContestDto> =
             locationService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
-
-    @PostMapping("/location")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ORGANIZER')")
-    @Transactional
-    fun createLocation(@RequestBody location : LocationDto) = locationService.create(locationMapper.convertToEntity(location))
 
     @PutMapping("/location/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'update')")

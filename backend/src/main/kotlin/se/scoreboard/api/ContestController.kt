@@ -20,9 +20,7 @@ import se.scoreboard.dto.*
 import se.scoreboard.dto.scoreboard.*
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.*
-import se.scoreboard.service.CompClassService
-import se.scoreboard.service.ContenderService
-import se.scoreboard.service.ContestService
+import se.scoreboard.service.*
 import java.time.OffsetDateTime
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
@@ -41,7 +39,9 @@ class ContestController @Autowired constructor(
         private var compClassMapper: CompClassMapper,
         private var tickMapper: TickMapper,
         private var raffleMapper: RaffleMapper,
-        private val compClassService: CompClassService) {
+        private val compClassService: CompClassService,
+        private val problemService: ProblemService,
+        private val raffleService: RaffleService) {
 
     @GetMapping("/contest/{id}")
     @PreAuthorize("true")
@@ -53,6 +53,19 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContestProblems(@PathVariable("id") id: Int) : List<ProblemDto> =
             contestService.fetchEntity(id).problems.map { problem -> problemMapper.convertToDto(problem) }
+
+    @PostMapping("/contest/{id}/problem")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
+    @Transactional
+    fun createProblem(@PathVariable("id") id: Int, @RequestBody problem : ProblemDto) {
+        val contest = contestService.fetchEntity(id)
+        problem.contestId = contest.id
+
+        val entity = problemMapper.convertToEntity(problem)
+        entity.organizer = entity.organizer
+
+        problemService.create(entity)
+    }
 
     @GetMapping("/contest/{id}/contender")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
@@ -86,6 +99,19 @@ class ContestController @Autowired constructor(
     @Transactional
     fun getContestRaffles(@PathVariable("id") id: Int) : List<RaffleDto> =
             contestService.fetchEntity(id).raffles.map { raffleMapper.convertToDto(it) }
+
+    @PostMapping("/contest/{id}/raffle")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
+    @Transactional
+    fun createRaffle(@PathVariable("id") id: Int, @RequestBody raffle : RaffleDto) {
+        val contest = contestService.fetchEntity(id)
+        raffle.contestId = contest.id
+
+        val entity = raffleMapper.convertToEntity(raffle)
+        entity.organizer = contest.organizer
+
+        raffleService.create(entity)
+    }
 
     @PutMapping("/contest/{id}")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")

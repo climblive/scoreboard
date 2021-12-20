@@ -112,7 +112,7 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getContests(): Promise<Contest[]> {
-    return this.get(`/contest?size=${this.defaultPageSize}`);
+    return this.get(`organizer/${this.organizerId}/contest`);
   }
 
   static getContest(contestId: number): Promise<Contest> {
@@ -188,19 +188,22 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getCompClasses(contestId: number): Promise<CompClass[]> {
-    return this.get("/contest/" + contestId + "/compClass");
+    return this.get(`/contest/${contestId}/compClass`);
   }
 
-  static saveCompClass(compClass: CompClass): Promise<CompClass> {
-    if (compClass.id === undefined) {
-      return this.post("/compClass", compClass);
-    } else {
-      return this.put("/compClass/" + compClass.id, compClass);
-    }
+  static createCompClass(
+    contestId: number,
+    compClass: CompClass
+  ): Promise<CompClass> {
+    return this.post(`/contest/${contestId}/compClass`, compClass);
+  }
+
+  static updateCompClass(compClass: CompClass): Promise<CompClass> {
+    return this.put(`/compClass/${compClass.id}`, compClass);
   }
 
   static deleteCompClass(compClass: CompClass): Promise<any> {
-    return this.delete("/compClass/" + compClass.id);
+    return this.delete(`/compClass/${compClass.id}`);
   }
 
   // ---------------------------------------------------------------------------

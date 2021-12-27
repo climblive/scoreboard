@@ -2,6 +2,7 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ColorDto
@@ -27,7 +28,14 @@ class ColorController @Autowired constructor(
     @Transactional
     fun updateColor(
             @PathVariable("id") id: Int,
-            @RequestBody color : ColorDto) = colorService.update(id, colorMapper.convertToEntity(color))
+            @RequestBody color : ColorDto): ResponseEntity<ColorDto> {
+        val old = colorService.fetchEntity(id)
+
+        val entity = colorMapper.convertToEntity(color)
+        entity.organizer = old.organizer
+
+        return colorService.update(id, entity)
+    }
 
     @DeleteMapping("/color/{id}")
     @PreAuthorize("hasPermission(#id, 'Color', 'delete')")

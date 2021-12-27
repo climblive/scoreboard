@@ -89,27 +89,25 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
 
     @Transactional
     open fun findById(id: ID) : ResponseEntity<DtoType> {
-        var someEnt = fetchEntity(id)
-        logger.info("someEnt: " + System.identityHashCode(someEnt))
-        return ResponseEntity.ok(entityMapper.convertToDto(someEnt))
+        return ResponseEntity.ok(entityMapper.convertToDto(fetchEntity(id)))
     }
 
     @Transactional
-    open fun create(entity : EntityType) : ResponseEntity<DtoType> {
+    open fun create(entity: EntityType): ResponseEntity<DtoType> {
         entity.id = null
 
         checkConstraints(null, entityMapper.convertToDto(entity))
 
         onCreate(Phase.BEFORE, entity)
-        //entity = entityRepository.save(entity)
+        val savedEntity = entityRepository.save(entity)
         entityManager.flush()
-        onCreate(Phase.AFTER, entity)
+        onCreate(Phase.AFTER, savedEntity)
 
-        return ResponseEntity(entityMapper.convertToDto(entity), HttpStatus.CREATED)
+        return ResponseEntity(entityMapper.convertToDto(savedEntity), HttpStatus.CREATED)
     }
 
     @Transactional
-    open fun update(id: ID, entity : EntityType) : ResponseEntity<DtoType> {
+    open fun update(id: ID, entity: EntityType): ResponseEntity<DtoType> {
         entity.id = id
 
         val old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
@@ -119,11 +117,11 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
         entityManager.detach(old)
 
         onUpdate(Phase.BEFORE, old, entity)
-        //entity = entityRepository.save(entity)
+        val updatedEntity = entityRepository.save(entity)
         entityManager.flush()
-        onUpdate(Phase.AFTER, old, entity)
+        onUpdate(Phase.AFTER, old, updatedEntity)
 
-        return ResponseEntity.ok(entityMapper.convertToDto(entity))
+        return ResponseEntity.ok(entityMapper.convertToDto(updatedEntity))
     }
 
     @Transactional

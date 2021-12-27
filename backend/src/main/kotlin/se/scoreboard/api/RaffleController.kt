@@ -53,7 +53,15 @@ class RaffleController @Autowired constructor(
     @Transactional
     fun updateRaffle(
             @PathVariable("id") id: Int,
-            @RequestBody raffle : RaffleDto) = raffleService.update(id, raffleMapper.convertToEntity(raffle))
+            @RequestBody raffle : RaffleDto): ResponseEntity<RaffleDto> {
+        val old = raffleService.fetchEntity(id)
+
+        val entity = raffleMapper.convertToEntity(raffle)
+        entity.contest = old.contest
+        entity.organizer = old.organizer
+
+        return raffleService.update(id, entity)
+    }
 
     @DeleteMapping("/raffle/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'delete')")

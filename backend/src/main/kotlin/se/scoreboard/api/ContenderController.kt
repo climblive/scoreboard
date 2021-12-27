@@ -3,6 +3,7 @@ package se.scoreboard.api
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -49,15 +50,15 @@ class ContenderController @Autowired constructor(
     @PostMapping("/contender/{id}/tick")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
-    fun createTick(@PathVariable("id") id: Int, @RequestBody tick : TickDto) {
+    fun createTick(@PathVariable("id") id: Int, @RequestBody tick : TickDto): ResponseEntity<TickDto> {
         val contender = contenderService.fetchEntity(id)
-        tick.contenderId = contender.id
 
         val entity = tickMapper.convertToEntity(tick)
+        entity.contender = contender
         entity.organizer = contender.organizer
         entity.contest = contender.contest
 
-        tickService.create(entity)
+        return tickService.create(entity)
     }
 
     @GetMapping("/contender/{id}/score")
@@ -65,14 +66,22 @@ class ContenderController @Autowired constructor(
     @Transactional
     fun getContenderScore(@PathVariable("id") id: Int) : ScoreDto {
         val contender = contenderService.fetchEntity(id)
-        return ScoreDto(contender.id!!, contender.getQualificationScore(), contender.getTotalScore())
+        return ScoreDto(id, contender.getQualificationScore(), contender.getTotalScore())
     }
 
     @PutMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
     fun updateContender(@PathVariable("id") id: Int,
-                        @RequestBody contender : ContenderDto) = contenderService.update(id, contenderMapper.convertToEntity(contender))
+                        @RequestBody contender: ContenderDto): ResponseEntity<ContenderDto> {
+        val old = contenderService.fetchEntity(id)
+
+        val entity = contenderMapper.convertToEntity(contender)
+        entity.organizer = old.organizer
+        entity.contest = old.contest
+
+        return contenderService.update(id, entity)
+    }
 
     @DeleteMapping("/contender/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'delete')")

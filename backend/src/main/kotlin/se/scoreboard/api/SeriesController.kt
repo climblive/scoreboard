@@ -3,6 +3,7 @@ package se.scoreboard.api
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -39,7 +40,14 @@ class SeriesController @Autowired constructor(
     @Transactional
     fun updateSeries(
             @PathVariable("id") id: Int,
-            @RequestBody series : SeriesDto) = seriesService.update(id, seriesMapper.convertToEntity(series))
+            @RequestBody series : SeriesDto): ResponseEntity<SeriesDto> {
+        val old = seriesService.fetchEntity(id)
+
+        val entity = seriesMapper.convertToEntity(series)
+        entity.organizer = old.organizer
+
+        return seriesService.update(id, entity)
+    }
 
     @DeleteMapping("/series/{id}")
     @PreAuthorize("hasPermission(#id, 'Series', 'delete')")

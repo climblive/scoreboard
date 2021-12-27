@@ -38,7 +38,16 @@ class TickController @Autowired constructor(
     @Transactional
     fun updateTick(
             @PathVariable("id") id: Int,
-            @RequestBody tick : TickDto) = tickService.update(id, tickMapper.convertToEntity(tick))
+            @RequestBody tick : TickDto): ResponseEntity<TickDto> {
+        val old = tickService.fetchEntity(id)
+
+        val entity = tickMapper.convertToEntity(tick)
+        entity.contest = old.contest
+        entity.contender = old.contender
+        entity.organizer = old.organizer
+
+        return tickService.update(id, entity)
+    }
 
     @DeleteMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'delete')")

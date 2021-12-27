@@ -83,6 +83,7 @@ class ContenderService @Autowired constructor(
 
         return Array(contenderCount) {
             var contender = Contender()
+            contender.organizer = contest.organizer
             contender.contest = contest
             contender.registrationCode = createRegistrationCode(8)
 

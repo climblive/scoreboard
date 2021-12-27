@@ -3,6 +3,7 @@ package se.scoreboard.api
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -39,7 +40,14 @@ class LocationController @Autowired constructor(
     @Transactional
     fun updateLocation(
             @PathVariable("id") id: Int,
-            @RequestBody location : LocationDto) = locationService.update(id, locationMapper.convertToEntity(location))
+            @RequestBody location: LocationDto): ResponseEntity<LocationDto> {
+        val old = locationService.fetchEntity(id)
+
+        val entity = locationMapper.convertToEntity(location)
+        entity.organizer = old.organizer
+
+        return locationService.update(id, entity)
+    }
 
     @DeleteMapping("/location/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'write')")

@@ -57,14 +57,14 @@ class ContestController @Autowired constructor(
     @PostMapping("/contest/{id}/problem")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
     @Transactional
-    fun createProblem(@PathVariable("id") id: Int, @RequestBody problem : ProblemDto) {
+    fun createProblem(@PathVariable("id") id: Int, @RequestBody problem : ProblemDto): ResponseEntity<ProblemDto> {
         val contest = contestService.fetchEntity(id)
-        problem.contestId = contest.id
 
         val entity = problemMapper.convertToEntity(problem)
-        entity.organizer = entity.organizer
+        entity.organizer = contest.organizer
+        entity.contest = contest
 
-        problemService.create(entity)
+        return problemService.create(entity)
     }
 
     @GetMapping("/contest/{id}/contender")
@@ -82,10 +82,14 @@ class ContestController @Autowired constructor(
     @PostMapping("/contest/{id}/compClass")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
     @Transactional
-    fun createCompClass(@PathVariable("id") id: Int, @RequestBody compClass : CompClassDto) {
+    fun createCompClass(@PathVariable("id") id: Int, @RequestBody compClass : CompClassDto): ResponseEntity<CompClassDto> {
         val contest = contestService.fetchEntity(id)
-        compClass.contestId = contest.id
-        compClassService.create(compClassMapper.convertToEntity(compClass))
+
+        val entity = compClassMapper.convertToEntity(compClass)
+        entity.contest = contest
+        entity.organizer = contest.organizer
+
+        return compClassService.create(entity)
     }
 
     @GetMapping("/contest/{id}/tick")
@@ -103,14 +107,14 @@ class ContestController @Autowired constructor(
     @PostMapping("/contest/{id}/raffle")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
     @Transactional
-    fun createRaffle(@PathVariable("id") id: Int, @RequestBody raffle : RaffleDto) {
+    fun createRaffle(@PathVariable("id") id: Int, @RequestBody raffle : RaffleDto): ResponseEntity<RaffleDto> {
         val contest = contestService.fetchEntity(id)
-        raffle.contestId = contest.id
 
         val entity = raffleMapper.convertToEntity(raffle)
         entity.organizer = contest.organizer
+        entity.contest = contest
 
-        raffleService.create(entity)
+        return raffleService.create(entity)
     }
 
     @PutMapping("/contest/{id}")

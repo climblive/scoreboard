@@ -3,6 +3,7 @@ package se.scoreboard.api
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -39,7 +40,15 @@ class CompClassController @Autowired constructor(
     @Transactional
     fun updateCompClass(
             @PathVariable("id") id: Int,
-            @RequestBody compClass : CompClassDto) = compClassService.update(id, compClassMapper.convertToEntity(compClass))
+            @RequestBody compClass : CompClassDto): ResponseEntity<CompClassDto> {
+        val old = compClassService.fetchEntity(id)
+
+        val entity = compClassMapper.convertToEntity(compClass)
+        entity.contest = old.contest
+        entity.organizer = old.organizer
+
+        return compClassService.update(id, entity)
+    }
 
     @DeleteMapping("/compClass/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'delete')")

@@ -3,12 +3,14 @@ package se.scoreboard.api
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
 import se.scoreboard.mapper.*
 import se.scoreboard.service.*
+import java.awt.Color
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -47,10 +49,13 @@ class OrganizerController @Autowired constructor(
     @PostMapping("/organizer/{id}/contest")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
-    fun createContest(@PathVariable("id") id: Int, @RequestBody contest : ContestDto) {
+    fun createContest(@PathVariable("id") id: Int, @RequestBody contest : ContestDto): ResponseEntity<ContestDto> {
         val organizer = organizerService.fetchEntity(id)
-        contest.organizerId = organizer.id
-        contestService.create(contestMapper.convertToEntity(contest))
+
+        val entity = contestMapper.convertToEntity(contest)
+        entity.organizer = organizer
+
+        return contestService.create(entity)
     }
 
     @GetMapping("/organizer/{id}/color")
@@ -62,10 +67,13 @@ class OrganizerController @Autowired constructor(
     @PostMapping("/organizer/{id}/color")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional
-    fun createColor(@PathVariable("id") id: Int, @RequestBody color : ColorDto) {
+    fun createColor(@PathVariable("id") id: Int, @RequestBody color : ColorDto): ResponseEntity<ColorDto> {
         val organizer = organizerService.fetchEntity(id)
-        color.organizerId = organizer.id
-        colorService.create(colorMapper.convertToEntity(color))
+
+        val entity = colorMapper.convertToEntity(color)
+        entity.organizer = organizer
+
+        return colorService.create(entity)
     }
 
     @GetMapping("/organizer/{id}/location")
@@ -77,10 +85,13 @@ class OrganizerController @Autowired constructor(
     @PostMapping("/organizer/{id}/location")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
-    fun createLocation(@PathVariable("id") id: Int, @RequestBody location : LocationDto) {
+    fun createLocation(@PathVariable("id") id: Int, @RequestBody location : LocationDto): ResponseEntity<LocationDto> {
         val organizer = organizerService.fetchEntity(id)
-        location.organizerId = organizer.id
-        locationService.create(locationMapper.convertToEntity(location))
+
+        val entity = locationMapper.convertToEntity(location)
+        entity.organizer = organizer
+
+        return locationService.create(entity)
     }
 
     @GetMapping("/organizer/{id}/series")
@@ -110,7 +121,7 @@ class OrganizerController @Autowired constructor(
     @Transactional
     fun updateOrganizer(
             @PathVariable("id") id: Int,
-            @RequestBody organizer : OrganizerDto) = organizerService.update(id, organizerMapper.convertToEntity(organizer))
+            @RequestBody organizer : OrganizerDto) = organizerService.update(id, organizerService.fetchEntity(id))
 
     @DeleteMapping("/organizer/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'delete')")

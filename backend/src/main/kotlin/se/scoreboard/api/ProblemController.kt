@@ -2,8 +2,7 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ProblemDto
@@ -11,7 +10,6 @@ import se.scoreboard.dto.TickDto
 import se.scoreboard.mapper.ProblemMapper
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ProblemService
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -39,7 +37,15 @@ class ProblemController @Autowired constructor(
     @Transactional
     fun updateProblem(
             @PathVariable("id") id: Int,
-            @RequestBody problem : ProblemDto) = problemService.update(id, problemMapper.convertToEntity(problem))
+            @RequestBody problem : ProblemDto): ResponseEntity<ProblemDto> {
+        val old = problemService.fetchEntity(id)
+
+        val entity = problemMapper.convertToEntity(problem)
+        entity.contest = old.contest
+        entity.organizer = old.organizer
+
+        return problemService.update(id, entity)
+    }
 
     @DeleteMapping("/problem/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'delete')")

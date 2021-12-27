@@ -25,6 +25,5 @@ abstract class ProblemMapper : AbstractMapper<Problem, ProblemDto>() {
     fun afterMapping(source: ProblemDto, @MappingTarget target: Problem) {
         target.color = entityManager.getReference(Color::class.java, source.colorId)
         target.contest = entityManager.getReference(Contest::class.java, source.contestId)
-        //target.organizer = entityManager.getReference(Organizer::class.java, 1)
     }
 }

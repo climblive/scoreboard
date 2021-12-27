@@ -44,7 +44,9 @@ class RaffleController @Autowired constructor(
     @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional
     fun drawWinner(@PathVariable("id") id: Int): ResponseEntity<RaffleWinnerDto> {
-        val winner = raffleService.drawWinner(id)
+        val raffle = raffleService.fetchEntity(id)
+
+        val winner = raffleService.drawWinner(raffle)
         return ResponseEntity(winnerMapper.convertToDto(winner), HttpStatus.CREATED)
     }
 

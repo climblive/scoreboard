@@ -65,16 +65,15 @@ class RaffleService @Autowired constructor(
         broadcastService.broadcast(raffle)
     }
 
-    fun drawWinner(raffleId: Int): RaffleWinner {
-        val raffle = fetchEntity(raffleId)
+    fun drawWinner(raffle: Raffle): RaffleWinner {
         val winners = raffle.winners.map { winner -> winner.contender?.id }
         val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.isRegistered() && !(contender.id in winners) }
 
         contendersInTheDraw?.takeIf { it.isNotEmpty() }?.let { draw ->
             var winner: RaffleWinner = RaffleWinner(
                     null,
-                    entityManager.getReference(Organizer::class.java, 999999999999),
-                    entityManager.getReference(Raffle::class.java, raffleId),
+                    raffle.organizer,
+                    raffle,
                     entityManager.getReference(Contender::class.java, draw.random().id!!),
                     nowWithoutNanos())
 

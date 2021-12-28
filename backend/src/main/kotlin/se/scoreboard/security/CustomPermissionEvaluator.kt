@@ -87,12 +87,18 @@ class CustomPermissionEvaluator @Autowired constructor(
             return principal.contenderId == contenderId
         }
 
+        fun checkContest(contestId: Int?): Boolean {
+            if (contestId == null) {
+                return false
+            }
+
+            return principal.contestId == contestId
+        }
+
         if (auth.authorities.contains(SimpleGrantedAuthority("ROLE_CONTENDER"))) {
             return when (targetType) {
-                "CompClass" -> false
-                "Contender" -> false
-                "Contest" -> false
-                "Problem" -> false
+                "Contender" -> checkContender(targetId)
+                "Contest" -> checkContest(contestService.fetchEntity(targetId).id)
                 "Tick" -> checkContender(tickService.fetchEntity(targetId).contender?.id)
                 else -> false
             }

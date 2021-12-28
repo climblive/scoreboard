@@ -21,6 +21,5 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
     fun afterMapping(source: ContenderDto, @MappingTarget target: Contender) {
         target.contest = entityManager.getReference(Contest::class.java, source.contestId)
         target.compClass = source.compClassId?.let { entityManager.getReference(CompClass::class.java, it) }
-        //target.organizer = entityManager.getReference(Organizer::class.java, 1)
     }
 }

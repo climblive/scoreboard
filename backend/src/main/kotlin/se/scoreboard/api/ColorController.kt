@@ -2,12 +2,14 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ColorDto
 import se.scoreboard.mapper.ColorMapper
 import se.scoreboard.service.ColorService
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -17,6 +19,10 @@ import javax.transaction.Transactional
 class ColorController @Autowired constructor(
         val colorService: ColorService,
         private val colorMapper: ColorMapper) {
+
+    @GetMapping("/color")
+    @Transactional
+    fun getColors(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = colorService.search(request, pageable)
 
     @GetMapping("/color/{id}")
     @PreAuthorize("hasPermission(#id, 'Color', 'read')")

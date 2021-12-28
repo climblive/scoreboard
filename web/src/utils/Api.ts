@@ -95,28 +95,28 @@ export class Api {
     contestId: number,
     registrationCode?: string
   ): Promise<Contest> {
-    return this.get("/contest/" + contestId, registrationCode);
+    return this.get(`/contest/${contestId}`, registrationCode);
   }
 
   static getProblems(
     contestId: number,
     registrationCode: string
   ): Promise<Problem[]> {
-    return this.get("/contest/" + contestId + "/problem", registrationCode);
+    return this.get(`/contest/${contestId}/problem`, registrationCode);
   }
 
   static getCompClasses(
     contestId: number,
     registrationCode: string
   ): Promise<CompClass[]> {
-    return this.get("/contest/" + contestId + "/compClass", registrationCode);
+    return this.get(`/contest/${contestId}/compClass`, registrationCode);
   }
 
   static getTicks(
     contenderId: number,
     registrationCode: string
   ): Promise<Tick[]> {
-    return this.get("/contender/" + contenderId + "/tick", registrationCode);
+    return this.get(`/contender/${contenderId}/tick`, registrationCode);
   }
 
   static createTick(
@@ -125,20 +125,20 @@ export class Api {
     flash: boolean,
     registrationCode: string
   ): Promise<Tick> {
-    const newTick: Tick = {
+    const tick: Tick = {
       flash,
       contenderId,
       problemId,
     };
-    return this.post("/tick", newTick, registrationCode);
+    return this.post(`/contender/${contenderId}/tick`, tick, registrationCode);
   }
 
   static updateTick(tick: Tick, registrationCode: string): Promise<any> {
-    return this.put("/tick/" + tick.id, tick, registrationCode);
+    return this.put(`/tick/${tick.id}`, tick, registrationCode);
   }
 
   static deleteTick(tick: Tick, registrationCode: string): Promise<any> {
-    return this.delete("/tick/" + tick.id, registrationCode);
+    return this.delete(`/tick/${tick.id}`, registrationCode);
   }
 
   static getColors(registrationCode: string): Promise<Color[]> {
@@ -147,7 +147,7 @@ export class Api {
 
   static getContender(registrationCode: string): Promise<ContenderData> {
     return this.get(
-      "/contender/findByCode?code=" + registrationCode,
+      `/contender/findByCode?code=${registrationCode}`,
       registrationCode
     );
   }
@@ -157,13 +157,13 @@ export class Api {
     registrationCode: string
   ): Promise<ContenderData> {
     return this.put(
-      "/contender/" + contenderData.id,
+      `/contender/${contenderData.id}`,
       contenderData,
       registrationCode
     );
   }
 
   static getScoreboard(id: number): Promise<ScoreboardDescription> {
-    return this.get("/contest/" + id + "/scoreboard");
+    return this.get(`/contest/${id}/scoreboard`);
   }
 }

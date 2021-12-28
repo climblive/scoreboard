@@ -18,8 +18,5 @@ abstract class TickMapper : AbstractMapper<Tick, TickDto>() {
     fun afterMapping(source: TickDto, @MappingTarget target: Tick) {
         target.contender = entityManager.getReference(Contender::class.java, source.contenderId)
         target.problem = entityManager.getReference(Problem::class.java, source.problemId)
-        //target.organizer = entityManager.getReference(Organizer::class.java, 1)
-
-        //entityManager.find(Contender::class.java, source.contenderId).organizer.id
     }
 }

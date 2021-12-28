@@ -21,6 +21,5 @@ abstract class RaffleMapper : AbstractMapper<Raffle, RaffleDto>() {
     @AfterMapping
     fun afterMapping(source: RaffleDto, @MappingTarget target: Raffle) {
         target.contest = entityManager.getReference(Contest::class.java, source.contestId)
-        //target.organizer = entityManager.getReference(Organizer::class.java, 1)
     }
 }

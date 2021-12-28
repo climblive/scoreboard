@@ -43,8 +43,6 @@ class TickService @Autowired constructor(
 
     private fun onAnyChange(tick: Tick) {
         tick.timestamp = nowWithoutNanos()
-        tick.organizer = entityManager.getReference(Organizer::class.java, 1) // TODO: Remove hack!
-        tick.contest = entityManager.getReference(Contest::class.java, 1) // TODO: Remove hack!
         checkTimeAllowed(tick.contender!!)
     }
 

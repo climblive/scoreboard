@@ -19,6 +19,6 @@ interface ContenderRepository : ScoreboardRepository<Contender, Int> {
 
     fun countByContestId(contestId: Int): Int
 
-    @Query("SELECT c FROM Contender c JOIN FETCH c.compClass compClass JOIN FETCH c.contest contest JOIN FETCH c.ticks t JOIN FETCH t.problem p WHERE c.id = :contenderId")
+    @Query("SELECT c FROM Contender c LEFT JOIN FETCH c.compClass compClass LEFT JOIN FETCH c.contest contest LEFT JOIN FETCH c.ticks t LEFT JOIN FETCH t.problem p WHERE c.id = :contenderId")
     fun getFullyJoined(@Param("contenderId") contenderId: Int): Contender
 }

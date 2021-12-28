@@ -28,7 +28,7 @@ open class Tick (
     @JoinColumn(name = "contender_id", nullable = false)
     open var contender: Contender? = null,
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id", nullable = false)
     open var problem: Problem? = null,
 

@@ -18,4 +18,7 @@ interface ContenderRepository : ScoreboardRepository<Contender, Int> {
     fun findByRegistrationCode(registrationCode: String) : Contender?
 
     fun countByContestId(contestId: Int): Int
+
+    @Query("SELECT c FROM Contender c JOIN FETCH c.compClass compClass JOIN FETCH c.contest contest JOIN FETCH c.ticks t JOIN FETCH t.problem p WHERE c.id = :contenderId")
+    fun getFullyJoined(@Param("contenderId") contenderId: Int): Contender
 }

@@ -58,6 +58,8 @@ class ContenderController @Autowired constructor(
         entity.organizer = contender.organizer
         entity.contest = contender.contest
 
+        contender.ticks.add(entity)
+
         return tickService.create(entity)
     }
 

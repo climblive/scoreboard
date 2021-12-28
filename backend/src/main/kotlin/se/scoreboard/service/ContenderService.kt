@@ -1,6 +1,7 @@
 package se.scoreboard.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import se.scoreboard.Messages
@@ -43,6 +44,10 @@ class ContenderService @Autowired constructor(
     fun findByCode(code: String): ContenderDto {
         val contender = contenderRepository.findByRegistrationCode(code) ?: throw WebException(HttpStatus.NOT_FOUND, super.MSG_NOT_FOUND)
         return entityMapper.convertToDto(contender)
+    }
+
+    override fun fetchEntity(id: Int) : Contender {
+        return contenderRepository.getFullyJoined(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
     }
 
     override fun onCreate(phase: Phase, new: Contender) {

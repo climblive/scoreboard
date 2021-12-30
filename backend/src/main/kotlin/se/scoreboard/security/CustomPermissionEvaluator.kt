@@ -98,7 +98,7 @@ class CustomPermissionEvaluator @Autowired constructor(
         if (auth.authorities.contains(SimpleGrantedAuthority("ROLE_CONTENDER"))) {
             return when (targetType) {
                 "Contender" -> checkContender(targetId)
-                "Contest" -> checkContest(contestService.fetchEntity(targetId).id)
+                "Contest" -> permission == "read" && checkContest(contestService.fetchEntity(targetId).id)
                 "Tick" -> checkContender(tickService.fetchEntity(targetId).contender?.id)
                 else -> false
             }

@@ -129,6 +129,10 @@ export class Api {
     return this.delete("/contest/" + contest.id);
   }
 
+  static copyContest(contestId: number): Promise<Contest> {
+    return this.post(`/contest/${contestId}/copy`, {});
+  }
+
   static async exportContest(contestId: number) {
     let url = "/contest/export/" + contestId;
     let response = await fetch(this.getBaseUrl() + url, {

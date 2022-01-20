@@ -7,6 +7,7 @@ import Select from "@material-ui/core/Select";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
 import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
 import DescriptionIcon from "@material-ui/icons/Description";
 import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
@@ -19,6 +20,7 @@ import { Link } from "react-router-dom";
 import { Api } from "src/utils/Api";
 import { setErrorMessage } from "../../actions/actions";
 import {
+  copyContest,
   deleteContest,
   loadContest,
   reloadLocations,
@@ -35,6 +37,7 @@ import { ConfirmationDialog } from "../ConfirmationDialog";
 import { CreatePdfDialog } from "../CreatePdfDialog";
 import { ProgressButton } from "../ProgressButton";
 import RichTextEditor from "../RichTextEditor";
+import { useHistory } from "react-router-dom";
 
 interface Props {
   contest: Contest;
@@ -61,11 +64,14 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   const [saving, setSaving] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
+  const [duplicating, setDuplicating] = useState<boolean>(false);
   const [compilingPdf, setCompilingPdf] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [requestingDelete, setRequestingDelete] = useState<boolean>(false);
   const [contest, setContest] = useState<Contest>(props.contest);
   const [validated, setValidated] = useState(false);
+
+  const history = useHistory();
 
   useEffect(() => {
     if (props.locations === undefined) {
@@ -201,6 +207,16 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     }
 
     setRequestingDelete(false);
+  };
+
+  const onDuplicate = async () => {
+    setDuplicating(true);
+
+    const copy = await props.copyContest(contest.id!);
+
+    setDuplicating(false);
+
+    history.push(`/contests/${copy.id}`);
   };
 
   const startPdfCreate = () => {
@@ -420,18 +436,33 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
             {isNew ? "Create" : "Save"}
           </ProgressButton>
           {!isNew && (
-            <ProgressButton
-              variant="contained"
-              color="primary"
-              disabled={contest.protected}
-              onClick={onDelete}
-              loading={deleting}
-              startIcon={
-                contest.protected ? <LockIcon /> : <DeleteForeverRoundedIcon />
-              }
-            >
-              Delete
-            </ProgressButton>
+            <>
+              <ProgressButton
+                variant="contained"
+                color="primary"
+                disabled={contest.protected}
+                onClick={onDelete}
+                loading={deleting}
+                startIcon={
+                  contest.protected ? (
+                    <LockIcon />
+                  ) : (
+                    <DeleteForeverRoundedIcon />
+                  )
+                }
+              >
+                Delete
+              </ProgressButton>
+              <ProgressButton
+                variant="contained"
+                color="primary"
+                onClick={onDuplicate}
+                loading={duplicating}
+                startIcon={<FileCopyIcon />}
+              >
+                Duplicate
+              </ProgressButton>
+            </>
           )}
         </div>
       </div>
@@ -477,6 +508,7 @@ const mapDispatchToProps = {
   setErrorMessage,
   loadLocations: reloadLocations,
   loadSeries: reloadSeries,
+  copyContest,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

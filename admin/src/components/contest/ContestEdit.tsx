@@ -1,4 +1,4 @@
-import { InputLabel, TextField, useTheme } from "@material-ui/core";
+import { Divider, InputLabel, TextField, useTheme } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -7,8 +7,8 @@ import Select from "@material-ui/core/Select";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
 import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
 import DescriptionIcon from "@material-ui/icons/Description";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
 import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
 import Alert from "@material-ui/lab/Alert";
@@ -16,7 +16,7 @@ import { saveAs } from "file-saver";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Api } from "src/utils/Api";
 import { setErrorMessage } from "../../actions/actions";
 import {
@@ -37,7 +37,6 @@ import { ConfirmationDialog } from "../ConfirmationDialog";
 import { CreatePdfDialog } from "../CreatePdfDialog";
 import { ProgressButton } from "../ProgressButton";
 import RichTextEditor from "../RichTextEditor";
-import { useHistory } from "react-router-dom";
 
 interface Props {
   contest: Contest;
@@ -435,8 +434,22 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
           >
             {isNew ? "Create" : "Save"}
           </ProgressButton>
-          {!isNew && (
-            <>
+        </div>
+
+        <Divider />
+
+        {!isNew && (
+          <>
+            <div className={classes.buttons}>
+              <ProgressButton
+                variant="contained"
+                color="primary"
+                onClick={onDuplicate}
+                loading={duplicating}
+                startIcon={<FileCopyIcon />}
+              >
+                Duplicate
+              </ProgressButton>
               <ProgressButton
                 variant="contained"
                 color="primary"
@@ -453,18 +466,9 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               >
                 Delete
               </ProgressButton>
-              <ProgressButton
-                variant="contained"
-                color="primary"
-                onClick={onDuplicate}
-                loading={duplicating}
-                startIcon={<FileCopyIcon />}
-              >
-                Duplicate
-              </ProgressButton>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
       <CreatePdfDialog
         open={showPopup}

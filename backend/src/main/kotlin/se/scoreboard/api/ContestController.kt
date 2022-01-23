@@ -10,19 +10,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.extension.getQualificationScore
-import se.scoreboard.data.domain.extension.getTotalScore
-import se.scoreboard.data.repo.ContenderRepository
-import se.scoreboard.data.repo.RaffleRepository
 import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.*
-import se.scoreboard.dto.scoreboard.*
-import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.*
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.ContestService
-import java.time.OffsetDateTime
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -144,4 +136,9 @@ class ContestController @Autowired constructor(
         val contest= contestService.fetchEntity(id)
         return contenderService.createContenders(contest, createContendersParamsDto.count)
     }
+
+    @PostMapping("/contest/{id}/copy")
+    @PreAuthorize("hasPermission(#id, 'ContestDto', 'execute')")
+    @Transactional
+    fun copyContest(@PathVariable("id") id: Int) = contestService.copy(id)
 }

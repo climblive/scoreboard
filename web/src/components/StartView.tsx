@@ -35,7 +35,7 @@ class StartView extends React.Component<Props, State> {
   inputOk(): boolean {
     return (
       this.state.activationCode !== undefined &&
-      this.state.activationCode.length > 6
+      this.state.activationCode.length >= 8
     );
   }
 

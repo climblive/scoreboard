@@ -1,6 +1,6 @@
 server {
 	listen 443 ssl;
-	server_name climblive.app www.climblive.app;
+	server_name climblive.app www.climblive.app climblive.com www.climblive.com;
 
 	# Gzip Settings
 	include snippets/gzip.conf;
@@ -40,4 +40,11 @@ server {
 	listen 80;
 	server_name climblive.app www.climblive.app;
 	return 301 https://climblive.app$request_uri;
+}
+
+
+server {
+	listen 80;
+	server_name climblive.com www.climblive.com;
+	return 301 https://climblive.com$request_uri;
 }

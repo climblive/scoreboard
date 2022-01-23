@@ -1,0 +1,33 @@
+jobs:
+  build:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: |
+          npm install
+          git checkout -- package-lock.json
+        working-directory: web
+      - run: |
+          npm install
+          git checkout -- package-lock.json
+        working-directory: admin
+      - run: sed -i -E "s/(siteDomain\s*=\s*).*/\1climblive.app/" backend/gradle.properties
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+      - env:
+          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+        run: |
+          ./gradlew clean test bootJar deploy
+        shell: bash
+        working-directory: backend
+
+on:
+  push:
+    branches:
+      - develop
+  release:
+    types: [published]

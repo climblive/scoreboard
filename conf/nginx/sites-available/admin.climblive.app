@@ -1,6 +1,6 @@
 server {
 	listen 443 ssl;
-	server_name admin.climblive.app;
+	server_name admin.climblive.app admin.climblive.com;
 
 	# Gzip Settings
 	include snippets/gzip.conf;
@@ -40,4 +40,10 @@ server {
 	listen 80;
 	server_name admin.climblive.app;
 	return 301 https://admin.climblive.app$request_uri;
+}
+
+server {
+	listen 80;
+	server_name admin.climblive.com;
+	return 301 https://admin.climblive.com$request_uri;
 }

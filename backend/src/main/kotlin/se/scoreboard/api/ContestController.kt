@@ -176,4 +176,9 @@ class ContestController @Autowired constructor(
         val contest= contestService.fetchEntity(id)
         return contenderService.createContenders(contest, createContendersParamsDto.count)
     }
+
+    @PostMapping("/contest/{id}/copy")
+    @PreAuthorize("hasPermission(#id, 'Contest', 'write')")
+    @Transactional
+    fun copyContest(@PathVariable("id") id: Int) = contestService.copy(id)
 }

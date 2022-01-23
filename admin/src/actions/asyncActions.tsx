@@ -139,6 +139,20 @@ export function deleteContest(contest: Contest) {
   };
 }
 
+export function copyContest(contestId: number) {
+  return (dispatch: Dispatch<ScoreboardActions>): Promise<Contest> => {
+    return Api.copyContest(contestId)
+      .then((contest) => {
+        dispatch(actions.updateContestSuccess(contest));
+        return Promise.resolve(contest);
+      })
+      .catch((error) => {
+        dispatch(actions.setErrorMessage(error));
+        return Promise.reject(error);
+      });
+  };
+}
+
 // -----------------------------------------------------------------------------
 // Colors
 // -----------------------------------------------------------------------------

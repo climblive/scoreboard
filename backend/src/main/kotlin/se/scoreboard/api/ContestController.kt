@@ -129,7 +129,7 @@ class ContestController @Autowired constructor(
     @Transactional
     fun deleteContest(@PathVariable("id") id: Int) = contestService.delete(id)
 
-    @GetMapping("/contest/export/{id}")
+    @GetMapping("/contest/{id}/export")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun export(@PathVariable("id") id: Int) : ResponseEntity<ByteArray> {
@@ -164,6 +164,7 @@ class ContestController @Autowired constructor(
 
     @GetMapping("/contest/{id}/scoreboard")
     @Transactional
+    @PreAuthorize("true")
     fun getScoreboard(@PathVariable("id") id: Int) = contestService.getScoreboard(id)
 
     @PutMapping("/contest/{id}/createContenders")
@@ -173,7 +174,7 @@ class ContestController @Autowired constructor(
             @PathVariable("id") id: Int,
             @RequestBody createContendersParamsDto: CreateContendersParamsDto): Array<ContenderDto> {
 
-        val contest= contestService.fetchEntity(id)
+        val contest = contestService.fetchEntity(id)
         return contenderService.createContenders(contest, createContendersParamsDto.count)
     }
 

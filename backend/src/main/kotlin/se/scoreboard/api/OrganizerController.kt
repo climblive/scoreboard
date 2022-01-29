@@ -65,7 +65,7 @@ class OrganizerController @Autowired constructor(
             organizerService.fetchEntity(id).colors.map { color -> colorMapper.convertToDto(color) }
 
     @PostMapping("/organizer/{id}/color")
-    @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
+    @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
     fun createColor(@PathVariable("id") id: Int, @RequestBody color : ColorDto): ResponseEntity<ColorDto> {
         val organizer = organizerService.fetchEntity(id)
@@ -103,7 +103,14 @@ class OrganizerController @Autowired constructor(
     @PostMapping("/organizer/{id}/series")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
-    fun createSeries(@RequestBody series : SeriesDto) = seriesService.create(seriesMapper.convertToEntity(series))
+    fun createSeries(@PathVariable("id") id: Int, @RequestBody series : SeriesDto): ResponseEntity<SeriesDto> {
+        val organizer = organizerService.fetchEntity(id)
+
+        val entity = seriesMapper.convertToEntity(series)
+        entity.organizer = organizer
+
+        return seriesService.create(entity)
+    }
 
     @GetMapping("/organizer/{id}/user")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")

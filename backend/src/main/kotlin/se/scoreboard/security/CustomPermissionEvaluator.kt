@@ -26,8 +26,6 @@ class CustomPermissionEvaluator @Autowired constructor(
     val tickService: TickService
     ) : PermissionEvaluator {
 
-    private var logger = LoggerFactory.getLogger(CustomPermissionEvaluator::class.java)
-
     override fun hasPermission(auth: Authentication?, targetDomainObject: Any?, permission: Any): Boolean {
         if (auth == null || targetDomainObject == null || permission !is String) {
             return false
@@ -42,18 +40,10 @@ class CustomPermissionEvaluator @Autowired constructor(
 
         val principal: MyUserPrincipal = auth.principal as MyUserPrincipal
 
-        fun checkOrganizer(organizerId: Int?): Boolean {
-            if (organizerId == null) {
-                return false;
-            }
-
-            return principal.organizerIds?.contains(organizerId) ?: false
-        }
-
         fun checkDto(body: Any?): Boolean {
             return when (body) {
-                is UserDto -> body.username == principal.username
-                else -> true
+                is UserDto -> auth.authorities.contains(SimpleGrantedAuthority("ROLE_ORGANIZER")) && body.username == principal.username
+                else -> false
             }
         }
 
@@ -97,8 +87,8 @@ class CustomPermissionEvaluator @Autowired constructor(
 
         if (auth.authorities.contains(SimpleGrantedAuthority("ROLE_CONTENDER"))) {
             return when (targetType) {
-                "Contender" -> checkContender(targetId)
-                "Contest" -> permission == "read" && checkContest(contestService.fetchEntity(targetId).id)
+                "Contender" -> permission in arrayOf("read", "write") && checkContender(targetId)
+                "Contest" -> permission == "read" && checkContest(targetId)
                 "Tick" -> checkContender(tickService.fetchEntity(targetId).contender?.id)
                 else -> false
             }

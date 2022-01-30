@@ -31,10 +31,6 @@ class OrganizerController @Autowired constructor(
     private val contestService: ContestService,
     private val locationService: LocationService) {
 
-    @GetMapping("/organizer")
-    @Transactional
-    fun getOrganizers(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = organizerService.search(request, pageable)
-
     @GetMapping("/organizer/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional

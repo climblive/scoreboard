@@ -53,41 +53,6 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun findAll(request: HttpServletRequest) : ResponseEntity<List<DtoType>> {
-        return search(request, PageRequest.of(0, 1000))
-    }
-
-    @Transactional
-    open fun search(request: HttpServletRequest, pageable: Pageable?) : ResponseEntity<List<DtoType>> {
-        var result: List<DtoType>
-
-        var headers = HttpHeaders()
-        headers.set("Access-Control-Expose-Headers", "Content-Range")
-        var page: Page<EntityType>
-
-        val principal = getUserPrincipal()
-
-        if (userHasRole("ORGANIZER")) {
-            page = entityRepository.findAllByOrganizerIds(principal?.organizerIds!!, pageable)
-        } else if (userHasRole("CONTENDER")) {
-            page = entityRepository.findAllByContenderId(principal?.contenderId!!, pageable)
-        } else {
-            val organizerId: Int? = request.getHeader("Organizer-Id")?.toInt()
-            if (organizerId != null) {
-                page = entityRepository.findAllByOrganizerIds(listOf(organizerId), pageable)
-            } else {
-                page = entityRepository.findAll(pageable ?: PageRequest.of(0, 1000))
-            }
-        }
-
-        headers.set("Content-Range", "bytes %d-%d/%d".format(
-                page.number * page.size, page.number * page.size + page.numberOfElements, page.totalElements))
-        result = page.content.map { entity -> entityMapper.convertToDto(entity) }
-
-        return ResponseEntity(result, headers, HttpStatus.OK)
-    }
-
-    @Transactional
     open fun findById(id: ID) : ResponseEntity<DtoType> {
         return ResponseEntity.ok(entityMapper.convertToDto(fetchEntity(id)))
     }

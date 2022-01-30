@@ -27,11 +27,6 @@ class UserController @Autowired constructor(
         private var organizerMapper: OrganizerMapper,
         private val userMapper: UserMapper) {
 
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Transactional
-    fun getUsers(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(request, pageable)
-
     @GetMapping("/user/{id}")
     @PostAuthorize("hasRole('ROLE_ADMIN') || hasPermission(returnObject, 'read')")
     @Transactional

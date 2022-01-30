@@ -36,7 +36,7 @@ class LocationController @Autowired constructor(
             locationService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
 
     @PutMapping("/location/{id}")
-    @PreAuthorize("hasPermission(#id, 'Location', 'update')")
+    @PreAuthorize("hasPermission(#id, 'Location', 'write')")
     @Transactional
     fun updateLocation(
             @PathVariable("id") id: Int,
@@ -50,7 +50,7 @@ class LocationController @Autowired constructor(
     }
 
     @DeleteMapping("/location/{id}")
-    @PreAuthorize("hasPermission(#id, 'Location', 'write')")
+    @PreAuthorize("hasPermission(#id, 'Location', 'delete')")
     @Transactional
     fun deleteLocation(@PathVariable("id") id: Int) = locationService.delete(id)
 }

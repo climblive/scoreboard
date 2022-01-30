@@ -33,12 +33,12 @@ class UserController @Autowired constructor(
     fun getUsers(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = userService.search(request, pageable)
 
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') || hasPermission(#id, 'User', 'read')")
+    @PostAuthorize("hasRole('ROLE_ADMIN') || hasPermission(returnObject, 'read')")
     @Transactional
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)
 
     @GetMapping("/user/me")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PostAuthorize("hasRole('ROLE_ADMIN') || hasPermission(returnObject, 'read')")
     @Transactional
     fun getCurrentUser() =
             userService.findByUsername(getUserPrincipal()?.username!!)

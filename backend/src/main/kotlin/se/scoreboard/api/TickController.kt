@@ -35,10 +35,8 @@ class TickController @Autowired constructor(
     fun updateTick(
             @PathVariable("id") id: Int,
             @RequestBody tick : TickDto): ResponseEntity<TickDto> {
-        val contender = contenderService.fetchEntity(3121)
         val old = tickService.fetchEntity(id)
-
-        val session = entityManager.unwrap(Session::class.java)
+        val contender = contenderService.fetchEntity(old.contender?.id!!)
 
         val entity = tickMapper.convertToEntity(tick)
         entity.contest = old.contest
@@ -54,5 +52,12 @@ class TickController @Autowired constructor(
     @DeleteMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'delete')")
     @Transactional
-    fun deleteTick(@PathVariable("id") id: Int) = tickService.delete(id)
+    fun deleteTick(@PathVariable("id") id: Int): ResponseEntity<TickDto> {
+        val old = tickService.fetchEntity(id)
+        val contender = contenderService.fetchEntity(old.contender?.id!!)
+
+        contender.ticks.removeIf { it.id == id }
+
+        return tickService.delete(id)
+    }
 }

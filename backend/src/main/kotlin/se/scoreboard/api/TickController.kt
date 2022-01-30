@@ -1,22 +1,16 @@
 package se.scoreboard.api
 
 import io.swagger.annotations.Api
+import org.hibernate.Session
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.extension.allowedToAlterTick
 import se.scoreboard.dto.TickDto
-import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.TickMapper
-import se.scoreboard.service.BroadcastService
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
-import javax.servlet.http.HttpServletRequest
+import javax.persistence.EntityManager
 import javax.transaction.Transactional
 
 @RestController
@@ -26,7 +20,9 @@ import javax.transaction.Transactional
 @Api(tags = ["Tick"])
 class TickController @Autowired constructor(
         val tickService: TickService,
-        val tickMapper: TickMapper) {
+        val tickMapper: TickMapper,
+        val contenderService: ContenderService,
+        val entityManager: EntityManager) {
 
     @GetMapping("/tick/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'read')")
@@ -39,12 +35,18 @@ class TickController @Autowired constructor(
     fun updateTick(
             @PathVariable("id") id: Int,
             @RequestBody tick : TickDto): ResponseEntity<TickDto> {
+        val contender = contenderService.fetchEntity(3121)
         val old = tickService.fetchEntity(id)
+
+        val session = entityManager.unwrap(Session::class.java)
 
         val entity = tickMapper.convertToEntity(tick)
         entity.contest = old.contest
-        entity.contender = old.contender
+        entity.contender = contender
         entity.organizer = old.organizer
+
+        contender.ticks.removeIf { it.id == id }
+        contender.ticks.add(entity)
 
         return tickService.update(id, entity)
     }

@@ -18,9 +18,4 @@ abstract class CompClassMapper : AbstractMapper<CompClass, CompClassDto>() {
         Mapping(target = "contenders", ignore = true)
     )
     abstract override fun convertToEntity(source: CompClassDto): CompClass
-
-    @AfterMapping
-    fun afterMapping(source: CompClassDto, @MappingTarget target: CompClass) {
-        target.contest = entityManager.getReference(Contest::class.java, source.contestId)
-    }
 }

@@ -74,7 +74,7 @@ class RaffleService @Autowired constructor(
                     null,
                     raffle.organizer,
                     raffle,
-                    entityManager.getReference(Contender::class.java, draw.random().id!!),
+                    draw.random(),
                     nowWithoutNanos())
 
             winner = raffleWinnerRepository.save(winner)

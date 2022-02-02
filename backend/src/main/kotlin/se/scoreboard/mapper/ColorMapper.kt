@@ -17,9 +17,4 @@ abstract class ColorMapper : AbstractMapper<Color, ColorDto>() {
             Mapping(target = "problems", ignore = true)
     )
     abstract override fun convertToEntity(source: ColorDto): Color
-
-    @AfterMapping
-    fun afterMapping(source: ColorDto, @MappingTarget target: Color) {
-        target.organizer = entityManager.getReference(Organizer::class.java, source.organizerId)
-    }
 }

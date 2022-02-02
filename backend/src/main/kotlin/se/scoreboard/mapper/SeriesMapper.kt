@@ -17,9 +17,4 @@ abstract class SeriesMapper : AbstractMapper<Series, SeriesDto>() {
             Mapping(target = "contests", ignore = true)
     )
     abstract override fun convertToEntity(source: SeriesDto): Series
-
-    @AfterMapping
-    fun afterMapping(source: SeriesDto, @MappingTarget target: Series) {
-        target.organizer = entityManager.getReference(Organizer::class.java, source.organizerId)
-    }
 }

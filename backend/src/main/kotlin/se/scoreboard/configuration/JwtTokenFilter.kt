@@ -15,8 +15,7 @@ class JwtTokenFilter(private val jwtTokenProvider: JwtTokenProvider) : GenericFi
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(req: ServletRequest, res: ServletResponse, filterChain: FilterChain) {
-        val organizerId: Int? = (req as HttpServletRequest).getHeader("Organizer-Id")?.toInt()
-        val authorization = jwtTokenProvider.resolveAuthorization(req)
+        val authorization = jwtTokenProvider.resolveAuthorization(req as HttpServletRequest)
 
         val auth: Authentication? = when (authorization?.method) {
             JwtTokenProvider.AuthMethod.BEARER -> if (jwtTokenProvider.validateToken(authorization.data)) jwtTokenProvider.getUserAuthentication(authorization.data) else null
@@ -26,10 +25,6 @@ class JwtTokenFilter(private val jwtTokenProvider: JwtTokenProvider) : GenericFi
 
         auth?.let {
             SecurityContextHolder.getContext().authentication = it
-            val principal = auth.principal;
-            if (principal is MyUserPrincipal && organizerId != null) {
-                principal.organizerIds = principal.organizerIds?.filter { it == organizerId }
-            }
         }
 
         filterChain.doFilter(req, res)

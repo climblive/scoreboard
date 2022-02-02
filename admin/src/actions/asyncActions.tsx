@@ -28,6 +28,7 @@ export function login(code: string) {
 
         reloadOrganizers()(dispatch).then(() => {
           let organizer: Organizer = pickOrganizer(getState().organizers!);
+          Api.setOrganizerId(organizer.id);
           dispatch(actions.selectOrganizer(organizer.id!));
 
           dispatch(actions.setLoggingIn(false));

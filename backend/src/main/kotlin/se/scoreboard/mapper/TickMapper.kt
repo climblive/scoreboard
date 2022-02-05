@@ -13,4 +13,9 @@ abstract class TickMapper : AbstractMapper<Tick, TickDto>() {
         Mapping(source = "problem.id", target = "problemId")
     )
     abstract override fun convertToDto(source: Tick): TickDto
+
+    @AfterMapping
+    fun afterMapping(source: TickDto, @MappingTarget target: Tick) {
+        target.problem = entityManager.getReference(Problem::class.java, source.problemId)
+    }
 }

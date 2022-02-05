@@ -16,4 +16,9 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
         Mapping(source = "compClass.id", target = "compClassId")
     )
     abstract override fun convertToDto(source: Contender): ContenderDto
+
+    @AfterMapping
+    fun afterMapping(source: ContenderDto, @MappingTarget target: Contender) {
+        target.compClass = source.compClassId?.let { entityManager.getReference(CompClass::class.java, it) }
+    }
 }

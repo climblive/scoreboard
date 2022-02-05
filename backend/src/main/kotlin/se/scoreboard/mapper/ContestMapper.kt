@@ -37,4 +37,10 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
         target.timeBegin = source.compClasses.map { it.timeBegin }.filterNotNull().minOrNull()
         target.timeEnd = source.compClasses.map { it.timeEnd }.filterNotNull().maxOrNull()
     }
+
+    @AfterMapping
+    fun afterMapping(source: ContestDto, @MappingTarget target: Contest) {
+        target.location = source.locationId?.let { entityManager.getReference(Location::class.java, it) }
+        target.series = source.seriesId?.let { entityManager.getReference(Series::class.java, it) }
+    }
 }

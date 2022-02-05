@@ -20,4 +20,9 @@ abstract class ProblemMapper : AbstractMapper<Problem, ProblemDto>() {
             Mapping(target = "ticks", ignore = true)
     )
     abstract override fun convertToEntity(source: ProblemDto): Problem
+
+    @AfterMapping
+    fun afterMapping(source: ProblemDto, @MappingTarget target: Problem) {
+        target.color = entityManager.getReference(Color::class.java, source.colorId)
+    }
 }

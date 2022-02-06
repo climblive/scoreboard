@@ -1,6 +1,5 @@
 package se.scoreboard.security
 
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.PermissionEvaluator
@@ -8,7 +7,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import se.scoreboard.configuration.MyUserPrincipal
-import se.scoreboard.dto.*
+import se.scoreboard.dto.UserDto
 import se.scoreboard.service.*
 import java.io.Serializable
 
@@ -30,7 +29,6 @@ class CustomPermissionEvaluator @Autowired constructor(
         if (auth == null || targetDomainObject == null || permission !is String) {
             return false
         }
-
 
         var body = if (targetDomainObject is ResponseEntity<*>) {
             targetDomainObject.body

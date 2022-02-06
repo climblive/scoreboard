@@ -11,4 +11,7 @@ import se.scoreboard.data.domain.Color
 interface ColorRepository : ScoreboardRepository<Color, Int> {
     @Query("SELECT DISTINCT c FROM Contender contender JOIN contender.contest contest JOIN contest.problems p JOIN p.color c WHERE contender.id = :contenderId")
     fun findAllByContenderId(@Param("contenderId") contenderId: Int, pageable: Pageable?): Page<Color>
+
+    @Query("SELECT DISTINCT c FROM Color c WHERE c.organizer.id = :organizerId OR c.shared = 1")
+    fun findAllByOrganizerId(@Param("organizerId") organizerId: Int): List<Color>
 }

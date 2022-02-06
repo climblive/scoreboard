@@ -1,9 +1,6 @@
 package se.scoreboard.service
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -15,7 +12,6 @@ import se.scoreboard.dto.OrganizerDto
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.userHasRole
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @Service
@@ -26,24 +22,18 @@ class OrganizerService @Autowired constructor(
         organizerRepository) {
 
     @Transactional
-    fun search(request: HttpServletRequest, pageable: Pageable?) : ResponseEntity<List<OrganizerDto>> {
-        var result: List<OrganizerDto>
-
-        var headers = HttpHeaders()
-        headers.set("Access-Control-Expose-Headers", "Content-Range")
-        var page: Page<Organizer> = Page.empty()
+    fun findAllAccessible(): ResponseEntity<List<OrganizerDto>> {
+        var organizers: Iterable<Organizer> = emptyList()
 
         val principal = getUserPrincipal()
 
-        if (userHasRole("ORGANIZER") || userHasRole("ADMIN")) {
-            page = organizerRepository.findAllByOrganizerIds(principal?.organizerIds!!, pageable)
+        if (userHasRole("ORGANIZER")) {
+            organizers = organizerRepository.findAllByOrganizerIds(principal?.organizerIds!!)
+        } else if (userHasRole("ADMIN")) {
+            organizers = organizerRepository.findAll()
         }
 
-        headers.set("Content-Range", "bytes %d-%d/%d".format(
-                page.number * page.size, page.number * page.size + page.numberOfElements, page.totalElements))
-        result = page.content.map { entity -> entityMapper.convertToDto(entity) }
-
-        return ResponseEntity(result, headers, HttpStatus.OK)
+        return ResponseEntity(organizers.map { entityMapper.convertToDto(it) }, HttpStatus.OK)
     }
 
     override fun onCreate(phase: Phase, new: Organizer) {

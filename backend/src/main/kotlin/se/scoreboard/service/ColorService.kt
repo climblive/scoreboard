@@ -46,6 +46,12 @@ class ColorService @Autowired constructor(
         return ResponseEntity(result, headers, HttpStatus.OK)
     }
 
+    @Transactional
+    fun findAllByOrganizerId(organizerId: Int) : ResponseEntity<List<ColorDto>> {
+        val colors = colorRepository.findAllByOrganizerId(organizerId)
+        return ResponseEntity(colors.map { entityMapper.convertToDto(it) }, HttpStatus.OK)
+    }
+
     override fun onCreate(phase: Phase, new: Color) {
         when (phase) {
             Phase.BEFORE -> beforeAnyUpdate(new)

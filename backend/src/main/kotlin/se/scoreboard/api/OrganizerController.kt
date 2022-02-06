@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
 import se.scoreboard.mapper.*
 import se.scoreboard.service.*
-import java.awt.Color
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -33,7 +32,7 @@ class OrganizerController @Autowired constructor(
 
     @GetMapping("/organizer")
     @Transactional
-    fun getOrganizers(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = organizerService.search(request, pageable)
+    fun getOrganizers() = organizerService.findAllAccessible()
 
     @GetMapping("/organizer/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
@@ -61,8 +60,7 @@ class OrganizerController @Autowired constructor(
     @GetMapping("/organizer/{id}/color")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional
-    fun getOrganizerColors(@PathVariable("id") id: Int) : List<ColorDto> =
-            organizerService.fetchEntity(id).colors.map { color -> colorMapper.convertToDto(color) }
+    fun getOrganizerColors(@PathVariable("id") id: Int) = colorService.findAllByOrganizerId(id)
 
     @PostMapping("/organizer/{id}/color")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")

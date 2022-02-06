@@ -122,7 +122,14 @@ class ContestController @Autowired constructor(
     @Transactional
     fun updateContest(
             @PathVariable("id") id: Int,
-            @RequestBody contest : ContestDto) = contestService.update(id, contestMapper.convertToEntity(contest))
+            @RequestBody contest : ContestDto): ResponseEntity<ContestDto> {
+        val old = contestService.fetchEntity(id)
+
+        val entity = contestMapper.convertToEntity(contest)
+        entity.organizer = old.organizer
+
+        return contestService.update(id, entity)
+    }
 
     @DeleteMapping("/contest/{id}")
     @PreAuthorize("hasPermission(#id, 'Contest', 'delete')")

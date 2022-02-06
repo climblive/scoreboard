@@ -31,6 +31,7 @@ class OrganizerController @Autowired constructor(
     private val locationService: LocationService) {
 
     @GetMapping("/organizer")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER')")
     @Transactional
     fun getOrganizers() = organizerService.findAllAccessible()
 

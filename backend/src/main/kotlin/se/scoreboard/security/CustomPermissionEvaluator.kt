@@ -30,6 +30,10 @@ class CustomPermissionEvaluator @Autowired constructor(
             return false
         }
 
+        if (auth.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return true
+        }
+
         var body = if (targetDomainObject is ResponseEntity<*>) {
             targetDomainObject.body
         } else {
@@ -55,6 +59,10 @@ class CustomPermissionEvaluator @Autowired constructor(
     override fun hasPermission(auth: Authentication?, targetId: Serializable, targetType: String?, permission: Any): Boolean {
         if (auth == null || targetType !is String || targetId !is Int || permission !is String) {
             return false
+        }
+
+        if (auth.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return true
         }
 
         val principal: MyUserPrincipal = auth.principal as MyUserPrincipal

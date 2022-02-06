@@ -7,6 +7,6 @@ import se.scoreboard.data.domain.Tick
 
 @Repository
 interface TickRepository : ScoreboardRepository<Tick, Int> {
-    @Query("SELECT t FROM Contest c JOIN c.problems p JOIN p.ticks t WHERE c.id = :contestId")
+    @Query("SELECT t FROM Tick t WHERE t.contest.id = :contestId")
     fun findAllByContestId(@Param("contestId") contestId: Int): List<Tick>
 }

@@ -119,7 +119,7 @@ class OrganizerController @Autowired constructor(
     @Transactional
     fun updateOrganizer(
             @PathVariable("id") id: Int,
-            @RequestBody organizer : OrganizerDto) = organizerService.update(id, organizerService.fetchEntity(id))
+            @RequestBody organizer : OrganizerDto) = organizerService.update(id, organizerMapper.convertToEntity(organizer))
 
     @DeleteMapping("/organizer/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'delete')")

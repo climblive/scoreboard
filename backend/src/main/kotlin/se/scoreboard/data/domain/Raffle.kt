@@ -1,7 +1,6 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -25,4 +24,4 @@ open class Raffle (
     open var isActive: Boolean = false,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "raffle", cascade = [ CascadeType.ALL ])
-    open var winners: MutableSet<RaffleWinner> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var winners: MutableList<RaffleWinner> = mutableListOf()) : Serializable, AbstractEntity<Int>

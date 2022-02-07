@@ -1,7 +1,6 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -23,14 +22,14 @@ open class Organizer (
     open var contests: MutableList<Contest> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
-    open var colors: MutableSet<Color> = HashSet(0),
+    open var colors: MutableList<Color> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
-    open var locations: MutableSet<Location> = HashSet(0),
+    open var locations: MutableList<Location> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
-    open var series: MutableSet<Series> = HashSet(0),
+    open var series: MutableList<Series> = mutableListOf(),
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_organizer", joinColumns = arrayOf(JoinColumn(name = "organizer_id", nullable = false, updatable = false)), inverseJoinColumns = arrayOf(JoinColumn(name = "user_id", nullable = false, updatable = false)))
-    open var users: MutableSet<User> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var users: MutableList<User> = mutableListOf()) : Serializable, AbstractEntity<Int>

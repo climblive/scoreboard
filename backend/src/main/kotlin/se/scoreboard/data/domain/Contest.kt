@@ -1,9 +1,8 @@
 package se.scoreboard.data.domain
 
-import java.util.*
+import java.io.Serializable
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
-import java.io.Serializable
 
 @Entity
 @Table(name = "contest")
@@ -50,13 +49,13 @@ open class Contest (
     open var gracePeriod: Int = 0,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
-    open var problems: MutableSet<Problem> = HashSet(0),
+    open var problems: MutableList<Problem> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
-    open var contenders: MutableSet<Contender> = HashSet(0),
+    open var contenders: MutableList<Contender> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
-    open var compClasses: MutableSet<CompClass> = HashSet(0),
+    open var compClasses: MutableList<CompClass> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
-    open var raffles: MutableSet<Raffle> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var raffles: MutableList<Raffle> = mutableListOf()) : Serializable, AbstractEntity<Int>

@@ -1,7 +1,6 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -26,4 +25,4 @@ open class User (
     @JoinTable(name = "user_organizer",
             joinColumns = arrayOf(JoinColumn(name = "user_id", nullable = false, updatable = false)),
             inverseJoinColumns = arrayOf(JoinColumn(name = "organizer_id", nullable = false, updatable = false)))
-    open var organizers: MutableSet<Organizer> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var organizers: MutableList<Organizer> = mutableListOf()) : Serializable, AbstractEntity<Int>

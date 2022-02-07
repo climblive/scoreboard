@@ -13,8 +13,5 @@ abstract class ColorMapper : AbstractMapper<Color, ColorDto>() {
     abstract override fun convertToDto(source: Color): ColorDto
 
     @InheritInverseConfiguration(name = "convertToDto")
-    @Mappings(
-            Mapping(target = "problems", ignore = true)
-    )
     abstract override fun convertToEntity(source: ColorDto): Color
 }

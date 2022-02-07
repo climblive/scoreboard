@@ -1,7 +1,6 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -38,4 +37,4 @@ open class Problem (
     open var flashBonus: Int? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
-    open var ticks: MutableSet<Tick> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var ticks: MutableList<Tick> = mutableListOf()) : Serializable, AbstractEntity<Int>

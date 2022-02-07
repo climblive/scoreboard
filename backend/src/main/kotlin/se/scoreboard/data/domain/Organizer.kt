@@ -20,7 +20,7 @@ open class Organizer (
     open var homepage: String? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
-    open var contests: MutableSet<Contest> = HashSet(0),
+    open var contests: MutableList<Contest> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
     open var colors: MutableSet<Color> = HashSet(0),

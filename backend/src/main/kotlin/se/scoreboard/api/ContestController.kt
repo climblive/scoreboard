@@ -3,26 +3,15 @@ package se.scoreboard.api
 import com.google.common.net.MediaType
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.extension.getQualificationScore
-import se.scoreboard.data.domain.extension.getTotalScore
-import se.scoreboard.data.repo.ContenderRepository
-import se.scoreboard.data.repo.RaffleRepository
 import se.scoreboard.data.repo.TickRepository
 import se.scoreboard.dto.*
-import se.scoreboard.dto.scoreboard.*
-import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.*
 import se.scoreboard.service.*
-import java.time.OffsetDateTime
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController

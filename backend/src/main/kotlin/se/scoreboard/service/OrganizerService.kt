@@ -21,21 +21,6 @@ class OrganizerService @Autowired constructor(
     override var entityMapper: AbstractMapper<Organizer, OrganizerDto>) : AbstractDataService<Organizer, OrganizerDto, Int>(
         organizerRepository) {
 
-    @Transactional
-    fun findAllAccessible(): ResponseEntity<List<OrganizerDto>> {
-        var organizers: Iterable<Organizer> = emptyList()
-
-        val principal = getUserPrincipal()
-
-        if (userHasRole("ORGANIZER")) {
-            organizers = organizerRepository.findAllByOrganizerIds(principal?.organizerIds!!)
-        } else if (userHasRole("ADMIN")) {
-            organizers = organizerRepository.findAll()
-        }
-
-        return ResponseEntity(organizers.map { entityMapper.convertToDto(it) }, HttpStatus.OK)
-    }
-
     override fun onCreate(phase: Phase, new: Organizer) {
         when (phase) {
             Phase.BEFORE -> {

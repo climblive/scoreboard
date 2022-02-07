@@ -2,9 +2,7 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.CompClassDto
@@ -12,7 +10,6 @@ import se.scoreboard.dto.ContenderDto
 import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.service.CompClassService
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController

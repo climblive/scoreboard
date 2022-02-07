@@ -2,7 +2,6 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
@@ -14,7 +13,6 @@ import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.OrganizerMapper
 import se.scoreboard.mapper.UserMapper
 import se.scoreboard.service.UserService
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 
@@ -28,7 +26,7 @@ class UserController @Autowired constructor(
         private val userMapper: UserMapper) {
 
     @GetMapping("/user/{id}")
-    @PostAuthorize("hasRole('ROLE_ADMIN') || hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasPermission(#id, 'User', 'read')")
     @Transactional
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)
 

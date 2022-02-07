@@ -2,23 +2,18 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.data.domain.extension.getQualificationScore
 import se.scoreboard.data.domain.extension.getTotalScore
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.ScoreDto
-import se.scoreboard.dto.ScoringDto
 import se.scoreboard.dto.TickDto
 import se.scoreboard.mapper.ContenderMapper
 import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
-import javax.persistence.EntityManager
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController

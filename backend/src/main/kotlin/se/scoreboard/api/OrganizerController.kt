@@ -2,15 +2,12 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.*
 import se.scoreboard.mapper.*
 import se.scoreboard.service.*
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -29,11 +26,6 @@ class OrganizerController @Autowired constructor(
     private val colorService: ColorService,
     private val contestService: ContestService,
     private val locationService: LocationService) {
-
-    @GetMapping("/organizer")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER')")
-    @Transactional
-    fun getOrganizers() = organizerService.findAllAccessible()
 
     @GetMapping("/organizer/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")

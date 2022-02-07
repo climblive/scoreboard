@@ -16,6 +16,7 @@ export class Api {
   private static useLocalhost = true;
   static credentials?: string;
   static organizerId?: number;
+  static userId?: number;
 
   static readonly defaultPageSize = 1000;
 
@@ -91,6 +92,10 @@ export class Api {
 
   static setOrganizerId(organizerId?: number) {
     this.organizerId = organizerId;
+  }
+
+  static setUserId(userId?: number) {
+    this.userId = userId;
   }
 
   // ---------------------------------------------------------------------------
@@ -324,7 +329,7 @@ export class Api {
   }
 
   static getOrganizers(): Promise<Organizer[]> {
-    return this.get("/organizer");
+    return this.get(`/user/${this.userId}/organizer`);
   }
 
   static saveOrganizer(organizer: Organizer): Promise<Organizer> {

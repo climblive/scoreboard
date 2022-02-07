@@ -22,7 +22,8 @@ class CustomPermissionEvaluator @Autowired constructor(
     val raffleService: RaffleService,
     val raffleWinnerService: RaffleWinnerService,
     val seriesService: SeriesService,
-    val tickService: TickService
+    val tickService: TickService,
+    val userService: UserService
     ) : PermissionEvaluator {
 
     override fun hasPermission(auth: Authentication?, targetDomainObject: Any?, permission: Any): Boolean {
@@ -111,7 +112,7 @@ class CustomPermissionEvaluator @Autowired constructor(
                 "RaffleWinner" -> checkOrganizer(raffleWinnerService.fetchEntity(targetId).organizer?.id)
                 "Series" -> checkOrganizer(seriesService.fetchEntity(targetId).organizer?.id)
                 "Tick" -> checkOrganizer(tickService.fetchEntity(targetId).organizer?.id)
-                "User" -> false
+                "User" -> userService.fetchEntity(targetId).id == targetId
                 else -> false
             }
         }

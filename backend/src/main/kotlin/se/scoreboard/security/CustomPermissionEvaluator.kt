@@ -112,7 +112,7 @@ class CustomPermissionEvaluator @Autowired constructor(
                 "RaffleWinner" -> checkOrganizer(raffleWinnerService.fetchEntity(targetId).organizer?.id)
                 "Series" -> checkOrganizer(seriesService.fetchEntity(targetId).organizer?.id)
                 "Tick" -> checkOrganizer(tickService.fetchEntity(targetId).organizer?.id)
-                "User" -> userService.fetchEntity(targetId).id == targetId
+                "User" -> userService.fetchEntity(targetId).username == principal.username
                 else -> false
             }
         }

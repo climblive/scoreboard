@@ -8,7 +8,7 @@ import { ScoreboardDescription } from "../model/scoreboardDescription";
 import { Environment } from "../environment";
 
 export class Api {
-  private static useLocalhost = true;
+  private static useLocalhost = false;
 
   static getLiveUrl(): string {
     return (

@@ -13,7 +13,7 @@ import { Tick } from "../model/tick";
 import { User } from "../model/user";
 
 export class Api {
-  private static useLocalhost = true;
+  private static useLocalhost = false;
   static credentials?: string;
   static organizerId?: number;
   static userId?: number;

@@ -1,5 +1,3 @@
-ALTER DATABASE scoreboard CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
-
 ALTER TABLE color CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE comp_class CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE contender CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

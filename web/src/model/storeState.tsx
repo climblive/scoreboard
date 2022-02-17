@@ -1,13 +1,12 @@
-import { ContenderData } from "./contenderData";
-import { ScoreboardContenderList } from "./scoreboardContenderList";
-import { Contest } from "./contest";
 import { SortBy } from "../constants/constants";
-import { Problem } from "./problem";
 import { CompClass } from "./compClass";
-import { Tick } from "./tick";
-import { Color } from "./color";
+import { ContenderData } from "./contenderData";
+import { Contest } from "./contest";
+import { Problem } from "./problem";
 import { RaffleWinner } from "./raffleWinner";
+import { ScoreboardContenderList } from "./scoreboardContenderList";
 import { ScoreboardPushItem } from "./scoreboardPushItem";
+import { Tick } from "./tick";
 
 export interface StoreState {
   contenderData?: ContenderData;
@@ -17,7 +16,6 @@ export interface StoreState {
   problems: Problem[];
   compClasses: CompClass[];
   ticks: Tick[];
-  colors: Map<number, Color>;
   pagingCounter: number;
   problemIdBeingUpdated?: number;
   errorMessage?: string;

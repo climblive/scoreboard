@@ -1,15 +1,14 @@
 import { createStandardAction } from "typesafe-actions";
-import { Problem } from "../model/problem";
-import { ContenderData } from "../model/contenderData";
-import { Contest } from "../model/contest";
-import { ScoreboardPushItem } from "../model/scoreboardPushItem";
 import { SortBy } from "../constants/constants";
 import { CompClass } from "../model/compClass";
-import { Tick } from "../model/tick";
-import { Color } from "../model/color";
-import { ScoreboardDescription } from "../model/scoreboardDescription";
-import { RaffleWinner } from "../model/raffleWinner";
+import { ContenderData } from "../model/contenderData";
+import { Contest } from "../model/contest";
+import { Problem } from "../model/problem";
 import { RafflePushItem } from "../model/rafflePushItem";
+import { RaffleWinner } from "../model/raffleWinner";
+import { ScoreboardDescription } from "../model/scoreboardDescription";
+import { ScoreboardPushItem } from "../model/scoreboardPushItem";
+import { Tick } from "../model/tick";
 
 export const startProblemUpdate = createStandardAction(
   "START_PROBLEM_UPDATE"
@@ -37,7 +36,6 @@ export const resetScoreboardItemAnimation = createStandardAction(
 )<ScoreboardPushItem>();
 export const receiveContest =
   createStandardAction("RECEIVE_CONTEST")<Contest>();
-export const receiveColors = createStandardAction("RECEIVE_COLORS")<Color[]>();
 export const receiveCompClasses = createStandardAction("RECEIVE_COMP_CLASSES")<
   CompClass[]
 >();

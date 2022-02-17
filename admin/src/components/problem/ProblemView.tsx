@@ -1,7 +1,7 @@
 import { Divider, TableCell, Typography, useTheme } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { OrderedMap } from "immutable";
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Color } from "src/model/color";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
@@ -17,7 +17,7 @@ interface Props {
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
   editable?: boolean;
-  getProblemStyle: (color?: Color) => object;
+  getProblemStyle: (color?: Color) => CSSProperties;
   breakpoints?: Map<number, string>;
 }
 

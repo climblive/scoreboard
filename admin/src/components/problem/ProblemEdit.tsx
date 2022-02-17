@@ -16,7 +16,7 @@ import TextField from "@material-ui/core/TextField";
 import CancelIcon from "@material-ui/icons/Cancel";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import SaveIcon from "@material-ui/icons/Save";
-import React, { useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { deleteProblem, saveProblem } from "../../actions/asyncActions";
 import { Color } from "../../model/color";
@@ -32,7 +32,7 @@ export interface Props {
   removable?: boolean;
   orderable?: boolean;
   onDone?: () => void;
-  getProblemStyle: (color?: Color) => object;
+  getProblemStyle: (color?: Color) => CSSProperties;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -132,7 +132,7 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
         <InputLabel shrink htmlFor="compClass-select">
           Hold color
         </InputLabel>
-        <Select value={problem.color?.id ?? ""} onChange={onColorChange}>
+        <Select value={problem.colorId ?? ""} onChange={onColorChange}>
           {props.colors?.toArray()?.map((color: Color) => (
             <MenuItem key={color.id} value={color.id}>
               <Grid container direction="row" alignItems="center">

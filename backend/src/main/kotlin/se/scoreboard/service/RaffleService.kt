@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Contender
+import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.Raffle
 import se.scoreboard.data.domain.RaffleWinner
 import se.scoreboard.data.domain.extension.isRegistered
@@ -64,16 +65,16 @@ class RaffleService @Autowired constructor(
         broadcastService.broadcast(raffle)
     }
 
-    fun drawWinner(raffleId: Int): RaffleWinner {
-        val raffle = fetchEntity(raffleId)
+    fun drawWinner(raffle: Raffle): RaffleWinner {
         val winners = raffle.winners.map { winner -> winner.contender?.id }
         val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.isRegistered() && !(contender.id in winners) }
 
         contendersInTheDraw?.takeIf { it.isNotEmpty() }?.let { draw ->
             var winner: RaffleWinner = RaffleWinner(
                     null,
-                    entityManager.getReference(Raffle::class.java, raffleId),
-                    entityManager.getReference(Contender::class.java, draw.random().id!!),
+                    raffle.organizer,
+                    raffle,
+                    draw.random(),
                     nowWithoutNanos())
 
             winner = raffleWinnerRepository.save(winner)

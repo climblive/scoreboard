@@ -2,15 +2,14 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import se.scoreboard.dto.ContestDto
 import se.scoreboard.dto.SeriesDto
 import se.scoreboard.mapper.ContestMapper
+import se.scoreboard.mapper.SeriesMapper
 import se.scoreboard.service.SeriesService
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RestController
@@ -19,38 +18,36 @@ import javax.transaction.Transactional
 @Api(tags = ["Series"])
 class SeriesController @Autowired constructor(
         private val seriesService: SeriesService,
-        private var contestMapper: ContestMapper) {
-
-    @GetMapping("/series")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
-    @Transactional
-    fun getAllSeries(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = seriesService.search(request, pageable)
+        private var contestMapper: ContestMapper,
+        private val seriesMapper: SeriesMapper) {
 
     @GetMapping("/series/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'read')")
     @Transactional
     fun getSeries(@PathVariable("id") id: Int) = seriesService.findById(id)
 
     @GetMapping("/series/{id}/contest")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'read')")
     @Transactional
     fun getSeriesContests(@PathVariable("id") id: Int) : List<ContestDto> =
             seriesService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
 
-    @PostMapping("/series")
-    @PreAuthorize("hasPermission(#series, 'create')")
-    @Transactional
-    fun createSeries(@RequestBody series : SeriesDto) = seriesService.create(series)
-
     @PutMapping("/series/{id}")
-    @PreAuthorize("hasPermission(#id, 'SeriesDto', 'update') && hasPermission(#series, 'update')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'write')")
     @Transactional
     fun updateSeries(
             @PathVariable("id") id: Int,
-            @RequestBody series : SeriesDto) = seriesService.update(id, series)
+            @RequestBody series : SeriesDto): ResponseEntity<SeriesDto> {
+        val old = seriesService.fetchEntity(id)
+
+        val entity = seriesMapper.convertToEntity(series)
+        entity.organizer = old.organizer
+
+        return seriesService.update(id, entity)
+    }
 
     @DeleteMapping("/series/{id}")
-    @PreAuthorize("hasPermission(#id, 'SeriesDto', 'delete')")
+    @PreAuthorize("hasPermission(#id, 'Series', 'delete')")
     @Transactional
     fun deleteSeries(@PathVariable("id") id: Int) = seriesService.delete(id)
 }

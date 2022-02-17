@@ -1,7 +1,6 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -27,4 +26,4 @@ open class Location (
     open var latitude: String? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "location")
-    open var contests: MutableSet<Contest> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var contests: MutableList<Contest> = mutableListOf()) : Serializable, AbstractEntity<Int>

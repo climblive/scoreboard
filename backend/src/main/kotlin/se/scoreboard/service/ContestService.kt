@@ -22,7 +22,6 @@ import se.scoreboard.mapper.CompClassMapper
 import se.scoreboard.mapper.ContestMapper
 import se.scoreboard.mapper.RaffleMapper
 import java.io.ByteArrayOutputStream
-import javax.transaction.Transactional
 
 @Service
 class ContestService @Autowired constructor(

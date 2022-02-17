@@ -40,8 +40,8 @@ class ContestController @Autowired constructor(
     @GetMapping("/contest/{id}/problem")
     @PreAuthorize("hasPermission(#id, 'Contest', 'read')")
     @Transactional
-    fun getContestProblems(@PathVariable("id") id: Int, pageable: Pageable?) : List<ProblemDto> =
-        contestService.getProblems(id)
+    fun getContestProblems(@PathVariable("id") id: Int) : List<ProblemDto> =
+        problemService.getProblems(id)
 
     @PostMapping("/contest/{id}/problem")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")

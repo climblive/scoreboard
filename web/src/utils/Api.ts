@@ -1,11 +1,10 @@
+import { Environment } from "../environment";
+import { CompClass } from "../model/compClass";
 import { ContenderData } from "../model/contenderData";
 import { Contest } from "../model/contest";
 import { Problem } from "../model/problem";
-import { CompClass } from "../model/compClass";
-import { Tick } from "../model/tick";
-import { Color } from "../model/color";
 import { ScoreboardDescription } from "../model/scoreboardDescription";
-import { Environment } from "../environment";
+import { Tick } from "../model/tick";
 
 export class Api {
   private static useLocalhost = false;
@@ -139,10 +138,6 @@ export class Api {
 
   static deleteTick(tick: Tick, registrationCode: string): Promise<any> {
     return this.delete(`/tick/${tick.id}`, registrationCode);
-  }
-
-  static getColors(registrationCode: string): Promise<Color[]> {
-    return this.get("/color", registrationCode);
   }
 
   static getContender(registrationCode: string): Promise<ContenderData> {

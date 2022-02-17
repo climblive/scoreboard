@@ -159,7 +159,7 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
         ...state,
         raffleWinners: formatRaffleWinners([
           action.payload,
-          ...state.raffleWinners!,
+          ...(state.raffleWinners ?? []),
         ]),
       };
     }

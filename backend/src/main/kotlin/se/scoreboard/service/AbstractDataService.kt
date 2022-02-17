@@ -1,5 +1,6 @@
 package se.scoreboard.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -12,6 +13,7 @@ import se.scoreboard.data.repo.ScoreboardRepository
 import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
+import se.scoreboard.security.CustomPermissionEvaluator
 import se.scoreboard.userHasRole
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -24,6 +26,8 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     protected var MSG_NOT_FOUND = "Not found"
 
     abstract var entityMapper: AbstractMapper<EntityType, DtoType>
+
+    private var logger = LoggerFactory.getLogger(AbstractDataService::class.java)
 
     @PersistenceContext
     protected lateinit var entityManager: EntityManager
@@ -49,76 +53,40 @@ abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID>
     }
 
     @Transactional
-    open fun findAll(request: HttpServletRequest) : ResponseEntity<List<DtoType>> {
-        return search(request, PageRequest.of(0, 1000))
+    open fun findById(id: ID) : ResponseEntity<DtoType> {
+        return ResponseEntity.ok(entityMapper.convertToDto(fetchEntity(id)))
     }
 
     @Transactional
-    open fun search(request: HttpServletRequest, pageable: Pageable?) : ResponseEntity<List<DtoType>> {
-        var result: List<DtoType>
-
-        var headers = HttpHeaders()
-        headers.set("Access-Control-Expose-Headers", "Content-Range")
-        var page: Page<EntityType>
-
-        val principal = getUserPrincipal()
-
-        if (userHasRole("ORGANIZER")) {
-            page = entityRepository.findAllByOrganizerIds(principal?.organizerIds!!, pageable)
-        } else if (userHasRole("CONTENDER")) {
-            page = entityRepository.findAllByContenderId(principal?.contenderId!!, pageable)
-        } else {
-            val organizerId: Int? = request.getHeader("Organizer-Id")?.toInt()
-            if (organizerId != null) {
-                page = entityRepository.findAllByOrganizerIds(listOf(organizerId), pageable)
-            } else {
-                page = entityRepository.findAll(pageable ?: PageRequest.of(0, 1000))
-            }
-        }
-
-        headers.set("Content-Range", "bytes %d-%d/%d".format(
-                page.number * page.size, page.number * page.size + page.numberOfElements, page.totalElements))
-        result = page.content.map { entity -> entityMapper.convertToDto(entity) }
-
-        return ResponseEntity(result, headers, HttpStatus.OK)
-    }
-
-    @Transactional
-    open fun findById(id: ID) : ResponseEntity<DtoType> =
-        ResponseEntity.ok(entityMapper.convertToDto(fetchEntity(id)))
-
-    @Transactional
-    open fun create(dto : DtoType) : ResponseEntity<DtoType> {
-        var entity: EntityType = entityMapper.convertToEntity(dto)
+    open fun create(entity: EntityType): ResponseEntity<DtoType> {
         entity.id = null
 
-        checkConstraints(null, dto)
+        checkConstraints(null, entityMapper.convertToDto(entity))
 
         onCreate(Phase.BEFORE, entity)
-        entity = entityRepository.save(entity)
+        val savedEntity = entityRepository.save(entity)
         entityManager.flush()
-        onCreate(Phase.AFTER, entity)
+        onCreate(Phase.AFTER, savedEntity)
 
-        return ResponseEntity(entityMapper.convertToDto(entity), HttpStatus.CREATED)
+        return ResponseEntity(entityMapper.convertToDto(savedEntity), HttpStatus.CREATED)
     }
 
     @Transactional
-    open fun update(id: ID, dto : DtoType) : ResponseEntity<DtoType> {
-        var entity = entityMapper.convertToEntity(dto)
+    open fun update(id: ID, entity: EntityType): ResponseEntity<DtoType> {
         entity.id = id
 
         val old = entityRepository.findByIdOrNull(id) ?: throw WebException(HttpStatus.NOT_FOUND, MSG_NOT_FOUND)
 
-        checkConstraints(entityMapper.convertToDto(old), dto)
+        checkConstraints(entityMapper.convertToDto(old), entityMapper.convertToDto(entity))
 
         entityManager.detach(old)
 
         onUpdate(Phase.BEFORE, old, entity)
-        entity = entityRepository.save(entity)
+        val updatedEntity = entityRepository.save(entity)
         entityManager.flush()
-        onUpdate(Phase.AFTER, old, entity)
+        onUpdate(Phase.AFTER, old, updatedEntity)
 
-        return ResponseEntity.ok(entityMapper.convertToDto(entity))
+        return ResponseEntity.ok(entityMapper.convertToDto(updatedEntity))
     }
 
     @Transactional

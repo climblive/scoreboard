@@ -41,7 +41,6 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
     @AfterMapping
     fun afterMapping(source: ContestDto, @MappingTarget target: Contest) {
         target.location = source.locationId?.let { entityManager.getReference(Location::class.java, it) }
-        target.organizer = entityManager.getReference(Organizer::class.java, source.organizerId)
         target.series = source.seriesId?.let { entityManager.getReference(Series::class.java, it) }
     }
 }

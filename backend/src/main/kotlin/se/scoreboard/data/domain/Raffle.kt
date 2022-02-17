@@ -1,7 +1,6 @@
 package se.scoreboard.data.domain
 
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -14,6 +13,10 @@ open class Raffle (
     override var id: Int? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    open var organizer: Organizer? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contest_id", nullable = false)
     open var contest: Contest? = null,
 
@@ -21,4 +24,4 @@ open class Raffle (
     open var isActive: Boolean = false,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "raffle", cascade = [ CascadeType.ALL ])
-    open var winners: MutableSet<RaffleWinner> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var winners: MutableList<RaffleWinner> = mutableListOf()) : Serializable, AbstractEntity<Int>

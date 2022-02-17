@@ -1,4 +1,4 @@
-import { InputLabel, TextField, useTheme } from "@material-ui/core";
+import { Divider, InputLabel, TextField, useTheme } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -8,6 +8,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
 import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
 import DescriptionIcon from "@material-ui/icons/Description";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
 import LockIcon from "@material-ui/icons/Lock";
 import SaveIcon from "@material-ui/icons/Save";
 import Alert from "@material-ui/lab/Alert";
@@ -15,10 +16,11 @@ import { saveAs } from "file-saver";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Api } from "src/utils/Api";
 import { setErrorMessage } from "../../actions/actions";
 import {
+  copyContest,
   deleteContest,
   loadContest,
   reloadLocations,
@@ -61,11 +63,14 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   const [saving, setSaving] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
+  const [duplicating, setDuplicating] = useState<boolean>(false);
   const [compilingPdf, setCompilingPdf] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [requestingDelete, setRequestingDelete] = useState<boolean>(false);
   const [contest, setContest] = useState<Contest>(props.contest);
   const [validated, setValidated] = useState(false);
+
+  const history = useHistory();
 
   useEffect(() => {
     if (props.locations === undefined) {
@@ -201,6 +206,16 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     }
 
     setRequestingDelete(false);
+  };
+
+  const onDuplicate = async () => {
+    setDuplicating(true);
+
+    const copy = await props.copyContest(contest.id!);
+
+    setDuplicating(false);
+
+    history.push(`/contests/${copy.id}`);
   };
 
   const startPdfCreate = () => {
@@ -419,21 +434,41 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
           >
             {isNew ? "Create" : "Save"}
           </ProgressButton>
-          {!isNew && (
-            <ProgressButton
-              variant="contained"
-              color="primary"
-              disabled={contest.protected}
-              onClick={onDelete}
-              loading={deleting}
-              startIcon={
-                contest.protected ? <LockIcon /> : <DeleteForeverRoundedIcon />
-              }
-            >
-              Delete
-            </ProgressButton>
-          )}
         </div>
+
+        <Divider />
+
+        {!isNew && (
+          <>
+            <div className={classes.buttons}>
+              <ProgressButton
+                variant="contained"
+                color="primary"
+                onClick={onDuplicate}
+                loading={duplicating}
+                startIcon={<FileCopyIcon />}
+              >
+                Duplicate
+              </ProgressButton>
+              <ProgressButton
+                variant="contained"
+                color="primary"
+                disabled={contest.protected}
+                onClick={onDelete}
+                loading={deleting}
+                startIcon={
+                  contest.protected ? (
+                    <LockIcon />
+                  ) : (
+                    <DeleteForeverRoundedIcon />
+                  )
+                }
+              >
+                Delete
+              </ProgressButton>
+            </div>
+          </>
+        )}
       </div>
       <CreatePdfDialog
         open={showPopup}
@@ -477,6 +512,7 @@ const mapDispatchToProps = {
   setErrorMessage,
   loadLocations: reloadLocations,
   loadSeries: reloadSeries,
+  copyContest,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

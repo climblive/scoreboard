@@ -14,7 +14,6 @@ import se.scoreboard.dto.ContenderDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.nowWithoutNanos
-import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import javax.transaction.Transactional
 
@@ -83,6 +82,7 @@ class ContenderService @Autowired constructor(
 
         return Array(contenderCount) {
             var contender = Contender()
+            contender.organizer = contest.organizer
             contender.contest = contest
             contender.registrationCode = createRegistrationCode(8)
 

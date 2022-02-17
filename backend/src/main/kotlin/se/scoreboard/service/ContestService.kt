@@ -3,9 +3,7 @@ package se.scoreboard.service
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -21,16 +19,15 @@ import se.scoreboard.exception.WebException
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.mapper.CompClassMapper
-import se.scoreboard.mapper.ProblemMapper
+import se.scoreboard.mapper.ContestMapper
 import se.scoreboard.mapper.RaffleMapper
 import java.io.ByteArrayOutputStream
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
 import javax.transaction.Transactional
 
 @Service
 class ContestService @Autowired constructor(
-        contestRepository: ContestRepository,
+        private val contestRepository: ContestRepository,
+        private val contestMapper: ContestMapper,
         private val contenderRepository: ContenderRepository,
         private val tickRepository: TickRepository,
         private val raffleRepository: RaffleRepository,
@@ -41,18 +38,12 @@ class ContestService @Autowired constructor(
         private val slackNotifier: SlackNotifier,
         private var raffleMapper: RaffleMapper,
         private var compClassMapper: CompClassMapper,
-        private var problemMapper: ProblemMapper,
+        private val problemsRepository: ProblemRepository,
         override var entityMapper: AbstractMapper<Contest, ContestDto>) : AbstractDataService<Contest, ContestDto, Int>(
         contestRepository) {
 
     init {
         addConstraints(ContestDto::protected.name, ContestDto::protected, "ROLE_ORGANIZER", AttributeConstraintType.IMMUTABLE)
-    }
-
-    @Transactional
-    fun getProblems(contestId: Int): List<ProblemDto> {
-        val problems = problemRepository.findAllByContestId(contestId)
-        return problems.map { problemMapper.convertToDto(it) }
     }
 
     override fun onCreate(phase: Phase, new: Contest) {
@@ -91,6 +82,28 @@ class ContestService @Autowired constructor(
     fun getPdf(id:Int) : ByteArray {
         val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }
         return pdfService.createPdf(codes)
+    }
+
+    fun copy(id: Int): ResponseEntity<ContestDto> {
+        var contest = fetchEntity(id)
+        var compClasses = contest.compClasses
+        var problems = contest.problems
+
+        entityManager.detach(contest)
+
+        contest.id = null
+        contest.name += " (copy)"
+        contest.isProtected = false
+
+        contest = contestRepository.save(contest)
+
+        compClasses.forEach { entityManager.detach(it); it.id = null; it.contest = contest }
+        problems.forEach { entityManager.detach(it); it.id = null; it.contest = contest }
+
+        compClassRepository.saveAll(compClasses)
+        problemsRepository.saveAll(problems)
+
+        return ResponseEntity(contestMapper.convertToDto(contest), HttpStatus.CREATED)
     }
 
     fun export(id: Int): ByteArray {

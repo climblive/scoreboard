@@ -1,15 +1,13 @@
 import * as React from "react";
-import "./ProblemList.css";
 import { Problem } from "../model/problem";
-import ProblemComp from "./ProblemComp";
 import { ProblemState } from "../model/problemState";
-import { Color } from "../model/color";
 import { Tick } from "../model/tick";
+import ProblemComp from "./ProblemComp";
+import "./ProblemList.css";
 
 export interface ProblemListProps {
   problems: Problem[];
   ticks: Tick[];
-  colors: Map<number, Color>;
   problemIdBeingUpdated?: number;
   setProblemStateAndSave?: (
     problem: Problem,
@@ -50,7 +48,6 @@ export default class ProblemList extends React.Component<
         onToggle={() => this.toggle(p)}
         problem={p}
         tick={this.getTick(p)}
-        colors={this.props.colors}
       />
     ));
     return <div className="problemList">{problemsList}</div>;

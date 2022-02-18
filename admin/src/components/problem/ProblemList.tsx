@@ -5,8 +5,9 @@ import TableBody from "@material-ui/core/TableBody";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import * as Chroma from "chroma-js";
-import React, { useMemo, useState } from "react";
+import React, { CSSProperties, useMemo, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
+import { Color } from "src/model/color";
 import { groupTicksByProblem } from "src/selectors/selector";
 import { loadProblems } from "../../actions/asyncActions";
 import { Problem } from "../../model/problem";
@@ -62,14 +63,10 @@ const ProblemList = (props: Props & PropsFromRedux) => {
     props.loadProblems(props.contestId).finally(() => setRefreshing(false));
   };
 
-  const getColorName = (problem: Problem): string => {
-    return problem.colorId
-      ? props.colors?.get(problem.colorId)?.name ?? "UNDEFINED"
-      : "UNDEFINED";
-  };
-
-  const getProblemStyle = (colorId: number, opacity: number = 1) => {
-    let color = colorId ? props.colors?.get(colorId) : undefined;
+  const getProblemStyle = (
+    color?: Color,
+    opacity: number = 1
+  ): CSSProperties => {
     if (!color) {
       color = {
         id: undefined,
@@ -158,7 +155,6 @@ const ProblemList = (props: Props & PropsFromRedux) => {
       return (
         <ProblemView
           key={problem.id!}
-          getColorName={getColorName}
           getProblemStyle={getProblemStyle}
           problem={problem}
           contenders={props.contenders}

@@ -3,7 +3,6 @@ import { ActionType, getType } from "typesafe-actions";
 import * as scoreboardActions from "../actions/actions";
 import { SortBy } from "../constants/constants";
 import initialState from "../initialState";
-import { Color } from "../model/color";
 import { ContenderData } from "../model/contenderData";
 import { Problem } from "../model/problem";
 import { RaffleWinner } from "../model/raffleWinner";
@@ -180,11 +179,6 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
 
     case getType(scoreboardActions.receiveTicks):
       return { ...state, ticks: action.payload };
-
-    case getType(scoreboardActions.receiveColors):
-      const colors = new Map<number, Color>();
-      action.payload.forEach((color) => colors.set(color.id, color));
-      return { ...state, colors: colors };
 
     case getType(scoreboardActions.createTick): {
       let newTicks = [...state.ticks, action.payload];

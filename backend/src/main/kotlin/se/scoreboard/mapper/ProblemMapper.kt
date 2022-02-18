@@ -7,7 +7,7 @@ import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.Problem
 import se.scoreboard.dto.ProblemDto
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = [ColorMapper::class])
 abstract class ProblemMapper : AbstractMapper<Problem, ProblemDto>() {
     @Mappings(
         Mapping(source = "color.id", target = "colorId"),

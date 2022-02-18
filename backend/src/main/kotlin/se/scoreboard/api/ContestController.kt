@@ -41,7 +41,7 @@ class ContestController @Autowired constructor(
     @PreAuthorize("hasPermission(#id, 'Contest', 'read')")
     @Transactional
     fun getContestProblems(@PathVariable("id") id: Int) : List<ProblemDto> =
-            contestService.fetchEntity(id).problems.map { problem -> problemMapper.convertToDto(problem) }
+        problemService.getProblems(id)
 
     @PostMapping("/contest/{id}/problem")
     @PreAuthorize("hasPermission(#id, 'Contest', 'write')")

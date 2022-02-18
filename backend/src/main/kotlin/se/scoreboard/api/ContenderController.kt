@@ -35,14 +35,14 @@ class ContenderController @Autowired constructor(
     @Transactional
     fun getContenderByCode(@RequestParam("code") code: String) = contenderService.findByCode(code)
 
-    @GetMapping("/contenders/{id}/tick")
+    @GetMapping("/contenders/{id}/ticks")
     @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
     @Transactional
     fun getContenderTicks(@PathVariable("id") id: Int) : List<TickDto> {
         return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
     }
 
-    @PostMapping("/contenders/{id}/tick")
+    @PostMapping("/contenders/{id}/ticks")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
     fun createTick(@PathVariable("id") id: Int, @RequestBody tick : TickDto): ResponseEntity<TickDto> {

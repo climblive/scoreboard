@@ -32,13 +32,13 @@ class OrganizerController @Autowired constructor(
     @Transactional
     fun getOrganizer(@PathVariable("id") id: Int) = organizerService.findById(id)
 
-    @GetMapping("/organizers/{id}/contest")
+    @GetMapping("/organizers/{id}/contests")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional
     fun getOrganizerContests(@PathVariable("id") id: Int) : List<ContestDto> =
             organizerService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
 
-    @PostMapping("/organizers/{id}/contest")
+    @PostMapping("/organizers/{id}/contests")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
     fun createContest(@PathVariable("id") id: Int, @RequestBody contest : ContestDto): ResponseEntity<ContestDto> {
@@ -50,12 +50,12 @@ class OrganizerController @Autowired constructor(
         return contestService.create(entity)
     }
 
-    @GetMapping("/organizers/{id}/color")
+    @GetMapping("/organizers/{id}/colors")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional
     fun getOrganizerColors(@PathVariable("id") id: Int) = colorService.findAllByOrganizerId(id)
 
-    @PostMapping("/organizers/{id}/color")
+    @PostMapping("/organizers/{id}/colors")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
     fun createColor(@PathVariable("id") id: Int, @RequestBody color : ColorDto): ResponseEntity<ColorDto> {
@@ -67,13 +67,13 @@ class OrganizerController @Autowired constructor(
         return colorService.create(entity)
     }
 
-    @GetMapping("/organizers/{id}/location")
+    @GetMapping("/organizers/{id}/locations")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional
     fun getOrganizerLocations(@PathVariable("id") id: Int) : List<LocationDto> =
             organizerService.fetchEntity(id).locations.map { location -> locationMapper.convertToDto(location) }
 
-    @PostMapping("/organizers/{id}/location")
+    @PostMapping("/organizers/{id}/locations")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
     @Transactional
     fun createLocation(@PathVariable("id") id: Int, @RequestBody location : LocationDto): ResponseEntity<LocationDto> {
@@ -103,7 +103,7 @@ class OrganizerController @Autowired constructor(
         return seriesService.create(entity)
     }
 
-    @GetMapping("/organizers/{id}/user")
+    @GetMapping("/organizers/{id}/users")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
     @Transactional
     fun getOrganizerUsers(@PathVariable("id") id: Int) : List<UserDto> =

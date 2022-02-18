@@ -26,7 +26,7 @@ class SeriesController @Autowired constructor(
     @Transactional
     fun getSeries(@PathVariable("id") id: Int) = seriesService.findById(id)
 
-    @GetMapping("/series/{id}/contest")
+    @GetMapping("/series/{id}/contests")
     @PreAuthorize("hasPermission(#id, 'Series', 'read')")
     @Transactional
     fun getSeriesContests(@PathVariable("id") id: Int) : List<ContestDto> =

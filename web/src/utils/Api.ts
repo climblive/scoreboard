@@ -101,21 +101,21 @@ export class Api {
     contestId: number,
     registrationCode: string
   ): Promise<Problem[]> {
-    return this.get(`/contests/${contestId}/problem`, registrationCode);
+    return this.get(`/contests/${contestId}/problems`, registrationCode);
   }
 
   static getCompClasses(
     contestId: number,
     registrationCode: string
   ): Promise<CompClass[]> {
-    return this.get(`/contests/${contestId}/compClass`, registrationCode);
+    return this.get(`/contests/${contestId}/compClasses`, registrationCode);
   }
 
   static getTicks(
     contenderId: number,
     registrationCode: string
   ): Promise<Tick[]> {
-    return this.get(`/contenders/${contenderId}/tick`, registrationCode);
+    return this.get(`/contenders/${contenderId}/ticks`, registrationCode);
   }
 
   static createTick(
@@ -129,7 +129,11 @@ export class Api {
       contenderId,
       problemId,
     };
-    return this.post(`/contenders/${contenderId}/tick`, tick, registrationCode);
+    return this.post(
+      `/contenders/${contenderId}/ticks`,
+      tick,
+      registrationCode
+    );
   }
 
   static updateTick(tick: Tick, registrationCode: string): Promise<any> {

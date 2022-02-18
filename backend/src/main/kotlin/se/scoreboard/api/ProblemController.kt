@@ -26,7 +26,7 @@ class ProblemController @Autowired constructor(
     @Transactional
     fun getProblem(@PathVariable("id") id: Int) = problemService.findById(id)
 
-    @GetMapping("/problems/{id}/tick")
+    @GetMapping("/problems/{id}/ticks")
     @PreAuthorize("hasPermission(#id, 'Problem', 'read')")
     @Transactional
     fun getProblemTicks(@PathVariable("id") id: Int) : List<TickDto> =

@@ -26,7 +26,7 @@ class CompClassController @Autowired constructor(
     @Transactional
     fun getCompClass(@PathVariable("id") id: Int) = compClassService.findById(id)
 
-    @GetMapping("/compClasses/{id}/contender")
+    @GetMapping("/compClasses/{id}/contenders")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'read')")
     @Transactional
     fun getCompClassContenders(@PathVariable("id") id: Int) : List<ContenderDto> =

@@ -37,7 +37,7 @@ class UserController @Autowired constructor(
             userService.findByUsername(getUserPrincipal()?.username!!)
                 ?: throw WebException(HttpStatus.INTERNAL_SERVER_ERROR, null)
 
-    @GetMapping("/users/{id}/organizer")
+    @GetMapping("/users/{id}/organizers")
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasPermission(#id, 'User', 'read')")
     @Transactional
     fun getUserOrganizers(@PathVariable("id") id: Int) : List<OrganizerDto> =

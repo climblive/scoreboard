@@ -107,7 +107,7 @@ export class Api {
   }
 
   static getUsersForOrganizer(organizerId: number): Promise<User[]> {
-    return this.get(`/organizers/${organizerId}/user`);
+    return this.get(`/organizers/${organizerId}/users`);
   }
 
   // ---------------------------------------------------------------------------
@@ -115,7 +115,7 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getContests(): Promise<Contest[]> {
-    return this.get(`/organizers/${this.organizerId}/contest`);
+    return this.get(`/organizers/${this.organizerId}/contests`);
   }
 
   static getContest(contestId: number): Promise<Contest> {
@@ -124,7 +124,7 @@ export class Api {
 
   static saveContest(contest: Contest): Promise<Contest> {
     if (contest.id === undefined) {
-      return this.post(`/organizers/${this.organizerId}/contest`, contest);
+      return this.post(`/organizers/${this.organizerId}/contests`, contest);
     } else {
       return this.put(`/contests/${contest.id}`, contest);
     }
@@ -175,12 +175,12 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getProblems(contestId: number): Promise<Problem[]> {
-    return this.get(`/contests/${contestId}/problem`);
+    return this.get(`/contests/${contestId}/problems`);
   }
 
   static saveProblem(problem: Problem): Promise<Problem> {
     if (problem.id === undefined) {
-      return this.post(`/contests/${problem.contestId}/problem`, problem);
+      return this.post(`/contests/${problem.contestId}/problems`, problem);
     } else {
       return this.put(`/problems/${problem.id}`, problem);
     }
@@ -195,19 +195,22 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getCompClasses(contestId: number): Promise<CompClass[]> {
-    return this.get(`/contests/${contestId}/compClass`);
+    return this.get(`/contests/${contestId}/compClasses`);
   }
 
   static saveCompClass(compClass: CompClass): Promise<CompClass> {
     if (compClass.id === undefined) {
-      return this.post(`/contests/${compClass.contestId}/compClass`, compClass);
+      return this.post(
+        `/contests/${compClass.contestId}/compClasses`,
+        compClass
+      );
     } else {
       return this.put(`/compClasses/${compClass.id}`, compClass);
     }
   }
 
   static deleteCompClass(compClass: CompClass): Promise<any> {
-    return this.delete(`/compClass/${compClass.id}`);
+    return this.delete(`/compClasses/${compClass.id}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -215,12 +218,15 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getContenders(contestId: number): Promise<ContenderData[]> {
-    return this.get(`/contests/${contestId}/contender`);
+    return this.get(`/contests/${contestId}/contenders`);
   }
 
   static saveContender(contender: ContenderData): Promise<ContenderData> {
     if (contender.id === undefined) {
-      return this.post(`/contests/${contender.contestId}/contender`, contender);
+      return this.post(
+        `/contests/${contender.contestId}/contenders`,
+        contender
+      );
     } else {
       return this.put(`/contenders/${contender.id}`, contender);
     }
@@ -237,12 +243,12 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getRaffles(contestId: number): Promise<Raffle[]> {
-    return this.get(`/contests/${contestId}/raffle`);
+    return this.get(`/contests/${contestId}/raffles`);
   }
 
   static saveRaffle(raffle: Raffle): Promise<Raffle> {
     if (raffle.id === undefined) {
-      return this.post(`/contests/${raffle.contestId}/raffle`, raffle);
+      return this.post(`/contests/${raffle.contestId}/raffles`, raffle);
     } else {
       return this.put(`/raffles/${raffle.id}`, raffle);
     }
@@ -253,11 +259,11 @@ export class Api {
   }
 
   static drawWinner(raffle: Raffle): Promise<RaffleWinner> {
-    return this.post(`/raffles/${raffle.id}/winner`, {});
+    return this.post(`/raffles/${raffle.id}/winners`, {});
   }
 
   static getRaffleWinners(raffle: Raffle): Promise<RaffleWinner[]> {
-    return this.get(`/raffles/${raffle.id}/winner`);
+    return this.get(`/raffles/${raffle.id}/winners`);
   }
 
   // ---------------------------------------------------------------------------
@@ -265,12 +271,12 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getColors(): Promise<Color[]> {
-    return this.get(`/organizers/${this.organizerId}/color`);
+    return this.get(`/organizers/${this.organizerId}/colors`);
   }
 
   static saveColor(color: Color): Promise<Color> {
     if (color.id === undefined) {
-      return this.post(`/organizers/${this.organizerId}/color`, color);
+      return this.post(`/organizers/${this.organizerId}/colors`, color);
     } else {
       return this.put(`/colors/${color.id}`, color);
     }
@@ -305,12 +311,12 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getLocations(): Promise<CompLocation[]> {
-    return this.get(`/organizers/${this.organizerId}/location`);
+    return this.get(`/organizers/${this.organizerId}/locations`);
   }
 
   static saveLocation(location: CompLocation): Promise<CompLocation> {
     if (location.id === undefined) {
-      return this.post(`/organizers/${this.organizerId}/location`, location);
+      return this.post(`/organizers/${this.organizerId}/locations`, location);
     } else {
       return this.put(`/locations/${location.id}`, location);
     }
@@ -329,7 +335,7 @@ export class Api {
   }
 
   static getOrganizers(): Promise<Organizer[]> {
-    return this.get(`/users/${this.userId}/organizer`);
+    return this.get(`/users/${this.userId}/organizers`);
   }
 
   static saveOrganizer(organizer: Organizer): Promise<Organizer> {
@@ -345,6 +351,6 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getTicks(contestId: number): Promise<Tick[]> {
-    return this.get(`/contests/${contestId}/tick`);
+    return this.get(`/contests/${contestId}/ticks`);
   }
 }

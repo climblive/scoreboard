@@ -27,13 +27,13 @@ class RaffleController @Autowired constructor(
     @Transactional
     fun getRaffle(@PathVariable("id") id: Int) = raffleService.findById(id)
 
-    @GetMapping("/raffles/{id}/winner")
+    @GetMapping("/raffles/{id}/winners")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'read')")
     @Transactional
     fun getRaffleWinners(@PathVariable("id") id: Int) : List<RaffleWinnerDto> =
             raffleService.fetchEntity(id).winners.map { winner -> winnerMapper.convertToDto(winner) }.sortedBy { winner -> winner.timestamp }
 
-    @PostMapping("/raffles/{id}/winner")
+    @PostMapping("/raffles/{id}/winners")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional
     fun drawWinner(@PathVariable("id") id: Int): ResponseEntity<RaffleWinnerDto> {

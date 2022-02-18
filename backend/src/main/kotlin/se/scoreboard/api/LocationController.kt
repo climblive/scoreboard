@@ -26,7 +26,7 @@ class LocationController @Autowired constructor(
     @Transactional
     fun getLocation(@PathVariable("id") id: Int) = locationService.findById(id)
 
-    @GetMapping("/locations/{id}/contest")
+    @GetMapping("/locations/{id}/contests")
     @PreAuthorize("hasPermission(#id, 'Location', 'read')")
     @Transactional
     fun getLocationContests(@PathVariable("id") id: Int) : List<ContestDto> =

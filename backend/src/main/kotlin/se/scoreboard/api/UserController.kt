@@ -43,7 +43,7 @@ class UserController @Autowired constructor(
     fun getUserOrganizers(@PathVariable("id") id: Int) : List<OrganizerDto> =
             userService.fetchEntity(id).organizers.map { organizer -> organizerMapper.convertToDto(organizer) }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun createUser(@RequestBody user : UserDto) = userService.create(userMapper.convertToEntity(user))

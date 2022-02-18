@@ -19,30 +19,30 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@Api(tags = ["Contender"])
+@Api(tags = ["Contenders"])
 class ContenderController @Autowired constructor(
         val contenderService: ContenderService,
         val tickService: TickService,
         private var tickMapper: TickMapper,
         private var contenderMapper: ContenderMapper) {
 
-    @GetMapping("/contender/{id}")
+    @GetMapping("/contenders/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
     @Transactional
     fun getContender(@PathVariable("id") id: Int) = contenderService.findById(id)
 
-    @GetMapping("/contender/findByCode")
+    @GetMapping("/contenders/findByCode")
     @Transactional
     fun getContenderByCode(@RequestParam("code") code: String) = contenderService.findByCode(code)
 
-    @GetMapping("/contender/{id}/tick")
+    @GetMapping("/contenders/{id}/tick")
     @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
     @Transactional
     fun getContenderTicks(@PathVariable("id") id: Int) : List<TickDto> {
         return contenderService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
     }
 
-    @PostMapping("/contender/{id}/tick")
+    @PostMapping("/contenders/{id}/tick")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
     fun createTick(@PathVariable("id") id: Int, @RequestBody tick : TickDto): ResponseEntity<TickDto> {
@@ -58,7 +58,7 @@ class ContenderController @Autowired constructor(
         return tickService.create(entity)
     }
 
-    @GetMapping("/contender/{id}/score")
+    @GetMapping("/contenders/{id}/score")
     @PreAuthorize("hasPermission(#id, 'Contender', 'read')")
     @Transactional
     fun getContenderScore(@PathVariable("id") id: Int) : ScoreDto {
@@ -66,7 +66,7 @@ class ContenderController @Autowired constructor(
         return ScoreDto(id, contender.getQualificationScore(), contender.getTotalScore())
     }
 
-    @PutMapping("/contender/{id}")
+    @PutMapping("/contenders/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'write')")
     @Transactional
     fun updateContender(@PathVariable("id") id: Int,
@@ -80,7 +80,7 @@ class ContenderController @Autowired constructor(
         return contenderService.update(id, entity)
     }
 
-    @DeleteMapping("/contender/{id}")
+    @DeleteMapping("/contenders/{id}")
     @PreAuthorize("hasPermission(#id, 'Contender', 'delete')")
     @Transactional
     fun deleteContender(@PathVariable("id") id: Int) = contenderService.delete(id)

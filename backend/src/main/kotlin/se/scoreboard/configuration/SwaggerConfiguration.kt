@@ -43,7 +43,7 @@ class SwaggerConfiguration {
 
     private fun getApiInfo(): ApiInfo {
         return ApiInfo(
-                "Scoreboard API",
+                "ClimbLive API",
                 null,
                 buildProperties.version,
                 null,

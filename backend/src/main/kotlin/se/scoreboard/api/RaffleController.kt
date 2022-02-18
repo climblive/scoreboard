@@ -16,24 +16,24 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@Api(tags = ["Raffle"])
+@Api(tags = ["Raffles"])
 class RaffleController @Autowired constructor(
         val raffleService: RaffleService,
         private var winnerMapper: RaffleWinnerMapper,
         private val raffleMapper: RaffleMapper) {
 
-    @GetMapping("/raffle/{id}")
+    @GetMapping("/raffles/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'read')")
     @Transactional
     fun getRaffle(@PathVariable("id") id: Int) = raffleService.findById(id)
 
-    @GetMapping("/raffle/{id}/winner")
+    @GetMapping("/raffles/{id}/winner")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'read')")
     @Transactional
     fun getRaffleWinners(@PathVariable("id") id: Int) : List<RaffleWinnerDto> =
             raffleService.fetchEntity(id).winners.map { winner -> winnerMapper.convertToDto(winner) }.sortedBy { winner -> winner.timestamp }
 
-    @PostMapping("/raffle/{id}/winner")
+    @PostMapping("/raffles/{id}/winner")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional
     fun drawWinner(@PathVariable("id") id: Int): ResponseEntity<RaffleWinnerDto> {
@@ -43,7 +43,7 @@ class RaffleController @Autowired constructor(
         return ResponseEntity(winnerMapper.convertToDto(winner), HttpStatus.CREATED)
     }
 
-    @PutMapping("/raffle/{id}")
+    @PutMapping("/raffles/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'write')")
     @Transactional
     fun updateRaffle(
@@ -58,7 +58,7 @@ class RaffleController @Autowired constructor(
         return raffleService.update(id, entity)
     }
 
-    @DeleteMapping("/raffle/{id}")
+    @DeleteMapping("/raffles/{id}")
     @PreAuthorize("hasPermission(#id, 'Raffle', 'delete')")
     @Transactional
     fun deleteRaffle(@PathVariable("id") id: Int) = raffleService.delete(id)

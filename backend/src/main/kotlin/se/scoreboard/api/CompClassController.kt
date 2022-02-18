@@ -15,24 +15,24 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@Api(tags = ["Comp Class"])
+@Api(tags = ["Comp Classes"])
 class CompClassController @Autowired constructor(
         val compClassService: CompClassService,
         private val contenderMapper: ContenderMapper,
         private val compClassMapper: CompClassMapper) {
 
-    @GetMapping("/compClass/{id}")
+    @GetMapping("/compClasses/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'read')")
     @Transactional
     fun getCompClass(@PathVariable("id") id: Int) = compClassService.findById(id)
 
-    @GetMapping("/compClass/{id}/contender")
+    @GetMapping("/compClasses/{id}/contender")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'read')")
     @Transactional
     fun getCompClassContenders(@PathVariable("id") id: Int) : List<ContenderDto> =
             compClassService.fetchEntity(id).contenders.map { contender -> contenderMapper.convertToDto(contender) }
 
-    @PutMapping("/compClass/{id}")
+    @PutMapping("/compClasses/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'write')")
     @Transactional
     fun updateCompClass(
@@ -47,7 +47,7 @@ class CompClassController @Autowired constructor(
         return compClassService.update(id, entity)
     }
 
-    @DeleteMapping("/compClass/{id}")
+    @DeleteMapping("/compClasses/{id}")
     @PreAuthorize("hasPermission(#id, 'CompClass', 'delete')")
     @Transactional
     fun deleteCompClass(@PathVariable("id") id: Int) = compClassService.delete(id)

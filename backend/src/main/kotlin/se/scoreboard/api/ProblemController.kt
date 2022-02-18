@@ -15,24 +15,24 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@Api(tags = ["Problem"])
+@Api(tags = ["Problems"])
 class ProblemController @Autowired constructor(
         val problemService: ProblemService,
         private var tickMapper: TickMapper,
         private val problemMapper: ProblemMapper) {
 
-    @GetMapping("/problem/{id}")
+    @GetMapping("/problems/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'read')")
     @Transactional
     fun getProblem(@PathVariable("id") id: Int) = problemService.findById(id)
 
-    @GetMapping("/problem/{id}/tick")
+    @GetMapping("/problems/{id}/tick")
     @PreAuthorize("hasPermission(#id, 'Problem', 'read')")
     @Transactional
     fun getProblemTicks(@PathVariable("id") id: Int) : List<TickDto> =
             problemService.fetchEntity(id).ticks.map { tick -> tickMapper.convertToDto(tick) }
 
-    @PutMapping("/problem/{id}")
+    @PutMapping("/problems/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'write')")
     @Transactional
     fun updateProblem(
@@ -47,7 +47,7 @@ class ProblemController @Autowired constructor(
         return problemService.update(id, entity)
     }
 
-    @DeleteMapping("/problem/{id}")
+    @DeleteMapping("/problems/{id}")
     @PreAuthorize("hasPermission(#id, 'Problem', 'delete')")
     @Transactional
     fun deleteProblem(@PathVariable("id") id: Int) = problemService.delete(id)

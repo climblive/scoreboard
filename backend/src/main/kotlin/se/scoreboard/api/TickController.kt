@@ -16,19 +16,19 @@ import javax.transaction.Transactional
 @CrossOrigin
 @Transactional
 @RequestMapping("/api")
-@Api(tags = ["Tick"])
+@Api(tags = ["Ticks"])
 class TickController @Autowired constructor(
         val tickService: TickService,
         val tickMapper: TickMapper,
         val contenderService: ContenderService,
         val entityManager: EntityManager) {
 
-    @GetMapping("/tick/{id}")
+    @GetMapping("/ticks/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'read')")
     @Transactional
     fun getTick(@PathVariable("id") id: Int) = tickService.findById(id)
 
-    @PutMapping("/tick/{id}")
+    @PutMapping("/ticks/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'write')")
     @Transactional
     fun updateTick(
@@ -48,7 +48,7 @@ class TickController @Autowired constructor(
         return tickService.update(id, entity)
     }
 
-    @DeleteMapping("/tick/{id}")
+    @DeleteMapping("/ticks/{id}")
     @PreAuthorize("hasPermission(#id, 'Tick', 'delete')")
     @Transactional
     fun deleteTick(@PathVariable("id") id: Int): ResponseEntity<TickDto> {

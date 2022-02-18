@@ -15,24 +15,24 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@Api(tags = ["Location"])
+@Api(tags = ["Locations"])
 class LocationController @Autowired constructor(
         val locationService: LocationService,
         private var contestMapper: ContestMapper,
         private val locationMapper: LocationMapper) {
 
-    @GetMapping("/location/{id}")
+    @GetMapping("/locations/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'read')")
     @Transactional
     fun getLocation(@PathVariable("id") id: Int) = locationService.findById(id)
 
-    @GetMapping("/location/{id}/contest")
+    @GetMapping("/locations/{id}/contest")
     @PreAuthorize("hasPermission(#id, 'Location', 'read')")
     @Transactional
     fun getLocationContests(@PathVariable("id") id: Int) : List<ContestDto> =
             locationService.fetchEntity(id).contests.map { contest -> contestMapper.convertToDto(contest) }
 
-    @PutMapping("/location/{id}")
+    @PutMapping("/locations/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'write')")
     @Transactional
     fun updateLocation(
@@ -46,7 +46,7 @@ class LocationController @Autowired constructor(
         return locationService.update(id, entity)
     }
 
-    @DeleteMapping("/location/{id}")
+    @DeleteMapping("/locations/{id}")
     @PreAuthorize("hasPermission(#id, 'Location', 'delete')")
     @Transactional
     fun deleteLocation(@PathVariable("id") id: Int) = locationService.delete(id)

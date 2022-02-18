@@ -17,7 +17,8 @@ abstract class ProblemMapper : AbstractMapper<Problem, ProblemDto>() {
 
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
-            Mapping(target = "ticks", ignore = true)
+            Mapping(target = "ticks", ignore = true),
+            Mapping(target = "organizer", ignore = true)
     )
     abstract override fun convertToEntity(source: ProblemDto): Problem
 

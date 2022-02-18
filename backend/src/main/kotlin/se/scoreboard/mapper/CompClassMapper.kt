@@ -15,7 +15,8 @@ abstract class CompClassMapper : AbstractMapper<CompClass, CompClassDto>() {
 
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
-        Mapping(target = "contenders", ignore = true)
+        Mapping(target = "contenders", ignore = true),
+        Mapping(target = "organizer", ignore = true)
     )
     abstract override fun convertToEntity(source: CompClassDto): CompClass
 }

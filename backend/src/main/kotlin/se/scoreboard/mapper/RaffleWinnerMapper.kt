@@ -15,5 +15,8 @@ abstract class RaffleWinnerMapper : AbstractMapper<RaffleWinner, RaffleWinnerDto
     abstract override fun convertToDto(source: RaffleWinner): RaffleWinnerDto
 
     @InheritInverseConfiguration(name = "convertToDto")
+    @Mappings(
+            Mapping(target = "organizer", ignore = true),
+    )
     abstract override fun convertToEntity(source: RaffleWinnerDto): RaffleWinner
 }

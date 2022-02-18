@@ -19,43 +19,43 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@Api(tags = ["User"])
+@Api(tags = ["Users"])
 class UserController @Autowired constructor(
         val userService: UserService,
         private var organizerMapper: OrganizerMapper,
         private val userMapper: UserMapper) {
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/users/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasPermission(#id, 'User', 'read')")
     @Transactional
     fun getUser(@PathVariable("id") id: Int) = userService.findById(id)
 
-    @GetMapping("/user/me")
+    @GetMapping("/users/me")
     @PostAuthorize("hasRole('ROLE_ADMIN') || hasPermission(returnObject, 'read')")
     @Transactional
     fun getCurrentUser() =
             userService.findByUsername(getUserPrincipal()?.username!!)
                 ?: throw WebException(HttpStatus.INTERNAL_SERVER_ERROR, null)
 
-    @GetMapping("/user/{id}/organizer")
+    @GetMapping("/users/{id}/organizers")
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasPermission(#id, 'User', 'read')")
     @Transactional
     fun getUserOrganizers(@PathVariable("id") id: Int) : List<OrganizerDto> =
             userService.fetchEntity(id).organizers.map { organizer -> organizerMapper.convertToDto(organizer) }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun createUser(@RequestBody user : UserDto) = userService.create(userMapper.convertToEntity(user))
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun updateUser(
             @PathVariable("id") id: Int,
             @RequestBody user : UserDto) = userService.update(id, userMapper.convertToEntity(user))
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/users/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     fun deleteUser(@PathVariable("id") id: Int) = userService.delete(id)

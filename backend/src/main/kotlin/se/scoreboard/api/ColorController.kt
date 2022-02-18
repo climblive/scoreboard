@@ -13,17 +13,17 @@ import javax.transaction.Transactional
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
-@Api(tags = ["Color"])
+@Api(tags = ["Colors"])
 class ColorController @Autowired constructor(
         val colorService: ColorService,
         private val colorMapper: ColorMapper) {
 
-    @GetMapping("/color/{id}")
+    @GetMapping("/colors/{id}")
     @PreAuthorize("hasPermission(#id, 'Color', 'read')")
     @Transactional
     fun getColor(@PathVariable("id") id: Int) = colorService.findById(id)
 
-    @PutMapping("/color/{id}")
+    @PutMapping("/colors/{id}")
     @PreAuthorize("hasPermission(#id, 'Color', 'write')")
     @Transactional
     fun updateColor(
@@ -37,7 +37,7 @@ class ColorController @Autowired constructor(
         return colorService.update(id, entity)
     }
 
-    @DeleteMapping("/color/{id}")
+    @DeleteMapping("/colors/{id}")
     @PreAuthorize("hasPermission(#id, 'Color', 'delete')")
     @Transactional
     fun deleteColor(@PathVariable("id") id: Int) = colorService.delete(id)

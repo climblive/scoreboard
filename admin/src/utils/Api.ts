@@ -139,7 +139,7 @@ export class Api {
   }
 
   static async exportContest(contestId: number) {
-    let url = "/contests/export/" + contestId;
+    let url = `/contests/${contestId}/export`;
     let response = await fetch(this.getBaseUrl() + url, {
       headers: Api.getAuthHeader(url),
     });

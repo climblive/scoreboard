@@ -2,7 +2,6 @@ package se.scoreboard.data.domain
 
 import java.io.Serializable
 import java.time.OffsetDateTime
-import java.util.*
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
 
@@ -15,11 +14,12 @@ open class CompClass (
     override var id: Int? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    open var organizer: Organizer? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contest_id", nullable = false)
     open var contest: Contest? = null,
-
-    @Column(name = "contest_id", insertable = false, updatable = false)
-    open var contestId: Int? = null,
 
     @Column(name = "name", nullable = false, length = 45)
     open var name: String? = null,
@@ -37,4 +37,4 @@ open class CompClass (
     open var timeEnd: OffsetDateTime? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "compClass")
-    open var contenders: MutableSet<Contender> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var contenders: MutableList<Contender> = mutableListOf()) : Serializable, AbstractEntity<Int>

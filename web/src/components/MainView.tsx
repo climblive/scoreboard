@@ -87,8 +87,7 @@ class MainView extends React.Component<
         this.props.problems &&
         this.props.contest &&
         this.props.compClasses &&
-        this.props.ticks &&
-        this.props.colors
+        this.props.ticks
       )
     ) {
       return (
@@ -217,7 +216,6 @@ class MainView extends React.Component<
             <ProblemList
               problems={this.props.problems}
               ticks={this.props.ticks}
-              colors={this.props.colors}
               problemIdBeingUpdated={this.props.problemIdBeingUpdated}
               setProblemStateAndSave={this.props.setProblemStateAndSave}
             />
@@ -256,7 +254,6 @@ const mapStateToProps = (state: StoreState) => ({
   problems: state.problems,
   compClasses: state.compClasses,
   ticks: state.ticks,
-  colors: state.colors,
   problemsSortedBy: state.problemsSortedBy,
   problemIdBeingUpdated: state.problemIdBeingUpdated,
   errorMessage: state.errorMessage,

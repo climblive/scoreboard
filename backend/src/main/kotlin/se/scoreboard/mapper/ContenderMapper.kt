@@ -1,11 +1,10 @@
 package se.scoreboard.mapper
 
 import org.mapstruct.*
-import se.scoreboard.data.domain.CompClass
-import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.Contest
+import se.scoreboard.data.domain.*
 import se.scoreboard.dto.ContenderDto
 import se.scoreboard.dto.ScoringDto
+import se.scoreboard.dto.TickDto
 import kotlin.random.Random
 
 @Mapper(componentModel = "spring")
@@ -18,13 +17,13 @@ abstract class ContenderMapper : AbstractMapper<Contender, ContenderDto>() {
 
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
+            Mapping(target = "organizer", ignore = true),
             Mapping(target = "ticks", ignore = true)
     )
     abstract override fun convertToEntity(source: ContenderDto): Contender
 
     @AfterMapping
     fun afterMapping(source: ContenderDto, @MappingTarget target: Contender) {
-        target.contest = entityManager.getReference(Contest::class.java, source.contestId)
         target.compClass = source.compClassId?.let { entityManager.getReference(CompClass::class.java, it) }
     }
 }

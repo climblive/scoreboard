@@ -2,54 +2,61 @@ package se.scoreboard.api
 
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.extension.allowedToAlterTick
 import se.scoreboard.dto.TickDto
-import se.scoreboard.exception.WebException
-import se.scoreboard.service.BroadcastService
+import se.scoreboard.mapper.TickMapper
 import se.scoreboard.service.ContenderService
 import se.scoreboard.service.TickService
-import javax.servlet.http.HttpServletRequest
+import javax.persistence.EntityManager
 import javax.transaction.Transactional
 
 @RestController
 @CrossOrigin
 @Transactional
 @RequestMapping("/api")
-@Api(tags = ["Tick"])
+@Api(tags = ["Ticks"])
 class TickController @Autowired constructor(
-        val tickService: TickService) {
+        val tickService: TickService,
+        val tickMapper: TickMapper,
+        val contenderService: ContenderService,
+        val entityManager: EntityManager) {
 
-    @GetMapping("/tick")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
-    @Transactional
-    fun getTicks(request: HttpServletRequest, @RequestParam("filter", required = false) filter: String?, pageable: Pageable?) = tickService.search(request, pageable)
-
-    @GetMapping("/tick/{id}")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @GetMapping("/ticks/{id}")
+    @PreAuthorize("hasPermission(#id, 'Tick', 'read')")
     @Transactional
     fun getTick(@PathVariable("id") id: Int) = tickService.findById(id)
 
-    @PostMapping("/tick")
-    @PreAuthorize("hasPermission(#tick, 'create')")
-    @Transactional
-    fun createTick(@RequestBody tick : TickDto) = tickService.create(tick)
-
-    @PutMapping("/tick/{id}")
-    @PreAuthorize("hasPermission(#id, 'TickDto', 'update') && hasPermission(#tick, 'update')")
+    @PutMapping("/ticks/{id}")
+    @PreAuthorize("hasPermission(#id, 'Tick', 'write')")
     @Transactional
     fun updateTick(
             @PathVariable("id") id: Int,
-            @RequestBody tick : TickDto) = tickService.update(id, tick)
+            @RequestBody tick : TickDto): ResponseEntity<TickDto> {
+        val old = tickService.fetchEntity(id)
+        val contender = contenderService.fetchEntity(old.contender?.id!!)
 
-    @DeleteMapping("/tick/{id}")
-    @PreAuthorize("hasPermission(#id, 'TickDto', 'delete')")
+        val entity = tickMapper.convertToEntity(tick)
+        entity.contest = old.contest
+        entity.contender = contender
+        entity.organizer = old.organizer
+
+        contender.ticks.removeIf { it.id == id }
+        contender.ticks.add(entity)
+
+        return tickService.update(id, entity)
+    }
+
+    @DeleteMapping("/ticks/{id}")
+    @PreAuthorize("hasPermission(#id, 'Tick', 'delete')")
     @Transactional
-    fun deleteTick(@PathVariable("id") id: Int) = tickService.delete(id)
+    fun deleteTick(@PathVariable("id") id: Int): ResponseEntity<TickDto> {
+        val old = tickService.fetchEntity(id)
+        val contender = contenderService.fetchEntity(old.contender?.id!!)
+
+        contender.ticks.removeIf { it.id == id }
+
+        return tickService.delete(id)
+    }
 }

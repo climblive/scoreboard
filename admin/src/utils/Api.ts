@@ -13,14 +13,17 @@ import { Tick } from "../model/tick";
 import { User } from "../model/user";
 
 export class Api {
+  private static useLocalhost = false;
   static credentials?: string;
   static organizerId?: number;
+  static userId?: number;
 
-  static readonly url = "https://api." + Environment.siteDomain;
   static readonly defaultPageSize = 1000;
 
   private static getBaseUrl(): string {
-    return Api.url;
+    return Api.useLocalhost
+      ? "http://localhost:8080/api"
+      : "https://api." + Environment.siteDomain;
   }
 
   private static async handleErrors(data: Response): Promise<Response> {
@@ -37,9 +40,7 @@ export class Api {
     if (this.credentials) {
       authHeaders.Authorization = "Bearer " + this.credentials;
     }
-    if (this.organizerId !== undefined && !url.startsWith("/organizer")) {
-      authHeaders["Organizer-Id"] = this.organizerId.toString();
-    }
+
     return authHeaders;
   }
 
@@ -93,16 +94,20 @@ export class Api {
     this.organizerId = organizerId;
   }
 
+  static setUserId(userId?: number) {
+    this.userId = userId;
+  }
+
   // ---------------------------------------------------------------------------
   // Users
   // ---------------------------------------------------------------------------
 
   static getUser(): Promise<User> {
-    return this.get("/user/me");
+    return this.get("/users/me");
   }
 
   static getUsersForOrganizer(organizerId: number): Promise<User[]> {
-    return this.get(`/organizer/${organizerId}/user`);
+    return this.get(`/organizers/${organizerId}/users`);
   }
 
   // ---------------------------------------------------------------------------
@@ -110,31 +115,31 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getContests(): Promise<Contest[]> {
-    return this.get(`/contest?size=${this.defaultPageSize}`);
+    return this.get(`/organizers/${this.organizerId}/contests`);
   }
 
   static getContest(contestId: number): Promise<Contest> {
-    return this.get("/contest/" + contestId);
+    return this.get("/contests/" + contestId);
   }
 
   static saveContest(contest: Contest): Promise<Contest> {
     if (contest.id === undefined) {
-      return this.post("/contest", contest);
+      return this.post(`/organizers/${this.organizerId}/contests`, contest);
     } else {
-      return this.put("/contest/" + contest.id, contest);
+      return this.put(`/contests/${contest.id}`, contest);
     }
   }
 
   static deleteContest(contest: Contest): Promise<any> {
-    return this.delete("/contest/" + contest.id);
+    return this.delete(`/contests/${contest.id}`);
   }
 
   static copyContest(contestId: number): Promise<Contest> {
-    return this.post(`/contest/${contestId}/copy`, {});
+    return this.post(`/contests/${contestId}/copy`, {});
   }
 
   static async exportContest(contestId: number) {
-    let url = "/contest/export/" + contestId;
+    let url = `/contests/${contestId}/export`;
     let response = await fetch(this.getBaseUrl() + url, {
       headers: Api.getAuthHeader(url),
     });
@@ -142,7 +147,7 @@ export class Api {
   }
 
   static async createPdf(contestId: number) {
-    let url = "/contest/" + contestId + "/pdf";
+    let url = "/contests/" + contestId + "/pdf";
     let response = await fetch(this.getBaseUrl() + url, {
       method: "GET",
       headers: {
@@ -153,7 +158,7 @@ export class Api {
   }
 
   static async createPdfFromTemplate(contestId: number, arrayBuffer: any) {
-    let url = "/contest/" + contestId + "/pdf";
+    let url = "/contests/" + contestId + "/pdf";
     let response = await fetch(this.getBaseUrl() + url, {
       method: "POST",
       body: arrayBuffer,
@@ -170,19 +175,19 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getProblems(contestId: number): Promise<Problem[]> {
-    return this.get("/contest/" + contestId + "/problem");
+    return this.get(`/contests/${contestId}/problems`);
   }
 
   static saveProblem(problem: Problem): Promise<Problem> {
     if (problem.id === undefined) {
-      return this.post("/problem", problem);
+      return this.post(`/contests/${problem.contestId}/problems`, problem);
     } else {
-      return this.put("/problem/" + problem.id, problem);
+      return this.put(`/problems/${problem.id}`, problem);
     }
   }
 
   static deleteProblem(problem: Problem): Promise<any> {
-    return this.delete("/problem/" + problem.id);
+    return this.delete(`/problems/${problem.id}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -190,19 +195,22 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getCompClasses(contestId: number): Promise<CompClass[]> {
-    return this.get("/contest/" + contestId + "/compClass");
+    return this.get(`/contests/${contestId}/compClasses`);
   }
 
   static saveCompClass(compClass: CompClass): Promise<CompClass> {
     if (compClass.id === undefined) {
-      return this.post("/compClass", compClass);
+      return this.post(
+        `/contests/${compClass.contestId}/compClasses`,
+        compClass
+      );
     } else {
-      return this.put("/compClass/" + compClass.id, compClass);
+      return this.put(`/compClasses/${compClass.id}`, compClass);
     }
   }
 
   static deleteCompClass(compClass: CompClass): Promise<any> {
-    return this.delete("/compClass/" + compClass.id);
+    return this.delete(`/compClasses/${compClass.id}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -210,19 +218,22 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getContenders(contestId: number): Promise<ContenderData[]> {
-    return this.get("/contest/" + contestId + "/contender");
+    return this.get(`/contests/${contestId}/contenders`);
   }
 
   static saveContender(contender: ContenderData): Promise<ContenderData> {
     if (contender.id === undefined) {
-      return this.post("/contender", contender);
+      return this.post(
+        `/contests/${contender.contestId}/contenders`,
+        contender
+      );
     } else {
-      return this.put("/contender/" + contender.id, contender);
+      return this.put(`/contenders/${contender.id}`, contender);
     }
   }
 
   static createContenders(contestId: number, nNewContenders: number) {
-    return this.put("/contest/" + contestId + "/createContenders", {
+    return this.put(`/contests/${contestId}/createContenders`, {
       count: nNewContenders,
     });
   }
@@ -232,27 +243,27 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getRaffles(contestId: number): Promise<Raffle[]> {
-    return this.get("/contest/" + contestId + "/raffle");
+    return this.get(`/contests/${contestId}/raffles`);
   }
 
   static saveRaffle(raffle: Raffle): Promise<Raffle> {
     if (raffle.id === undefined) {
-      return this.post("/raffle", raffle);
+      return this.post(`/contests/${raffle.contestId}/raffles`, raffle);
     } else {
-      return this.put("/raffle/" + raffle.id, raffle);
+      return this.put(`/raffles/${raffle.id}`, raffle);
     }
   }
 
   static deleteRaffle(raffle: Raffle): Promise<any> {
-    return this.delete("/raffle/" + raffle.id);
+    return this.delete(`/raffles/${raffle.id}`);
   }
 
   static drawWinner(raffle: Raffle): Promise<RaffleWinner> {
-    return this.post("/raffle/" + raffle.id + "/winner", {});
+    return this.post(`/raffles/${raffle.id}/winners`, {});
   }
 
   static getRaffleWinners(raffle: Raffle): Promise<RaffleWinner[]> {
-    return this.get("/raffle/" + raffle.id + "/winner");
+    return this.get(`/raffles/${raffle.id}/winners`);
   }
 
   // ---------------------------------------------------------------------------
@@ -260,19 +271,19 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getColors(): Promise<Color[]> {
-    return this.get(`/color?size=${this.defaultPageSize}`);
+    return this.get(`/organizers/${this.organizerId}/colors`);
   }
 
   static saveColor(color: Color): Promise<Color> {
     if (color.id === undefined) {
-      return this.post("/color", color);
+      return this.post(`/organizers/${this.organizerId}/colors`, color);
     } else {
-      return this.put("/color/" + color.id, color);
+      return this.put(`/colors/${color.id}`, color);
     }
   }
 
   static deleteColor(color: Color): Promise<any> {
-    return this.delete("/color/" + color.id);
+    return this.delete(`/colors/${color.id}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -280,18 +291,18 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static deleteSeries(series: Series): Promise<any> {
-    return this.delete("/series/" + series.id);
+    return this.delete(`/series/${series.id}`);
   }
 
   static getSeries(): Promise<Series[]> {
-    return this.get(`/series?size=${this.defaultPageSize}`);
+    return this.get(`/organizers/${this.organizerId}/series`);
   }
 
   static saveSeries(series: Series): Promise<Series> {
     if (series.id === undefined) {
-      return this.post("/series", series);
+      return this.post(`/organizers/${this.organizerId}/series`, series);
     } else {
-      return this.put("/series/" + series.id, series);
+      return this.put(`/series/${series.id}`, series);
     }
   }
 
@@ -300,19 +311,19 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getLocations(): Promise<CompLocation[]> {
-    return this.get(`/location?size=${this.defaultPageSize}`);
+    return this.get(`/organizers/${this.organizerId}/locations`);
   }
 
   static saveLocation(location: CompLocation): Promise<CompLocation> {
     if (location.id === undefined) {
-      return this.post("/location", location);
+      return this.post(`/organizers/${this.organizerId}/locations`, location);
     } else {
-      return this.put("/location/" + location.id, location);
+      return this.put(`/locations/${location.id}`, location);
     }
   }
 
   static deleteLocation(location: CompLocation): Promise<any> {
-    return this.delete("/location/" + location.id);
+    return this.delete(`/locations/${location.id}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -320,18 +331,18 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static deleteOrganizer(organizer: Organizer): Promise<any> {
-    return this.delete("/organizer/" + organizer.id);
+    return this.delete(`/organizers/${organizer.id}`);
   }
 
   static getOrganizers(): Promise<Organizer[]> {
-    return this.get(`/organizer?size=${this.defaultPageSize}`);
+    return this.get(`/users/${this.userId}/organizers`);
   }
 
   static saveOrganizer(organizer: Organizer): Promise<Organizer> {
     if (organizer.id === undefined) {
-      return this.post("/organizer", organizer);
+      return this.post("/organizers", organizer);
     } else {
-      return this.put("/organizer/" + organizer.id, organizer);
+      return this.put(`/organizers/${organizer.id}`, organizer);
     }
   }
 
@@ -340,16 +351,6 @@ export class Api {
   // ---------------------------------------------------------------------------
 
   static getTicks(contestId: number): Promise<Tick[]> {
-    return this.get("/contest/" + contestId + "/tick")
-      .then((ticks) => {
-        return Promise.resolve(
-          ticks.map((tick: Tick) => {
-            return { ...tick, contestId };
-          })
-        );
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
+    return this.get(`/contests/${contestId}/ticks`);
   }
 }

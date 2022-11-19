@@ -1,5 +1,6 @@
 package se.scoreboard
 
+import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import se.scoreboard.configuration.MyUserPrincipal
@@ -17,6 +18,7 @@ fun userHasRole(role: String) : Boolean {
 
 fun getUserPrincipal() : MyUserPrincipal? {
     val authentication = SecurityContextHolder.getContext().getAuthentication()
+
     if (authentication != null) {
         return authentication.principal as MyUserPrincipal
     } else {

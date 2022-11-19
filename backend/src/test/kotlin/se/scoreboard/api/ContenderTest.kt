@@ -22,7 +22,7 @@ class ContenderTest : ControllerTestBase() {
 
     @Test
     fun getContest() {
-        val contest = get<ContestDto>("/api/contest/1", HttpStatus.OK)
+        val contest = get<ContestDto>("/api/contests/1", HttpStatus.OK)
 
         assertThat(contest.id).isEqualTo(1)
         assertThat(contest.organizerId).isEqualTo(1)
@@ -37,23 +37,8 @@ class ContenderTest : ControllerTestBase() {
     }
 
     @Test
-    fun listColors() {
-        val colors = get<List<ColorDto>>("/api/color", HttpStatus.OK)
-        assertThat(colors).hasSize(3)
-
-        val color = colors.associateBy({ it.id }, { it })[2]!!
-
-        assertThat(color.id).isEqualTo(2)
-        assertThat(color.organizerId).isEqualTo(1)
-        assertThat(color.name).isEqualTo("Green")
-        assertThat(color.rgbPrimary).isEqualTo("#00ff00")
-        assertThat(color.rgbSecondary).isNull()
-        assertThat(color.shared).isEqualTo(true)
-    }
-
-    @Test
     fun listCompClasses() {
-        val compClasses = get<List<CompClassDto>>("/api/compClass", HttpStatus.OK)
+        val compClasses = get<List<CompClassDto>>("/api/contests/1/compClasses", HttpStatus.OK)
         assertThat(compClasses).hasSize(3)
 
         val compClass = compClasses.associateBy({ it.id }, { it })[3]!!
@@ -68,7 +53,7 @@ class ContenderTest : ControllerTestBase() {
 
     @Test
     fun listProblems() {
-        val problems = get<List<ProblemDto>>("/api/problem", HttpStatus.OK)
+        val problems = get<List<ProblemDto>>("/api/contests/1/problems", HttpStatus.OK)
         assertThat(problems).hasSize(8)
 
         val problem = problems.associateBy({ it.id }, { it })[8]!!
@@ -83,7 +68,7 @@ class ContenderTest : ControllerTestBase() {
 
     @Test
     fun getContenderByRegistrationCode() {
-        val contender = get<ContenderDto>("/api/contender/findByCode?code=ABCD1234", HttpStatus.OK)
+        val contender = get<ContenderDto>("/api/contenders/findByCode?code=ABCD1234", HttpStatus.OK)
 
         assertThat(contender.id).isEqualTo(1)
         assertThat(contender.contestId).isEqualTo(1)
@@ -96,12 +81,12 @@ class ContenderTest : ControllerTestBase() {
 
     @Test
     fun getContenderByIncorrectRegistrationCode() {
-        get<ContenderDto>("/api/contender/findByCode?code=CODE9999", HttpStatus.NOT_FOUND)
+        get<ContenderDto>("/api/contenders/findByCode?code=CODE9999", HttpStatus.NOT_FOUND)
     }
 
     @Test
     fun getContenderById() {
-        val contender = get<ContenderDto>("/api/contender/1", HttpStatus.OK)
+        val contender = get<ContenderDto>("/api/contenders/1", HttpStatus.OK)
         assertThat(contender.id).isEqualTo(1)
     }
 
@@ -119,10 +104,10 @@ class ContenderTest : ControllerTestBase() {
         @Test
         @Order(1)
         fun enterContest() {
-            var contender = get<ContenderDto>("/api/contender/1", HttpStatus.OK)
+            var contender = get<ContenderDto>("/api/contenders/1", HttpStatus.OK)
 
             contender.name = "Morty"
-            contender = put("/api/contender/1", contender, HttpStatus.OK)
+            contender = put("/api/contenders/1", contender, HttpStatus.OK)
 
             var entity = getContenderEntity(1)
             assertThat(entity.name).isEqualTo("Morty")
@@ -130,7 +115,7 @@ class ContenderTest : ControllerTestBase() {
             assertThat(entity.entered).isNull()
 
             contender.compClassId = 2
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.OK)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.OK)
 
             entity = getContenderEntity(1)
             assertThat(entity.compClass?.id!!).isEqualTo(2)
@@ -145,7 +130,7 @@ class ContenderTest : ControllerTestBase() {
 
             contender.name = "Rick"
             contender.compClassId = 1
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.OK)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.OK)
 
             val entity = getContenderEntity(1)
             assertThat(entity.name).isEqualTo("Rick")
@@ -159,7 +144,7 @@ class ContenderTest : ControllerTestBase() {
             val contender = getContenderDto(1)
 
             contender.name = null
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.CONFLICT)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.CONFLICT)
         }
 
         @Test
@@ -168,7 +153,7 @@ class ContenderTest : ControllerTestBase() {
             val contender = getContenderDto(1)
 
             contender.compClassId = null
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.CONFLICT)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.CONFLICT)
         }
 
         @Test
@@ -177,7 +162,7 @@ class ContenderTest : ControllerTestBase() {
             val contender = getContenderDto(1)
 
             contender.registrationCode = "CODE9999"
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.CONFLICT)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.CONFLICT)
         }
 
         @Test
@@ -186,7 +171,7 @@ class ContenderTest : ControllerTestBase() {
             val contender = getContenderDto(1)
 
             contender.entered = OffsetDateTime.now()
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.CONFLICT)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.CONFLICT)
         }
 
         @Test
@@ -195,7 +180,7 @@ class ContenderTest : ControllerTestBase() {
             val contender = getContenderDto(1)
 
             contender.disqualified = true
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.CONFLICT)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.CONFLICT)
         }
 
         @Test
@@ -209,7 +194,7 @@ class ContenderTest : ControllerTestBase() {
 
             contender.name = "Morty"
             contender.compClassId = 2
-            put<ContenderDto>("/api/contender/1", contender, HttpStatus.FORBIDDEN)
+            put<ContenderDto>("/api/contenders/1", contender, HttpStatus.FORBIDDEN)
         }
     }
 
@@ -241,7 +226,7 @@ class ContenderTest : ControllerTestBase() {
             setStartAndEndTime(OffsetDateTime.now().plusSeconds(1), OffsetDateTime.now().plusHours(3))
 
             val tick = TickDto(null, null, 1, 1, true)
-            post<Any>("/api/tick", tick, HttpStatus.FORBIDDEN)
+            post<Any>("/api/contenders/1/ticks", tick, HttpStatus.FORBIDDEN)
         }
 
         @Test
@@ -252,10 +237,10 @@ class ContenderTest : ControllerTestBase() {
             var tick = TickDto(null, null, 1, 1, false)
 
             setStartAndEndTime(startTime, now.minusSeconds(1))
-            tick = post("/api/tick", tick, HttpStatus.CREATED)
+            tick = post("/api/contenders/1/ticks", tick, HttpStatus.CREATED)
 
             setStartAndEndTime(startTime, now.minusMinutes(15).plusSeconds(1))
-            put<TickDto>("/api/tick/${tick.id}", tick, HttpStatus.OK)
+            put<TickDto>("/api/ticks/${tick.id}", tick, HttpStatus.OK)
         }
 
         @Test
@@ -265,7 +250,7 @@ class ContenderTest : ControllerTestBase() {
             val tick = TickDto(1, null, 1, 1, false)
 
             setStartAndEndTime(now.minusHours(3), now.minusMinutes(15))
-            put<TickDto>("/api/tick/1", tick, HttpStatus.FORBIDDEN)
+            put<TickDto>("/api/ticks/1", tick, HttpStatus.FORBIDDEN)
         }
 
         @Test
@@ -279,7 +264,7 @@ class ContenderTest : ControllerTestBase() {
             contestRepository.save(contest)
 
             val tick = TickDto(null, null, 1, 5, true)
-            post<Any>("/api/tick", tick, HttpStatus.FORBIDDEN)
+            post<Any>("/api/contenders/1/ticks", tick, HttpStatus.FORBIDDEN)
         }
     }
 
@@ -308,7 +293,7 @@ class ContenderTest : ControllerTestBase() {
         @Order(1)
         fun tickProblemBeforeRegistered() {
             val tick = TickDto(null, null, 1, 1, true)
-            post<Any>("/api/tick", tick, HttpStatus.CONFLICT)
+            post<Any>("/api/contenders/1/ticks", tick, HttpStatus.CONFLICT)
         }
 
         @Test
@@ -317,7 +302,7 @@ class ContenderTest : ControllerTestBase() {
             registerContender()
             openContest()
 
-            val score: ScoreDto = get("/api/contender/1/score", HttpStatus.OK)
+            val score: ScoreDto = get("/api/contenders/1/score", HttpStatus.OK)
 
             assertThat(score.total).isZero()
             assertThat(score.qualifying).isZero()
@@ -327,7 +312,7 @@ class ContenderTest : ControllerTestBase() {
         @Order(3)
         fun tickProblem() {
             var tick = TickDto(null, null, 1, 5, true)
-            tick = post("/api/tick", tick, HttpStatus.CREATED)
+            tick = post("/api/contenders/1/ticks", tick, HttpStatus.CREATED)
 
             val entity = tickRepository.findByIdOrNull(tick.id)!!
             assertThat(entity.timestamp).isCloseTo(OffsetDateTime.now(), Assertions.within(1, ChronoUnit.SECONDS))
@@ -340,16 +325,16 @@ class ContenderTest : ControllerTestBase() {
         @Order(4)
         fun tickProblemTwice() {
             val tick = TickDto(null, null, 1, 5, true)
-            post<TickDto>("/api/tick", tick, HttpStatus.CONFLICT)
+            post<TickDto>("/api/contenders/1/ticks", tick, HttpStatus.CONFLICT)
         }
 
         @Test
         @Order(5)
         fun removeTick() {
             var tick = TickDto(null, null, 1, 8, false)
-            tick = post("/api/tick", tick, HttpStatus.CREATED)
+            tick = post("/api/contenders/1/ticks", tick, HttpStatus.CREATED)
 
-            delete<TickDto>("/api/tick/${tick.id}", HttpStatus.NO_CONTENT)
+            delete<TickDto>("/api/ticks/${tick.id}", HttpStatus.NO_CONTENT)
 
             assertThat(tickRepository.findByIdOrNull(tick.id)).isNull()
         }
@@ -358,12 +343,12 @@ class ContenderTest : ControllerTestBase() {
         @Order(6)
         fun editTick() {
             var tick = TickDto(null, null, 1, 8, false)
-            tick = post("/api/tick", tick, HttpStatus.CREATED)
+            tick = post("/api/contenders/1/ticks", tick, HttpStatus.CREATED)
 
             tick.problemId = 7
             tick.flash = true
 
-            put<TickDto>("/api/tick/${tick.id}", tick, HttpStatus.OK)
+            put<TickDto>("/api/ticks/${tick.id}", tick, HttpStatus.OK)
 
             val entity = tickRepository.findByIdOrNull(tick.id)!!
             assertThat(entity.problem?.id!!).isEqualTo(7)
@@ -377,7 +362,7 @@ class ContenderTest : ControllerTestBase() {
 
             fun tickProblem(problemId: Int, isFlash: Boolean) {
                 val tick = TickDto(null, null, 1, problemId, isFlash)
-                post<TickDto>("/api/tick", tick, HttpStatus.CREATED)
+                post<TickDto>("/api/contenders/1/ticks", tick, HttpStatus.CREATED)
             }
 
             tickProblem(1, false)
@@ -389,7 +374,7 @@ class ContenderTest : ControllerTestBase() {
             tickProblem(7, true)
             tickProblem(8, false)
 
-            val score = get<ScoreDto>("/api/contender/1/score", HttpStatus.OK)
+            val score = get<ScoreDto>("/api/contenders/1/score", HttpStatus.OK)
             assertThat(score.total).isEqualTo(1143)
             assertThat(score.qualifying).isEqualTo(768)
         }
@@ -397,7 +382,7 @@ class ContenderTest : ControllerTestBase() {
         @Test
         @Order(8)
         fun listTicks() {
-            val ticks = get<List<TickDto>>("/api/tick", HttpStatus.OK)
+            val ticks = get<List<TickDto>>("/api/contenders/1/ticks", HttpStatus.OK)
             assertThat(ticks).hasSize(8)
 
             val tick = ticks.associateBy({ it.problemId }, { it })[6]!!
@@ -415,7 +400,7 @@ class ContenderTest : ControllerTestBase() {
             contender.disqualified = true
             contenderRepository.save(contender)
 
-            val score = get<ScoreDto>("/api/contender/1/score", HttpStatus.OK)
+            val score = get<ScoreDto>("/api/contenders/1/score", HttpStatus.OK)
             assertThat(score.total).isZero()
             assertThat(score.qualifying).isZero()
         }

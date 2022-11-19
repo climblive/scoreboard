@@ -2,6 +2,7 @@ package se.scoreboard.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.Messages
 import se.scoreboard.data.domain.Color
@@ -10,11 +11,18 @@ import se.scoreboard.dto.ColorDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.validation.RgbColorValidator
+import javax.transaction.Transactional
 
 @Service
 class ColorService @Autowired constructor(
-    colorRepository: ColorRepository,
+    private val colorRepository: ColorRepository,
     override var entityMapper: AbstractMapper<Color, ColorDto>) : AbstractDataService<Color, ColorDto, Int>(colorRepository) {
+
+    @Transactional
+    fun findAllByOrganizerId(organizerId: Int) : ResponseEntity<List<ColorDto>> {
+        val colors = colorRepository.findAllByOrganizerId(organizerId)
+        return ResponseEntity(colors.map { entityMapper.convertToDto(it) }, HttpStatus.OK)
+    }
 
     override fun onCreate(phase: Phase, new: Color) {
         when (phase) {

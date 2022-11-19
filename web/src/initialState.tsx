@@ -16,7 +16,6 @@ const initialState: StoreState = {
   problems: [],
   compClasses: [],
   ticks: [],
-  colors: new Map(),
   pagingCounter: 0,
   scoreboardData: [],
   currentCompClassId: 0,

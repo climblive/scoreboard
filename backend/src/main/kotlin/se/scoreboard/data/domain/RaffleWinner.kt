@@ -13,6 +13,10 @@ open class RaffleWinner (
     @Column(name = "id", unique = true, nullable = false)
     override var id: Int? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", nullable = false)
+    open var organizer: Organizer? = null,
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "raffle_id", nullable = false)
     @Access(AccessType.PROPERTY)

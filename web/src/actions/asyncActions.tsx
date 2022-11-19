@@ -1,12 +1,16 @@
-import { Problem } from "../model/problem";
-import { ContenderData } from "../model/contenderData";
 import { Dispatch } from "redux";
+import { ContenderData } from "../model/contenderData";
+import { Problem } from "../model/problem";
+import { ProblemState } from "../model/problemState";
+import { ScoreboardPushItem } from "../model/scoreboardPushItem";
+import { StoreState } from "../model/storeState";
+import { Tick } from "../model/tick";
+import { ScoreboardActions } from "../reducers/reducer";
 import { Api } from "../utils/Api";
 import {
   clearPushItemsQueue,
   createTick,
   deleteTick,
-  receiveColors,
   receiveCompClasses,
   receiveContenderData,
   receiveContenderNotFound,
@@ -21,11 +25,6 @@ import {
   updateScoreboardTimer,
   updateTick,
 } from "./actions";
-import { StoreState } from "../model/storeState";
-import { ProblemState } from "../model/problemState";
-import { Tick } from "../model/tick";
-import { ScoreboardPushItem } from "../model/scoreboardPushItem";
-import { ScoreboardActions } from "../reducers/reducer";
 
 export function loadUserData(code: string) {
   return (dispatch: Dispatch<ScoreboardActions>) => {
@@ -55,9 +54,6 @@ export function loadUserData(code: string) {
             dispatch(receiveTicks(ticks));
           }
         );
-        Api.getColors(contenderData.registrationCode).then((colors) => {
-          dispatch(receiveColors(colors));
-        });
       })
       .catch(() => dispatch(receiveContenderNotFound()));
   };

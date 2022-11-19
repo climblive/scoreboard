@@ -204,7 +204,7 @@ const ContenderList = (props: Props & PropsFromRedux) => {
       number = parseInt(numberOfNewContenders);
     }
 
-    if (number === Number.NaN || number === 0) {
+    if (isNaN(number) || number === 0) {
       return;
     }
 

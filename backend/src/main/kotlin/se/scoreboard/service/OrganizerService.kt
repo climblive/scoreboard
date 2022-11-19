@@ -1,6 +1,8 @@
 package se.scoreboard.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.User
@@ -10,10 +12,11 @@ import se.scoreboard.dto.OrganizerDto
 import se.scoreboard.getUserPrincipal
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.userHasRole
+import javax.transaction.Transactional
 
 @Service
 class OrganizerService @Autowired constructor(
-    organizerRepository: OrganizerRepository,
+    private val organizerRepository: OrganizerRepository,
     private var userRepository: UserRepository,
     override var entityMapper: AbstractMapper<Organizer, OrganizerDto>) : AbstractDataService<Organizer, OrganizerDto, Int>(
         organizerRepository) {

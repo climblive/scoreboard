@@ -17,9 +17,4 @@ abstract class LocationMapper : AbstractMapper<Location, LocationDto>() {
             Mapping(target = "contests", ignore = true)
     )
     abstract override fun convertToEntity(source: LocationDto): Location
-
-    @AfterMapping
-    fun afterMapping(source: LocationDto, @MappingTarget target: Location) {
-        target.organizer = entityManager.getReference(Organizer::class.java, source.organizerId)
-    }
 }

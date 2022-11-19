@@ -1,9 +1,8 @@
 package se.scoreboard.data.domain
 
-import java.util.*
+import java.io.Serializable
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
-import java.io.Serializable
 
 @Entity
 @Table(name = "series")
@@ -21,4 +20,4 @@ open class Series (
     open var name: String? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "series")
-    open var contests: MutableSet<Contest> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var contests: MutableList<Contest> = mutableListOf()) : Serializable, AbstractEntity<Int>

@@ -7,6 +7,7 @@ import se.scoreboard.data.domain.Problem
 import se.scoreboard.data.repo.ProblemRepository
 import se.scoreboard.dto.ProblemDto
 import se.scoreboard.mapper.AbstractMapper
+import javax.transaction.Transactional
 
 @Service
 class ProblemService @Autowired constructor(
@@ -18,6 +19,12 @@ class ProblemService @Autowired constructor(
         MAKE_ROOM,
         MOVE_DOWN,
         CLOSE_GAP
+    }
+
+    @Transactional
+    fun getProblems(contestId: Int): List<ProblemDto> {
+        val problems = problemRepository.findAllByContestId(contestId)
+        return problems.map { entityMapper.convertToDto(it) }
     }
 
     override fun onCreate(phase: Phase, new: Problem) {

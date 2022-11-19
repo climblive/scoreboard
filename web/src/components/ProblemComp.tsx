@@ -1,17 +1,15 @@
+import * as Chroma from "chroma-js";
 import * as React from "react";
-import "./ProblemComp.css";
 import { Problem } from "../model/problem";
 import { ProblemState } from "../model/problemState";
-import { Color } from "../model/color";
 import { Tick } from "../model/tick";
-import StatusComp from "./StatusComp";
+import "./ProblemComp.css";
 import Spinner from "./Spinner";
-import * as Chroma from "chroma-js";
+import StatusComp from "./StatusComp";
 
 export interface ProblemCompProps {
   problem: Problem;
   tick?: Tick;
-  colors: Map<number, Color>;
   isExpanded: boolean;
   isUpdating: boolean;
   setProblemState?: (
@@ -25,7 +23,6 @@ export interface ProblemCompProps {
 function ProblemComp({
   problem,
   tick,
-  colors,
   isExpanded,
   isUpdating,
   setProblemState,
@@ -37,7 +34,7 @@ function ProblemComp({
     ? ProblemState.FLASHED
     : ProblemState.SENT;
   const className = "problem " + (tick ? "done" : "");
-  let color = colors.get(problem.colorId)!;
+  let color = problem.color;
   if (!color) {
     color = {
       id: -1,

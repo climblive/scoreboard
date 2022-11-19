@@ -1,7 +1,8 @@
 import { Divider, TableCell, Typography, useTheme } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { OrderedMap } from "immutable";
-import React from "react";
+import React, { CSSProperties } from "react";
+import { Color } from "src/model/color";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import { Problem } from "src/model/problem";
@@ -16,8 +17,7 @@ interface Props {
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
   editable?: boolean;
-  getColorName: (problem: Problem) => string;
-  getProblemStyle: (colorId: number) => object;
+  getProblemStyle: (color?: Color) => CSSProperties;
   breakpoints?: Map<number, string>;
 }
 
@@ -50,10 +50,10 @@ const ProblemView = (props: Props) => {
     </TableCell>,
     <TableCell>
       <div
-        style={props.getProblemStyle(props.problem.colorId!)}
+        style={props.getProblemStyle(props.problem.color)}
         className={classes.colorBox}
       >
-        {props.problem.name ?? props.getColorName(props.problem)}
+        {props.problem.name ?? props.problem.color?.name}
       </div>
     </TableCell>,
     <TableCell>{props.problem.points}</TableCell>,

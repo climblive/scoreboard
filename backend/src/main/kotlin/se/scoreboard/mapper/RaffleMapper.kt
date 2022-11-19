@@ -14,12 +14,8 @@ abstract class RaffleMapper : AbstractMapper<Raffle, RaffleDto>() {
 
     @InheritInverseConfiguration(name = "convertToDto")
     @Mappings(
-            Mapping(target = "winners", ignore = true)
+            Mapping(target = "winners", ignore = true),
+            Mapping(target = "organizer", ignore = true)
     )
     abstract override fun convertToEntity(source: RaffleDto): Raffle
-
-    @AfterMapping
-    fun afterMapping(source: RaffleDto, @MappingTarget target: Raffle) {
-        target.contest = entityManager.getReference(Contest::class.java, source.contestId)
-    }
 }

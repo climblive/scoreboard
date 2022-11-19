@@ -24,16 +24,17 @@ export function login(code: string) {
     Api.setCredentials(code);
     Api.getUser()
       .then((userData) => {
+        Api.setUserId(userData.id);
         localStorage.setItem("credentials", code);
+        let organizers = userData.organizers;
+        dispatch(actions.replaceOrganizers(organizers));
 
-        reloadOrganizers()(dispatch).then(() => {
-          let organizer: Organizer = pickOrganizer(getState().organizers!);
-          Api.setOrganizerId(organizer.id);
-          dispatch(actions.selectOrganizer(organizer.id!));
+        let organizer: Organizer = pickOrganizer(getState().organizers!);
+        Api.setOrganizerId(organizer.id);
+        dispatch(actions.selectOrganizer(organizer.id!));
 
-          dispatch(actions.setLoggingIn(false));
-          dispatch(actions.setLoggedInUser(userData));
-        });
+        dispatch(actions.setLoggingIn(false));
+        dispatch(actions.setLoggedInUser(userData));
       })
       .catch((error) => {
         Api.setCredentials(undefined);

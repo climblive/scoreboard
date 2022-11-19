@@ -1,9 +1,8 @@
 package se.scoreboard.data.domain
 
-import java.util.*
+import java.io.Serializable
 import javax.persistence.*
 import javax.persistence.GenerationType.IDENTITY
-import java.io.Serializable
 
 @Entity
 @Table(name = "color")
@@ -27,7 +26,4 @@ open class Color (
     open var rgbSecondary: String? = null,
 
     @Column(name = "shared")
-    open var shared: Boolean? = null,
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
-    open var problems: MutableSet<Problem> = HashSet(0)) : Serializable, AbstractEntity<Int>
+    open var shared: Boolean? = null) : Serializable, AbstractEntity<Int>

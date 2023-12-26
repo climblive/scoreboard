@@ -183,7 +183,7 @@ class ScoreboardView extends React.Component<
               <ScoreboardFinalistListContainer compClass={currentCompClass} />
             </div>
           )}
-          <div className="header">Poäng</div>
+          <div className="header">Placering</div>
           <div className="showLarge scoreboardListContainer total">
             {totalList}
           </div>

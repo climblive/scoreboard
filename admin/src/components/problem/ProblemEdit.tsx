@@ -85,6 +85,14 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
     setProblem({ ...problem, name: name !== "" ? name : undefined });
   };
 
+  const onDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let description: string | undefined = e.target.value;
+    if (description.length === 0) {
+      description = undefined;
+    }
+    setProblem({ ...problem, description });
+  };
+
   const onPointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProblem({ ...problem, points: parseInt(e.target.value) || 0 });
   };
@@ -153,6 +161,12 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
         disabled={!props.editable}
         value={problem.name}
         onChange={onNameChange}
+      />
+      <TextField
+        label="Description"
+        disabled={!props.editable}
+        value={problem.description}
+        onChange={onDescriptionChange}
       />
       <TextField
         label="Points"

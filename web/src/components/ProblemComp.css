@@ -56,11 +56,15 @@
   font-size: 16px;
 }
 
-.problem .color {
+.problem .nameAndDescription {
   text-align: left;
   margin-left: 15px;
   margin-right: auto;
-  font-size: 16px;
+  font-size: 1rem;
+}
+
+.problem .description {
+  font-size: 0.75rem;
 }
 
 .problem .points {

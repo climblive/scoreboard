@@ -30,6 +30,9 @@ open class Problem (
     @Column(name = "name", nullable = true, length = 64)
     open var name: String? = null,
 
+    @Column(name = "description", length = 1024)
+    open var description: String? = null,
+
     @Column(name = "points", nullable = false)
     open var points: Int = 0,
 

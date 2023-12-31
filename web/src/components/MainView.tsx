@@ -191,6 +191,14 @@ class MainView extends React.Component<
                 </>
               )}
             </div>
+            <a
+              className="scoreboardLink"
+              href={`/scoreboard/${this.props.contest.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Öppna live resultat
+            </a>
             <div className="headerRow">
               <div
                 className={

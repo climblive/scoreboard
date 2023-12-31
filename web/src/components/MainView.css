@@ -50,3 +50,7 @@
   flex-grow: 1;
   flex-basis: 0;
 }
+
+.scoreboardLink {
+  padding: 0.5rem 0;
+}

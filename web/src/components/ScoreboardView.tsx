@@ -133,6 +133,7 @@ class ScoreboardView extends React.Component<
 
       return (
         <div className="scoreboardView">
+          <h1>{this.props.contest.name}</h1>
           {this.props.raffleWinners && (
             <div className="winnerOuterContainer">
               <div className="winnerInnerContainer">
@@ -149,7 +150,7 @@ class ScoreboardView extends React.Component<
             </div>
           )}
 
-          <div style={{ margin: 20 }} className="showSmall headerRow">
+          <div className="showSmall headerRow">
             {scoreboardData.map((scoreboardList) => (
               <div
                 key={scoreboardList.compClass.id}

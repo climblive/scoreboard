@@ -7,6 +7,17 @@
   position: relative;
 }
 
+.scoreboardView h1 {
+  text-align: center;
+}
+
+@media screen and (max-width: 899px) {
+  .scoreboardView h1 {
+    font-size: 1rem;
+    line-height: 2rem;
+  }
+}
+
 .scoreboardListContainer {
   display: flex;
   flex-shrink: 0;

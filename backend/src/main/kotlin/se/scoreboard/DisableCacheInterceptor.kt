@@ -1,8 +1,8 @@
 package se.scoreboard
 
 import org.springframework.web.servlet.HandlerInterceptor
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.web.servlet.ModelAndView
 
 class DisableCacheInterceptor : HandlerInterceptor {

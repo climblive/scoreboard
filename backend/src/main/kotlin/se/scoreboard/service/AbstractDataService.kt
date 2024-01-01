@@ -17,7 +17,7 @@ import se.scoreboard.security.CustomPermissionEvaluator
 import se.scoreboard.userHasRole
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 abstract class AbstractDataService<EntityType : AbstractEntity<ID>, DtoType, ID> constructor(

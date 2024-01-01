@@ -27,7 +27,7 @@ import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 

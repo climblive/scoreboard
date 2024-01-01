@@ -108,6 +108,7 @@ class ScoreboardView extends React.Component<
 
       let headers = scoreboardData.map((scoreboardList) => (
         <ScoreboardClassHeaderComp
+          numberOfContenders={scoreboardList.contenders.length}
           key={scoreboardList.compClass.name}
           compClass={scoreboardList.compClass}
         />

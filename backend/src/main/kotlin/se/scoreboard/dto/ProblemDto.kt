@@ -7,8 +7,9 @@ data class ProblemDto (
     var contestId: Int?,
     var number: Int,
     var name: String?,
+    var description: String?,
     var points: Int,
     var flashBonus: Int?) {
 
-    constructor() : this(null, null, null, null, Int.MAX_VALUE, null, Int.MAX_VALUE, null)
+    constructor() : this(null, null, null, null, Int.MAX_VALUE, null, null, Int.MAX_VALUE, null)
 }

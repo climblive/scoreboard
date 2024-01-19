@@ -7,6 +7,7 @@ export interface Problem {
   contestId: number;
   number: number;
   name?: string;
+  description?: string;
   points?: number;
   flashBonus?: number;
 }

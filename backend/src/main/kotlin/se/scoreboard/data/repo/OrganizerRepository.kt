@@ -7,6 +7,4 @@ import se.scoreboard.data.domain.Organizer
 
 @Repository
 interface OrganizerRepository : ScoreboardRepository<Organizer, Int> {
-    @Query("SELECT o FROM Organizer o WHERE o.id IN :organizerIds")
-    fun findAllByOrganizerIds(@Param("organizerIds") organizerIds: List<Int>): List<Organizer>
 }

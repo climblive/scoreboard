@@ -46,7 +46,15 @@
   flex-shrink: 0;
 }
 
+.headerRow.showSmall {
+  margin: 0 20px;
+}
+
 .headerRow .selectorWrapper {
   flex-grow: 1;
   flex-basis: 0;
+}
+
+.scoreboardLink {
+  padding: 0.5rem 0;
 }

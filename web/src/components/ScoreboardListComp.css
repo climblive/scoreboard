@@ -37,14 +37,17 @@
     color: inherit;
     background-color: inherit;
   }
+
   10% {
     color: #888;
     background-color: white;
   }
+
   90% {
     color: #888;
     background-color: white;
   }
+
   100% {
     color: inherit;
     background-color: inherit;
@@ -87,7 +90,6 @@
 
 .compClassHeader .compClass {
   margin-bottom: 10px;
-  padding-top: 20px;
   font-size: 24px;
   font-weight: bolder;
 }
@@ -102,12 +104,15 @@
   0% {
     opacity: 0.1;
   }
+
   25% {
     opacity: 1;
   }
+
   75% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.1;
   }

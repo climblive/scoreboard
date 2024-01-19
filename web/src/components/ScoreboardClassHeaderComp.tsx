@@ -4,10 +4,12 @@ import { CompClass } from "../model/compClass";
 
 export interface ScoreboardClassHeaderCompProps {
   compClass: CompClass;
+  numberOfContenders?: number;
 }
 
 export function ScoreboardClassHeaderComp({
   compClass,
+  numberOfContenders,
 }: ScoreboardClassHeaderCompProps) {
   return (
     <div className="compClassHeader" style={{ color: compClass.color }}>
@@ -16,7 +18,7 @@ export function ScoreboardClassHeaderComp({
           "compClass-" + compClass.scoreboardIndex + " showLarge compClass"
         }
       >
-        {compClass.name}
+        {compClass.name} {numberOfContenders ? `(${numberOfContenders})` : null}
       </div>
       {!compClass.inProgress && (
         <div className="status">{compClass.statusString}</div>

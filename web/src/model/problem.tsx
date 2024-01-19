@@ -8,4 +8,5 @@ export interface Problem {
   points: number;
   flashBonus?: number;
   name: string;
+  description?: string;
 }

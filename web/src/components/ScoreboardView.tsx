@@ -108,6 +108,7 @@ class ScoreboardView extends React.Component<
 
       let headers = scoreboardData.map((scoreboardList) => (
         <ScoreboardClassHeaderComp
+          numberOfContenders={scoreboardList.contenders.length}
           key={scoreboardList.compClass.name}
           compClass={scoreboardList.compClass}
         />
@@ -132,6 +133,7 @@ class ScoreboardView extends React.Component<
 
       return (
         <div className="scoreboardView">
+          <h1>{this.props.contest.name}</h1>
           {this.props.raffleWinners && (
             <div className="winnerOuterContainer">
               <div className="winnerInnerContainer">
@@ -148,7 +150,7 @@ class ScoreboardView extends React.Component<
             </div>
           )}
 
-          <div style={{ margin: 20 }} className="showSmall headerRow">
+          <div className="showSmall headerRow">
             {scoreboardData.map((scoreboardList) => (
               <div
                 key={scoreboardList.compClass.id}
@@ -183,7 +185,7 @@ class ScoreboardView extends React.Component<
               <ScoreboardFinalistListContainer compClass={currentCompClass} />
             </div>
           )}
-          <div className="header">Poäng</div>
+          <div className="header">Placering</div>
           <div className="showLarge scoreboardListContainer total">
             {totalList}
           </div>

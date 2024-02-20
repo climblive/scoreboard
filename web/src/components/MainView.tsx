@@ -184,12 +184,8 @@ class MainView extends React.Component<
               <div className="points">{totalPoints}</div>
               <div className="pointsDesc total">Totalpoäng</div>
 
-              {this.props.contest.finalEnabled && (
-                <>
-                  <div className="pointsDesc">{qualifyingProblems} bästa</div>
-                  <div className="points">{qualifyingScore}</div>
-                </>
-              )}
+              <div className="pointsDesc">{qualifyingProblems} bästa</div>
+              <div className="points">{qualifyingScore}</div>
             </div>
             <a
               className="scoreboardLink"

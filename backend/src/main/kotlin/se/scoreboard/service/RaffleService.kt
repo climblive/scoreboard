@@ -69,13 +69,20 @@ class RaffleService @Autowired constructor(
         val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.isRegistered() && !(contender.id in winners) }
 
         contendersInTheDraw?.takeIf { it.isNotEmpty() }?.let { draw ->
+            val compClassSizes: MutableMap<Int, Int> = mutableMapOf()
+
+            draw.forEach {
+                val compClassId = it.compClass?.id
+                if (compClassId != null) {
+                    var count = compClassSizes[compClassId] ?: 0
+                    compClassSizes[compClassId] = count + 1
+                }
+            }
+
             val itemWeights: MutableList<Pair<Contender, Double>> = mutableListOf()
             for (i in draw) {
-                if (i.compClass?.id == 112) {
-                    itemWeights.add(Pair(i, 68.0/20.0))
-                } else {
-                    itemWeights.add(Pair(i, 68.0/48.0))
-                }
+                val weight = draw.size.toDouble() / (compClassSizes[i.compClass?.id] ?: 0)
+                itemWeights.add(Pair(i, weight))
             }
             val distribution = EnumeratedDistribution<Contender>(itemWeights)
 

@@ -383,26 +383,26 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               labelPlacement="end"
             />
             {contest.finalEnabled && (
-              <>
-                <TextField
-                  type="number"
-                  label="Number of qualifying problems"
-                  value={contest.qualifyingProblems}
-                  onChange={onQualifyingProblemsChange}
-                />
-                <TextField
-                  type="number"
-                  label="Number of finalists"
-                  value={contest.finalists}
-                  onChange={onFinalistsChange}
-                />
-              </>
+              <TextField
+                type="number"
+                label="Number of finalists"
+                value={contest.finalists}
+                onChange={onFinalistsChange}
+              />
             )}
+            <TextField
+              type="number"
+              label="Number of qualifying problems"
+              value={contest.qualifyingProblems}
+              onChange={onQualifyingProblemsChange}
+              helperText="The number of (hardest) problems that count towards the score"
+            />
             <TextField
               type="number"
               label="Grace period (minutes)"
               value={contest.gracePeriod}
               onChange={onGracePeriodChange}
+              helperText="Extra time after the end of the contest during which contenders can enter their last results"
             />
           </div>
           <div

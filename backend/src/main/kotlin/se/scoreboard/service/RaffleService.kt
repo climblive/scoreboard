@@ -1,22 +1,21 @@
 package se.scoreboard.service
 
+import org.apache.commons.math3.distribution.EnumeratedDistribution
+import org.apache.commons.math3.util.Pair
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import se.scoreboard.data.domain.Contender
-import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.Raffle
 import se.scoreboard.data.domain.RaffleWinner
 import se.scoreboard.data.domain.extension.isRegistered
 import se.scoreboard.data.repo.RaffleRepository
 import se.scoreboard.data.repo.RaffleWinnerRepository
 import se.scoreboard.dto.RaffleDto
-import se.scoreboard.dto.RaffleWinnerDto
 import se.scoreboard.exception.WebException
 import se.scoreboard.mapper.AbstractMapper
 import se.scoreboard.nowWithoutNanos
-import java.time.OffsetDateTime
+
 
 @Service
 class RaffleService @Autowired constructor(
@@ -70,11 +69,28 @@ class RaffleService @Autowired constructor(
         val contendersInTheDraw = raffle.contest?.contenders?.filter { contender -> contender.isRegistered() && !(contender.id in winners) }
 
         contendersInTheDraw?.takeIf { it.isNotEmpty() }?.let { draw ->
-            var winner: RaffleWinner = RaffleWinner(
+            val compClassSizes = draw.groupingBy { it.compClass?.id }.eachCount()
+            val drawSize = draw.size.toDouble()
+
+            val itemWeights: MutableList<Pair<Contender, Double>> = mutableListOf()
+            for (contender in draw) {
+                val compClassSize = compClassSizes[contender.compClass?.id]
+                val weight = if (compClassSize != null && compClassSize != 0) {
+                    drawSize / compClassSize
+                } else {
+                    1.0
+                }
+
+                itemWeights.add(Pair(contender, weight))
+            }
+
+            val distribution = EnumeratedDistribution(itemWeights)
+
+            var winner = RaffleWinner(
                     null,
                     raffle.organizer,
                     raffle,
-                    draw.random(),
+                    distribution.sample(),
                     nowWithoutNanos())
 
             winner = raffleWinnerRepository.save(winner)

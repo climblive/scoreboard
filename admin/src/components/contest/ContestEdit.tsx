@@ -4,8 +4,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
 import DescriptionIcon from "@material-ui/icons/Description";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
@@ -14,7 +14,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Alert from "@material-ui/lab/Alert";
 import { saveAs } from "file-saver";
 import React, { useEffect, useMemo, useState } from "react";
-import { connect, ConnectedProps } from "react-redux";
+import { ConnectedProps, connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Api } from "src/utils/Api";
@@ -227,28 +227,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
   };
 
   const isNew = contest.id === undefined;
-
-  const createPdfFromTemplate = (file: Blob) => {
-    let reader = new FileReader();
-    reader.onload = (evt: any) => {
-      let arrayBuffer = evt.currentTarget.result;
-      setCompilingPdf(true);
-      Api.createPdfFromTemplate(contest.id!, arrayBuffer)
-        .then((response) => {
-          saveAs(response, "contest.pdf");
-        })
-        .catch((error) => {
-          setErrorMessage(error);
-        })
-        .finally(() => setCompilingPdf(false));
-    };
-
-    reader.onerror = (evt: any) => {
-      setErrorMessage("Failed to load file: " + evt);
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
 
   const createPdf = () => {
     setCompilingPdf(true);
@@ -473,7 +451,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
       <CreatePdfDialog
         open={showPopup}
         createPdf={createPdf}
-        createPdfFromTemplate={createPdfFromTemplate}
         onClose={closePopup}
       />
       <ConfirmationDialog

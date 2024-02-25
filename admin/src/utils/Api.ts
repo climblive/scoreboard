@@ -157,19 +157,6 @@ export class Api {
     return (await this.handleErrors(response)).blob();
   }
 
-  static async createPdfFromTemplate(contestId: number, arrayBuffer: any) {
-    let url = "/contests/" + contestId + "/pdf";
-    let response = await fetch(this.getBaseUrl() + url, {
-      method: "POST",
-      body: arrayBuffer,
-      headers: {
-        "Content-Type": "application/pdf",
-        ...Api.getAuthHeader(url),
-      },
-    });
-    return (await this.handleErrors(response)).blob();
-  }
-
   // ---------------------------------------------------------------------------
   // Problems
   // ---------------------------------------------------------------------------

@@ -34,7 +34,6 @@ import { Series } from "../../model/series";
 import { StoreState } from "../../model/storeState";
 import { getSelectedOrganizer } from "../../selectors/selector";
 import { ConfirmationDialog } from "../ConfirmationDialog";
-import { CreatePdfDialog } from "../CreatePdfDialog";
 import { ProgressButton } from "../ProgressButton";
 import RichTextEditor from "../RichTextEditor";
 
@@ -65,7 +64,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const [deleting, setDeleting] = useState<boolean>(false);
   const [duplicating, setDuplicating] = useState<boolean>(false);
   const [compilingPdf, setCompilingPdf] = useState<boolean>(false);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
   const [requestingDelete, setRequestingDelete] = useState<boolean>(false);
   const [contest, setContest] = useState<Contest>(props.contest);
   const [validated, setValidated] = useState(false);
@@ -218,14 +216,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     history.push(`/contests/${copy.id}`);
   };
 
-  const startPdfCreate = () => {
-    setShowPopup(true);
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
   const isNew = contest.id === undefined;
 
   const createPdf = () => {
@@ -264,7 +254,7 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               size="small"
               variant="contained"
               color="secondary"
-              onClick={startPdfCreate}
+              onClick={createPdf}
               loading={compilingPdf}
               startIcon={<DescriptionIcon />}
             >
@@ -448,11 +438,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
           </>
         )}
       </div>
-      <CreatePdfDialog
-        open={showPopup}
-        createPdf={createPdf}
-        onClose={closePopup}
-      />
       <ConfirmationDialog
         open={requestingDelete}
         title={"Delete contest"}

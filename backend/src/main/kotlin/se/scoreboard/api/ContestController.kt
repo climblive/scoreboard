@@ -136,17 +136,6 @@ class ContestController @Autowired constructor(
         return ResponseEntity(data, headers, HttpStatus.OK)
     }
 
-    @PostMapping(path = arrayOf("/contests/{id}/pdf"), consumes = arrayOf("application/pdf"))
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
-    @Transactional
-    fun createPdf(@PathVariable("id") id: Int, @RequestBody payload:ByteArray) : ResponseEntity<ByteArray> {
-        val data = contestService.getPdf(id, payload)
-        val headers = HttpHeaders()
-        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.PDF.toString())
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contest.pdf")
-        return ResponseEntity(data, headers, HttpStatus.OK)
-    }
-
     @GetMapping(path = arrayOf("/contests/{id}/pdf"))
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ORGANIZER') && hasPermission(#id, 'Contest', 'read')")
     @Transactional

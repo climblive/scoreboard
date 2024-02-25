@@ -14,7 +14,6 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
     lateinit var webUrl: String
 
     @Mappings(
-        Mapping(source = "location.id", target = "locationId"),
         Mapping(source = "organizer.id", target = "organizerId"),
         Mapping(source = "series.id", target = "seriesId"),
         Mapping(target = "scoreboardUrl", ignore = true),
@@ -40,7 +39,6 @@ abstract class ContestMapper : AbstractMapper<Contest, ContestDto>() {
 
     @AfterMapping
     fun afterMapping(source: ContestDto, @MappingTarget target: Contest) {
-        target.location = source.locationId?.let { entityManager.getReference(Location::class.java, it) }
         target.series = source.seriesId?.let { entityManager.getReference(Series::class.java, it) }
     }
 }

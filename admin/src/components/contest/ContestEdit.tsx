@@ -235,6 +235,29 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   return (
     <>
+      {!isNew && (
+        <div className={classes.buttons}>
+          <ProgressButton
+            size="small"
+            variant="contained"
+            color="secondary"
+            onClick={createPdf}
+            loading={compilingPdf}
+            startIcon={<DescriptionIcon />}
+          >
+            Create PDF
+          </ProgressButton>
+          <Button
+            size="small"
+            href={scoreboardUrl}
+            target="_blank"
+            variant="contained"
+            color="secondary"
+          >
+            Open scoreboard
+          </Button>
+        </div>
+      )}
       {contestIssues.map((issue) => (
         <div
           key={issue.link}
@@ -248,29 +271,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
         </div>
       ))}
       <div>
-        {!isNew && contestIssues.length === 0 && (
-          <div className={classes.buttons}>
-            <ProgressButton
-              size="small"
-              variant="contained"
-              color="secondary"
-              onClick={createPdf}
-              loading={compilingPdf}
-              startIcon={<DescriptionIcon />}
-            >
-              Create PDF
-            </ProgressButton>
-            <Button
-              size="small"
-              href={scoreboardUrl}
-              target="_blank"
-              variant="contained"
-              color="secondary"
-            >
-              Open scoreboard
-            </Button>
-          </div>
-        )}
         <div
           style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
         >

@@ -1,11 +1,11 @@
 import { Paper, TableCell } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import React, { useState } from "react";
-import { connect, ConnectedProps } from "react-redux";
+import { ConnectedProps, connect } from "react-redux";
 import { loadRaffles, saveRaffle } from "../../actions/asyncActions";
 import { Raffle } from "../../model/raffle";
 import { StoreState } from "../../model/storeState";
@@ -88,7 +88,6 @@ const RaffleList = (props: Props & PropsFromRedux) => {
             <RaffleView
               key={raffle.id!}
               raffle={raffle}
-              contenders={props.contenders}
               breakpoints={breakpoints}
             />
           ))}
@@ -104,7 +103,6 @@ const RaffleList = (props: Props & PropsFromRedux) => {
 };
 
 const mapStateToProps = (state: StoreState, props: Props) => ({
-  contenders: state.contendersByContest.get(props.contestId),
   raffles: state.rafflesByContest.get(props.contestId),
 });
 

@@ -49,27 +49,6 @@ class PdfService @Autowired constructor(
         }
     }
 
-    fun createPdf(pdfTemplate: ByteArray, codes: List<String>): ByteArray {
-        val document = PDDocument.load(pdfTemplate)
-        val page = document.getPage(0)
-        val pageDict = page.cosObject
-        document.removePage(0)
-
-        val logoObject = getLogo(document)
-
-        codes.forEach { code ->
-            var newPageDict = COSDictionary(pageDict)
-            newPageDict.removeItem(COSName.ANNOTS)
-            var newPage = PDPage(newPageDict)
-            addHeader(document, 0f, logoObject, newPage, code)
-            document.addPage(newPage)
-        }
-        ByteArrayOutputStream().use {
-            document.save(it)
-            return it.toByteArray()
-        }
-    }
-
     private fun getLogo(document: PDDocument): PDImageXObject {
         var logo: BufferedImage?
         PdfService::class.java.getResourceAsStream("/logo.png").use {

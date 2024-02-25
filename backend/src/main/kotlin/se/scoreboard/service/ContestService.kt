@@ -73,11 +73,6 @@ class ContestService @Autowired constructor(
         }
     }
 
-    fun getPdf(id:Int, pdfTemplate:ByteArray) : ByteArray {
-        val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }
-        return pdfService.createPdf(pdfTemplate, codes)
-    }
-
     fun getPdf(id:Int) : ByteArray {
         val codes = fetchEntity(id).contenders.sortedBy { it.id }.map { it.registrationCode!! }
         return pdfService.createPdf(codes)

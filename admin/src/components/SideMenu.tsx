@@ -6,7 +6,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { Palette, TableChart } from "@material-ui/icons";
-import ExploreIcon from "@material-ui/icons/Explore";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import PeopleIcon from "@material-ui/icons/People";
 import * as React from "react";
@@ -54,12 +53,6 @@ function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
       path: "/colors",
       condition: loggedInUser !== undefined,
       divider: true,
-    },
-    {
-      name: "Locations",
-      icon: <ExploreIcon />,
-      path: "/locations",
-      condition: loggedInUser !== undefined,
     },
     {
       name: "Organizers",

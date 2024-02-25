@@ -1,7 +1,6 @@
 import { Environment } from "../environment";
 import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
-import { CompLocation } from "../model/compLocation";
 import { ContenderData } from "../model/contenderData";
 import { Contest } from "../model/contest";
 import { Organizer } from "../model/organizer";
@@ -291,26 +290,6 @@ export class Api {
     } else {
       return this.put(`/series/${series.id}`, series);
     }
-  }
-
-  // ---------------------------------------------------------------------------
-  // Locations
-  // ---------------------------------------------------------------------------
-
-  static getLocations(): Promise<CompLocation[]> {
-    return this.get(`/organizers/${this.organizerId}/locations`);
-  }
-
-  static saveLocation(location: CompLocation): Promise<CompLocation> {
-    if (location.id === undefined) {
-      return this.post(`/organizers/${this.organizerId}/locations`, location);
-    } else {
-      return this.put(`/locations/${location.id}`, location);
-    }
-  }
-
-  static deleteLocation(location: CompLocation): Promise<any> {
-    return this.delete(`/locations/${location.id}`);
   }
 
   // ---------------------------------------------------------------------------

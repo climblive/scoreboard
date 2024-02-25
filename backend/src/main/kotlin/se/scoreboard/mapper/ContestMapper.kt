@@ -3,8 +3,6 @@ package se.scoreboard.mapper
 import org.mapstruct.*
 import org.springframework.beans.factory.annotation.Value
 import se.scoreboard.data.domain.Contest
-import se.scoreboard.data.domain.Location
-import se.scoreboard.data.domain.Organizer
 import se.scoreboard.data.domain.Series
 import se.scoreboard.dto.ContestDto
 

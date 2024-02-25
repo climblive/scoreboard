@@ -14,7 +14,6 @@ abstract class OrganizerMapper : AbstractMapper<Organizer, OrganizerDto>() {
             Mapping(target = "users", ignore = true),
             Mapping(target = "contests", ignore = true),
             Mapping(target = "colors", ignore = true),
-            Mapping(target = "locations", ignore = true),
             Mapping(target = "series", ignore = true)
     )
     abstract override fun convertToEntity(source: OrganizerDto): Organizer

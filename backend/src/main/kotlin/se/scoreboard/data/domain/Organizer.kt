@@ -25,9 +25,6 @@ open class Organizer (
     open var colors: MutableList<Color> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
-    open var locations: MutableList<Location> = mutableListOf(),
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
     open var series: MutableList<Series> = mutableListOf(),
 
     @ManyToMany(fetch = FetchType.LAZY)

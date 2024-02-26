@@ -109,7 +109,8 @@ class ContestService @Autowired constructor(
 
             val headerRow = sheet.createRow(0)
             headerRow.createCell(1).setCellValue("Name")
-            headerRow.createCell(2).setCellValue("Score")
+            headerRow.createCell(2).setCellValue("Club")
+            headerRow.createCell(3).setCellValue("Score")
 
             var rowNum = 1
             var lastScore = -10
@@ -127,7 +128,8 @@ class ContestService @Autowired constructor(
                                 val row = sheet.createRow(rowNum++)
                                 row.createCell(0).setCellValue(lastPosition.toDouble())
                                 row.createCell(1).setCellValue(contender.name)
-                                row.createCell(2).setCellValue(score.toDouble())
+                                row.createCell(2).setCellValue(contender.club)
+                                row.createCell(3).setCellValue(score.toDouble())
                             }
         }
 

@@ -294,6 +294,7 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               label="Location"
               value={contest.location}
               onChange={onLocationChange}
+              helperText="Venue of the event"
             />
             {(props.series?.size ?? 0) > 0 && (
               <FormControl>

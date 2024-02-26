@@ -9,10 +9,11 @@ data class ContenderDto (
     var contestId: Int? = null,
     var registrationCode: String? = null,
     var name: String? = null,
+    var club: String? = null,
     var entered: OffsetDateTime? = null,
     @JsonProperty("disqualified")
     var disqualified: Boolean,
     var finalPlacing: Int?) {
 
-    constructor() : this(null, null, null, null, null, null, false, null)
+    constructor() : this(null, null, null, null, null, null, null, false, null)
 }

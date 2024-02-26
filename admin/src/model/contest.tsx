@@ -1,6 +1,6 @@
 export interface Contest {
   id?: number;
-  locationId?: number;
+  location?: string;
   organizerId: number;
   seriesId?: number;
   protected: boolean;

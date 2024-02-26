@@ -4,8 +4,8 @@ INSERT INTO `organizer` (id, name, homepage) VALUES (1, 'Klätterpyramiden AB', 
 
 INSERT INTO `user_organizer` (user_id, organizer_id) VALUES (1, 1);
 
-INSERT INTO `contest` (id, organizer_id, protected, series_id, name, description, location_id, final_enabled, qualifying_problems, finalists, rules, grace_period) VALUES
-    (1, 1, 0, NULL, 'Mongo Bouldering World Championship', NULL, NULL, 1, 3, 8, NULL, 15);
+INSERT INTO `contest` (id, organizer_id, protected, series_id, name, description, location, final_enabled, qualifying_problems, finalists, rules, grace_period) VALUES
+    (1, 1, 0, NULL, 'Mongo Bouldering World Championship', NULL, 'Planet Earth', 1, 3, 8, NULL, 15);
 
 INSERT INTO `contender` (id, organizer_id, contest_id, registration_code, name, class_id, entered, disqualified) VALUES
     (1, 1, 1, 'ABCD1234', NULL, NULL, NULL, 0);

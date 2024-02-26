@@ -9,7 +9,6 @@ import * as scoreboardActions from "../actions/actions";
 import initialStore from "../initialState";
 import initialState from "../initialState";
 import { Color } from "../model/color";
-import { CompLocation } from "../model/compLocation";
 import { Contest } from "../model/contest";
 import { Organizer } from "../model/organizer";
 import { Problem } from "../model/problem";
@@ -205,37 +204,6 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
       };
 
     // -------------------------------------------------------------------------
-    // Locations
-    // -------------------------------------------------------------------------
-
-    case getType(scoreboardActions.replaceLocations):
-      return {
-        ...state,
-        locations: OrderedMap<number, CompLocation>(
-          action.payload.map((location) => [location.id, location])
-        ),
-      };
-
-    case getType(scoreboardActions.updateLocationSuccess): {
-      let locations = state.locations;
-
-      if (locations === undefined) {
-        locations = OrderedMap<number, CompLocation>();
-      }
-
-      return {
-        ...state,
-        locations: locations.set(action.payload.id!, action.payload),
-      };
-    }
-
-    case getType(scoreboardActions.deleteLocationSuccess):
-      return {
-        ...state,
-        locations: state.locations?.delete(action.payload.id!),
-      };
-
-    // -------------------------------------------------------------------------
     // Organizers
     // -------------------------------------------------------------------------
 
@@ -272,7 +240,6 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
         selectedOrganizerId: action.payload,
         contests: undefined,
         colors: undefined,
-        locations: undefined,
         series: undefined,
         compClassesByContest: Map<number, OrderedMap<number, CompClass>>(),
         rafflesByContest: Map<number, OrderedMap<number, Raffle>>(),

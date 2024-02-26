@@ -43,15 +43,6 @@ LOCK TABLES `contest` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `location`
---
-
-LOCK TABLES `location` WRITE;
-/*!40000 ALTER TABLE `location` DISABLE KEYS */;
-/*!40000 ALTER TABLE `location` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `organizer`
 --
 

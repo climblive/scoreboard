@@ -23,12 +23,10 @@ import {
   copyContest,
   deleteContest,
   loadContest,
-  reloadLocations,
   reloadSeries,
   saveContest,
 } from "../../actions/asyncActions";
 import { Environment } from "../../environment";
-import { CompLocation } from "../../model/compLocation";
 import { Contest } from "../../model/contest";
 import { Series } from "../../model/series";
 import { StoreState } from "../../model/storeState";
@@ -58,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const { loadLocations, loadSeries } = props;
+  const { loadSeries } = props;
 
   const [saving, setSaving] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
@@ -71,13 +69,10 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const history = useHistory();
 
   useEffect(() => {
-    if (props.locations === undefined) {
-      loadLocations();
-    }
     if (props.series === undefined) {
       loadSeries();
     }
-  }, [props.series, props.locations, loadLocations, loadSeries]);
+  }, [props.series, loadSeries]);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -143,12 +138,9 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     setContest({ ...contest, rules });
   };
 
-  const onLocationChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const locationId =
-      e.target.value === "None"
-        ? undefined
-        : parseInt(e.target.value as string);
-    setContest({ ...contest, locationId });
+  const onLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const location = e.target.value === "" ? undefined : e.target.value;
+    setContest({ ...contest, location });
   };
 
   const onSeriesChange = (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -298,27 +290,12 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               value={contest.description}
               onChange={onDescriptionChange}
             />
-            {(props.locations?.size ?? 0) > 0 && (
-              <FormControl>
-                <InputLabel shrink htmlFor="location-select">
-                  Location
-                </InputLabel>
-                <Select
-                  id="location-select"
-                  value={contest.locationId ?? "None"}
-                  onChange={onLocationChange}
-                >
-                  <MenuItem value="None">
-                    <em>None</em>
-                  </MenuItem>
-                  {props.locations?.toArray()?.map((location: CompLocation) => (
-                    <MenuItem key={location.id} value={location.id}>
-                      {location.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
+            <TextField
+              label="Location"
+              value={contest.location}
+              onChange={onLocationChange}
+              helperText="Venue of the event"
+            />
             {(props.series?.size ?? 0) > 0 && (
               <FormControl>
                 <InputLabel shrink htmlFor="series-select">
@@ -451,7 +428,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
 const mapStateToProps = (state: StoreState, props: Props) => ({
   contests: state.contests,
   series: state.series,
-  locations: state.locations,
   selectedOrganizer: getSelectedOrganizer(state),
   problems:
     props.contest.id !== undefined
@@ -472,7 +448,6 @@ const mapDispatchToProps = {
   deleteContest,
   loadContest,
   setErrorMessage,
-  loadLocations: reloadLocations,
   loadSeries: reloadSeries,
   copyContest,
 };

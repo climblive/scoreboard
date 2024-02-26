@@ -5,7 +5,6 @@ import { RaffleWinner } from "src/model/raffleWinner";
 import { ScoreboardActions } from "src/reducers/reducer";
 import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
-import { CompLocation } from "../model/compLocation";
 import { Contest } from "../model/contest";
 import { Organizer } from "../model/organizer";
 import { Problem } from "../model/problem";
@@ -237,52 +236,6 @@ export function deleteSeries(series: Series) {
     return Api.deleteSeries(series)
       .then(() => {
         dispatch(actions.deleteSeriesSuccess(series));
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-        return Promise.reject(error);
-      });
-  };
-}
-
-// -----------------------------------------------------------------------------
-// Locations
-// -----------------------------------------------------------------------------
-
-export function reloadLocations() {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
-    return Api.getLocations()
-      .then((locations) => {
-        dispatch(actions.replaceLocations(locations));
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-        return Promise.reject(error);
-      });
-  };
-}
-
-export function saveLocation(location: CompLocation) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<CompLocation> => {
-    return Api.saveLocation(location)
-      .then((location) => {
-        dispatch(actions.updateLocationSuccess(location));
-        return Promise.resolve(location);
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-        return Promise.reject(error);
-      });
-  };
-}
-
-export function deleteLocation(location: CompLocation) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
-    return Api.deleteLocation(location)
-      .then(() => {
-        dispatch(actions.deleteLocationSuccess(location));
         return Promise.resolve();
       })
       .catch((error) => {

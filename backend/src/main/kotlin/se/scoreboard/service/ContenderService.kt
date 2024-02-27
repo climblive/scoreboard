@@ -35,7 +35,6 @@ class ContenderService @Autowired constructor(
         addConstraints(ContenderDto::compClassId.name, ContenderDto::compClassId, null, AttributeConstraintType.NON_ERASABLE)
         addConstraints(ContenderDto::entered.name, { contender: ContenderDto? -> contender?.entered?.withOffsetSameInstant(ZoneOffset.UTC) }, null, AttributeConstraintType.IMMUTABLE)
         addConstraints(ContenderDto::disqualified.name, ContenderDto::disqualified, "ROLE_CONTENDER", AttributeConstraintType.IMMUTABLE)
-        addConstraints(ContenderDto::finalPlacing.name, ContenderDto::finalPlacing, "ROLE_CONTENDER", AttributeConstraintType.IMMUTABLE)
     }
 
     @Transactional

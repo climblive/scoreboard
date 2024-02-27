@@ -4,6 +4,7 @@ export interface ContenderData {
   contestId: number;
   registrationCode: string;
   name?: string;
+  club?: string;
   entered?: string;
   disqualified: boolean;
   finalPlacing?: number;

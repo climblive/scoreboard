@@ -16,17 +16,23 @@ export interface Props {
 
 type State = {
   name?: string;
+  club?: string;
   compClassId?: number;
 };
 
 export default class ContenderInfoComp extends React.Component<Props, State> {
   public readonly state: State = {
     name: this.props.existingUserData.name,
+    club: this.props.existingUserData.club,
     compClassId: this.props.existingUserData.compClassId,
   };
 
-  handleNameCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
+  handleNameChange = (event: React.FormEvent<HTMLInputElement>) => {
     this.setState({ name: event.currentTarget.value });
+  };
+
+  handleClubChange = (event: React.FormEvent<HTMLInputElement>) => {
+    this.setState({ club: event.currentTarget.value });
   };
 
   setCompClass = (compClassId: number) => {
@@ -38,6 +44,7 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
       let contenderData: ContenderData = {
         ...this.props.existingUserData,
         name: this.state.name!,
+        club: this.state.club,
         compClassId: this.state.compClassId!,
         contestId: this.props.contest.id,
       };
@@ -124,7 +131,23 @@ export default class ContenderInfoComp extends React.Component<Props, State> {
           autoFocus
           style={{ textAlign: "left" }}
           value={this.state.name}
-          onChange={this.handleNameCodeChange}
+          onChange={this.handleNameChange}
+        />
+        <div
+          style={{
+            marginTop: 25,
+            marginBottom: 3,
+            fontSize: 12,
+            color: "#6c727c",
+          }}
+        >
+          Klätterklubb:
+        </div>
+        <input
+          autoFocus
+          style={{ textAlign: "left" }}
+          value={this.state.club}
+          onChange={this.handleClubChange}
         />
         {buttons}
         <div style={{ position: "relative", marginTop: 20 }}>

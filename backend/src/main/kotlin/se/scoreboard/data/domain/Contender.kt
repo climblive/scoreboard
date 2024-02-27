@@ -31,14 +31,14 @@ open class Contender (
     @Column(name = "name", nullable = true, length = 64)
     open var name: String? = null,
 
+    @Column(name = "club", nullable = true, length = 128)
+    open var club: String? = null,
+
     @Column(name = "entered", length = 26)
     open var entered: OffsetDateTime? = null,
 
     @Column(name = "disqualified")
     open var disqualified: Boolean = false,
-
-    @Column(name = "final_placing", nullable = true)
-    open var finalPlacing: Int? = null,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contender")
     open var ticks: MutableList<Tick> = mutableListOf()) : Serializable, AbstractEntity<Int>

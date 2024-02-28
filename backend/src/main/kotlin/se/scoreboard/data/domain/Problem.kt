@@ -17,15 +17,17 @@ open class Problem (
     open var organizer: Organizer? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "color_id", nullable = false)
-    open var color: Color? = null,
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contest_id", nullable = false)
     open var contest: Contest? = null,
 
     @Column(name = "number", nullable = false)
     open var number: Int = 0,
+
+    @Column(name = "hold_color_primary", nullable = true, length = 7)
+    open var holdColorPrimary: String? = null,
+
+    @Column(name = "hold_color_secondary", nullable = true, length = 7)
+    open var holdColorSecondary: String? = null,
 
     @Column(name = "name", nullable = true, length = 64)
     open var name: String? = null,

@@ -99,8 +99,7 @@ class StartView extends React.Component<Props, State> {
             <div>Vill du använda ClimbLive till din egna bouldertävling?</div>
             <div style={{ marginTop: 10 }}>
               <a href={"https://admin." + Environment.siteDomain}>Klicka här</a>{" "}
-              eller besök oss på{" "}
-              <a href={"https://www.facebook.com/CLMB.live"}>Facebook</a>!
+              eller <a href="mailto:info@climblive.com">maila oss</a>!
             </div>
           </div>
         </div>

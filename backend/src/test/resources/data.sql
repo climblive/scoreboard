@@ -15,7 +15,7 @@ INSERT INTO `comp_class` (id, organizer_id, contest_id, name, description, time_
     (2, 1, 1, 'Female', NULL, '2040-01-01 17:00:00', '2040-01-01 20:00:00'),
     (3, 1, 1, 'Youth', NULL, '2040-01-01 17:00:00', '2040-01-01 20:00:00');
 
-INSERT INTO `problem` (id, organizer_id, contest_id, number, hold_color_primary, hold_color_secondary, color_id, points, flash_bonus) VALUES
+INSERT INTO `problem` (id, organizer_id, contest_id, number, hold_color_primary, hold_color_secondary, points, flash_bonus) VALUES
     (1, 1, 1, 1, '#ff0000', NULL, 150, 6),
     (2, 1, 1, 2, '#00ff00', NULL, 50, NULL),
     (3, 1, 1, 3, '#0000ff', NULL, 100, 6),

@@ -7,6 +7,6 @@ import se.scoreboard.data.domain.Problem
 
 @Repository
 interface ProblemRepository : ScoreboardRepository<Problem, Int> {
-    @Query("SELECT problem FROM Problem problem JOIN FETCH problem.color color WHERE problem.contest.id = :contestId")
+    @Query("SELECT problem FROM Problem problem WHERE problem.contest.id = :contestId")
     fun findAllByContestId(@Param("contestId") contestId: Int): List<Problem>
 }

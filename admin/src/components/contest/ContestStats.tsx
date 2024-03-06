@@ -28,9 +28,7 @@ const ContestStats = (props: Props & PropsFromRedux) => {
   const ticksPerProblem = problems?.map(
     (problem) => ticks?.filter((tick) => tick.problemId === problem.id).length
   );
-  const colors = problems?.map(
-    (problem) => props.colors?.get(problem?.colorId)?.rgbPrimary
-  );
+  const colors = problems?.map((problem) => problem?.holdColorPrimary);
 
   const data = {
     labels: problems?.map((problem) => problem?.name ?? problem.number),
@@ -73,7 +71,6 @@ const ContestStats = (props: Props & PropsFromRedux) => {
 
 const mapStateToProps = (state: StoreState, props: Props) => ({
   problems: state.problemsByContest.get(props.contestId),
-  colors: state.colors,
   ticks: state.ticksByContest.get(props.contestId),
 });
 

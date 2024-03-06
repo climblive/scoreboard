@@ -8,7 +8,6 @@ import { ActionType, getType } from "typesafe-actions";
 import * as scoreboardActions from "../actions/actions";
 import initialStore from "../initialState";
 import initialState from "../initialState";
-import { Color } from "../model/color";
 import { Contest } from "../model/contest";
 import { Organizer } from "../model/organizer";
 import { Problem } from "../model/problem";
@@ -142,37 +141,6 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
       };
 
     // -------------------------------------------------------------------------
-    // Colors
-    // -------------------------------------------------------------------------
-
-    case getType(scoreboardActions.replaceColors):
-      return {
-        ...state,
-        colors: OrderedMap<number, Color>(
-          action.payload.map((color) => [color.id, color])
-        ),
-      };
-
-    case getType(scoreboardActions.updateColorSuccess): {
-      let colors = state.colors;
-
-      if (colors === undefined) {
-        colors = OrderedMap<number, Color>();
-      }
-
-      return {
-        ...state,
-        colors: state.colors?.set(action.payload.id!, action.payload),
-      };
-    }
-
-    case getType(scoreboardActions.deleteColorSuccess):
-      return {
-        ...state,
-        colors: state.colors?.delete(action.payload.id!),
-      };
-
-    // -------------------------------------------------------------------------
     // Series
     // -------------------------------------------------------------------------
 
@@ -239,7 +207,6 @@ export const reducer: Reducer<StoreState | undefined, ScoreboardActions> = (
         ...state,
         selectedOrganizerId: action.payload,
         contests: undefined,
-        colors: undefined,
         series: undefined,
         compClassesByContest: Map<number, OrderedMap<number, CompClass>>(),
         rafflesByContest: Map<number, OrderedMap<number, Raffle>>(),

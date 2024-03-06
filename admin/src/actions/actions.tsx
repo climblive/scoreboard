@@ -1,5 +1,4 @@
 import { createStandardAction } from "typesafe-actions";
-import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
 import { ContenderData } from "../model/contenderData";
 import { Contest } from "../model/contest";
@@ -47,18 +46,6 @@ export const deleteOrganizerSuccess = createStandardAction(
 )<Organizer>();
 export const selectOrganizer =
   createStandardAction("SELECT_ORGANIZER")<number>();
-
-// =============================================================================
-// Colors
-// =============================================================================
-
-export const replaceColors = createStandardAction("REPLACE_COLORS")<Color[]>();
-export const updateColorSuccess = createStandardAction(
-  "UPDATE_COLOR_SUCCESS"
-)<Color>();
-export const deleteColorSuccess = createStandardAction(
-  "DELETE_COLOR_SUCCESS"
-)<Color>();
 
 // =============================================================================
 // Series

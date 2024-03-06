@@ -34,21 +34,13 @@ function ProblemComp({
     ? ProblemState.FLASHED
     : ProblemState.SENT;
   const className = "problem " + (tick ? "done" : "");
-  let color = problem.color;
-  if (!color) {
-    color = {
-      id: -1,
-      name: "UNKNOWN " + problem.colorId,
-      rgbPrimary: "#CCC",
-    };
-  }
-  let rgbColor = color.rgbPrimary;
+  let rgbColor = problem.holdColorPrimary;
   if (rgbColor.charAt(0) !== "#") {
     rgbColor = "#" + rgbColor;
   }
   let background = rgbColor;
-  if (color.rgbSecondary) {
-    let rgbSecondary = color.rgbSecondary;
+  if (problem.holdColorSecondary) {
+    let rgbSecondary = problem.holdColorSecondary;
     if (rgbSecondary.charAt(0) !== "#") {
       rgbSecondary = "#" + rgbSecondary;
     }
@@ -94,7 +86,7 @@ function ProblemComp({
       <div style={colorStyle} className="firstRow">
         <div className="id">{problem.number}</div>
         <div className="nameAndDescription">
-          <div className="name">{problem.name ? problem.name : color.name}</div>
+          <div className="name">{problem.name}</div>
           {problem.description && (
             <div className="description">{problem.description}</div>
           )}

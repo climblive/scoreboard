@@ -5,7 +5,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { Palette, TableChart } from "@material-ui/icons";
+import { TableChart } from "@material-ui/icons";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import PeopleIcon from "@material-ui/icons/People";
 import * as React from "react";
@@ -48,13 +48,6 @@ function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
       condition: loggedInUser !== undefined,
     },
     {
-      name: "Colors",
-      icon: <Palette />,
-      path: "/colors",
-      condition: loggedInUser !== undefined,
-      divider: true,
-    },
-    {
       name: "Organizers",
       icon: <PeopleIcon />,
       path: "/organizers",
@@ -79,7 +72,7 @@ function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
       <List>
         {items
           .filter(({ condition }) => condition ?? true)
-          .map(({ name, icon, path, divider }) => {
+          .map(({ name, icon, path }) => {
             return (
               <React.Fragment key={path}>
                 <ListItem
@@ -91,7 +84,6 @@ function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={name} />
                 </ListItem>
-                {divider && <Divider />}
               </React.Fragment>
             );
           })}

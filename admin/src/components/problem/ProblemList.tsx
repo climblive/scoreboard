@@ -168,7 +168,7 @@ const ProblemList = (props: Props & PropsFromRedux) => {
           onDone={createDone}
           orderable
           problem={{
-            name: undefined,
+            name: problemColors[0].name,
             number: nextNumber(),
             holdColorPrimary: problemColors[0].hex,
             contestId: props.contestId,

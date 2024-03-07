@@ -48,15 +48,15 @@ function SideMenu({ loggedInUser }: Props & PropsFromRedux) {
       condition: loggedInUser !== undefined,
     },
     {
-      name: "Organizers",
-      icon: <PeopleIcon />,
-      path: "/organizers",
-      condition: loggedInUser !== undefined,
-    },
-    {
       name: "Series",
       icon: <LibraryBooksIcon />,
       path: "/series",
+      condition: loggedInUser !== undefined,
+    },
+    {
+      name: "Organizers",
+      icon: <PeopleIcon />,
+      path: "/organizers",
       condition: loggedInUser !== undefined,
     },
   ];

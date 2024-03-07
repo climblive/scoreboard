@@ -174,7 +174,9 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
         value={problem.holdColorPrimary ?? ""}
         disabled={!props.editable}
         required
-        onClick={() => setActiveColorPicker("primary")}
+        onClick={
+          props.editable ? () => setActiveColorPicker("primary") : undefined
+        }
         InputProps={{
           startAdornment: (
             <ColorSquare
@@ -195,7 +197,9 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
         value={problem.holdColorSecondary ?? ""}
         required
         disabled={!props.editable}
-        onClick={() => setActiveColorPicker("secondary")}
+        onClick={
+          props.editable ? () => setActiveColorPicker("secondary") : undefined
+        }
         InputProps={{
           startAdornment: (
             <ColorSquare

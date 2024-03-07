@@ -171,7 +171,7 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
       />
       <TextField
         label="Primary hold color"
-        value={problem.holdColorPrimary}
+        value={problem.holdColorPrimary ?? ""}
         disabled={!props.editable}
         required
         onClick={() => setActiveColorPicker("primary")}
@@ -192,7 +192,7 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
       )}
       <TextField
         label="Secondary hold color"
-        value={problem.holdColorSecondary}
+        value={problem.holdColorSecondary ?? ""}
         required
         disabled={!props.editable}
         onClick={() => setActiveColorPicker("secondary")}

@@ -36,6 +36,8 @@ export const problemColors = [
   { hex: "#F628A5", name: "Pink" },
   { hex: "#FAFAFA", name: "White" },
   { hex: "#654321", name: "Brown" },
+  { hex: "#cccccc", name: "Gray" },
+  { hex: "#00FFEF", name: "Turquoise" },
 ];
 
 const useStyles = makeStyles((theme: Theme) =>

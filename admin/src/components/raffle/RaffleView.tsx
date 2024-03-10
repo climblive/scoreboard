@@ -1,19 +1,17 @@
 import { Divider, Paper, Typography } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import StopIcon from "@material-ui/icons/Stop";
-import { OrderedMap } from "immutable";
 import moment from "moment";
 import React, { useState } from "react";
-import { connect, ConnectedProps } from "react-redux";
-import { ContenderData } from "src/model/contenderData";
+import { ConnectedProps, connect } from "react-redux";
 import { Raffle } from "src/model/raffle";
 import { RaffleWinner } from "src/model/raffleWinner";
 import {
@@ -29,7 +27,6 @@ import ResponsiveTableRow from "../ResponsiveTableRow";
 interface Props {
   raffle: Raffle;
   breakpoints?: Map<number, string>;
-  contenders?: OrderedMap<number, ContenderData>;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,13 +58,6 @@ const RaffleView = (props: Props & PropsFromRedux) => {
   let [deleteRequested, setDeleteRequested] = useState<boolean>(false);
 
   const classes = useStyles();
-
-  const getContenderName = (contenderId: number) => {
-    let contender = props.contenders?.get(contenderId);
-    return contender
-      ? contender.name
-      : "Unknown contender with id " + contenderId;
-  };
 
   const onDeleteConfirmed = (result: boolean) => {
     setDeleteRequested(false);
@@ -165,9 +155,7 @@ const RaffleView = (props: Props & PropsFromRedux) => {
                   ?.map((winner: RaffleWinner) => {
                     return (
                       <TableRow key={winner.id}>
-                        <TableCell>
-                          {getContenderName(winner.contenderId)}
-                        </TableCell>
+                        <TableCell>{winner.contenderName}</TableCell>
                         <TableCell>
                           {moment(winner.timestamp).format("HH:mm")}
                         </TableCell>

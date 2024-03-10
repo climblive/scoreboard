@@ -1,9 +1,7 @@
-import { Color } from "./color";
-
 export interface Problem {
   id?: number;
-  colorId: number;
-  color?: Color;
+  holdColorPrimary: string;
+  holdColorSecondary?: string;
   contestId: number;
   number: number;
   name?: string;

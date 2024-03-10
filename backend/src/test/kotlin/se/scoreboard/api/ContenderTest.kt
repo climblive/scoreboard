@@ -29,7 +29,7 @@ class ContenderTest : ControllerTestBase() {
         assertThat(contest.seriesId).isNull()
         assertThat(contest.name).isEqualTo("Mongo Bouldering World Championship")
         assertThat(contest.description).isNull()
-        assertThat(contest.locationId).isNull()
+        assertThat(contest.location).isEqualTo("Planet Earth")
         assertThat(contest.qualifyingProblems).isEqualTo(3)
         assertThat(contest.finalists).isEqualTo(8)
         assertThat(contest.rules).isNull()
@@ -61,7 +61,7 @@ class ContenderTest : ControllerTestBase() {
         assertThat(problem.id).isEqualTo(8)
         assertThat(problem.contestId).isEqualTo(1)
         assertThat(problem.number).isEqualTo(8)
-        assertThat(problem.colorId).isEqualTo(2)
+        assertThat(problem.holdColorPrimary).isEqualTo("#00ff00")
         assertThat(problem.points).isEqualTo(25)
         assertThat(problem.flashBonus).isEqualTo(6)
     }

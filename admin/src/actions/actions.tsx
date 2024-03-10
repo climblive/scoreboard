@@ -1,7 +1,5 @@
 import { createStandardAction } from "typesafe-actions";
-import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
-import { CompLocation } from "../model/compLocation";
 import { ContenderData } from "../model/contenderData";
 import { Contest } from "../model/contest";
 import { Organizer } from "../model/organizer";
@@ -12,24 +10,21 @@ import { Series } from "../model/series";
 import { Tick } from "../model/tick";
 import { User } from "../model/user";
 
-export const setErrorMessage = createStandardAction("SET_ERROR_MESSAGE")<
-  Object
->();
+export const setErrorMessage =
+  createStandardAction("SET_ERROR_MESSAGE")<Object>();
 export const clearErrorMessage = createStandardAction("CLEAR_ERROR_MESSAGE")();
 export const setTitle = createStandardAction("SET_TITLE")<string>();
 export const setLoggingIn = createStandardAction("SET_LOGGING_IN")<boolean>();
-export const setLoggedInUser = createStandardAction("SET_LOGGED_IN_USER")<
-  User
->();
+export const setLoggedInUser =
+  createStandardAction("SET_LOGGED_IN_USER")<User>();
 export const logout = createStandardAction("LOGOUT")();
 
 // =============================================================================
 // Contests
 // =============================================================================
 
-export const replaceContests = createStandardAction("REPLACE_CONTESTS")<
-  Contest[]
->();
+export const replaceContests =
+  createStandardAction("REPLACE_CONTESTS")<Contest[]>();
 export const updateContestSuccess = createStandardAction(
   "UPDATE_CONTEST_SUCCESS"
 )<Contest>();
@@ -38,47 +33,19 @@ export const deleteContestSuccess = createStandardAction(
 )<Contest>();
 
 // =============================================================================
-// Locations
-// =============================================================================
-
-export const replaceLocations = createStandardAction("REPLACE_LOCATIONS")<
-  CompLocation[]
->();
-export const updateLocationSuccess = createStandardAction(
-  "UPDATE_LOCATION_SUCCESS"
-)<CompLocation>();
-export const deleteLocationSuccess = createStandardAction(
-  "DELETE_LOCATION_SUCCESS"
-)<CompLocation>();
-
-// =============================================================================
 // Organizers
 // =============================================================================
 
-export const replaceOrganizers = createStandardAction("REPLACE_ORGANIZERS")<
-  Organizer[]
->();
+export const replaceOrganizers =
+  createStandardAction("REPLACE_ORGANIZERS")<Organizer[]>();
 export const updateOrganizerSuccess = createStandardAction(
   "UPDATE_ORGANIZER_SUCCESS"
 )<Organizer>();
 export const deleteOrganizerSuccess = createStandardAction(
   "DELETE_ORGANIZER_SUCCESS"
 )<Organizer>();
-export const selectOrganizer = createStandardAction("SELECT_ORGANIZER")<
-  number
->();
-
-// =============================================================================
-// Colors
-// =============================================================================
-
-export const replaceColors = createStandardAction("REPLACE_COLORS")<Color[]>();
-export const updateColorSuccess = createStandardAction("UPDATE_COLOR_SUCCESS")<
-  Color
->();
-export const deleteColorSuccess = createStandardAction("DELETE_COLOR_SUCCESS")<
-  Color
->();
+export const selectOrganizer =
+  createStandardAction("SELECT_ORGANIZER")<number>();
 
 // =============================================================================
 // Series

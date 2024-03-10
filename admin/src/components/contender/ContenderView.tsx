@@ -164,7 +164,6 @@ const ContenderView = (props: Props & PropsFromRedux) => {
                 <ContenderTickList
                   scoring={scoring}
                   problems={props.problems}
-                  colors={props.colors}
                 />
               </>
             )}
@@ -204,9 +203,7 @@ const ContenderView = (props: Props & PropsFromRedux) => {
   );
 };
 
-const mapStateToProps = (state: StoreState) => ({
-  colors: state.colors,
-});
+const mapStateToProps = (state: StoreState) => ({});
 
 const mapDispatchToProps = {
   updateContender,

@@ -15,15 +15,6 @@ internal class PdfServiceTest {
     }
 
     @Test
-    fun withTemplate() {
-        PdfService::class.java.getResourceAsStream("/test1.pdf").use {
-            val testPdf = it.readBytes()
-            val data = pdfService.createPdf(testPdf, (0..10).map { createRegistrationCode(8) })
-            File("out.pdf").writeBytes(data)
-        }
-    }
-
-    @Test
     fun withoutTemplate() {
         val data = pdfService.createPdf((0..10).map { createRegistrationCode(8) })
         File("out.pdf").writeBytes(data)

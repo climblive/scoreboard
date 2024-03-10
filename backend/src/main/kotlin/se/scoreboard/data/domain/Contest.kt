@@ -12,9 +12,8 @@ open class Contest (
     @Column(name = "id", unique = true, nullable = false)
     override var id: Int? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = true)
-    open var location: Location? = null,
+    @Column(name = "location", nullable = false, length = 1024)
+    open var location: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizer_id", nullable = false)

@@ -15,10 +15,8 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { Route, Switch, withRouter } from "react-router-dom";
 import { StoreState } from "../model/storeState";
-import ColorList from "./color/ColorList";
 import ContestView from "./contest/ContestView";
 import ContestList from "./contest/ContestList";
-import LocationList from "./location/LocationList";
 import NotFound from "./NotFound";
 import OrganizerList from "./organizer/OrganizerList";
 import SeriesList from "./series/SeriesList";
@@ -140,10 +138,8 @@ const AdminConsole = (props: Props & PropsFromRedux & RouteComponentProps) => {
                 return <ContestView {...props} contestId={contestId} />;
               }}
             />
-            <Route path="/colors" exact component={ColorList} />
             <Route path="/series" exact component={SeriesList} />
             <Route path="/organizers" exact component={OrganizerList} />
-            <Route path="/locations" exact component={LocationList} />
             <Route path="/" component={NotFound} />
           </Switch>
         )}

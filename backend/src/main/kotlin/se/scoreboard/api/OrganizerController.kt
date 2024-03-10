@@ -18,14 +18,10 @@ class OrganizerController @Autowired constructor(
     val organizerService: OrganizerService,
     private val seriesService: SeriesService,
     private var contestMapper: ContestMapper,
-    private var colorMapper: ColorMapper,
-    private var locationMapper: LocationMapper,
     private var seriesMapper: SeriesMapper,
     private var userMapper: UserMapper,
     private val organizerMapper: OrganizerMapper,
-    private val colorService: ColorService,
-    private val contestService: ContestService,
-    private val locationService: LocationService) {
+    private val contestService: ContestService) {
 
     @GetMapping("/organizers/{id}")
     @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
@@ -48,41 +44,6 @@ class OrganizerController @Autowired constructor(
         entity.organizer = organizer
 
         return contestService.create(entity)
-    }
-
-    @GetMapping("/organizers/{id}/colors")
-    @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
-    @Transactional
-    fun getOrganizerColors(@PathVariable("id") id: Int) = colorService.findAllByOrganizerId(id)
-
-    @PostMapping("/organizers/{id}/colors")
-    @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
-    @Transactional
-    fun createColor(@PathVariable("id") id: Int, @RequestBody color : ColorDto): ResponseEntity<ColorDto> {
-        val organizer = organizerService.fetchEntity(id)
-
-        val entity = colorMapper.convertToEntity(color)
-        entity.organizer = organizer
-
-        return colorService.create(entity)
-    }
-
-    @GetMapping("/organizers/{id}/locations")
-    @PreAuthorize("hasPermission(#id, 'Organizer', 'read')")
-    @Transactional
-    fun getOrganizerLocations(@PathVariable("id") id: Int) : List<LocationDto> =
-            organizerService.fetchEntity(id).locations.map { location -> locationMapper.convertToDto(location) }
-
-    @PostMapping("/organizers/{id}/locations")
-    @PreAuthorize("hasPermission(#id, 'Organizer', 'write')")
-    @Transactional
-    fun createLocation(@PathVariable("id") id: Int, @RequestBody location : LocationDto): ResponseEntity<LocationDto> {
-        val organizer = organizerService.fetchEntity(id)
-
-        val entity = locationMapper.convertToEntity(location)
-        entity.organizer = organizer
-
-        return locationService.create(entity)
     }
 
     @GetMapping("/organizers/{id}/series")

@@ -4,8 +4,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import DeleteForeverRoundedIcon from "@material-ui/icons/DeleteForeverRounded";
 import DescriptionIcon from "@material-ui/icons/Description";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
@@ -14,7 +14,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Alert from "@material-ui/lab/Alert";
 import { saveAs } from "file-saver";
 import React, { useEffect, useMemo, useState } from "react";
-import { connect, ConnectedProps } from "react-redux";
+import { ConnectedProps, connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Api } from "src/utils/Api";
@@ -23,18 +23,15 @@ import {
   copyContest,
   deleteContest,
   loadContest,
-  reloadLocations,
   reloadSeries,
   saveContest,
 } from "../../actions/asyncActions";
 import { Environment } from "../../environment";
-import { CompLocation } from "../../model/compLocation";
 import { Contest } from "../../model/contest";
 import { Series } from "../../model/series";
 import { StoreState } from "../../model/storeState";
 import { getSelectedOrganizer } from "../../selectors/selector";
 import { ConfirmationDialog } from "../ConfirmationDialog";
-import { CreatePdfDialog } from "../CreatePdfDialog";
 import { ProgressButton } from "../ProgressButton";
 import RichTextEditor from "../RichTextEditor";
 
@@ -59,13 +56,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
-  const { loadLocations, loadSeries } = props;
+  const { loadSeries } = props;
 
   const [saving, setSaving] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [duplicating, setDuplicating] = useState<boolean>(false);
   const [compilingPdf, setCompilingPdf] = useState<boolean>(false);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
   const [requestingDelete, setRequestingDelete] = useState<boolean>(false);
   const [contest, setContest] = useState<Contest>(props.contest);
   const [validated, setValidated] = useState(false);
@@ -73,13 +69,10 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
   const history = useHistory();
 
   useEffect(() => {
-    if (props.locations === undefined) {
-      loadLocations();
-    }
     if (props.series === undefined) {
       loadSeries();
     }
-  }, [props.series, props.locations, loadLocations, loadSeries]);
+  }, [props.series, loadSeries]);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -145,12 +138,9 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     setContest({ ...contest, rules });
   };
 
-  const onLocationChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const locationId =
-      e.target.value === "None"
-        ? undefined
-        : parseInt(e.target.value as string);
-    setContest({ ...contest, locationId });
+  const onLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const location = e.target.value === "" ? undefined : e.target.value;
+    setContest({ ...contest, location });
   };
 
   const onSeriesChange = (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -218,37 +208,7 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
     history.push(`/contests/${copy.id}`);
   };
 
-  const startPdfCreate = () => {
-    setShowPopup(true);
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
   const isNew = contest.id === undefined;
-
-  const createPdfFromTemplate = (file: Blob) => {
-    let reader = new FileReader();
-    reader.onload = (evt: any) => {
-      let arrayBuffer = evt.currentTarget.result;
-      setCompilingPdf(true);
-      Api.createPdfFromTemplate(contest.id!, arrayBuffer)
-        .then((response) => {
-          saveAs(response, "contest.pdf");
-        })
-        .catch((error) => {
-          setErrorMessage(error);
-        })
-        .finally(() => setCompilingPdf(false));
-    };
-
-    reader.onerror = (evt: any) => {
-      setErrorMessage("Failed to load file: " + evt);
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
 
   const createPdf = () => {
     setCompilingPdf(true);
@@ -267,6 +227,29 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
 
   return (
     <>
+      {!isNew && (
+        <div className={classes.buttons}>
+          <ProgressButton
+            size="small"
+            variant="contained"
+            color="secondary"
+            onClick={createPdf}
+            loading={compilingPdf}
+            startIcon={<DescriptionIcon />}
+          >
+            Create PDF
+          </ProgressButton>
+          <Button
+            size="small"
+            href={scoreboardUrl}
+            target="_blank"
+            variant="contained"
+            color="secondary"
+          >
+            Open scoreboard
+          </Button>
+        </div>
+      )}
       {contestIssues.map((issue) => (
         <div
           key={issue.link}
@@ -280,29 +263,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
         </div>
       ))}
       <div>
-        {!isNew && contestIssues.length === 0 && (
-          <div className={classes.buttons}>
-            <ProgressButton
-              size="small"
-              variant="contained"
-              color="secondary"
-              onClick={startPdfCreate}
-              loading={compilingPdf}
-              startIcon={<DescriptionIcon />}
-            >
-              Create PDF
-            </ProgressButton>
-            <Button
-              size="small"
-              href={scoreboardUrl}
-              target="_blank"
-              variant="contained"
-              color="secondary"
-            >
-              Open scoreboard
-            </Button>
-          </div>
-        )}
         <div
           style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
         >
@@ -330,27 +290,12 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
               value={contest.description}
               onChange={onDescriptionChange}
             />
-            {(props.locations?.size ?? 0) > 0 && (
-              <FormControl>
-                <InputLabel shrink htmlFor="location-select">
-                  Location
-                </InputLabel>
-                <Select
-                  id="location-select"
-                  value={contest.locationId ?? "None"}
-                  onChange={onLocationChange}
-                >
-                  <MenuItem value="None">
-                    <em>None</em>
-                  </MenuItem>
-                  {props.locations?.toArray()?.map((location: CompLocation) => (
-                    <MenuItem key={location.id} value={location.id}>
-                      {location.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
+            <TextField
+              label="Location"
+              value={contest.location}
+              onChange={onLocationChange}
+              helperText="Venue of the event"
+            />
             {(props.series?.size ?? 0) > 0 && (
               <FormControl>
                 <InputLabel shrink htmlFor="series-select">
@@ -470,12 +415,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
           </>
         )}
       </div>
-      <CreatePdfDialog
-        open={showPopup}
-        createPdf={createPdf}
-        createPdfFromTemplate={createPdfFromTemplate}
-        onClose={closePopup}
-      />
       <ConfirmationDialog
         open={requestingDelete}
         title={"Delete contest"}
@@ -489,7 +428,6 @@ const ContestEdit = (props: Props & PropsFromRedux & RouteComponentProps) => {
 const mapStateToProps = (state: StoreState, props: Props) => ({
   contests: state.contests,
   series: state.series,
-  locations: state.locations,
   selectedOrganizer: getSelectedOrganizer(state),
   problems:
     props.contest.id !== undefined
@@ -510,7 +448,6 @@ const mapDispatchToProps = {
   deleteContest,
   loadContest,
   setErrorMessage,
-  loadLocations: reloadLocations,
   loadSeries: reloadSeries,
   copyContest,
 };

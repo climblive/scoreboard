@@ -13,11 +13,9 @@ import java.io.Serializable
 
 @Component
 class CustomPermissionEvaluator @Autowired constructor(
-    val colorService: ColorService,
     val compClassService: CompClassService,
     val contenderService: ContenderService,
     val contestService: ContestService,
-    val locationService: LocationService,
     val problemService: ProblemService,
     val raffleService: RaffleService,
     val raffleWinnerService: RaffleWinnerService,
@@ -101,11 +99,9 @@ class CustomPermissionEvaluator @Autowired constructor(
             }
         } else {
             return when (targetType) {
-                "Color" -> checkOrganizer(colorService.fetchEntity(targetId).organizer?.id)
                 "CompClass" -> checkOrganizer(compClassService.fetchEntity(targetId).organizer?.id)
                 "Contender" -> checkOrganizer(contenderService.fetchEntity(targetId).organizer?.id)
                 "Contest" -> checkOrganizer(contestService.fetchEntity(targetId).organizer?.id)
-                "Location" -> checkOrganizer(locationService.fetchEntity(targetId).organizer?.id)
                 "Organizer" -> checkOrganizer(targetId)
                 "Problem" -> checkOrganizer(problemService.fetchEntity(targetId).organizer?.id)
                 "Raffle" -> checkOrganizer(raffleService.fetchEntity(targetId).organizer?.id)

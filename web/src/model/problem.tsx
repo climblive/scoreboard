@@ -1,10 +1,8 @@
-import { Color } from "./color";
-
 export interface Problem {
   id: number;
   number: number;
-  colorId: number;
-  color?: Color;
+  holdColorPrimary: string;
+  holdColorSecondary?: string;
   points: number;
   flashBonus?: number;
   name: string;

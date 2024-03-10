@@ -10,7 +10,8 @@ import se.scoreboard.dto.RaffleWinnerDto
 abstract class RaffleWinnerMapper : AbstractMapper<RaffleWinner, RaffleWinnerDto>() {
     @Mappings(
         Mapping(source = "raffle.id", target = "raffleId"),
-        Mapping(source = "contender.id", target = "contenderId")
+        Mapping(source = "contender.id", target = "contenderId"),
+        Mapping(source = "contender.name", target = "contenderName")
     )
     abstract override fun convertToDto(source: RaffleWinner): RaffleWinnerDto
 

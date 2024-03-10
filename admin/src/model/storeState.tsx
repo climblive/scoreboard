@@ -1,7 +1,5 @@
 import { Map, OrderedMap } from "immutable";
-import { Color } from "./color";
 import { CompClass } from "./compClass";
-import { CompLocation } from "./compLocation";
 import { ContenderData } from "./contenderData";
 import { Contest } from "./contest";
 import { Organizer } from "./organizer";
@@ -31,11 +29,7 @@ export interface StoreState {
 
   raffleWinnersByRaffle: Map<number, OrderedMap<number, RaffleWinner>>;
 
-  colors?: OrderedMap<number, Color>;
-
   series?: OrderedMap<number, Series>;
-
-  locations?: OrderedMap<number, CompLocation>;
 
   organizers?: OrderedMap<number, Organizer>;
   selectedOrganizerId?: number;

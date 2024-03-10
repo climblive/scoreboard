@@ -1,7 +1,5 @@
 import { Environment } from "../environment";
-import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
-import { CompLocation } from "../model/compLocation";
 import { ContenderData } from "../model/contenderData";
 import { Contest } from "../model/contest";
 import { Organizer } from "../model/organizer";
@@ -157,19 +155,6 @@ export class Api {
     return (await this.handleErrors(response)).blob();
   }
 
-  static async createPdfFromTemplate(contestId: number, arrayBuffer: any) {
-    let url = "/contests/" + contestId + "/pdf";
-    let response = await fetch(this.getBaseUrl() + url, {
-      method: "POST",
-      body: arrayBuffer,
-      headers: {
-        "Content-Type": "application/pdf",
-        ...Api.getAuthHeader(url),
-      },
-    });
-    return (await this.handleErrors(response)).blob();
-  }
-
   // ---------------------------------------------------------------------------
   // Problems
   // ---------------------------------------------------------------------------
@@ -267,26 +252,6 @@ export class Api {
   }
 
   // ---------------------------------------------------------------------------
-  // Colors
-  // ---------------------------------------------------------------------------
-
-  static getColors(): Promise<Color[]> {
-    return this.get(`/organizers/${this.organizerId}/colors`);
-  }
-
-  static saveColor(color: Color): Promise<Color> {
-    if (color.id === undefined) {
-      return this.post(`/organizers/${this.organizerId}/colors`, color);
-    } else {
-      return this.put(`/colors/${color.id}`, color);
-    }
-  }
-
-  static deleteColor(color: Color): Promise<any> {
-    return this.delete(`/colors/${color.id}`);
-  }
-
-  // ---------------------------------------------------------------------------
   // Series
   // ---------------------------------------------------------------------------
 
@@ -304,26 +269,6 @@ export class Api {
     } else {
       return this.put(`/series/${series.id}`, series);
     }
-  }
-
-  // ---------------------------------------------------------------------------
-  // Locations
-  // ---------------------------------------------------------------------------
-
-  static getLocations(): Promise<CompLocation[]> {
-    return this.get(`/organizers/${this.organizerId}/locations`);
-  }
-
-  static saveLocation(location: CompLocation): Promise<CompLocation> {
-    if (location.id === undefined) {
-      return this.post(`/organizers/${this.organizerId}/locations`, location);
-    } else {
-      return this.put(`/locations/${location.id}`, location);
-    }
-  }
-
-  static deleteLocation(location: CompLocation): Promise<any> {
-    return this.delete(`/locations/${location.id}`);
   }
 
   // ---------------------------------------------------------------------------

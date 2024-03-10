@@ -23,6 +23,10 @@ const ContenderEdit = (props: Props & PropsFromRedux) => {
     setContender({ ...contender, name: e.target.value });
   };
 
+  const onClubChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContender({ ...contender, club: e.target.value });
+  };
+
   const onCompClassChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     setContender({
       ...contender,
@@ -54,6 +58,12 @@ const ContenderEdit = (props: Props & PropsFromRedux) => {
           ))}
         </Select>
       </FormControl>
+      <TextField
+        label="Club"
+        value={contender.club}
+        onChange={onClubChange}
+        helperText="Name of the climbing club the contender is representing"
+      />
       <ProgressButton
         variant="contained"
         color="secondary"

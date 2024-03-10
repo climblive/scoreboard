@@ -5,7 +5,7 @@ import java.time.OffsetDateTime
 
 data class ContestDto (
     var id: Int?,
-    var locationId: Int?,
+    var location: String?,
     var organizerId: Int?,
     var seriesId: Int?,
     @JsonProperty("protected")

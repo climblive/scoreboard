@@ -1,27 +1,17 @@
-import {
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@material-ui/core";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { Button, IconButton } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import CancelIcon from "@material-ui/icons/Cancel";
+import ClearIcon from "@material-ui/icons/Clear";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import SaveIcon from "@material-ui/icons/Save";
 import React, { CSSProperties, useState } from "react";
-import { connect, ConnectedProps } from "react-redux";
+import { ColorResult, TwitterPicker } from "react-color";
+import { ConnectedProps, connect } from "react-redux";
 import { deleteProblem, saveProblem } from "../../actions/asyncActions";
-import { Color } from "../../model/color";
 import { Problem } from "../../model/problem";
 import { StoreState } from "../../model/storeState";
+import ColorSquare from "../ColorSquare";
 import { ConfirmationDialog } from "../ConfirmationDialog";
 import { ProgressButton } from "../ProgressButton";
 
@@ -32,8 +22,23 @@ export interface Props {
   removable?: boolean;
   orderable?: boolean;
   onDone?: () => void;
-  getProblemStyle: (color?: Color) => CSSProperties;
+  getProblemStyle: (rgbPrimary: string, rgbSecondary?: string) => CSSProperties;
 }
+
+export const problemColors = [
+  { hex: "#F44336", name: "Red" },
+  { hex: "#4CAF50", name: "Green" },
+  { hex: "#1790D2", name: "Blue" },
+  { hex: "#E410EB", name: "Purple" },
+  { hex: "#FFEB3B", name: "Yellow" },
+  { hex: "#050505", name: "Black" },
+  { hex: "#FF9800", name: "Orange" },
+  { hex: "#F628A5", name: "Pink" },
+  { hex: "#FAFAFA", name: "White" },
+  { hex: "#654321", name: "Brown" },
+  { hex: "#cccccc", name: "Gray" },
+  { hex: "#00FFEF", name: "Turquoise" },
+];
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,6 +64,9 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: theme.spacing(1),
       },
     },
+    colorSquare: {
+      margin: theme.spacing(1.5, 1, 1.5, 0),
+    },
   })
 );
 
@@ -69,9 +77,11 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
   });
   let [saving, setSaving] = useState<boolean>(false);
   let [deleting, setDeleting] = useState<boolean>(false);
+  const [activeColorPicker, setActiveColorPicker] = useState<
+    "primary" | "secondary"
+  >();
 
   const classes = useStyles();
-  const theme = useTheme();
 
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProblem({ ...problem, number: parseInt(e.target.value) || 0 });
@@ -102,8 +112,33 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
     setProblem({ ...problem, flashBonus });
   };
 
-  const onColorChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    setProblem({ ...problem, colorId: parseInt(e.target.value as string) });
+  const onHoldColorPrimaryChange = (color: ColorResult) => {
+    const colorName = problemColors.find(
+      ({ hex }) => hex.toLowerCase() === color.hex.toLowerCase()
+    )?.name;
+
+    const hasColorName = problemColors.some(
+      ({ name }) => name === problem.name
+    );
+
+    let name = problem.name;
+    if (name === undefined || hasColorName) {
+      name = colorName;
+    }
+
+    setProblem({ ...problem, name, holdColorPrimary: color.hex });
+    setActiveColorPicker(undefined);
+  };
+
+  const onHoldColorSecondaryChange = (color: ColorResult) => {
+    setProblem({ ...problem, holdColorSecondary: color.hex });
+    setActiveColorPicker(undefined);
+  };
+
+  const clearHoldColorSecondary = (e: React.MouseEvent<HTMLElement>) => {
+    setActiveColorPicker(undefined);
+    setProblem({ ...problem, holdColorSecondary: undefined });
+    e.stopPropagation();
   };
 
   const onDeleteConfirmed = (result: boolean) => {
@@ -136,26 +171,60 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
         onChange={onNumberChange}
         disabled={!props.editable || !props.orderable}
       />
-      <FormControl required disabled={!props.editable}>
-        <InputLabel shrink htmlFor="compClass-select">
-          Hold color
-        </InputLabel>
-        <Select value={problem.colorId ?? ""} onChange={onColorChange}>
-          {props.colors?.toArray()?.map((color: Color) => (
-            <MenuItem key={color.id} value={color.id}>
-              <Grid container direction="row" alignItems="center">
-                <Grid style={{ marginRight: theme.spacing(1) }}>
-                  <div
-                    style={props.getProblemStyle(color)}
-                    className={classes.colorBox}
-                  ></div>
-                </Grid>
-                <Grid>{color.name}</Grid>
-              </Grid>
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <TextField
+        label="Primary hold color"
+        value={problem.holdColorPrimary ?? ""}
+        disabled={!props.editable}
+        required
+        onClick={
+          props.editable ? () => setActiveColorPicker("primary") : undefined
+        }
+        InputProps={{
+          startAdornment: (
+            <ColorSquare
+              color={problem.holdColorPrimary}
+              className={classes.colorSquare}
+            />
+          ),
+        }}
+      />
+      {activeColorPicker === "primary" && (
+        <TwitterPicker
+          onChange={onHoldColorPrimaryChange}
+          colors={problemColors.map(({ hex }) => hex)}
+        />
+      )}
+      <TextField
+        label="Secondary hold color"
+        value={problem.holdColorSecondary ?? ""}
+        required
+        disabled={!props.editable}
+        onClick={
+          props.editable ? () => setActiveColorPicker("secondary") : undefined
+        }
+        InputProps={{
+          startAdornment: (
+            <ColorSquare
+              color={problem.holdColorSecondary}
+              className={classes.colorSquare}
+            />
+          ),
+          endAdornment: problem.holdColorSecondary !== undefined && (
+            <IconButton
+              onClick={clearHoldColorSecondary}
+              disabled={!props.editable}
+            >
+              <ClearIcon />
+            </IconButton>
+          ),
+        }}
+      />
+      {activeColorPicker === "secondary" && (
+        <TwitterPicker
+          onChange={onHoldColorSecondaryChange}
+          colors={problemColors.map(({ hex }) => hex)}
+        />
+      )}
       <TextField
         label="Name"
         disabled={!props.editable}
@@ -230,9 +299,7 @@ const ProblemEdit = (props: Props & PropsFromRedux) => {
   );
 };
 
-const mapStateToProps = (state: StoreState) => ({
-  colors: state.colors,
-});
+const mapStateToProps = (state: StoreState) => ({});
 
 const mapDispatchToProps = {
   saveProblem,

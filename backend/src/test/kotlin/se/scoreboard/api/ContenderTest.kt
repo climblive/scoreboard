@@ -61,7 +61,7 @@ class ContenderTest : ControllerTestBase() {
         assertThat(problem.id).isEqualTo(8)
         assertThat(problem.contestId).isEqualTo(1)
         assertThat(problem.number).isEqualTo(8)
-        assertThat(problem.colorId).isEqualTo(2)
+        assertThat(problem.holdColorPrimary).isEqualTo("#00ff00")
         assertThat(problem.points).isEqualTo(25)
         assertThat(problem.flashBonus).isEqualTo(6)
     }

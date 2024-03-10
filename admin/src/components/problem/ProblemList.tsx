@@ -7,7 +7,6 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import * as Chroma from "chroma-js";
 import React, { CSSProperties, useMemo, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { Color } from "src/model/color";
 import { groupTicksByProblem } from "src/selectors/selector";
 import { loadProblems } from "../../actions/asyncActions";
 import { Problem } from "../../model/problem";
@@ -15,7 +14,7 @@ import { StoreState } from "../../model/storeState";
 import ProgressIconButton from "../ProgressIconButton";
 import ResponsiveTableHead from "../ResponsiveTableHead";
 import ResponsiveTableSpanningRow from "../ResponsiveTableSpanningRow";
-import ProblemEdit from "./ProblemEdit";
+import ProblemEdit, { problemColors } from "./ProblemEdit";
 import ProblemView from "./ProblemView";
 
 interface Props {
@@ -64,19 +63,11 @@ const ProblemList = (props: Props & PropsFromRedux) => {
   };
 
   const getProblemStyle = (
-    color?: Color,
+    rgbPrimary: string,
+    rgbSecondary?: string,
     opacity: number = 1
   ): CSSProperties => {
-    if (!color) {
-      color = {
-        id: undefined,
-        organizerId: 0,
-        name: "None",
-        rgbPrimary: "888",
-        shared: false,
-      };
-    }
-    let rgbColor = color.rgbPrimary;
+    let rgbColor = rgbPrimary;
     if (rgbColor.charAt(0) !== "#") {
       rgbColor = "#" + rgbColor;
     }
@@ -86,19 +77,20 @@ const ProblemList = (props: Props & PropsFromRedux) => {
     let textColor = luminance < 0.5 ? "#FFF" : "#333";
     let borderWidth = luminance < 0.5 ? 0 : 1;
     let background = rgbColor;
-    if (color.rgbSecondary) {
-      let rgbSecondary = color.rgbSecondary;
+    if (rgbSecondary) {
       if (rgbSecondary.charAt(0) !== "#") {
         rgbSecondary = "#" + rgbSecondary;
       }
       background =
-        "repeating-linear-gradient(-30deg," +
+        "linear-gradient(135deg," +
         rgbColor +
         "," +
-        rgbSecondary +
-        " 15px," +
         rgbColor +
-        " 30px)";
+        " 50%," +
+        rgbSecondary +
+        " 50%," +
+        rgbSecondary +
+        " 50%)";
     }
     return {
       border: borderWidth + "px solid " + borderColor,
@@ -176,9 +168,9 @@ const ProblemList = (props: Props & PropsFromRedux) => {
           onDone={createDone}
           orderable
           problem={{
-            name: undefined,
+            name: problemColors[0].name,
             number: nextNumber(),
-            colorId: props.colors?.toArray()?.[0]?.id!,
+            holdColorPrimary: problemColors[0].hex,
             contestId: props.contestId,
             points: 1,
           }}
@@ -212,7 +204,6 @@ const mapStateToProps = (state: StoreState, props: Props) => ({
   ticks: state.ticksByContest.get(props.contestId),
   contenders: state.contendersByContest.get(props.contestId),
   compClasses: state.compClassesByContest.get(props.contestId),
-  colors: state.colors,
 });
 
 const mapDispatchToProps = {

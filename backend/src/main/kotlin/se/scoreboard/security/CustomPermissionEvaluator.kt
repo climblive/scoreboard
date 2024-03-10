@@ -13,7 +13,6 @@ import java.io.Serializable
 
 @Component
 class CustomPermissionEvaluator @Autowired constructor(
-    val colorService: ColorService,
     val compClassService: CompClassService,
     val contenderService: ContenderService,
     val contestService: ContestService,
@@ -100,7 +99,6 @@ class CustomPermissionEvaluator @Autowired constructor(
             }
         } else {
             return when (targetType) {
-                "Color" -> checkOrganizer(colorService.fetchEntity(targetId).organizer?.id)
                 "CompClass" -> checkOrganizer(compClassService.fetchEntity(targetId).organizer?.id)
                 "Contender" -> checkOrganizer(contenderService.fetchEntity(targetId).organizer?.id)
                 "Contest" -> checkOrganizer(contestService.fetchEntity(targetId).organizer?.id)

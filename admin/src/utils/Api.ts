@@ -1,5 +1,4 @@
 import { Environment } from "../environment";
-import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
 import { ContenderData } from "../model/contenderData";
 import { Contest } from "../model/contest";
@@ -250,26 +249,6 @@ export class Api {
 
   static getRaffleWinners(raffle: Raffle): Promise<RaffleWinner[]> {
     return this.get(`/raffles/${raffle.id}/winners`);
-  }
-
-  // ---------------------------------------------------------------------------
-  // Colors
-  // ---------------------------------------------------------------------------
-
-  static getColors(): Promise<Color[]> {
-    return this.get(`/organizers/${this.organizerId}/colors`);
-  }
-
-  static saveColor(color: Color): Promise<Color> {
-    if (color.id === undefined) {
-      return this.post(`/organizers/${this.organizerId}/colors`, color);
-    } else {
-      return this.put(`/colors/${color.id}`, color);
-    }
-  }
-
-  static deleteColor(color: Color): Promise<any> {
-    return this.delete(`/colors/${color.id}`);
   }
 
   // ---------------------------------------------------------------------------

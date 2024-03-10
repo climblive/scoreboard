@@ -3,7 +3,6 @@ import { Dispatch } from "redux";
 import { ContenderData } from "src/model/contenderData";
 import { RaffleWinner } from "src/model/raffleWinner";
 import { ScoreboardActions } from "src/reducers/reducer";
-import { Color } from "../model/color";
 import { CompClass } from "../model/compClass";
 import { Contest } from "../model/contest";
 import { Organizer } from "../model/organizer";
@@ -145,52 +144,6 @@ export function copyContest(contestId: number) {
       .then((contest) => {
         dispatch(actions.updateContestSuccess(contest));
         return Promise.resolve(contest);
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-        return Promise.reject(error);
-      });
-  };
-}
-
-// -----------------------------------------------------------------------------
-// Colors
-// -----------------------------------------------------------------------------
-
-export function reloadColors() {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
-    return Api.getColors()
-      .then((colors) => {
-        dispatch(actions.replaceColors(colors));
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-        return Promise.reject(error);
-      });
-  };
-}
-
-export function saveColor(color: Color) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<Color> => {
-    return Api.saveColor(color)
-      .then((color) => {
-        dispatch(actions.updateColorSuccess(color));
-        return Promise.resolve(color);
-      })
-      .catch((error) => {
-        dispatch(actions.setErrorMessage(error));
-        return Promise.reject(error);
-      });
-  };
-}
-
-export function deleteColor(color: Color) {
-  return (dispatch: Dispatch<ScoreboardActions>): Promise<void> => {
-    return Api.deleteColor(color)
-      .then(() => {
-        dispatch(actions.deleteColorSuccess(color));
-        return Promise.resolve();
       })
       .catch((error) => {
         dispatch(actions.setErrorMessage(error));

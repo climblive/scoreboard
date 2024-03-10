@@ -11,13 +11,11 @@ import { OrderedMap } from "immutable";
 import moment from "moment";
 import React from "react";
 import { ContenderScoringInfo } from "src/model/contenderScoringInfo";
-import { Color } from "../../model/color";
 import { Problem } from "../../model/problem";
 
 interface Props {
   scoring: ContenderScoringInfo;
   problems?: OrderedMap<number, Problem>;
-  colors?: OrderedMap<number, Color>;
 }
 
 const ContenderTickList = (props: Props) => {
@@ -28,7 +26,7 @@ const ContenderTickList = (props: Props) => {
           <TableRow>
             <TableCell>Nº</TableCell>
             <Hidden smDown>
-              <TableCell>Color</TableCell>
+              <TableCell>Name</TableCell>
             </Hidden>
             <TableCell align="right">Points</TableCell>
             <TableCell>Time</TableCell>
@@ -40,7 +38,6 @@ const ContenderTickList = (props: Props) => {
             ?.sort((t1, t2) => t1.id! - t2.id!)
             ?.map((tick) => {
               let problem = props.problems?.get(tick.problemId);
-              let color = props.colors?.get(problem?.colorId!);
               let points = problem!.points!;
               if (tick.flash && problem!.flashBonus) {
                 points += problem!.flashBonus;
@@ -51,7 +48,7 @@ const ContenderTickList = (props: Props) => {
                     {problem!.number}
                   </TableCell>
                   <Hidden smDown>
-                    <TableCell>{color!.name}</TableCell>
+                    <TableCell>{problem?.name}</TableCell>
                   </Hidden>
                   <TableCell align="right">{points}</TableCell>
                   <TableCell>

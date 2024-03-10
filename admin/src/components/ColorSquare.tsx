@@ -2,7 +2,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { ReactElement } from "react";
 
 interface Props {
-  color: string;
+  color: string | undefined;
   className?: string;
 }
 
@@ -12,7 +12,7 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
       width: 24,
       height: 24,
       borderRadius: 5,
-      backgroundColor: ({ color }) => color,
+      backgroundColor: ({ color }) => color ?? "transparent",
       display: "inline-block",
       flexShrink: 0,
     },

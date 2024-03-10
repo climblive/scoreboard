@@ -2,7 +2,6 @@ import { Divider, TableCell, Typography, useTheme } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { OrderedMap } from "immutable";
 import React, { CSSProperties } from "react";
-import { Color } from "src/model/color";
 import { CompClass } from "src/model/compClass";
 import { ContenderData } from "src/model/contenderData";
 import { Problem } from "src/model/problem";
@@ -17,7 +16,7 @@ interface Props {
   compClasses?: OrderedMap<number, CompClass>;
   contenders?: OrderedMap<number, ContenderData>;
   editable?: boolean;
-  getProblemStyle: (color?: Color) => CSSProperties;
+  getProblemStyle: (rgbPrimary: string, rgbSecondary?: string) => CSSProperties;
   breakpoints?: Map<number, string>;
 }
 
@@ -25,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     colorBox: {
       padding: theme.spacing(1, 2),
+      height: 38,
     },
     collapsableBody: {
       "& > *": {
@@ -50,10 +50,13 @@ const ProblemView = (props: Props) => {
     </TableCell>,
     <TableCell>
       <div
-        style={props.getProblemStyle(props.problem.color)}
+        style={props.getProblemStyle(
+          props.problem.holdColorPrimary,
+          props.problem.holdColorSecondary
+        )}
         className={classes.colorBox}
       >
-        {props.problem.name ?? props.problem.color?.name}
+        {props.problem.name}
       </div>
     </TableCell>,
     <TableCell>{props.problem.points}</TableCell>,

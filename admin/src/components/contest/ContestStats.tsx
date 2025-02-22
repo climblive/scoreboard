@@ -31,7 +31,7 @@ const ContestStats = (props: Props & PropsFromRedux) => {
   const colors = problems?.map((problem) => problem?.holdColorPrimary);
 
   const data = {
-    labels: problems?.map((problem) => problem?.name ?? problem.number),
+    labels: problems?.map((problem) => problem.number),
     datasets: [
       {
         label: "Ticks",

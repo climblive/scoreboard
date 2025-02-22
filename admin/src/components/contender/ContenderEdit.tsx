@@ -50,6 +50,7 @@ const ContenderEdit = (props: Props & PropsFromRedux) => {
           id="compClass-select"
           value={contender.compClassId}
           onChange={onCompClassChange}
+          disabled
         >
           {props.compClasses?.toArray()?.map((compClass: CompClass) => (
             <MenuItem key={compClass.id} value={compClass.id}>

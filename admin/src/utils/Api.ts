@@ -24,6 +24,12 @@ export class Api {
       : "https://api." + Environment.siteDomain;
   }
 
+  private static getNewBaseUrl(): string {
+    return Api.useLocalhost
+      ? "http://localhost:8090"
+      : "https://" + Environment.siteDomain + "/api"
+  }
+
   private static async handleErrors(data: Response): Promise<Response> {
     if (!data.ok) {
       let errorBody = await data.json();
@@ -172,12 +178,12 @@ export class Api {
       result = await this.put(`/problems/${problem.id}`, problem);
     }
 
-    const patch: Pick<Problem, "points" | "flashBonus"> = {
-      points: problem.points,
+    const patch: Pick<Problem, "flashBonus"> & { pointsTop?: Problem["points"] } = {
+      pointsTop: problem.points,
       flashBonus: problem.flashBonus
     };
 
-    fetch(`https://` + Environment.siteDomain + `/api/problems/${result.id}`, {
+    fetch(this.getNewBaseUrl() + `/problems/${result.id}`, {
       method: "PATCH",
       body: JSON.stringify(patch),
       headers: {

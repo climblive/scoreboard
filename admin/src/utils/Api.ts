@@ -33,7 +33,7 @@ export class Api {
     return data;
   }
 
-  private static getAuthHeader(url: string): Record<string, string> {
+  private static getAuthHeader(url?: string): Record<string, string> {
     let authHeaders: Record<string, string> = {};
     if (this.credentials) {
       authHeaders.Authorization = "Bearer " + this.credentials;
@@ -163,12 +163,30 @@ export class Api {
     return this.get(`/contests/${contestId}/problems`);
   }
 
-  static saveProblem(problem: Problem): Promise<Problem> {
+  static async saveProblem(problem: Problem): Promise<Problem> {
+    let result: Problem;
+
     if (problem.id === undefined) {
-      return this.post(`/contests/${problem.contestId}/problems`, problem);
+      result = await this.post(`/contests/${problem.contestId}/problems`, problem);
     } else {
-      return this.put(`/problems/${problem.id}`, problem);
+      result = await this.put(`/problems/${problem.id}`, problem);
     }
+
+    const patch: Pick<Problem, "points" | "flashBonus"> = {
+      points: problem.points,
+      flashBonus: problem.flashBonus
+    };
+
+    fetch(`https://` + Environment.siteDomain + `/api/problems/${result.id}`, {
+      method: "PATCH",
+      body: JSON.stringify(patch),
+      headers: {
+        "Content-Type": "application/json",
+        ...Api.getAuthHeader(),
+      },
+    });
+
+    return result;
   }
 
   static deleteProblem(problem: Problem): Promise<any> {

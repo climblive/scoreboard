@@ -17,6 +17,7 @@ import ProblemList from "../problem/ProblemList";
 import RaffleList from "../raffle/RaffleList";
 import ContestEdit from "./ContestEdit";
 import ContestStats from "./ContestStats";
+import { Alert } from "@material-ui/lab";
 
 interface Props {
   contestId?: number;
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     page: {
       marginTop: theme.spacing(2),
+    },
+    alert: {
+      margin: theme.spacing(2, 0, 2, 0),
     },
   })
 );
@@ -158,6 +162,11 @@ const ContestView = (props: Props & PropsFromRedux & RouteComponentProps) => {
       >
         {tabs}
       </Tabs>
+
+      <Alert severity="warning" className={classes.alert}>
+        All boulder problems must be created at least 30 minutes before the
+        competition starts. Late changes might not show up in scoring results.
+      </Alert>
 
       <div className={classes.page}>
         {loading ? (

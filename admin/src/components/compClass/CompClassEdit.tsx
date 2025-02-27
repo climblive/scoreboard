@@ -57,6 +57,7 @@ const CompClassEdit = (props: Props & PropsFromRedux) => {
   const [deleteRequested, setDeleteRequested] = useState<boolean>(false);
   const [colorPickerVisible, setColorPickerVisible] = useState<boolean>(false);
   const [validated, setValidated] = useState(false);
+  const [startTimeValid, setStartTimeValid] = useState(true);
 
   const classes = useStyles();
 
@@ -102,6 +103,16 @@ const CompClassEdit = (props: Props & PropsFromRedux) => {
 
   const validate = () => {
     if (compClass.name === "") {
+      return false;
+    }
+
+    const earliestStartTime = moment().add(1, "hour");
+
+    if (
+      compClass.id === undefined &&
+      moment(compClass.timeBegin).isBefore(earliestStartTime)
+    ) {
+      setStartTimeValid(false);
       return false;
     }
 
@@ -206,6 +217,15 @@ const CompClassEdit = (props: Props & PropsFromRedux) => {
           format={format}
           value={timeBegin}
           onChange={onTimeBeginChange}
+          minutesStep={5}
+          error={!startTimeValid}
+          helperText={
+            compClass.id === undefined
+              ? `Earliest possible start time is ${moment()
+                  .add(1, "hour")
+                  .format("HH:mm")}`
+              : undefined
+          }
         />
         <DateTimePicker
           label="End time"
@@ -214,6 +234,7 @@ const CompClassEdit = (props: Props & PropsFromRedux) => {
           format={format}
           value={timeEnd}
           onChange={onTimeEndChange}
+          minutesStep={5}
         />
         <div className={classes.buttons}>
           <ProgressButton

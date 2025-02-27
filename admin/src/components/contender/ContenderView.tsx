@@ -183,12 +183,13 @@ const ContenderView = (props: Props & PropsFromRedux) => {
               color="secondary"
               onClick={onReenter}
               loading={saving}
+              disabled
             >
               Reenter
             </ProgressButton>
           ) : (
             <ProgressButton
-              disabled={contender.entered === undefined}
+              disabled={true || contender.entered === undefined}
               variant="contained"
               color="secondary"
               onClick={onDisqualify}

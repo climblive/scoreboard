@@ -97,8 +97,14 @@ const CompClassList = (props: Props & PropsFromRedux) => {
                   name: "",
                   description: "",
                   contestId: props.contestId,
-                  timeBegin: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
-                  timeEnd: moment().format("YYYY-MM-DDTHH:mm:ssZ"),
+                  timeBegin: moment()
+                    .add(2, "hour")
+                    .startOf("hour")
+                    .format("YYYY-MM-DDTHH:mm:ssZ"),
+                  timeEnd: moment()
+                    .add(5, "hour")
+                    .startOf("hour")
+                    .format("YYYY-MM-DDTHH:mm:ssZ"),
                 }}
               />
             </ResponsiveTableSpanningRow>
